@@ -14,6 +14,7 @@ export default function Navbar() {
     { label: "Team", href: "/team" },
     { label: "Publications", href: "/publications" },
     { label: "Join 4C Lab", href: "/join-4c-lab" },
+    { label: "Contact", href: "/contact" },
     { label: "Collaborate", href: "/collaborate" },
   ];
 
@@ -52,10 +53,13 @@ export default function Navbar() {
                 {item.label}
               </a>
             ))}
-            <button className="bg-brand text-primary-foreground px-4 py-2 rounded-full font-medium hover:bg-brand-deep transition-colors inline-flex items-center space-x-2">
+            <a
+              href="/contact"
+              className="bg-brand text-primary-foreground px-4 py-2 rounded-full font-medium hover:bg-brand-deep transition-colors inline-flex items-center space-x-2"
+            >
               <span>Contact</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </a>
           </div>
 
           {/* Mobile menu button */}
@@ -82,9 +86,13 @@ export default function Navbar() {
                 {item.label}
               </a>
             ))}
-            <button className="mt-4 w-full bg-brand text-primary-foreground px-4 py-2 rounded-full font-medium hover:bg-brand-deep transition-colors">
+            <a
+              href="/contact"
+              className="mt-4 block text-center w-full bg-brand text-primary-foreground px-4 py-2 rounded-full font-medium hover:bg-brand-deep transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
               Contact Us
-            </button>
+            </a>
           </motion.div>
         )}
       </div>

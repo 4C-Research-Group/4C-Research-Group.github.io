@@ -22,6 +22,7 @@ export default function Footer() {
     { name: "Team", href: "/team" },
     { name: "Publications", href: "/publications" },
     { name: "Join 4C Lab", href: "/join-4c-lab" },
+    { name: "Contact", href: "/contact" },
     { name: "Collaborate", href: "/collaborate" },
   ];
 

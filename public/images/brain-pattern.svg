@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600" height="600" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g opacity="0.15">
+    <path d="M300 150C300 150 250 180 250 225C250 270 300 300 300 300" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M300 150C300 150 350 180 350 225C350 270 300 300 300 300" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M300 300C300 300 250 330 250 375C250 420 300 450 300 450" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M300 300C300 300 350 330 350 375C350 420 300 450 300 450" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g opacity="0.1">
+    <path d="M200 200C200 200 150 230 150 275C150 320 200 350 200 350" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M200 200C200 200 250 230 250 275C250 320 200 350 200 350" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M400 200C400 200 350 230 350 275C350 320 400 350 400 350" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M400 200C400 200 450 230 450 275C450 320 400 350 400 350" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g opacity="0.08">
+    <path d="M100 250C100 250 50 280 50 325C50 370 100 400 100 400" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M100 250C100 250 150 280 150 325C150 370 100 400 100 400" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M500 250C500 250 450 280 450 325C450 370 500 400 500 400" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M500 250C500 250 550 280 550 325C550 370 500 400 500 400" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>

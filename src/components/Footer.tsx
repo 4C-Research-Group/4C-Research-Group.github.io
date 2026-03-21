@@ -17,6 +17,7 @@ export default function Footer() {
 
   const navItems = [
     { name: "Home", href: "/" },
+    { name: "About", href: "/about" },
     { name: "Research", href: "/research" },
     { name: "Team", href: "/team" },
     { name: "Publications", href: "/publications" },

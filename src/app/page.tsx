@@ -86,13 +86,10 @@ export default function Home() {
                   advancing disorders of cognition and consciousness research in
                   critical care.
                 </p>
-                <a
-                  href="/collaborate"
-                  className="bg-white text-brand px-8 py-3 rounded-full font-semibold hover:bg-white/90 transition-colors inline-flex items-center space-x-2"
-                >
+                <button className="bg-white text-brand px-8 py-3 rounded-full font-semibold hover:bg-white/90 transition-colors inline-flex items-center space-x-2">
                   <span>Collaborate With Us</span>
                   <ArrowRight className="w-5 h-5" />
-                </a>
+                </button>
               </div>
             </div>
 

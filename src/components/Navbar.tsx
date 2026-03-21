@@ -13,6 +13,7 @@ export default function Navbar() {
     { label: "Research", href: "/research" },
     { label: "Team", href: "/team" },
     { label: "Publications", href: "/publications" },
+    { label: "Join 4C Lab", href: "/join-4c-lab" },
     { label: "Collaborate", href: "/collaborate" },
   ];
 

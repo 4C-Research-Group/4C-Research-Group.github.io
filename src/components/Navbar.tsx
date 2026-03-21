@@ -40,7 +40,10 @@ export default function Navbar() {
             className="flex items-center space-x-3"
             whileHover={{ scale: 1.05 }}
           >
-            <Link href="/" className="flex cursor-pointer items-center space-x-3">
+            <Link
+              href="/"
+              className="flex cursor-pointer items-center space-x-3"
+            >
               <img
                 src="/logo.png"
                 alt="4C Research Lab Logo"

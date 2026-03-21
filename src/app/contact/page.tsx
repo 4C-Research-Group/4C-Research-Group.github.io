@@ -383,8 +383,8 @@ export default function ContactPage() {
                 </div>
               </motion.div>
 
-              <div className="flex-1 flex flex-col min-h-0 min-h-[280px] lg:min-h-0">
-                <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden flex-1 flex flex-col min-h-[260px]">
+              <div className="flex-1 flex flex-col min-h-[280px] lg:min-h-0">
+                <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden flex-1 flex flex-col min-h-0">
                   <div className="p-4 border-b border-border shrink-0">
                     <div className="flex items-center gap-3">
                       <div className="bg-cognition/15 p-2 rounded-lg">

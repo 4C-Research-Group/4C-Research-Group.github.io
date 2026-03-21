@@ -268,7 +268,7 @@ export default function ContactPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.45, delay: 0.08 }}
                 viewport={{ once: true }}
-                className="flex-1 flex flex-col min-h-0 min-h-[12rem] lg:min-h-0"
+                className="flex-1 flex flex-col min-h-0"
               >
                 <div className="flex-1 flex flex-col items-center justify-center rounded-xl p-6 sm:p-8 text-center shadow-lg border border-brand/20 bg-linear-to-br from-brand-light/60 via-brand-light/30 to-consciousness/10">
                   <h3 className="text-lg font-bold text-foreground mb-2">
@@ -296,7 +296,7 @@ export default function ContactPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.45, delay: 0.05 }}
                 viewport={{ once: true }}
-                className="bg-card rounded-xl border border-border shadow-lg p-6"
+                className="bg-card rounded-xl border border-border shadow-lg p-6 shrink-0"
               >
                 <h3 className="text-xl font-bold text-foreground mb-4">
                   Contact Information
@@ -383,29 +383,31 @@ export default function ContactPage() {
                 </div>
               </motion.div>
 
-              <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden">
-                <div className="p-4 border-b border-border">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-cognition/15 p-2 rounded-lg">
-                      <Building2 className="text-cognition w-4 h-4" />
+              <div className="flex-1 flex flex-col min-h-0 min-h-[280px] lg:min-h-0">
+                <div className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden flex-1 flex flex-col min-h-[260px]">
+                  <div className="p-4 border-b border-border shrink-0">
+                    <div className="flex items-center gap-3">
+                      <div className="bg-cognition/15 p-2 rounded-lg">
+                        <Building2 className="text-cognition w-4 h-4" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-foreground">
+                        Visit Us
+                      </h3>
                     </div>
-                    <h3 className="text-lg font-semibold text-foreground">
-                      Visit Us
-                    </h3>
                   </div>
-                </div>
-                <div className="w-full aspect-[4/3] min-h-[240px] sm:min-h-[280px]">
-                  <iframe
-                    src={contact.map_embed_url}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Victoria Hospital & Children's Hospital"
-                    className="w-full h-full"
-                  />
+                  <div className="flex-1 min-h-[220px] w-full">
+                    <iframe
+                      src={contact.map_embed_url}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Victoria Hospital & Children's Hospital"
+                      className="w-full h-full min-h-[220px]"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -413,7 +415,7 @@ export default function ContactPage() {
                 href="https://maps.app.goo.gl/NHAV4ZiR9p3aeGGW6"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-brand hover:bg-brand-deep text-primary-foreground font-semibold rounded-lg transition-colors text-sm"
+                className="shrink-0 w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-brand hover:bg-brand-deep text-primary-foreground font-semibold rounded-lg transition-colors text-sm"
               >
                 Open in Google Maps
                 <ArrowRight className="w-4 h-4" />

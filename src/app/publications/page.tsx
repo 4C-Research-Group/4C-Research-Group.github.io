@@ -83,15 +83,16 @@ export default function PublicationsPage() {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <PageHero
+        compact
         title="Publications"
         subtitle="Our latest research contributions and scholarly work"
       >
-        <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4 mb-2 px-2">
+        <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-2 sm:gap-3 px-2">
           <a
             href={RESEARCHGATE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center px-4 py-2.5 bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm sm:text-base text-foreground"
+            className="inline-flex items-center justify-center px-3 py-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm text-foreground"
           >
             <FaResearchgate className="text-green-600 mr-2 shrink-0 text-lg" />
             <span className="truncate">ResearchGate</span>
@@ -100,7 +101,7 @@ export default function PublicationsPage() {
             href={GOOGLE_SCHOLAR_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center px-4 py-2.5 bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm sm:text-base text-foreground"
+            className="inline-flex items-center justify-center px-3 py-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm text-foreground"
           >
             <FaGoogle className="text-blue-500 mr-2 shrink-0 text-lg" />
             <span className="truncate">Google Scholar</span>
@@ -109,7 +110,7 @@ export default function PublicationsPage() {
             href={ORCID_PROFILE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center px-4 py-2.5 bg-card border border-border rounded-xl shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm sm:text-base text-foreground"
+            className="inline-flex items-center justify-center px-3 py-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm text-foreground"
           >
             <FaOrcid className="text-green-700 mr-2 shrink-0 text-lg" />
             <span className="truncate">ORCID</span>
@@ -117,7 +118,7 @@ export default function PublicationsPage() {
         </div>
       </PageHero>
 
-      <div className="container mx-auto px-4 py-12 sm:py-16 max-w-7xl">
+      <div className="container mx-auto px-4 py-8 sm:py-10 max-w-7xl">
         <div className="max-w-6xl mx-auto w-full">
           <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-muted-foreground">
             <p>

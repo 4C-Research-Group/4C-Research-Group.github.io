@@ -30,7 +30,7 @@ export default function Navbar() {
               className="w-10 h-10 rounded-lg"
             />
             <div className="flex flex-col">
-              <span className="font-bold text-lg text-foreground leading-tight">
+              <span className="font-bold text-lg bg-linear-to-r from-brand to-consciousness bg-clip-text text-transparent leading-tight">
                 4C RESEARCH
               </span>
               <span className="text-xs text-muted-foreground leading-tight">

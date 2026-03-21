@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-brand-light">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
+      <section className="relative h-[92vh] flex items-center overflow-hidden">
         {/* Pexels Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"

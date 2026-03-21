@@ -6,97 +6,89 @@ import {
   Activity,
   Eye,
   Users,
-  Award,
   ExternalLink,
   Users2,
   BookOpen,
 } from "lucide-react";
+import PageHero from "@/components/PageHero";
 
 export default function Research() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 to-purple-600 text-white py-20">
-        <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
-          >
-            <h1 className="text-5xl font-bold mb-6">Our Research</h1>
-            <p className="text-xl max-w-3xl mx-auto leading-relaxed">
-              Exploring the frontiers of neuroprognostication and brain
-              monitoring in critical care
-            </p>
-          </motion.div>
-        </div>
-      </section>
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-brand-light">
+      <PageHero
+        compact
+        title="Our Research"
+        subtitle="Exploring the frontiers of neuroprognostication and brain monitoring in critical care"
+      />
 
-      {/* Research Themes Grid */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <div className="space-y-16">
+      <section className="py-12 sm:py-16">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="space-y-12 sm:space-y-16">
             {researchThemes.map((theme, themeIndex) => (
               <motion.div
                 key={theme.title}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: themeIndex * 0.1 }}
-                className="bg-white rounded-2xl shadow-xl overflow-hidden"
+                transition={{ duration: 0.45, delay: Math.min(themeIndex * 0.05, 0.2) }}
+                viewport={{ once: true }}
+                className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden"
               >
                 <div
-                  className="bg-gradient-to-r p-8 text-white"
+                  className="p-6 sm:p-8 text-primary-foreground"
                   style={{ background: theme.gradient }}
                 >
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                      <theme.icon className="w-6 h-6 text-white" />
+                  <div className="mb-4 flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
+                      <theme.icon className="h-6 w-6 text-primary-foreground" />
                     </div>
-                    <h2 className="text-3xl font-bold">{theme.title}</h2>
+                    <h2 className="text-2xl font-bold sm:text-3xl">
+                      {theme.title}
+                    </h2>
                   </div>
-                  <p className="text-lg leading-relaxed">{theme.description}</p>
+                  <p className="text-base leading-relaxed text-primary-foreground/95 sm:text-lg">
+                    {theme.description}
+                  </p>
                 </div>
 
-                <div className="p-8">
+                <div className="p-6 sm:p-8 bg-background/50">
                   <div className="grid md:grid-cols-2 gap-6">
-                    {theme.projects.map((project, projectIndex) => (
+                    {theme.projects.map((project) => (
                       <div
                         key={project.title}
-                        className="border rounded-xl p-6 hover:shadow-lg transition-shadow"
+                        className="rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-brand/25 hover:shadow-md"
                       >
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-xl font-bold text-gray-900">
+                        <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
+                          <h3 className="text-xl font-bold text-foreground">
                             {project.title}
                           </h3>
                           {project.funder && (
-                            <span className="text-sm font-semibold bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
+                            <span className="shrink-0 rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand">
                               {project.funder}
                             </span>
                           )}
                         </div>
 
-                        <p className="text-gray-600 mb-4">
+                        <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
                           {project.description}
                         </p>
 
                         {"publications" in project && project.publications && (
                           <div className="mb-4">
-                            <h4 className="font-semibold text-gray-800 mb-2 flex items-center">
-                              <BookOpen className="w-4 h-4 mr-2" />
+                            <h4 className="mb-2 flex items-center font-semibold text-foreground">
+                              <BookOpen className="mr-2 h-4 w-4 text-brand" />
                               Key Publications
                             </h4>
                             <ul className="space-y-1">
                               {project.publications.map(
-                                (pub: any, i: number) => (
+                                (pub: { title: string; link: string }, i: number) => (
                                   <li
                                     key={i}
-                                    className="text-sm text-gray-600 flex items-start"
+                                    className="flex items-start text-sm text-muted-foreground"
                                   >
-                                    <ExternalLink className="w-3 h-3 mr-2 mt-1 flex-shrink-0 text-blue-600" />
+                                    <ExternalLink className="mr-2 mt-1 h-3 w-3 shrink-0 text-brand" />
                                     <a
                                       href={pub.link}
-                                      className="hover:text-blue-600"
+                                      className="text-brand hover:text-brand-deep transition-colors"
                                       target="_blank"
                                       rel="noopener noreferrer"
                                     >
@@ -111,15 +103,15 @@ export default function Research() {
 
                         {project.team && (
                           <div className="mb-4">
-                            <h4 className="font-semibold text-gray-800 mb-2 flex items-center">
-                              <Users2 className="w-4 h-4 mr-2" />
+                            <h4 className="mb-2 flex items-center font-semibold text-foreground">
+                              <Users2 className="mr-2 h-4 w-4 text-brand" />
                               Team Members
                             </h4>
                             <div className="flex flex-wrap gap-2">
                               {project.team.map((member, i) => (
                                 <span
                                   key={i}
-                                  className="text-sm bg-gray-100 text-gray-700 px-2 py-1 rounded"
+                                  className="rounded-md bg-muted px-2 py-1 text-sm text-foreground"
                                 >
                                   {member}
                                 </span>
@@ -128,14 +120,17 @@ export default function Research() {
                           </div>
                         )}
 
-                        <div className="flex items-center justify-between pt-4 border-t">
-                          <span className="text-sm text-gray-500">
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4">
+                          <span className="text-sm text-muted-foreground">
                             {project.status}
                           </span>
-                          <button className="text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-1">
-                            <span>Learn More</span>
-                            <ExternalLink className="w-4 h-4" />
-                          </button>
+                          <a
+                            href="/collaborate"
+                            className="inline-flex cursor-pointer items-center gap-1 text-sm font-medium text-brand hover:text-brand-deep transition-colors"
+                          >
+                            Learn More
+                            <ExternalLink className="h-4 w-4" />
+                          </a>
                         </div>
                       </div>
                     ))}
@@ -147,51 +142,55 @@ export default function Research() {
         </div>
       </section>
 
-      {/* Multi-center Collaborations */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-6">
+      <section className="border-t border-border bg-card/40 py-12 sm:py-16">
+        <div className="container mx-auto px-4 sm:px-6">
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45 }}
+            viewport={{ once: true }}
+            className="mb-12 text-center"
           >
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="mb-3 text-3xl font-bold text-foreground sm:text-4xl">
               Multi-center Collaborations
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <div className="mx-auto mb-4 h-1 w-24 rounded-full bg-linear-to-r from-cognition via-consciousness to-care" />
+            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
               Leading and participating in international research networks
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid gap-8 md:grid-cols-3">
             {collaborations.map((collab, index) => (
               <motion.div
                 key={collab.title}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+                transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.15) }}
+                viewport={{ once: true }}
+                className="rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-brand/20 hover:shadow-md"
               >
-                <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4">
-                  <Users className="w-6 h-6 text-white" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-cognition/15">
+                  <Users className="h-6 w-6 text-cognition" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                <h3 className="mb-3 text-xl font-bold text-foreground">
                   {collab.title}
                 </h3>
-                <p className="text-gray-600 mb-4">{collab.description}</p>
+                <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
+                  {collab.description}
+                </p>
                 <div className="mb-4">
-                  <span className="text-sm font-semibold text-gray-800">
+                  <span className="text-sm font-semibold text-foreground">
                     Role:
                   </span>
-                  <p className="text-sm text-gray-600">{collab.role}</p>
+                  <p className="text-sm text-muted-foreground">{collab.role}</p>
                 </div>
                 <a
                   href={collab.link}
-                  className="text-blue-600 hover:text-blue-700 font-medium inline-flex items-center space-x-1"
+                  className="inline-flex cursor-pointer items-center gap-1 font-medium text-brand hover:text-brand-deep transition-colors"
                 >
-                  <span>Visit Website</span>
-                  <ExternalLink className="w-4 h-4" />
+                  Visit Website
+                  <ExternalLink className="h-4 w-4" />
                 </a>
               </motion.div>
             ))}
@@ -208,7 +207,7 @@ const researchThemes = [
     description:
       "Developing and validating methods to predict outcomes in patients with acquired brain injury and disorders of consciousness",
     icon: Brain,
-    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    gradient: "linear-gradient(135deg, #0284c7 0%, #7c3aed 100%)",
     projects: [
       {
         title: "PREDICT ABI Project",
@@ -259,7 +258,7 @@ const researchThemes = [
     description:
       "Investigating brain connectivity changes and cognitive impacts of delirium and sleep deprivation in critical care",
     icon: Activity,
-    gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+    gradient: "linear-gradient(135deg, #7c3aed 0%, #059669 100%)",
     projects: [
       {
         title: "TraNSIENCE",
@@ -297,7 +296,7 @@ const researchThemes = [
     description:
       "Advanced EEG monitoring and quantitative analysis for seizure detection and delirium assessment in critically ill children",
     icon: Eye,
-    gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+    gradient: "linear-gradient(135deg, #0284c7 0%, #059669 100%)",
     projects: [
       {
         title: "NuANCEd",
@@ -320,7 +319,7 @@ const researchThemes = [
     description:
       "Optimizing sedation, analgesia, and comfort management for pediatric critically ill patients",
     icon: Users,
-    gradient: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+    gradient: "linear-gradient(135deg, #059669 0%, #0284c7 100%)",
     projects: [
       {
         title: "ABOVE Trial",

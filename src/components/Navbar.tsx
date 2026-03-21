@@ -88,25 +88,26 @@ export default function Navbar() {
                   aria-hidden
                 />
               </button>
-              <div
-                className={`absolute right-0 top-full z-50 min-w-[13rem] pt-1 ${moreOpen ? "pointer-events-auto" : "pointer-events-none invisible"}`}
-                role="menu"
-                aria-hidden={!moreOpen}
-              >
-                <div className="rounded-xl border border-border bg-card py-1.5 shadow-lg">
-                  {moreNav.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      role="menuitem"
-                      className="block cursor-pointer px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-muted hover:text-brand"
-                      onClick={() => setMoreOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
+              {moreOpen && (
+                <div
+                  className="absolute right-0 top-full z-50 min-w-[13rem] pt-2"
+                  role="menu"
+                >
+                  <div className="rounded-xl border border-border bg-card py-1.5 shadow-lg">
+                    {moreNav.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        role="menuitem"
+                        className="block cursor-pointer px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-muted hover:text-brand"
+                        onClick={() => setMoreOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             <Link

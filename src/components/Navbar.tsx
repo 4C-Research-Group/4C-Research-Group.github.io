@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
 
@@ -48,30 +49,32 @@ export default function Navbar() {
             className="flex items-center space-x-3"
             whileHover={{ scale: 1.05 }}
           >
-            <img
-              src="/logo.png"
-              alt="4C Research Lab Logo"
-              className="w-10 h-10 rounded-lg"
-            />
-            <div className="flex flex-col">
-              <span className="font-bold text-lg bg-linear-to-r from-brand to-consciousness bg-clip-text text-transparent leading-tight">
-                4C RESEARCH
-              </span>
-              <span className="text-xs text-muted-foreground leading-tight">
-                Cognition • Consciousness • Critical Care
-              </span>
-            </div>
+            <Link href="/" className="flex items-center space-x-3">
+              <img
+                src="/logo.png"
+                alt="4C Research Lab Logo"
+                className="w-10 h-10 rounded-lg"
+              />
+              <div className="flex flex-col">
+                <span className="font-bold text-lg bg-linear-to-r from-brand to-consciousness bg-clip-text text-transparent leading-tight">
+                  4C RESEARCH
+                </span>
+                <span className="text-xs text-muted-foreground leading-tight">
+                  Cognition • Consciousness • Critical Care
+                </span>
+              </div>
+            </Link>
           </motion.div>
 
           <div className="hidden md:flex items-center gap-6 lg:gap-8">
             {primaryNav.map((item) => (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
                 className="text-muted-foreground hover:text-brand transition-colors font-medium text-sm lg:text-base"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
 
             <div className="relative" ref={moreRef}>
@@ -95,7 +98,7 @@ export default function Navbar() {
                   role="menu"
                 >
                   {moreNav.map((item) => (
-                    <a
+                    <Link
                       key={item.href}
                       href={item.href}
                       role="menuitem"
@@ -103,19 +106,19 @@ export default function Navbar() {
                       onClick={() => setMoreOpen(false)}
                     >
                       {item.label}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               )}
             </div>
 
-            <a
+            <Link
               href="/contact"
               className="bg-brand text-primary-foreground px-4 py-2 rounded-full font-medium hover:bg-brand-deep transition-colors inline-flex items-center gap-2 text-sm"
             >
               <span>Contact</span>
               <ArrowRight className="w-4 h-4" />
-            </a>
+            </Link>
           </div>
 
           <button
@@ -136,14 +139,14 @@ export default function Navbar() {
             className="md:hidden py-4 border-t border-border"
           >
             {primaryNav.map((item) => (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
                 className="block py-2.5 text-muted-foreground hover:text-brand transition-colors font-medium"
                 onClick={() => setIsOpen(false)}
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
             <button
               type="button"
@@ -159,7 +162,7 @@ export default function Navbar() {
             {mobileMoreOpen && (
               <div className="border-l-2 border-brand/30 pl-3 ml-1 mb-2 space-y-1">
                 {moreNav.map((item) => (
-                  <a
+                  <Link
                     key={item.href}
                     href={item.href}
                     className="block py-2 text-sm text-muted-foreground hover:text-brand"
@@ -169,17 +172,17 @@ export default function Navbar() {
                     }}
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 ))}
               </div>
             )}
-            <a
+            <Link
               href="/contact"
               className="mt-3 block text-center w-full bg-brand text-primary-foreground px-4 py-2.5 rounded-full font-medium hover:bg-brand-deep transition-colors"
               onClick={() => setIsOpen(false)}
             >
               Contact Us
-            </a>
+            </Link>
           </motion.div>
         )}
       </div>

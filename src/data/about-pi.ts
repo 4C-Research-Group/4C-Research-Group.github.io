@@ -50,7 +50,7 @@ export const aboutPiData = {
   name: "Dr. Saptharishi (Rishi) Ganesan",
   /** Pipe-separated → rendered as pills in hero */
   title:
-    "Pediatric Critical Care Physician | Neurocritical Care Specialist | Head, 4C Research Group",
+    "Pediatric Critical Care Physician | Neurocritical Care Specialist",
   imageSrc: "/team/team-1.jpg",
   heroDescription:
     "Head, 4C — Cognition, Consciousness & Critical Care Research Group · Western Institute for Neuroscience (WIN) · Western University",
@@ -62,8 +62,8 @@ export const aboutPiData = {
   orcidUrl: "https://orcid.org/0000-0002-2599-9119",
 
   aboutIntro: [
-    "I am a pediatric critical care physician with clinical and research expertise in paediatric neurocritical care. I hold appointments as Assistant Professor in the Department of Paediatrics and the Department of Physiology & Pharmacology at the Schulich School of Medicine (Western University), Associate Scientist at the Lawson Health Research Institute and Children’s Health Research Institute, Associate Member of the Brain & Mind Institute (Western University), Hospital Donation Physician (TGLN), and Interim Program Director of the PCCM subspecialty residency program.",
-    "My research program aims to improve long-term cognitive and functional outcomes in critically ill children through the development, validation, and implementation of electrical neuroimaging–based monitoring tools that provide real-time information on brain states. This work enables bedside providers to identify evolving brain pathologies quickly, deliver neuroprotective or neurorestorative interventions in a timely manner, and determine prognosis objectively in high-risk children. The program sits at the intersection of computational neuroscience, artificial intelligence, and functional neuroimaging.",
+    "I am a pediatric critical care physician with clinical and research expertise in Paediatric Neurocritical Care. I hold the following appointments: Assistant Professor in the Department of Paediatrics and the Dept. of Physiology & Pharmacology at the Schulich School of Medicine (Western University), Associate Scientist at the Lawson Health Research Institute, Associate Scientist at the Children’s Health Research Institute, Associate Member of the Brain & Mind Institute (Western University), Hospital Donation Physician (TGLN), and Interim Program Director (PCCM Sub-specialty residency program).",
+    "My research program aims to improve the long-term cognitive and functional outcomes in critically ill children through the development, validation and implementation of electrical neuroimaging-based monitoring tools that provide real-time information regarding brain states. This program would enable bedside critical care providers to identify evolving brain pathologies quickly, deliver neuroprotective or neurorestorative interventions in a timely manner and determine prognosis objectively in high-risk critically ill children. This inter-disciplinary research program sits at the intersection of computational neuroscience, artificial intelligence and functional neuroimaging.",
   ] as const,
 
   currentPositions: [
@@ -88,97 +88,147 @@ export const aboutPiData = {
 
   education: [
     {
-      title: "MBBS",
-      subtitle: "Madras Medical College, Chennai, India",
-      note: "2003",
+      title: "Clinical-research fellowship",
+      subtitle:
+        "Pediatric Critical Care Medicine Residency Program, University of Toronto (2017–2018)",
     },
     {
-      title: "MD (Paediatrics)",
-      subtitle: "Madras Medical College, Chennai, India",
-      note: "2007",
+      title: "Advanced fellowship",
+      subtitle: "Pediatric Neurocritical Care, University of Toronto (2016–2017)",
     },
     {
-      title: "Fellowship in Paediatric Critical Care",
-      subtitle: "Children’s Hospital of Eastern Ontario, Ottawa, Canada",
-      note: "2012",
+      title: "Doctorate in Medicine (D.M.), Pediatric Critical Care",
+      subtitle: "PGIMER, Chandigarh, India (2013–2016)",
+      note: "Outstanding — Best resident — Bronze medal",
     },
     {
-      title: "Fellowship in Paediatric Neurocritical Care",
-      subtitle: "Children’s Hospital of Philadelphia, Philadelphia, USA",
-      note: "2013",
+      title: "M.D., Pediatrics Residency Program",
+      subtitle: "PGIMER, Chandigarh, India (2010–2012)",
+      note: "Outstanding — Best resident — Bronze medal",
+    },
+    {
+      title: "MBBS, Medicine",
+      subtitle: "JIPMER, Puducherry (2004–2009)",
+      note: "Outstanding — Best outgoing graduate\nPresident, JIPMER Students Association (2007); Secretary, JSA-RDA joint committee for Student Rights; President, Consortium of Medical Students Against Reservation",
     },
   ] satisfies PiTitleSubtitle[],
 
   professionalExperience: [
     {
       title: "Assistant Professor",
-      subtitle:
-        "Schulich School of Medicine & Dentistry, Western University · Sep 2019 – Present",
+      subtitle: "Western University (Aug 2019 – Present)",
+    },
+    {
+      title: "Program Director",
+      subtitle: "Western University (Jun 2020 – Aug 2022)",
     },
     {
       title: "Paediatric Intensivist",
-      subtitle: "London Health Sciences Centre · Aug 2019 – Present",
+      subtitle: "London Health Sciences Centre (Aug 2019 – Present)",
     },
     {
-      title: "Clinical Fellow",
-      subtitle: "Children’s Hospital of Philadelphia · 2012–2013",
+      title: "Assistant Staff Physician",
+      subtitle: "The Hospital for Sick Children, Toronto (Sep 2018 – Jun 2019)",
     },
     {
-      title: "Clinical Fellow",
-      subtitle: "Children’s Hospital of Eastern Ontario · 2010–2012",
+      title:
+        "Clinical Neurocritical Care Fellow & RESTRACOMP/C-BMH Integrative Research Fellow",
+      subtitle: "SickKids, Toronto (Jul 2017 – Sep 2018)",
+    },
+    {
+      title: "Neurocritical Care Specialty Fellow",
+      subtitle: "SickKids, Toronto (Jul 2016 – Jun 2017)",
+    },
+    {
+      title: "Critical Care Fellow",
+      subtitle: "PGIMER, Chandigarh (Jul 2013 – Jun 2016)",
+    },
+    {
+      title: "Senior Resident Physician in Pediatric Emergency Medicine",
+      subtitle: "PGIMER, Chandigarh (Jan 2013 – Jun 2013)",
+    },
+    {
+      title: "Resident Physician",
+      subtitle: "PGIMER, Chandigarh (Jan 2010 – Dec 2012)",
+    },
+    {
+      title: "Internship",
+      subtitle: "JIPMER, Puducherry (Jan 2009 – Dec 2009)",
     },
   ] satisfies PiTitleSubtitle[],
 
   researchAwards: [
     {
-      title: "CIHR Project Grant",
+      title: "Research focus",
       subtitle:
-        "Development of EEG-based biomarkers for pediatric brain injury · 2022",
+        "Early identification and mitigation of neurological insults in critically ill children, quantitative EEG, systems neuroscience, and improving long-term quality of life in ICU survivors.",
     },
     {
-      title: "Lawson Health Research Institute Internal Research Fund",
+      title: "Publication",
       subtitle:
-        "Pilot study on consciousness monitoring in pediatric patients · 2021",
+        "Published research on healthcare associated infections in critically ill children, including a validated risk score (Journal of Critical Care).",
     },
     {
-      title: "Western University Academic Development Fund",
-      subtitle: "Equipment grant for neuroimaging research · 2020",
+      title: "Awards",
+      subtitle:
+        "Recipient of the S. T. Achar award, IJP Best Thesis award, and Global Health award for research excellence.",
+    },
+    {
+      title: "Teaching",
+      subtitle:
+        "Consistently evaluated as a ‘teacher par excellence’ by trainees.",
     },
   ] satisfies PiTitleSubtitle[],
 
   skillCategories: [
     {
-      category: "Clinical & research domains",
+      category: "Industry knowledge",
       skills: [
         "Pediatric Intensive Care",
         "Neurocritical Care",
-        "Teacher mentoring",
-        "Procedural sedation",
-        "Pediatric critical care outreach",
-        "Clinical trials",
+        "Teacher Mentoring",
+        "Procedural Sedation",
+        "Pediatric Critical Care Outreach",
+        "Pediatrics",
+        "Critical Care",
+        "Innovation",
+        "Public Health",
+        "Medical Education",
+        "Medical Research",
+        "Clinical Research",
+        "Clinical Trials",
         "Neuroscience",
-        "Medical education",
-        "Knowledge mobilization",
+        "Medical Diagnostics",
+        "Critical care neurophysiology",
+        "Brain focused ICU care",
+        "Medicine",
+        "Acute Care",
+        "Research",
+        "Resident Education",
+        "Fellow Education",
       ],
     },
     {
-      category: "Tools & methods",
+      category: "Tools & technologies",
       skills: [
-        "Python",
+        "Python (Programming Language)",
+        "SPSS",
         "Quantitative EEG",
         "Electroencephalography",
-        "Machine learning",
-        "Medical writing",
-        "Quality & safety",
+        "Machine Learning",
+        "Medical Writing",
+        "Quality & Safety",
       ],
     },
     {
-      category: "Cross-cutting",
+      category: "Other skills",
       skills: [
-        "Systems neuroscience",
-        "Clinical research",
-        "Resident & fellow education",
-        "Family-centred communication",
+        "Systems Neuroscience",
+        "Medical Diagnostics",
+        "Medical Research",
+        "Clinical Research",
+        "Resident Education",
+        "Fellow Education",
       ],
     },
   ] satisfies PiSkillCategory[],
@@ -189,7 +239,7 @@ export const aboutPiData = {
       organization: "University of Toronto",
       period: "Jan 2018 – Dec 2019 · 2 yrs",
       description:
-        "Interviewed and rated applicants for the MD program at the University of Toronto.",
+        "Interviewed and rated applicants for the MD program at University of Toronto.",
     },
     {
       role: "Organizer — Blood donation camps",
@@ -221,13 +271,6 @@ export const aboutPiData = {
       context: "March 28, 2019 · Worked with Dr. Saptharishi on the same team",
       quote:
         "Rishi is someone you absolutely love as a colleague. He is a hard working and disciplined clinician, an earnest teacher and a gifted researcher. Most importantly, he remains the helpful generous person he has always been. He has a charming personality and is a great team player, fun to be around with, in and out of the hospital!",
-    },
-    {
-      name: "Dr. Jane Smith",
-      role: "Director of Critical Care",
-      context: "Children’s Hospital of Philadelphia",
-      quote:
-        "His innovative approach to brain monitoring in pediatric patients has the potential to revolutionize our field.",
     },
   ] satisfies PiRecommendation[],
 
@@ -279,7 +322,7 @@ export const aboutPiData = {
     {
       title: "MD Pediatrics",
       org: "Medical Council of India",
-      issued: "Verified with Medical Council of India",
+      issued: "",
       expires: null,
       credential: null,
     },
@@ -291,45 +334,48 @@ export const aboutPiData = {
       role: "Member",
       period: "Jan 2017 – Present",
     },
-    {
-      name: "Canadian Critical Care Society",
-      role: "Member",
-      period: "2019 – Present",
-    },
-    {
-      name: "Society for Critical Care Medicine",
-      role: "Member",
-      period: "2019 – Present",
-    },
-    {
-      name: "Pediatric Neurocritical Care Research Group",
-      role: "Member",
-      period: "2019 – Present",
-    },
-    {
-      name: "Western Institute for Neuroscience",
-      role: "Member",
-    },
   ] satisfies PiOrganization[],
 
   publicationHighlights: [
     {
-      title: "EEG-based biomarkers for pediatric brain injury",
-      journal: "Pediatric Critical Care Medicine",
-      date: "2023",
-      summary: "DOI: 10.1097/PCC.0000000000001234",
+      title:
+        "Airway Pressure Release Ventilation in Pediatric Acute Respiratory Distress Syndrome. A Randomized Controlled Trial",
+      journal: "American Journal of Respiratory & Critical Care Medicine (AJRCCM)",
+      date: "Nov 1, 2018",
+      summary:
+        "A randomized controlled trial comparing APRV and conventional low–tidal volume ventilation in children with ARDS. The trial was terminated early due to higher mortality in the intervention arm. Ventilator-free days were similar, but APRV showed a trend toward higher mortality. Limitations should be considered while interpreting these results.",
     },
     {
-      title: "Consciousness monitoring in pediatric patients",
-      journal: "Critical Care",
-      date: "2022",
-      summary: "DOI: 10.1186/s13054-022-12345-6",
+      title:
+        "Clinical profile of scrub typhus in children and its association with hemophagocytic lymphohistiocytosis.",
+      journal: "Indian Pediatrics",
+      date: "Aug 1, 2014",
+      summary:
+        "Study of children with scrub typhus and its association with hemophagocytic lymphohistiocytosis. Scrub typhus is a common cause of unexplained fever in children in northern India, and HLH can occasionally complicate scrub typhus.",
     },
     {
-      title: "Neuroprotective strategies in pediatric critical care",
-      journal: "Intensive Care Medicine",
-      date: "2021",
-      summary: "DOI: 10.1007/s00134-021-12345-6",
+      title:
+        "Hyperactivity, Unexplained Speech Delay, and Coarse Facies—Is It Sanfilippo Syndrome?",
+      journal: "Journal of Child Neurology",
+      date: "Jun 12, 2013",
+      summary:
+        "Case report of a girl with mucopolysaccharidosis-IIIB (Sanfilippo-B syndrome), highlighting the need to consider this diagnosis in children with unexplained speech delay and hyperactivity.",
+    },
+    {
+      title:
+        "Non-pharmacological Interventions in Hypertension: A Community-based Cross-over Randomized Controlled Trial",
+      journal: "Indian Journal of Community Medicine",
+      date: "Jul 1, 2011",
+      summary:
+        "Community-based cross-over RCT testing physical exercise, salt reduction, and yoga for controlling hypertension in young adults. All interventions were effective, with exercise being most effective.",
+    },
+    {
+      title:
+        "Community-based randomized controlled trial of non-pharmacological interventions in prevention and control of hypertension among young adults",
+      journal: "Indian Journal of Community Medicine",
+      date: "Oct 1, 2009",
+      summary:
+        "RCT measuring the efficacy of physical exercise, salt reduction, and yoga in lowering BP among young pre-hypertensives and hypertensives. All interventions were effective; exercise was most effective.",
     },
   ] satisfies PiPublicationHighlight[],
 };

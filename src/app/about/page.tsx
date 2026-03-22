@@ -284,7 +284,7 @@ export default function AboutPage() {
                       <ChevronRight className="h-4 w-4" />
                     </Link>
                     <a
-                      href="https://www.schulich.uwo.ca/paediatrics/"
+                      href="https://www.schulich.uwo.ca/paediatrics/about_us/people/faculty/ganesan_rishi.html"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-brand/40 hover:bg-brand/5 hover:text-brand"

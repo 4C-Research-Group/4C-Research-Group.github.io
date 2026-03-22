@@ -125,14 +125,28 @@ export default function TeamPage() {
                     Head of the 4C Research Group
                   </p>
                   <p className="mt-6 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                    Dr. Rishi Ganesan is a paediatric intensive care
-                    physician-researcher with additional expertise in paediatric
-                    neurocritical care. He is a physician in the Division of
-                    Paediatric Critical Care Medicine at the Children&apos;s
-                    Hospital - London Health Sciences Centre, Assistant
-                    Professor in the Department of Paediatrics at the Schulich
-                    School of Medicine (Western University) and an Associate
-                    Scientist at the Lawson Health Research Institute.
+                    Dr. Rishi Ganesan is a paediatric critical care
+                    physician-researcher at the Children&apos;s Hospital - LHSC,
+                    and an Assistant Professor in the Departments of Paediatrics
+                    and Clinical Neurological Sciences at the Schulich School of
+                    Medicine & Dentistry, Western University, London (ON),
+                    Canada. Dr. Ganesan&apos;s clinical-research training in
+                    paediatrics, critical care, neurology and neurocritical care
+                    is very unique and positions him well to be a leader in this
+                    space. He is passionate about improving diagnosis and
+                    treatment of altered states of cognition and consciousness
+                    in critically ill patients. His research program aims to
+                    improve long-term functional outcomes in critically ill
+                    children through the testing and validation of advanced
+                    electrical and functional neuroimaging tools for prediction
+                    and detection of pathological brain states. This line of
+                    work will empower bedside critical care providers with the
+                    tools, knowledge, and skills to identify evolving brain
+                    pathologies quickly and determine prognosis objectively in
+                    high-risk critically ill children with acquired brain
+                    injury. His program utilizes observational studies,
+                    randomized clinical trials and knowledge translation to
+                    achieve these goals.
                   </p>
                   <div className="mt-8 flex flex-wrap gap-3">
                     <a

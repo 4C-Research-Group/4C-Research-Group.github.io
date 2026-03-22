@@ -1,0 +1,1 @@
+self.__SSG_MANIFEST=new Set(["\u002Fknowledge-mobilization\u002F[moduleSlug]"]);self.__SSG_MANIFEST_CB&&self.__SSG_MANIFEST_CB()

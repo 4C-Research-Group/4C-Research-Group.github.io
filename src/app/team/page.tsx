@@ -204,12 +204,13 @@ export default function TeamPage() {
                       paediatrics, critical care, neurology, and neurocritical
                       care. He is passionate about improving diagnosis and
                       treatment of altered cognition and consciousness in
-                      critically ill patients. His program develops and validates
-                      electrical and functional neuroimaging tools to predict
-                      and detect pathological brain states—empowering bedside
-                      teams to act earlier and prognosticate more objectively in
-                      children with acquired brain injury, through observational
-                      work, trials, and knowledge translation.
+                      critically ill patients. His program develops and
+                      validates electrical and functional neuroimaging tools to
+                      predict and detect pathological brain states—empowering
+                      bedside teams to act earlier and prognosticate more
+                      objectively in children with acquired brain injury,
+                      through observational work, trials, and knowledge
+                      translation.
                     </p>
 
                     <div className="mt-8 flex flex-wrap gap-3">
@@ -332,11 +333,7 @@ export default function TeamPage() {
                 className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8"
               >
                 {filtered.map((member, index) => (
-                  <MemberCard
-                    key={member.slug}
-                    member={member}
-                    index={index}
-                  />
+                  <MemberCard key={member.slug} member={member} index={index} />
                 ))}
               </motion.ul>
             </AnimatePresence>

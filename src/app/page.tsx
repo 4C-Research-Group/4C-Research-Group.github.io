@@ -9,6 +9,8 @@ import {
   BookOpen,
   Award,
   ArrowRight,
+  Mail,
+  Twitter,
 } from "lucide-react";
 
 export default function Home() {
@@ -112,6 +114,77 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Our Mission */}
+      <section className="py-20 bg-gradient-to-br from-slate-50 to-brand-light">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="grid md:grid-cols-2 gap-16 items-center"
+          >
+            {/* Left Column - Mission Content */}
+            <div>
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+              >
+                <h2 className="text-4xl font-bold text-foreground mb-6">
+                  Our Mission
+                </h2>
+                <div className="space-y-4 text-lg text-muted-foreground leading-relaxed">
+                  <p>
+                    We are dedicated to advancing the understanding and
+                    treatment of cognitive and consciousness disorders in
+                    critically ill children. Our multidisciplinary team combines
+                    expertise in pediatric critical care, neuroscience, and
+                    biomedical engineering to develop innovative solutions that
+                    improve patient outcomes.
+                  </p>
+                  <p>
+                    Through cutting-edge research and clinical collaboration, we
+                    strive to make a meaningful difference in the lives of
+                    children and their families.
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Right Column - Image */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <img
+                  src="https://images.pexels.com/photos/3845988/pexels-photo-3845988.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1280&fit=crop"
+                  alt="Medical research team collaborating"
+                  className="w-full h-96 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 max-w-md">
+                    <p className="text-sm font-semibold text-brand">
+                      Collaborative Research Excellence
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Bringing together diverse expertise to transform pediatric
+                      care
+                    </p>
+                  </div>
+                </div>
+              </div>
+              {/* Floating Elements */}
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-brand/20 rounded-full blur-2xl animate-pulse"></div>
+              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-consciousness/20 rounded-full blur-2xl animate-pulse delay-1000"></div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Research Themes */}
       <section className="py-20 bg-card">
         <div className="container mx-auto px-6">
@@ -164,6 +237,90 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Latest Research News */}
+      <section className="py-20 bg-gradient-to-br from-slate-50 to-muted/30">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-5xl mx-auto"
+          >
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-cognition to-brand mb-6 shadow-lg">
+                <BookOpen className="w-7 h-7 text-white" />
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                Latest Research News
+              </h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-cognition via-consciousness to-care rounded-full mx-auto"></div>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="bg-white rounded-3xl shadow-xl border border-border/60 overflow-hidden hover:shadow-2xl transition-shadow duration-300"
+            >
+              <div className="p-8 md:p-10">
+                <div className="flex flex-col md:flex-row gap-8">
+                  <div className="flex-1">
+                    <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4 leading-tight">
+                      Researchers investigate a new method of sedation for
+                      paediatric patients
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed mb-6">
+                      Scientists at Children&apos;s Health Research Institute (a
+                      program of Lawson Health Research Institute), Sunnybrook
+                      Research Institute and The Hospital for Sick Children
+                      (SickKids) are working together to study the potential
+                      benefits of inhaled sedation as an alternative to keep
+                      critically ill children sedated and comfortable.
+                    </p>
+                    <a
+                      href="https://www.sickkids.ca/en/news/archive/2023/researchers-investigate-a-new-method-of-sedation-for-paediatric-patients/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-gradient-to-r from-brand to-cognition text-white px-6 py-3 rounded-full font-semibold hover:from-brand-deep hover:to-cognition-deep transition-all duration-300 shadow-lg hover:shadow-xl"
+                    >
+                      <span>Read the full article on SickKids</span>
+                      <ArrowRight className="w-5 h-5" />
+                    </a>
+                  </div>
+                  <div className="md:w-48 flex-shrink-0">
+                    <div className="relative">
+                      <img
+                        src="https://images.pexels.com/photos/3845988/pexels-photo-3845988.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop"
+                        alt="Medical research collaboration"
+                        className="w-full h-48 object-cover rounded-2xl"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl"></div>
+                      <div className="absolute top-4 right-4">
+                        <span className="bg-brand text-white text-xs font-semibold px-3 py-1 rounded-full">
+                          Research News
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-center mt-8"
+            >
+              <p className="text-sm text-muted-foreground">
+                Stay updated with the latest breakthroughs in pediatric critical
+                care research
+              </p>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
@@ -229,6 +386,106 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Join Our Research Community */}
+      <section className="py-20 bg-gradient-to-br from-brand via-cognition to-consciousness text-white">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-4xl mx-auto"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Join Our Research Community
+            </h2>
+            <p className="text-xl md:text-2xl text-white/90 leading-relaxed mb-12">
+              We are always looking for passionate researchers, students, and
+              collaborators to join us in advancing the frontiers of cognitive
+              science and critical care research.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <a
+                href="/join-4c-lab"
+                className="inline-flex items-center gap-3 bg-white text-brand px-8 py-4 rounded-full font-semibold hover:bg-white/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              >
+                <Users className="w-5 h-5" />
+                <span>Join Our Team</span>
+                <ArrowRight className="w-5 h-5" />
+              </a>
+
+              <a
+                href="/contact"
+                className="inline-flex items-center gap-3 border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-brand transition-all duration-300"
+              >
+                <Mail className="w-5 h-5" />
+                <span>Contact Us</span>
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Floating Elements */}
+          <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
+          <div className="absolute bottom-10 right-10 w-40 h-40 bg-white/5 rounded-full blur-2xl animate-pulse delay-1000"></div>
+        </div>
+      </section>
+
+      {/* Stay Connected - Social Media */}
+      <section className="py-16 bg-gradient-to-b from-muted/50 to-background">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-3xl mx-auto"
+          >
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-brand to-cognition mb-6 shadow-lg">
+              <Twitter className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Stay Connected
+            </h2>
+            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+              Follow Us on Social Media
+            </p>
+            <p className="text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
+              Stay updated with our latest research findings, team updates, and
+              insights into pediatric critical care. Follow us on social media
+              to be part of our research community.
+            </p>
+
+            <motion.a
+              href="https://x.com/Mission_FourC"
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+              className="inline-flex items-center gap-3 bg-black text-white px-8 py-4 rounded-full font-semibold hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              <Twitter className="w-5 h-5" />
+              <span>Follow @Mission_FourC</span>
+              <ArrowRight className="w-5 h-5" />
+            </motion.a>
+
+            {/* Animated social media elements */}
+            <div className="mt-12 flex justify-center gap-4">
+              {[1, 2, 3].map((i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: i * 0.1 }}
+                  className="w-2 h-2 rounded-full bg-gradient-to-r from-brand to-cognition"
+                  style={{ animationDelay: `${i * 0.2}s` }}
+                />
+              ))}
+            </div>
+          </motion.div>
         </div>
       </section>
     </div>

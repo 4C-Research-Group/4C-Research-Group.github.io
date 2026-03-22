@@ -276,20 +276,27 @@ export default function AboutPage() {
                     </div>
                   </div>
                   <div className="mt-6 flex flex-wrap gap-3">
+                    <Link
+                      href="/about-pi"
+                      className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-brand/40 hover:bg-brand/5 hover:text-brand"
+                    >
+                      PI biography
+                      <ChevronRight className="h-4 w-4" />
+                    </Link>
                     <a
                       href="https://www.schulich.uwo.ca/paediatrics/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-brand/40 hover:bg-brand/5 hover:text-brand"
                     >
-                      View Full Profile
+                      Schulich profile
                       <ChevronRight className="h-4 w-4" />
                     </a>
                     <Link
                       href="/team"
                       className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-brand/40 hover:bg-brand/5 hover:text-brand"
                     >
-                      View Full Team
+                      Full team
                       <ChevronRight className="h-4 w-4" />
                     </Link>
                   </div>

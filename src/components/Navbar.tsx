@@ -13,6 +13,7 @@ const primaryNav = [
 ] as const;
 
 const moreNav = [
+  { label: "About PI", href: "/about-pi" },
   { label: "Publications", href: "/publications" },
   { label: "Join 4C Lab", href: "/join-4c-lab" },
   { label: "Collaborate", href: "/collaborate" },

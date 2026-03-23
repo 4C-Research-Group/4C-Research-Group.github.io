@@ -11,6 +11,7 @@ import {
   ArrowRight,
   Mail,
   Twitter,
+  Mouse,
 } from "lucide-react";
 
 export default function Home() {
@@ -112,10 +113,33 @@ export default function Home() {
             </div>
           </motion.div>
         </div>
+
+        {/* Scroll to Explore Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.5 }}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20"
+        >
+          <a
+            href="#mission"
+            className="group flex flex-col items-center text-white/80 hover:text-white transition-all duration-300"
+          >
+            <span className="text-sm font-medium mb-2 uppercase tracking-wider group-hover:translate-y-[-2px] transition-transform">
+              Scroll to explore
+            </span>
+            <div className="group-hover:scale-110 transition-all duration-300">
+              <Mouse className="w-5 h-5 animate-bounce text-white/80 group-hover:text-white" />
+            </div>
+          </a>
+        </motion.div>
       </section>
 
       {/* Our Mission */}
-      <section className="py-20 bg-gradient-to-br from-slate-50 to-brand-light">
+      <section
+        id="mission"
+        className="py-20 bg-gradient-to-br from-slate-50 to-brand-light"
+      >
         <div className="container mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -182,6 +206,55 @@ export default function Home() {
               <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-consciousness/20 rounded-full blur-2xl animate-pulse delay-1000"></div>
             </motion.div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Impact Statistics */}
+      <section className="py-16 bg-gradient-to-r from-brand via-cognition to-consciousness text-white">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Impact</h2>
+            <p className="text-white/90 text-lg max-w-2xl mx-auto">
+              Driving innovation in pediatric critical care through dedicated
+              research and collaboration
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {[
+              { number: "12+", label: "Research Projects", icon: Brain },
+              { number: "90+", label: "Publications", icon: BookOpen },
+              { number: "10+", label: "Team Members", icon: Users },
+              { number: "5+", label: "Institutions", icon: Award },
+            ].map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/30 transition-all duration-300">
+                  <stat.icon className="w-8 h-8 mx-auto mb-3 text-white/90" />
+                  <div className="text-4xl md:text-5xl font-bold mb-2">
+                    {stat.number}
+                  </div>
+                  <div className="text-sm font-medium text-white/80 uppercase tracking-wide">
+                    {stat.label}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Floating background elements */}
+          <div className="absolute top-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
       </section>
 

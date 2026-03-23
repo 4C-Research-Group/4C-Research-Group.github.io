@@ -117,6 +117,24 @@ export default function OptimizedGallery() {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Bottom CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-16 text-center"
+        >
+          <Link
+            href="/gallery"
+            className="inline-flex items-center gap-3 bg-white border border-slate-200 px-8 py-4 rounded-full shadow-sm hover:shadow-md transition-all duration-300 group"
+          >
+            <span className="font-semibold text-slate-900">
+              Explore Full Gallery
+            </span>
+            <ArrowRight className="w-5 h-5 text-slate-500 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </motion.div>
       </div>
     </section>
   );

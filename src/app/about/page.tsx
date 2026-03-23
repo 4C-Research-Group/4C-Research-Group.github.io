@@ -27,6 +27,7 @@ const missionCards = [
     title: "What?",
     description:
       "To improve outcomes for critically ill patients with acute disorders of cognition and consciousness.",
+    gradient: "from-cognition to-brand",
   },
   {
     icon: Search,
@@ -35,6 +36,7 @@ const missionCards = [
     title: "How?",
     description:
       "Through the development and validation of functional neuroimaging modalities as tools for accurate prediction and timely detection of pathological brain states.",
+    gradient: "from-consciousness to-care",
   },
   {
     icon: Target,
@@ -43,6 +45,7 @@ const missionCards = [
     title: "Why?",
     description:
       "The long-term consequences of brain injury acquired prior to or during critical illness are debilitating. Our work will improve survival and mitigate morbidity associated with brain injury.",
+    gradient: "from-care to-cognition",
   },
 ];
 
@@ -79,10 +82,9 @@ export default function AboutPage() {
 
         <div className="container relative mx-auto max-w-6xl px-4 pb-20 sm:px-6">
           <motion.section
-            className="pt-4 sm:pt-8"
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            className="py-16 sm:py-20"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.45 }}
           >
             <div className="mx-auto mb-10 max-w-2xl text-center md:mb-14">
@@ -94,16 +96,31 @@ export default function AboutPage() {
               </h2>
               <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-linear-to-r from-cognition via-consciousness to-care" />
             </div>
-            <div className="grid gap-6 md:grid-cols-3 md:gap-8">
+            <motion.div
+              className="grid gap-6 md:grid-cols-3 md:gap-8"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    delayChildren: 0.2,
+                    staggerChildren: 0.05,
+                  },
+                },
+              }}
+            >
               {missionCards.map((item, index) => (
                 <motion.div
                   key={item.title}
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: { opacity: 1 },
+                  }}
                   transition={{
-                    duration: 0.4,
-                    delay: Math.min(index * 0.05, 0.15),
+                    duration: 0.5,
+                    ease: "easeOut",
                   }}
                   className="group relative flex flex-col overflow-hidden rounded-3xl border border-border/80 bg-card text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand/20 hover:shadow-lg hover:shadow-brand/5"
                 >
@@ -114,15 +131,12 @@ export default function AboutPage() {
                   <div className="px-8 pb-8 pt-8">
                     <div className="flex justify-center">
                       <div
-                        className={`inline-flex rounded-2xl p-4 ${item.iconBg} transition-transform duration-300 group-hover:scale-105`}
+                        className={`flex h-16 w-16 items-center justify-center rounded-2xl ${item.iconBg} ring-1 ring-brand/10 transition-transform duration-300 group-hover:scale-110`}
                       >
-                        <item.icon
-                          className={item.iconClass}
-                          strokeWidth={1.75}
-                        />
+                        <item.icon className={item.iconClass} />
                       </div>
                     </div>
-                    <h3 className="mt-6 text-xl font-bold tracking-tight text-foreground">
+                    <h3 className="mt-6 text-xl font-bold tracking-tight text-foreground transition-colors duration-300 group-hover:text-brand">
                       {item.title}
                     </h3>
                     <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -131,7 +145,7 @@ export default function AboutPage() {
                   </div>
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
           </motion.section>
 
           <motion.section
@@ -180,7 +194,7 @@ export default function AboutPage() {
                 </Link>
               </div>
               <div className="order-1 lg:order-2">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border/80 bg-muted shadow-xl shadow-brand/5 ring-1 ring-border/40">
+                <div className="relative aspect-4/3 overflow-hidden rounded-3xl border border-border/80 bg-muted shadow-xl shadow-brand/5 ring-1 ring-border/40">
                   <Image
                     src="/images/mission.jpg"
                     alt="Our mission in pediatric research"
@@ -212,7 +226,7 @@ export default function AboutPage() {
             <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-border bg-card shadow-md">
               <div className="grid md:grid-cols-12">
                 <motion.div
-                  className="relative aspect-[4/5] md:col-span-5 md:min-h-[360px]"
+                  className="relative aspect-4/5 md:col-span-5 md:min-h-[360px]"
                   initial={{ opacity: 0, x: -12 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
@@ -255,8 +269,12 @@ export default function AboutPage() {
                         Education &amp; Training
                       </h4>
                       <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-muted-foreground">
-                        <li>MD and specialist training in paediatric critical care</li>
-                        <li>Advanced expertise in paediatric neurocritical care</li>
+                        <li>
+                          MD and specialist training in paediatric critical care
+                        </li>
+                        <li>
+                          Advanced expertise in paediatric neurocritical care
+                        </li>
                         <li>
                           Faculty, Schulich School of Medicine &amp; Dentistry,
                           Western University
@@ -358,10 +376,10 @@ export default function AboutPage() {
                       can move from the lab to the bedside responsibly.
                     </p>
                     <p>
-                      Collaboration with families, clinicians, and
-                      international partners ensures our science stays grounded in
-                      real-world needs — from early detection to long-term
-                      outcomes for survivors of critical illness.
+                      Collaboration with families, clinicians, and international
+                      partners ensures our science stays grounded in real-world
+                      needs — from early detection to long-term outcomes for
+                      survivors of critical illness.
                     </p>
                   </div>
                 </div>

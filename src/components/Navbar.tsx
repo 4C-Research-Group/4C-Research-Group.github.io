@@ -9,6 +9,7 @@ const primaryNav = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Research", href: "/research" },
+  { label: "Projects", href: "/projects" },
   { label: "Team", href: "/team" },
 ] as const;
 

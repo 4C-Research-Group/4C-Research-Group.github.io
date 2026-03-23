@@ -115,7 +115,7 @@ export default function LabGalleryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-gray-900">
+    <div className="min-h-screen bg-black text-white">
       {/* 🔥 HERO */}
       <section className="relative h-[60vh] flex items-center justify-center text-center overflow-hidden">
         {/* Background Image */}
@@ -143,7 +143,7 @@ export default function LabGalleryPage() {
             Research • Innovation • Discovery
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-7xl font-extrabold bg-linear-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
             Lab Gallery
           </h1>
 
@@ -164,7 +164,7 @@ export default function LabGalleryPage() {
             bg-white/5 backdrop-blur-xl border border-white/10 shadow-lg hover:shadow-2xl transition"
           >
             {/* Glow */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-cyan-500/20 blur-xl"></div>
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-linear-to-r from-purple-500/20 via-blue-500/20 to-cyan-500/20 blur-xl"></div>
 
             <div className="relative aspect-square">
               <Image

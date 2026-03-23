@@ -70,7 +70,7 @@ export default function KnowledgeMobilizationHubPage() {
           aria-hidden
         />
 
-        <div className="container relative mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
+        <div className="container relative mx-auto px-4 py-12 sm:px-6 sm:py-16">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -95,8 +95,8 @@ export default function KnowledgeMobilizationHubPage() {
                     <li className="flex gap-2">
                       <BookOpen className="mt-0.5 h-4 w-4 shrink-0 text-cognition" />
                       Take the end-of-module quiz. You need{" "}
-                      <strong className="text-foreground">80% or more</strong> to
-                      pass and unlock the next module.
+                      <strong className="text-foreground">80% or more</strong>{" "}
+                      to pass and unlock the next module.
                     </li>
                     <li className="flex gap-2">
                       <RotateCcw className="mt-0.5 h-4 w-4 shrink-0 text-consciousness" />
@@ -182,10 +182,14 @@ export default function KnowledgeMobilizationHubPage() {
                             {mod.summary}
                           </p>
                           <p className="mt-3 text-xs text-muted-foreground">
-                            {mod.topics.filter((t) => t.type === "video").length}{" "}
+                            {
+                              mod.topics.filter((t) => t.type === "video")
+                                .length
+                            }{" "}
                             video topic(s) ·{" "}
                             {mod.topics.filter((t) => t.type === "text").length}{" "}
-                            text topic(s) · {mod.questions.length} quiz questions
+                            text topic(s) · {mod.questions.length} quiz
+                            questions
                           </p>
                           {unlocked && !passed && topicTotal > 0 ? (
                             <p className="mt-2 text-xs font-medium text-brand">

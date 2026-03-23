@@ -183,8 +183,7 @@ export default function ModuleRunner({ module }: { module: KMModule }) {
       const a = answers[q.id];
       if (a === q.correctIndex) correct += 1;
     }
-    const scorePercent =
-      total === 0 ? 0 : Math.round((correct / total) * 100);
+    const scorePercent = total === 0 ? 0 : Math.round((correct / total) * 100);
     const { passed } = recordQuizAttempt(module.slug, scorePercent);
     refresh();
     setSubmitted({
@@ -209,7 +208,7 @@ export default function ModuleRunner({ module }: { module: KMModule }) {
   return (
     <div className="min-h-screen bg-background">
       <div className="border-b border-border/60 bg-linear-to-br from-brand-light/60 via-background to-consciousness/10">
-        <div className="container mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-12">
+        <div className="container mx-auto px-4 py-10 sm:px-6 sm:py-12">
           <Link
             href="/knowledge-mobilization/"
             className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-brand transition hover:gap-2.5"
@@ -233,7 +232,7 @@ export default function ModuleRunner({ module }: { module: KMModule }) {
         </div>
       </div>
 
-      <div className="container mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+      <div className="container mx-auto px-4 py-10 sm:px-6 sm:py-14">
         <section aria-labelledby="topics-heading" className="space-y-4">
           <h2
             id="topics-heading"
@@ -253,9 +252,9 @@ export default function ModuleRunner({ module }: { module: KMModule }) {
                 moduleSlug={module.slug}
                 defaultOpen={ti === 0}
                 reviewed={
-                  progressSnapshot.modules[module.slug]?.reviewedTopicIds.includes(
-                    topic.id,
-                  ) ?? false
+                  progressSnapshot.modules[
+                    module.slug
+                  ]?.reviewedTopicIds.includes(topic.id) ?? false
                 }
                 onToggleReviewed={refresh}
               />
@@ -366,8 +365,8 @@ export default function ModuleRunner({ module }: { module: KMModule }) {
                 role="status"
               >
                 <p className="text-lg font-semibold text-foreground">
-                  Your score: {submitted.scorePercent}% ({submitted.correctCount}{" "}
-                  / {submitted.total} correct)
+                  Your score: {submitted.scorePercent}% (
+                  {submitted.correctCount} / {submitted.total} correct)
                 </p>
                 {submitted.passed ? (
                   <div className="mt-3 space-y-3 text-sm text-muted-foreground">
@@ -405,8 +404,9 @@ export default function ModuleRunner({ module }: { module: KMModule }) {
                 ) : (
                   <p className="mt-3 text-sm text-muted-foreground">
                     You need at least {KM_PASS_PERCENT}% to pass. Review the
-                    topics, tap <strong className="text-foreground">Retake quiz</strong>{" "}
-                    to clear your choices, then submit again. Your best score on
+                    topics, tap{" "}
+                    <strong className="text-foreground">Retake quiz</strong> to
+                    clear your choices, then submit again. Your best score on
                     this device is saved when you pass.
                   </p>
                 )}

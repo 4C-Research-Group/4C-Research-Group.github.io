@@ -29,7 +29,7 @@ const categoryIcons = {
   "Implementation Science": Brain,
   "Clinical Research": Activity,
   "Clinical Trial": Eye,
-  "Registry": BookOpen,
+  Registry: BookOpen,
 };
 
 export default function ProjectsPage() {
@@ -43,8 +43,10 @@ export default function ProjectsPage() {
 
   const filteredProjects = useMemo(() => {
     return projects.filter((project) => {
-      const categoryMatch = selectedCategory === "all" || project.category === selectedCategory;
-      const statusMatch = selectedStatus === "all" || project.status === selectedStatus;
+      const categoryMatch =
+        selectedCategory === "all" || project.category === selectedCategory;
+      const statusMatch =
+        selectedStatus === "all" || project.status === selectedStatus;
       return categoryMatch && statusMatch;
     });
   }, [selectedCategory, selectedStatus]);
@@ -52,9 +54,9 @@ export default function ProjectsPage() {
   return (
     <div className="min-h-screen bg-background">
       <PageHero
+        compact
         title="Research Projects"
         subtitle="Exploring the frontiers of pediatric critical care through innovative research initiatives"
-        description="Our lab leads cutting-edge research projects focused on improving outcomes for critically ill children through advanced neuromonitoring, implementation science, and clinical trials."
       />
 
       <div className="container mx-auto px-6 py-16">
@@ -69,7 +71,9 @@ export default function ProjectsPage() {
             <div className="flex flex-wrap gap-3">
               <div className="flex items-center gap-2">
                 <Filter className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm font-medium text-muted-foreground">Category:</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  Category:
+                </span>
               </div>
               {categories.map((category) => (
                 <button
@@ -97,7 +101,9 @@ export default function ProjectsPage() {
                       : "bg-muted text-muted-foreground hover:bg-muted/80 border border-border"
                   }`}
                 >
-                  {status === "all" ? "All Status" : status.charAt(0).toUpperCase() + status.slice(1)}
+                  {status === "all"
+                    ? "All Status"
+                    : status.charAt(0).toUpperCase() + status.slice(1)}
                 </button>
               ))}
             </div>
@@ -112,8 +118,10 @@ export default function ProjectsPage() {
           className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
         >
           {filteredProjects.map((project, index) => {
-            const CategoryIcon = categoryIcons[project.category as keyof typeof categoryIcons] || Brain;
-            
+            const CategoryIcon =
+              categoryIcons[project.category as keyof typeof categoryIcons] ||
+              Brain;
+
             return (
               <motion.div
                 key={project.id}
@@ -133,10 +141,12 @@ export default function ProjectsPage() {
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      
+
                       {/* Status Badge */}
                       <div className="absolute top-4 right-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusColors[project.status]}`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusColors[project.status]}`}
+                        >
                           {project.status}
                         </span>
                       </div>
@@ -165,7 +175,7 @@ export default function ProjectsPage() {
                       <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-brand transition-colors">
                         {project.title}
                       </h3>
-                      
+
                       <p className="text-muted-foreground text-sm mb-4 line-clamp-3 flex-1">
                         {project.description}
                       </p>
@@ -192,14 +202,16 @@ export default function ProjectsPage() {
                         <div className="flex items-center gap-4 text-xs text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
-                            <span>{new Date(project.startDate).getFullYear()}</span>
+                            <span>
+                              {new Date(project.startDate).getFullYear()}
+                            </span>
                           </div>
                           <div className="flex items-center gap-1">
                             <Users className="w-3 h-3" />
                             <span>{project.teamMembers?.length || 0}</span>
                           </div>
                         </div>
-                        
+
                         <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-brand group-hover:translate-x-1 transition-all" />
                       </div>
                     </div>

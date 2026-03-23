@@ -1,5 +1,8 @@
 "use client";
 
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Brain,
@@ -11,8 +14,10 @@ import {
   ArrowRight,
   Mail,
   Twitter,
+  ChevronDown,
   Mouse,
 } from "lucide-react";
+import { projects } from "@/data/projectsData";
 
 export default function Home() {
   return (
@@ -415,50 +420,82 @@ export default function Home() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProjects.map((project, index) => (
+            {projects.slice(0, 3).map((project, index) => (
               <motion.div
-                key={project.title}
+                key={project.id}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-card rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-border"
+                className="bg-card rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-border group"
               >
-                <div className="h-48 bg-linear-to-br from-brand to-consciousness flex items-center justify-center">
-                  <Brain className="w-16 h-16 text-primary-foreground" />
+                <div className="h-48 bg-linear-to-br from-brand to-consciousness flex items-center justify-center relative overflow-hidden">
+                  <img
+                    src={project.images[0] || "/images/placeholder.jpg"}
+                    alt={project.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute bottom-4 left-4">
+                    <span className="text-xs font-semibold text-white bg-brand/80 backdrop-blur-sm px-3 py-1 rounded-full">
+                      {project.category}
+                    </span>
+                  </div>
                 </div>
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-sm font-semibold text-brand bg-brand-light px-3 py-1 rounded-full">
-                      {project.funder}
+                      {project.funding || "Research"}
                     </span>
-                    <span className="text-sm text-muted-foreground">
+                    <span
+                      className={`text-sm px-2 py-1 rounded-full ${
+                        project.status === "active"
+                          ? "bg-green-100 text-green-800"
+                          : project.status === "completed"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-yellow-100 text-yellow-800"
+                      }`}
+                    >
                       {project.status}
                     </span>
                   </div>
-                  <h3 className="text-xl font-bold text-foreground mb-2">
+                  <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-brand transition-colors">
                     {project.title}
                   </h3>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-muted-foreground mb-4 line-clamp-2">
                     {project.description}
                   </p>
                   <div className="flex items-center justify-between">
-                    <div className="flex -space-x-2">
-                      {[1, 2, 3].map((i) => (
-                        <div
-                          key={i}
-                          className="w-8 h-8 bg-muted rounded-full border-2 border-card"
-                        ></div>
-                      ))}
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Users className="w-4 h-4" />
+                      <span>{project.teamMembers?.length || 0} members</span>
                     </div>
-                    <button className="text-brand hover:text-brand-deep font-medium flex items-center space-x-1">
+                    <Link
+                      href={`/projects/${project.id}`}
+                      className="text-brand hover:text-brand-deep font-medium flex items-center space-x-1 group-hover:translate-x-1 transition-transform"
+                    >
                       <span>Learn More</span>
                       <ArrowRight className="w-4 h-4" />
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </motion.div>
             ))}
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-center mt-12"
+          >
+            <Link
+              href="/projects"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-brand to-cognition text-white px-8 py-3 rounded-full font-semibold hover:from-brand-deep hover:to-cognition-deep transition-all duration-300 shadow-lg hover:shadow-xl"
+            >
+              <span>View All Projects</span>
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </motion.div>
         </div>
       </section>
 
@@ -593,29 +630,5 @@ const researchThemes = [
     icon: Users,
     color: "bg-brand",
     projects: ["ABOVE Trial", "In-SYNCC Survey", "Multi-center Studies"],
-  },
-];
-
-const featuredProjects = [
-  {
-    title: "PREDICT ABI Project",
-    description:
-      "Evaluating functional neuroimaging to detect covert consciousness and improve outcome prediction accuracy",
-    funder: "AMOSO",
-    status: "Ongoing",
-  },
-  {
-    title: "TraNSIENCE Study",
-    description:
-      "Tracking brain connectivity in children at risk of delirium with over 70 enrolments completed",
-    funder: "Brain Canada",
-    status: "Active",
-  },
-  {
-    title: "ABOVE Trial",
-    description:
-      "Multicentre RCT advancing brain outcomes in pediatric patients with volatile anesthetic agents",
-    funder: "CIHR",
-    status: "Pilot Phase",
   },
 ];

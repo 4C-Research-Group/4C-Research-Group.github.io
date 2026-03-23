@@ -10,6 +10,7 @@ import {
   Linkedin,
   Github,
   ArrowRight,
+  ExternalLink,
 } from "lucide-react";
 
 export default function Footer() {
@@ -40,7 +41,11 @@ export default function Footer() {
               transition={{ duration: 0.6 }}
               className="flex items-center space-x-3"
             >
-              <img src="/logo.png" alt="4C Research Logo" className="w-8 h-8 rounded-lg" />
+              <img
+                src="/logo.png"
+                alt="4C Research Logo"
+                className="w-8 h-8 rounded-lg"
+              />
               <span className="text-xl font-bold bg-linear-to-r from-brand to-consciousness bg-clip-text text-transparent">
                 4C RESEARCH
               </span>
@@ -87,6 +92,15 @@ export default function Footer() {
               >
                 <Github className="h-5 w-5" />
               </a>
+              <a
+                href="https://www.researchgate.net/lab/4C-Foresee-Research-Group-Cognition-Consciousness-Critical-Care-Saptharishi-Lalgudi-Ganesan"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-brand transition-colors"
+                aria-label="ResearchGate"
+              >
+                <ExternalLink className="h-5 w-5" />
+              </a>
             </motion.div>
           </div>
 
@@ -127,7 +141,8 @@ export default function Footer() {
                 <MapPin className="h-5 w-5 text-brand mt-0.5 mr-3 flex-shrink-0" />
                 <span className="text-sm text-muted-foreground">
                   800 Commissioners Rd E<br />
-                  London, ON N6A 5W9<br />
+                  London, ON N6A 5W9
+                  <br />
                   Canada
                 </span>
               </div>
@@ -162,7 +177,8 @@ export default function Footer() {
               Stay Updated
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Subscribe to our newsletter for the latest research updates and news.
+              Subscribe to our newsletter for the latest research updates and
+              news.
             </p>
             <form className="space-y-2" onSubmit={(e) => e.preventDefault()}>
               <div>

@@ -16,6 +16,7 @@ import {
   Twitter,
   ChevronDown,
   Mouse,
+  ExternalLink,
 } from "lucide-react";
 import { projects } from "@/data/projectsData";
 

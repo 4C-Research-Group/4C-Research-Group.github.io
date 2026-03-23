@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ZoomIn, Download } from "lucide-react";
+import OptimizedGallery from "@/components/gallery";
 
 const labImages = [
   "20190209_222837.jpg",

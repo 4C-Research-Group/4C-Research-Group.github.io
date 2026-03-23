@@ -139,6 +139,7 @@ export default function ProjectsPage() {
                         alt={project.title}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="eager"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 

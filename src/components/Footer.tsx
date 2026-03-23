@@ -138,7 +138,7 @@ export default function Footer() {
             </h3>
             <address className="not-italic space-y-3">
               <div className="flex items-start">
-                <MapPin className="h-5 w-5 text-brand mt-0.5 mr-3 flex-shrink-0" />
+                <MapPin className="h-5 w-5 text-brand mt-0.5 mr-3 shrink-0" />
                 <span className="text-sm text-muted-foreground">
                   800 Commissioners Rd E<br />
                   London, ON N6A 5W9

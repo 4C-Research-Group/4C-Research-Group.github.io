@@ -80,7 +80,7 @@ export default function AboutPage() {
           aria-hidden
         />
 
-        <div className="container relative mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+        <div className="container relative mx-auto px-4 pb-20 sm:px-6">
           <motion.section
             className="py-16 sm:py-20"
             initial={{ opacity: 0 }}
@@ -97,7 +97,7 @@ export default function AboutPage() {
               <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-linear-to-r from-cognition via-consciousness to-care" />
             </div>
             <motion.div
-              className="grid gap-6 md:grid-cols-3 md:gap-8"
+              className="grid gap-6 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 md:gap-8"
               initial="hidden"
               animate="visible"
               variants={{
@@ -223,7 +223,7 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-border bg-card shadow-md">
+            <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border bg-card shadow-md">
               <div className="grid md:grid-cols-12">
                 <motion.div
                   className="relative aspect-4/5 md:col-span-5 md:min-h-[360px]"
@@ -346,7 +346,7 @@ export default function AboutPage() {
                 </p>
               </div>
 
-              <div className="grid gap-10 md:grid-cols-2 md:gap-12">
+              <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
                 <div>
                   <h3 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
                     Key Areas

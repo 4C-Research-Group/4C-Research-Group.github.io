@@ -84,14 +84,20 @@ function SectionHeader({
   );
 }
 
-function TitleSubtitleGrid({ items, accent }: { items: PiTitleSubtitle[]; accent: 0 | 1 | 2 }) {
+function TitleSubtitleGrid({
+  items,
+  accent,
+}: {
+  items: PiTitleSubtitle[];
+  accent: 0 | 1 | 2;
+}) {
   const titleColors = [
     "text-cognition",
     "text-care",
     "text-consciousness",
   ] as const;
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((item, idx) => (
         <div
           key={`${item.title}-${idx}`}
@@ -100,7 +106,9 @@ function TitleSubtitleGrid({ items, accent }: { items: PiTitleSubtitle[]; accent
           <div className={`font-semibold ${titleColors[accent]}`}>
             {item.title}
           </div>
-          <div className="mt-1 text-sm text-muted-foreground">{item.subtitle}</div>
+          <div className="mt-1 text-sm text-muted-foreground">
+            {item.subtitle}
+          </div>
           {item.note ? (
             <div className="mt-2 text-xs text-muted-foreground whitespace-pre-line">
               {item.note}
@@ -147,7 +155,7 @@ export default function AboutPiPage() {
           <div className="absolute bottom-8 left-1/3 h-52 w-52 rounded-full bg-care/12 blur-3xl" />
         </div>
 
-        <div className="container relative z-10 mx-auto max-w-4xl px-4 py-14 text-center sm:px-6 md:py-20">
+        <div className="container relative z-10 mx-auto px-4 py-14 text-center sm:px-6 md:py-20">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -225,7 +233,7 @@ export default function AboutPiPage() {
           aria-hidden
         />
 
-        <div className="container relative mx-auto max-w-5xl space-y-10 px-4 py-12 sm:px-6 sm:py-16">
+        <div className="container relative mx-auto space-y-10 px-4 py-12 sm:px-6 sm:py-16">
           <SectionShell>
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
               Overview
@@ -243,18 +251,33 @@ export default function AboutPiPage() {
           </SectionShell>
 
           <SectionShell>
-            <SectionHeader icon={Stethoscope} title="Current positions & leadership" variant={0} />
+            <SectionHeader
+              icon={Stethoscope}
+              title="Current positions & leadership"
+              variant={0}
+            />
             <TitleSubtitleGrid items={[...d.currentPositions]} accent={0} />
           </SectionShell>
 
           <SectionShell>
-            <SectionHeader icon={GraduationCap} title="Education & training" variant={1} />
+            <SectionHeader
+              icon={GraduationCap}
+              title="Education & training"
+              variant={1}
+            />
             <TitleSubtitleGrid items={[...d.education]} accent={1} />
           </SectionShell>
 
           <SectionShell>
-            <SectionHeader icon={Briefcase} title="Professional experience" variant={2} />
-            <TitleSubtitleGrid items={[...d.professionalExperience]} accent={2} />
+            <SectionHeader
+              icon={Briefcase}
+              title="Professional experience"
+              variant={2}
+            />
+            <TitleSubtitleGrid
+              items={[...d.professionalExperience]}
+              accent={2}
+            />
           </SectionShell>
 
           <SectionShell>
@@ -286,16 +309,26 @@ export default function AboutPiPage() {
           </SectionShell>
 
           <SectionShell>
-            <SectionHeader icon={HeartHandshake} title="Volunteering" variant={2} />
-            <div className="grid gap-4 sm:grid-cols-2">
+            <SectionHeader
+              icon={HeartHandshake}
+              title="Volunteering"
+              variant={2}
+            />
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {d.volunteering.map((item: PiVolunteer, idx) => (
                 <div
                   key={`${item.role}-${idx}`}
                   className="flex h-full flex-col rounded-2xl border border-border/60 bg-muted/25 p-4"
                 >
-                  <div className="font-semibold text-cognition">{item.role}</div>
-                  <div className="text-sm text-muted-foreground">{item.organization}</div>
-                  <div className="mt-1 text-xs text-muted-foreground">{item.period}</div>
+                  <div className="font-semibold text-cognition">
+                    {item.role}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {item.organization}
+                  </div>
+                  <div className="mt-1 text-xs text-muted-foreground">
+                    {item.period}
+                  </div>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                     {item.description}
                   </p>
@@ -312,9 +345,15 @@ export default function AboutPiPage() {
                   key={`${item.name}-${idx}`}
                   className="rounded-2xl border border-border/60 bg-muted/25 p-5 sm:p-6"
                 >
-                  <div className="font-semibold text-foreground">{item.name}</div>
-                  <div className="text-sm text-muted-foreground">{item.role}</div>
-                  <div className="mt-1 text-xs text-muted-foreground">{item.context}</div>
+                  <div className="font-semibold text-foreground">
+                    {item.name}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {item.role}
+                  </div>
+                  <div className="mt-1 text-xs text-muted-foreground">
+                    {item.context}
+                  </div>
                   <blockquote className="mt-4 border-l-2 border-brand/40 pl-4 text-base italic leading-relaxed text-muted-foreground">
                     &ldquo;{item.quote}&rdquo;
                   </blockquote>
@@ -324,23 +363,31 @@ export default function AboutPiPage() {
           </SectionShell>
 
           <SectionShell>
-            <SectionHeader icon={Star} title="Licenses & certifications" variant={1} />
-            <div className="grid gap-4 sm:grid-cols-2">
+            <SectionHeader
+              icon={Star}
+              title="Licenses & certifications"
+              variant={1}
+            />
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {d.licenses.map((item: PiLicense, idx) => (
                 <div
                   key={`${item.title}-${idx}`}
                   className="flex h-full flex-col rounded-2xl border border-border/60 bg-muted/25 p-4"
                 >
                   <div className="font-semibold text-care">{item.title}</div>
-                  <div className="text-sm text-muted-foreground">{item.org}</div>
-                  {(item.issued || item.expires) ? (
+                  <div className="text-sm text-muted-foreground">
+                    {item.org}
+                  </div>
+                  {item.issued || item.expires ? (
                     <div className="mt-2 text-xs text-muted-foreground">
                       {item.issued}
                       {item.expires ? ` · ${item.expires}` : ""}
                     </div>
                   ) : null}
                   {item.credential ? (
-                    <div className="mt-1 text-xs text-muted-foreground">{item.credential}</div>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      {item.credential}
+                    </div>
                   ) : null}
                 </div>
               ))}
@@ -349,16 +396,22 @@ export default function AboutPiPage() {
 
           <SectionShell>
             <SectionHeader icon={Building2} title="Organizations" variant={2} />
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {d.organizations.map((item: PiOrganization, idx) => (
                 <div
                   key={`${item.name}-${idx}`}
                   className="flex h-full flex-col rounded-2xl border border-border/60 bg-muted/25 p-4"
                 >
-                  <div className="font-semibold text-consciousness">{item.name}</div>
-                  <div className="text-sm text-muted-foreground">{item.role}</div>
+                  <div className="font-semibold text-consciousness">
+                    {item.name}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {item.role}
+                  </div>
                   {item.period ? (
-                    <div className="mt-2 text-xs text-muted-foreground">{item.period}</div>
+                    <div className="mt-2 text-xs text-muted-foreground">
+                      {item.period}
+                    </div>
                   ) : null}
                 </div>
               ))}
@@ -366,19 +419,33 @@ export default function AboutPiPage() {
           </SectionShell>
 
           <SectionShell>
-            <SectionHeader icon={BookOpen} title="Selected publications" variant={0} />
-            <div className="grid gap-4 sm:grid-cols-2">
-              {d.publicationHighlights.map((item: PiPublicationHighlight, idx) => (
-                <div
-                  key={`${item.title}-${idx}`}
-                  className="flex h-full flex-col rounded-2xl border border-border/60 bg-muted/25 p-4"
-                >
-                  <div className="font-semibold text-cognition">{item.title}</div>
-                  <div className="text-sm text-muted-foreground">{item.journal}</div>
-                  <div className="mt-1 text-xs text-muted-foreground">{item.date}</div>
-                  <p className="mt-2 text-xs text-muted-foreground">{item.summary}</p>
-                </div>
-              ))}
+            <SectionHeader
+              icon={BookOpen}
+              title="Selected publications"
+              variant={0}
+            />
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {d.publicationHighlights.map(
+                (item: PiPublicationHighlight, idx) => (
+                  <div
+                    key={`${item.title}-${idx}`}
+                    className="flex h-full flex-col rounded-2xl border border-border/60 bg-muted/25 p-4"
+                  >
+                    <div className="font-semibold text-cognition">
+                      {item.title}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {item.journal}
+                    </div>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      {item.date}
+                    </div>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {item.summary}
+                    </p>
+                  </div>
+                ),
+              )}
             </div>
             <div className="mt-8 flex justify-center">
               <Link

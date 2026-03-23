@@ -121,7 +121,7 @@ export default function TeamPage() {
 
         {/* PI — gradient frame + split layout */}
         <section className="relative px-4 pb-4 pt-10 sm:px-6 sm:pb-6 sm:pt-12">
-          <div className="container mx-auto max-w-6xl">
+          <div className="container mx-auto max-w-7xl">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -249,7 +249,7 @@ export default function TeamPage() {
 
         {/* Team grid */}
         <section className="relative border-t border-border/50 bg-linear-to-b from-muted/40 via-background to-background px-4 py-16 sm:px-6 sm:py-24">
-          <div className="container mx-auto max-w-6xl">
+          <div className="container mx-auto">
             <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
@@ -332,7 +332,7 @@ export default function TeamPage() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8"
+                className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-8"
               >
                 {filtered.map((member, index) => (
                   <MemberCard key={member.slug} member={member} index={index} />
@@ -367,7 +367,7 @@ export default function TeamPage() {
                 </p>
               </div>
 
-              <motion.ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+              <motion.ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-8">
                 {teamAlumni.map((member, index) => (
                   <motion.li
                     key={member.slug}

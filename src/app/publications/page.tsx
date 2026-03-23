@@ -74,7 +74,7 @@ export default function PublicationsPage() {
           pub.title.toLowerCase().includes(term) ||
           (pub.journal?.toLowerCase().includes(term) ?? false) ||
           (pub.doi?.toLowerCase().includes(term) ?? false) ||
-          (pub.type?.toLowerCase().includes(term) ?? false)
+          (pub.type?.toLowerCase().includes(term) ?? false),
       );
     }
     return pubs;
@@ -251,7 +251,7 @@ export default function PublicationsPage() {
                           ))}
                         </div>
                       </section>
-                    )
+                    ),
                   )}
                 </div>
               ) : (

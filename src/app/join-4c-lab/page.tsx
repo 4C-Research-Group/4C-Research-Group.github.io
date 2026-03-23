@@ -2,13 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import {
-  Mail,
-  GraduationCap,
-  Users,
-  Lightbulb,
-  School,
-} from "lucide-react";
+import { Mail, GraduationCap, Users, Lightbulb, School } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import { joinTestimonials } from "@/data/join-testimonials";
 
@@ -42,17 +36,23 @@ export default function Join4CLabPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHero title={joinContent.hero_title} subtitle={joinContent.hero_description}>
+      <PageHero
+        title={joinContent.hero_title}
+        subtitle={joinContent.hero_description}
+      >
         <div className="flex items-center justify-center gap-2 text-lg md:text-xl font-semibold text-brand">
           <Mail className="w-6 h-6 shrink-0" aria-hidden />
-          <a href={MAILTO} className="hover:text-brand-deep transition-colors break-all">
+          <a
+            href={MAILTO}
+            className="hover:text-brand-deep transition-colors break-all"
+          >
             {CONTACT_EMAIL}
           </a>
         </div>
       </PageHero>
 
       <section className="py-16">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -71,7 +71,7 @@ export default function Join4CLabPage() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.05 }}
             viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16"
+            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8 mb-16"
           >
             <div className="bg-card rounded-2xl border border-border shadow-lg p-8 text-center">
               <div className="bg-cognition/15 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -87,7 +87,10 @@ export default function Join4CLabPage() {
 
             <div className="bg-card rounded-2xl border border-border shadow-lg p-8 text-center">
               <div className="bg-consciousness/15 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Users className="w-8 h-8 text-consciousness" strokeWidth={1.75} />
+                <Users
+                  className="w-8 h-8 text-consciousness"
+                  strokeWidth={1.75}
+                />
               </div>
               <h3 className="text-xl font-bold text-foreground mb-4">
                 {joinContent.card2_title}
@@ -184,7 +187,7 @@ export default function Join4CLabPage() {
             </div>
 
             {testimonials.length > 0 ? (
-              <div className="space-y-8 max-w-5xl mx-auto">
+              <div className="space-y-8 w-full">
                 {testimonials.map((testimonial) => (
                   <motion.div
                     key={testimonial.id}

@@ -29,7 +29,10 @@ export default function Research() {
                 key={theme.title}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: Math.min(themeIndex * 0.05, 0.2) }}
+                transition={{
+                  duration: 0.45,
+                  delay: Math.min(themeIndex * 0.05, 0.2),
+                }}
                 viewport={{ once: true }}
                 className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden"
               >
@@ -80,7 +83,10 @@ export default function Research() {
                             </h4>
                             <ul className="space-y-1">
                               {project.publications.map(
-                                (pub: { title: string; link: string }, i: number) => (
+                                (
+                                  pub: { title: string; link: string },
+                                  i: number,
+                                ) => (
                                   <li
                                     key={i}
                                     className="flex items-start text-sm text-muted-foreground"
@@ -166,7 +172,10 @@ export default function Research() {
                 key={collab.title}
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.15) }}
+                transition={{
+                  duration: 0.4,
+                  delay: Math.min(index * 0.05, 0.15),
+                }}
                 viewport={{ once: true }}
                 className="rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-brand/20 hover:shadow-md"
               >

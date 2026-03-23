@@ -16,6 +16,7 @@ import {
 import PageHero from "@/components/PageHero";
 import {
   teamMembers,
+  teamAlumni,
   type TeamMember,
   type TeamMemberCategory,
 } from "@/data/team";
@@ -41,7 +42,8 @@ function TeamPhoto({
 }) {
   const [failed, setFailed] = useState(false);
 
-  if (failed) {
+  // Show initials if no photo or if image failed to load
+  if (!src || failed) {
     return (
       <div
         className={`absolute inset-0 flex items-center justify-center bg-linear-to-br from-brand/20 via-consciousness/15 to-care/20 ${className ?? ""}`}
@@ -343,6 +345,85 @@ export default function TeamPage() {
                 No one in this filter yet.
               </p>
             ) : null}
+
+            {/* Alumni Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45 }}
+              className="mt-20 border-t border-border/60 pt-16"
+            >
+              <div className="mx-auto mb-12 max-w-2xl text-center">
+                <span className="text-xs font-semibold uppercase tracking-[0.25em] text-brand">
+                  Alumni
+                </span>
+                <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  Lab Alumni
+                </h2>
+                <div className="mx-auto mt-4 h-1 w-20 rounded-full bg-linear-to-r from-cognition via-consciousness to-care" />
+                <p className="mt-4 text-muted-foreground">
+                  Former team members who contributed to our research journey
+                </p>
+              </div>
+
+              <motion.ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+                {teamAlumni.map((member, index) => (
+                  <motion.li
+                    key={member.slug}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 0.4,
+                      delay: Math.min(index * 0.03, 0.2),
+                    }}
+                    className="group relative list-none"
+                  >
+                    <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/50 bg-muted/30 shadow-sm ring-1 ring-transparent transition duration-300 hover:-translate-y-1 hover:border-brand/15 hover:shadow-md hover:shadow-brand/[0.05] hover:ring-brand/5">
+                      <div className="relative aspect-[3/4] overflow-hidden bg-muted/50">
+                        <TeamPhoto
+                          src={`/team/${member.photoFile}`}
+                          alt={member.name}
+                          initials={member.initials}
+                          className="object-cover transition duration-700 ease-out group-hover:scale-[1.02]"
+                        />
+                        <div
+                          className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/40 via-black/10 to-transparent opacity-60"
+                          aria-hidden
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 p-4 pt-8">
+                          <h3 className="text-lg font-bold tracking-tight text-white drop-shadow-lg">
+                            {member.name}
+                          </h3>
+                          <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-white/90">
+                            {member.role}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex flex-1 flex-col p-4 pt-3">
+                        <div className="mt-auto flex gap-2 rounded-xl border border-border/40 bg-muted/20 p-3 transition-colors group-hover:border-brand/10 group-hover:bg-muted/30">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-background shadow-sm">
+                            <Sparkles
+                              className="h-3.5 w-3.5 text-muted-foreground"
+                              strokeWidth={2}
+                            />
+                          </div>
+                          <div>
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                              Superpower
+                            </p>
+                            <p className="mt-1 text-xs leading-snug text-muted-foreground/90">
+                              {member.superpower}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+                  </motion.li>
+                ))}
+              </motion.ul>
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 16 }}

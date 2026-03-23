@@ -24,21 +24,6 @@ export default function Collaborate() {
       {/* Collaboration Opportunities */}
       <section className="py-20">
         <div className="container mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl font-bold text-foreground mb-4">
-              Collaboration Opportunities
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              We welcome partnerships with researchers, clinicians, and industry
-              partners
-            </p>
-          </motion.div>
-
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {collaborationOpportunities.map((opportunity, index) => (
               <motion.div

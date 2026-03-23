@@ -24,64 +24,60 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-brand-light">
       {/* Hero Section */}
-      <section className="relative flex items-center overflow-hidden">
-        {/* Research Background Image */}
+      <section className="relative flex items-center overflow-hidden min-h-screen">
+        {/* Pexels Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage:
-              "url('https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg')",
+              "url('https://images.pexels.com/photos/5211800/pexels-photo-5211800.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop')",
           }}
         ></div>
 
         {/* Gradient Overlay for readability */}
-        <div className="absolute inset-0 bg-linear-to-br from-brand/80 via-cognition/70 to-consciousness/80"></div>
-        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 bg-linear-to-br from-brand/85 via-cognition/75 to-consciousness/85"></div>
+        <div className="absolute inset-0 bg-black/15"></div>
 
-        {/* Floating Elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-brand/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-consciousness/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-
-        {/* Grid Pattern Overlay */}
-        <div className="absolute inset-0 bg-grid-white/10 bg-size-[50px_50px]"></div>
-
-        {/* Content Container with z-index */}
+        {/* Content Container */}
         <div className="container mx-auto px-6 py-20 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="grid md:grid-cols-5 gap-16 items-center relative z-10"
-          >
+          <div className="grid md:grid-cols-5 gap-16 items-center max-w-6xl mx-auto">
             {/* Left Column - Content */}
-            <div className="md:col-span-3 text-white relative z-10">
-              <h1 className="text-5xl font-bold mb-6">4C Research Group</h1>
-              <p className="text-2xl text-white/80 mb-8">
+            <div className="md:col-span-3 text-white">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                4C Research Group
+              </h1>
+              <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
                 Advancing Research in Cognition, Consciousness & Critical Care
               </p>
 
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/20">
-                <h2 className="text-xl font-semibold mb-4">Our Mission</h2>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-xl border border-white/20">
+                <h2 className="text-lg md:text-xl font-semibold mb-4">
+                  Our Mission
+                </h2>
                 <p className="text-white/80 leading-relaxed mb-6">
-                  Exploring the frontiers of neuroscience and critical care
-                  through innovative research and collaboration.
+                  Exploring frontiers of neuroscience and critical care through
+                  innovative research and collaboration.
                 </p>
 
-                <div className="grid md:grid-cols-2 gap-6 text-left">
+                <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                   <div className="flex items-start space-x-3">
-                    <Activity className="w-6 h-6 text-white mt-1 shrink-0" />
+                    <Activity className="w-5 h-5 md:w-6 md:h-6 text-white mt-1 shrink-0" />
                     <div>
-                      <h3 className="font-semibold">Real-time Detection</h3>
-                      <p className="text-white/70">
+                      <h3 className="font-semibold text-sm md:text-base">
+                        Real-time Detection
+                      </h3>
+                      <p className="text-white/70 text-sm md:text-base">
                         Understanding what's happening in the brain right now
                       </p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
-                    <Eye className="w-6 h-6 text-white mt-1 shrink-0" />
+                    <Eye className="w-5 h-5 md:w-6 md:h-6 text-white mt-1 shrink-0" />
                     <div>
-                      <h3 className="font-semibold">Future Prediction</h3>
-                      <p className="text-white/70">
+                      <h3 className="font-semibold text-sm md:text-base">
+                        Future Prediction
+                      </h3>
+                      <p className="text-white/70 text-sm md:text-base">
                         Forecasting brain function and patient outcomes
                       </p>
                     </div>
@@ -89,56 +85,43 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="mt-8">
-                <p className="text-lg text-white/80 mb-4">
+              <div className="mt-6 md:mt-8">
+                <p className="text-base md:text-lg text-white/80 mb-4">
                   We invite collaborators and industry partners interested in
                   advancing disorders of cognition and consciousness research in
                   critical care.
                 </p>
-                <button className="bg-white text-brand px-8 py-3 rounded-full font-semibold hover:bg-white/90 transition-colors inline-flex items-center space-x-2">
-                  <span>Collaborate With Us</span>
-                  <ArrowRight className="w-5 h-5" />
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center sm:justify-start">
+                  <a
+                    href="/collaborate"
+                    className="bg-white text-brand px-5 md:px-6 py-2.5 md:py-3 rounded-full font-semibold hover:bg-white/90 transition-all duration-200 inline-flex items-center space-x-2"
+                  >
+                    <span>Collaborate With Us</span>
+                    <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
+                  </a>
+                  <a
+                    href="/gallery"
+                    className="bg-brand/20 backdrop-blur-sm text-white border border-white/30 px-5 md:px-6 py-2.5 md:py-3 rounded-full font-semibold hover:bg-brand/30 transition-all duration-200 inline-flex items-center space-x-2"
+                  >
+                    <span>View Gallery</span>
+                    <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
+                  </a>
+                </div>
               </div>
             </div>
 
             {/* Right Column - Logo */}
-            <div className="md:col-span-2 flex justify-center relative z-10">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="relative z-10"
-              >
+            <div className="md:col-span-2 flex justify-center">
+              <div className="relative">
                 <img
                   src="/logo.png"
                   alt="4C Research Lab Logo"
-                  className="w-96 h-96 lg:w-[420px] lg:h-[420px] rounded-2xl shadow-2xl bg-white/90"
+                  className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-2xl shadow-2xl bg-white/90"
                 />
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
-
-        {/* Scroll to Explore Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 1.5 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20"
-        >
-          <a
-            href="#mission"
-            className="group flex flex-col items-center text-white/80 hover:text-white transition-all duration-300"
-          >
-            <span className="text-sm font-medium mb-2 uppercase tracking-wider group-hover:translate-y-[-2px] transition-transform">
-              Scroll to explore
-            </span>
-            <div className="group-hover:scale-110 transition-all duration-300">
-              <Mouse className="w-5 h-5 animate-bounce text-white/80 group-hover:text-white" />
-            </div>
-          </a>
-        </motion.div>
       </section>
 
       {/* Our Mission */}

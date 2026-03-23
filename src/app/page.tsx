@@ -19,7 +19,6 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { projects } from "@/data/projectsData";
-import OptimizedGallery from "@/components/gallery";
 
 export default function Home() {
   return (
@@ -27,13 +26,18 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative flex items-center overflow-hidden">
         {/* Research Background Image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage:
-              "url('https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg')",
-          }}
-        ></div>
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg"
+            alt="Research background"
+            fill
+            className="object-cover"
+            priority={true}
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A8A"
+            sizes="100vw"
+          />
+        </div>
 
         {/* Gradient Overlay for readability */}
         <div className="absolute inset-0 bg-linear-to-br from-brand/80 via-cognition/70 to-consciousness/80"></div>
@@ -153,7 +157,6 @@ export default function Home() {
           </a>
         </motion.div>
       </section>
-
       {/* Our Mission */}
       <section
         id="mission"
@@ -227,9 +230,96 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-
       {/* Ultra Modern Gallery Preview */}
-      <OptimizedGallery />
+      <section className="py-24 bg-linear-to-b from-white via-slate-50 to-white">
+        <div className="container mx-auto px-6">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16"
+          >
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
+                Gallery
+              </h2>
+              <p className="text-muted-foreground mt-3 text-lg max-w-xl">
+                Moments from our lab — research, collaboration, and
+                breakthroughs.
+              </p>
+            </div>
+
+            <Link
+              href="/gallery"
+              className="group inline-flex items-center gap-2 text-sm font-semibold text-brand"
+            >
+              View all
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </motion.div>
+
+          {/* Bento Grid Layout */}
+          <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[180px] gap-5">
+            {[
+              { img: "20240423_095244.jpg", span: "col-span-2 row-span-2" },
+              { img: "20230214_194648.jpg", span: "" },
+              { img: "20230613_093841.jpg", span: "" },
+              { img: "20231110_125703.jpg", span: "row-span-2" },
+              { img: "20240408_120719.jpg", span: "" },
+              { img: "20250520_184141.jpg", span: "col-span-2" },
+              { img: "IMG-20240829-WA0035.jpg", span: "" },
+            ].map((item, index) => (
+              <motion.div
+                key={item.img}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+                className={`relative group overflow-hidden rounded-3xl ${item.span}`}
+              >
+                {/* Image */}
+                <Image
+                  src={`/images/lab-images/${item.img}`}
+                  alt="Lab preview"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+
+                {/* Glass hover overlay */}
+                <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 backdrop-blur-[2px] transition-all duration-500"></div>
+
+                {/* Subtle gradient bottom */}
+                <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent opacity-60"></div>
+
+                {/* Floating label */}
+                <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <div className="bg-white/80 backdrop-blur-md text-xs px-3 py-1 rounded-full shadow">
+                    Lab Moment
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Bottom CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-16 text-center"
+          >
+            <Link
+              href="/gallery"
+              className="inline-flex items-center gap-3 bg-white border border-border px-8 py-4 rounded-full shadow-sm hover:shadow-md transition-all duration-300 group"
+            >
+              <span className="font-semibold text-foreground">
+                Explore Full Gallery
+              </span>
+              <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Impact Statistics */}
       <section className="py-16 bg-linear-to-r from-brand via-cognition to-consciousness text-white">
@@ -279,7 +369,6 @@ export default function Home() {
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
       </section>
-
       {/* Research Themes */}
       <section className="py-20 bg-card">
         <div className="container mx-auto px-6">
@@ -334,7 +423,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Latest Research News */}
       <section className="py-20 bg-linear-to-br from-slate-50 to-muted/30">
         <div className="container mx-auto px-6">
@@ -418,7 +506,6 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-
       {/* Featured Projects */}
       <section className="py-20 bg-linear-to-br from-brand-light to-muted">
         <div className="container mx-auto px-6">
@@ -516,7 +603,6 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-
       {/* Join Our Research Community */}
       <section className="py-20 bg-linear-to-br from-brand via-cognition to-consciousness text-white">
         <div className="container mx-auto px-6">
@@ -560,7 +646,6 @@ export default function Home() {
           <div className="absolute bottom-10 right-10 w-40 h-40 bg-white/5 rounded-full blur-2xl animate-pulse delay-1000"></div>
         </div>
       </section>
-
       {/* Stay Connected - Social Media */}
       <section className="py-16 bg-linear-to-b from-muted/50 to-background">
         <div className="container mx-auto px-6">

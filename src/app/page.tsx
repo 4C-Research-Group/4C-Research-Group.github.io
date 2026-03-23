@@ -25,12 +25,12 @@ export default function Home() {
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-brand-light">
       {/* Hero Section */}
       <section className="relative flex items-center overflow-hidden">
-        {/* Pexels Background Image */}
+        {/* Research Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage:
-              "url('https://images.pexels.com/photos/17483869/pexels-photo-17483869.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop')",
+              "url('https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg')",
           }}
         ></div>
 
@@ -190,7 +190,7 @@ export default function Home() {
             >
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <img
-                  src="https://images.pexels.com/photos/3845988/pexels-photo-3845988.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1280&fit=crop"
+                  src="/images/lab.jpg"
                   alt="Medical research team collaborating"
                   className="w-full h-96 object-cover"
                 />

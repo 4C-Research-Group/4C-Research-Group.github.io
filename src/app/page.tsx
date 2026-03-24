@@ -278,7 +278,7 @@ export default function Home() {
                 key={item.img}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
+                transition={{ duration: 0.3, delay: index * 0.02 }}
                 className={`relative group overflow-hidden rounded-3xl ${item.span}`}
               >
                 {/* Image */}
@@ -286,7 +286,7 @@ export default function Home() {
                   src={`/images/lab-images/${item.img}`}
                   alt="Lab preview"
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
                   priority={false}
                   placeholder="blur"
@@ -295,13 +295,13 @@ export default function Home() {
                 />
 
                 {/* Glass hover overlay */}
-                <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 backdrop-blur-[2px] transition-all duration-500"></div>
+                <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-all duration-300"></div>
 
                 {/* Subtle gradient bottom */}
                 <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent opacity-60"></div>
 
                 {/* Floating label */}
-                <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   <div className="bg-white/80 backdrop-blur-md text-xs px-3 py-1 rounded-full shadow">
                     Lab Moment
                   </div>

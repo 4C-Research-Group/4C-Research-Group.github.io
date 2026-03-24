@@ -70,7 +70,7 @@ export default function KnowledgeMobilizationHubPage() {
           aria-hidden
         />
 
-        <div className="container relative mx-auto px-4 py-12 sm:px-6 sm:py-16">
+        <div className="container relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}

@@ -208,7 +208,7 @@ export default function ModuleRunner({ module }: { module: KMModule }) {
   return (
     <div className="min-h-screen bg-background">
       <div className="border-b border-border/60 bg-linear-to-br from-brand-light/60 via-background to-consciousness/10">
-        <div className="container mx-auto px-4 py-10 sm:px-6 sm:py-12">
+        <div className="container mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
           <Link
             href="/knowledge-mobilization/"
             className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-brand transition hover:gap-2.5"
@@ -232,7 +232,7 @@ export default function ModuleRunner({ module }: { module: KMModule }) {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-10 sm:px-6 sm:py-14">
+      <div className="container mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
         <section aria-labelledby="topics-heading" className="space-y-4">
           <h2
             id="topics-heading"

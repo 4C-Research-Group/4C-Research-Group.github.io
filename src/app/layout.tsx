@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "4C Research Group - Covert Consciousness and Critical Care Research",
+  title:
+    "4C Research Group - Advancing Research in Cognition, Consciousness & Critical Care",
   description:
     "Advancing the detection and prediction of brain pathologies in critically ill patients through cutting-edge neuroimaging and machine learning technologies.",
   icons: {

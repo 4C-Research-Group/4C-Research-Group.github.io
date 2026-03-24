@@ -160,15 +160,16 @@ export default function AboutPiPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="relative mx-auto mb-6 h-44 w-44 overflow-hidden rounded-3xl border-4 border-card shadow-xl shadow-brand/10 sm:h-52 sm:w-52"
+            className="relative mx-auto mb-6 h-36 w-36 overflow-hidden rounded-3xl border-4 border-card shadow-xl shadow-brand/10 sm:h-44 sm:w-44"
           >
             <Image
               src={d.imageSrc}
               alt={d.name}
               fill
               className="object-cover"
+              style={{ objectPosition: "center 30%" }}
               priority
-              sizes="(max-width: 640px) 176px, 208px"
+              sizes="(max-width: 640px) 144px, 176px"
             />
           </motion.div>
 

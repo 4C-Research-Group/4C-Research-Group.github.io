@@ -68,6 +68,7 @@ function TeamPhoto({
       fill
       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 320px"
       className={className}
+      style={{ objectPosition: "center 30%" }}
       onError={() => setFailed(true)}
     />
   );
@@ -153,30 +154,8 @@ export default function TeamPage() {
                 aria-hidden
               />
               <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-card/95 shadow-2xl shadow-brand/10 backdrop-blur-sm">
-                <div className="grid lg:grid-cols-12">
-                  <div className="relative aspect-[4/5] min-h-[300px] lg:col-span-5 lg:min-h-[440px]">
-                    <TeamPhoto
-                      src="/team/team-1.jpg"
-                      alt="Dr. Rishi Ganesan"
-                      initials="RG"
-                      className="object-cover object-[center_20%]"
-                      initialsClassName="text-5xl font-bold tracking-tight text-brand md:text-6xl"
-                    />
-                    <div
-                      className="absolute inset-0 bg-linear-to-t from-card via-transparent to-transparent lg:from-card/80"
-                      aria-hidden
-                    />
-                    <div className="absolute bottom-5 left-5 right-5 flex flex-wrap gap-2 lg:hidden">
-                      <span className="rounded-full bg-background/90 px-3 py-1 text-xs font-medium text-foreground shadow-sm backdrop-blur">
-                        Paediatric critical care
-                      </span>
-                      <span className="rounded-full bg-background/90 px-3 py-1 text-xs font-medium text-foreground shadow-sm backdrop-blur">
-                        Neurocritical care
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col justify-center p-8 lg:col-span-7 lg:p-12 xl:p-14">
+                <div className="grid lg:grid-cols-12 gap-8 items-center">
+                  <div className="flex flex-col justify-center p-8 lg:col-span-10 lg:p-10 xl:p-12 order-2 lg:order-1">
                     <div className="mb-6 hidden flex-wrap gap-2 lg:flex">
                       <span className="rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-semibold text-brand">
                         Paediatric critical care
@@ -198,21 +177,20 @@ export default function TeamPage() {
 
                     <p className="mt-6 text-sm leading-relaxed text-muted-foreground sm:text-base">
                       Dr. Rishi Ganesan is a paediatric critical care
-                      physician-researcher at the Children&apos;s Hospital -
-                      LHSC, and an Assistant Professor in the Departments of
-                      Paediatrics and Clinical Neurological Sciences at the
-                      Schulich School of Medicine & Dentistry, Western
-                      University, London (ON), Canada. His training spans
-                      paediatrics, critical care, neurology, and neurocritical
-                      care. He is passionate about improving diagnosis and
-                      treatment of altered cognition and consciousness in
-                      critically ill patients. His program develops and
-                      validates electrical and functional neuroimaging tools to
-                      predict and detect pathological brain states—empowering
-                      bedside teams to act earlier and prognosticate more
-                      objectively in children with acquired brain injury,
-                      through observational work, trials, and knowledge
-                      translation.
+                      physician-researcher at Children&apos;s Hospital - LHSC,
+                      and an Assistant Professor in Departments of Paediatrics
+                      and Clinical Neurological Sciences at the Schulich School
+                      of Medicine & Dentistry, Western University, London (ON),
+                      Canada. His training spans paediatrics, critical care,
+                      neurology, and neurocritical care. He is passionate about
+                      improving diagnosis and treatment of altered cognition and
+                      consciousness in critically ill patients. His program
+                      develops and validates electrical and functional
+                      neuroimaging tools to predict and detect pathological
+                      brain states—empowering bedside teams to act earlier and
+                      prognosticate more objectively in children with acquired
+                      brain injury, through observational work, trials, and
+                      knowledge translation.
                     </p>
 
                     <div className="mt-8 flex flex-wrap gap-3">
@@ -240,6 +218,16 @@ export default function TeamPage() {
                         <ArrowRight className="h-4 w-4" />
                       </Link>
                     </div>
+                  </div>
+
+                  <div className="relative aspect-[4/5] w-32 min-h-[120px] lg:col-span-2 lg:w-40 rounded-2xl overflow-hidden border-4 border-background shadow-lg mx-auto lg:mx-0 order-1 lg:order-2">
+                    <TeamPhoto
+                      src="/team/team-1.jpg"
+                      alt="Dr. Rishi Ganesan"
+                      initials="RG"
+                      className="object-cover"
+                      initialsClassName="text-5xl font-bold tracking-tight text-brand md:text-6xl"
+                    />
                   </div>
                 </div>
               </div>

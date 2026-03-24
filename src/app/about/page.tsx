@@ -208,7 +208,7 @@ export default function AboutPage() {
             </div>
           </motion.section>
 
-          <section className="rounded-3xl border border-border/80 bg-linear-to-br from-muted/40 via-card to-background p-6 shadow-lg shadow-brand/5 sm:p-10 md:p-12">
+          <section className="py-16 sm:py-20">
             <div className="mx-auto mb-10 max-w-2xl text-center md:mb-12">
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
                 Leadership
@@ -223,103 +223,151 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border bg-card shadow-md">
-              <div className="grid md:grid-cols-12">
-                <motion.div
-                  className="relative aspect-4/5 md:col-span-5 md:min-h-[360px]"
-                  initial={{ opacity: 0, x: -12 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.45 }}
-                >
-                  <Image
-                    src="/team/team-1.jpg"
-                    alt="Dr. Rishi Ganesan, Principal Investigator"
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 40vw"
-                  />
-                </motion.div>
-                <motion.div
-                  className="flex flex-col justify-center p-8 md:col-span-7 md:p-10 lg:p-12"
-                  initial={{ opacity: 0, x: 12 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.45, delay: 0.05 }}
-                >
-                  <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                    Dr. Rishi Ganesan
-                  </h3>
-                  <p className="mt-2 text-sm font-medium text-brand">
-                    Head of the 4C Research Group
-                  </p>
-                  <p className="mt-5 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                    Dr. Rishi Ganesan is a paediatric intensive care
-                    physician-researcher with additional expertise in paediatric
-                    neurocritical care. He is a physician in the Division of
-                    Paediatric Critical Care Medicine at the Children&apos;s
-                    Hospital - London Health Sciences Centre, Assistant
-                    Professor in the Department of Paediatrics at the Schulich
-                    School of Medicine (Western University) and an Associate
-                    Scientist at the Lawson Health Research Institute.
-                  </p>
-                  <div className="mt-6 space-y-4 border-t border-border pt-6">
-                    <div>
-                      <h4 className="text-sm font-bold uppercase tracking-wider text-foreground">
-                        Education &amp; Training
-                      </h4>
-                      <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-muted-foreground">
-                        <li>
-                          MD and specialist training in paediatric critical care
-                        </li>
-                        <li>
-                          Advanced expertise in paediatric neurocritical care
-                        </li>
-                        <li>
-                          Faculty, Schulich School of Medicine &amp; Dentistry,
-                          Western University
-                        </li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold uppercase tracking-wider text-foreground">
-                        Research Focus
-                      </h4>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                        Functional neuroimaging, quantitative EEG, covert
-                        consciousness detection, and outcome prediction in
-                        critically ill children — translating bedside monitoring
-                        into tools that improve survival and long-term function.
+            <div className="mx-auto max-w-4xl">
+              <motion.div
+                className="group relative overflow-hidden rounded-3xl border border-border/80 bg-gradient-to-br from-card via-background to-muted/30 shadow-lg shadow-brand/5 transition-all duration-500 hover:shadow-xl hover:shadow-brand/10"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-cognition/5 via-transparent to-care/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                <div className="relative p-8 md:p-12">
+                  <div className="flex flex-col items-center space-y-6 md:flex-row md:items-start md:space-x-8 md:space-y-0">
+                    <motion.div
+                      className="relative shrink-0"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 0.1 }}
+                    >
+                      <div className="relative aspect-[4/5] w-32 overflow-hidden rounded-2xl border-4 border-background shadow-lg md:w-40">
+                        <Image
+                          src="/team/team-1.jpg"
+                          alt="Dr. Rishi Ganesan, Principal Investigator"
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 128px, 160px"
+                          priority
+                        />
+                      </div>
+                      <div className="absolute -bottom-2 -right-2 rounded-full bg-gradient-to-r from-cognition to-care p-2 shadow-lg">
+                        <div className="h-3 w-3 rounded-full bg-white" />
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      className="flex-1 text-center md:text-left"
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 0.2 }}
+                    >
+                      <div className="space-y-3">
+                        <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                          Dr. Rishi Ganesan
+                        </h3>
+                        <p className="text-sm font-medium text-brand">
+                          Head of the 4C Research Group
+                        </p>
+                        <div className="mx-auto h-px w-16 bg-gradient-to-r from-cognition via-care to-consciousness md:mx-0" />
+                      </div>
+
+                      <p className="mt-6 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                        Dr. Rishi Ganesan is a paediatric intensive care
+                        physician-researcher with additional expertise in
+                        paediatric neurocritical care. He is a physician in the
+                        Division of Paediatric Critical Care Medicine at the
+                        Children&apos;s Hospital - London Health Sciences
+                        Centre, Assistant Professor in the Department of
+                        Paediatrics at the Schulich School of Medicine (Western
+                        University) and an Associate Scientist at the Lawson
+                        Health Research Institute.
                       </p>
-                    </div>
+
+                      <div className="mt-8 grid gap-6 sm:grid-cols-2">
+                        <motion.div
+                          className="rounded-2xl border border-border/60 bg-muted/30 p-4"
+                          initial={{ opacity: 0, y: 10 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.5, delay: 0.3 }}
+                        >
+                          <h4 className="text-sm font-bold uppercase tracking-wider text-foreground">
+                            Education & Training
+                          </h4>
+                          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                            <li className="flex items-start gap-2">
+                              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-cognition" />
+                              MD and specialist training in paediatric critical
+                              care
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-cognition" />
+                              Advanced expertise in paediatric neurocritical
+                              care
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-cognition" />
+                              Faculty, Schulich School of Medicine & Dentistry
+                            </li>
+                          </ul>
+                        </motion.div>
+
+                        <motion.div
+                          className="rounded-2xl border border-border/60 bg-muted/30 p-4"
+                          initial={{ opacity: 0, y: 10 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.5, delay: 0.4 }}
+                        >
+                          <h4 className="text-sm font-bold uppercase tracking-wider text-foreground">
+                            Research Focus
+                          </h4>
+                          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                            Functional neuroimaging, quantitative EEG, covert
+                            consciousness detection, and outcome prediction in
+                            critically ill children.
+                          </p>
+                        </motion.div>
+                      </div>
+
+                      <motion.div
+                        className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start"
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0.5 }}
+                      >
+                        <Link
+                          href="/about-pi"
+                          className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cognition to-care px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:shadow-lg hover:shadow-brand/25"
+                        >
+                          PI biography
+                          <ChevronRight className="h-4 w-4" />
+                        </Link>
+                        <a
+                          href="https://www.schulich.uwo.ca/paediatrics/about_us/people/faculty/ganesan_rishi.html"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-all duration-300 hover:border-brand/40 hover:bg-brand/5 hover:text-brand"
+                        >
+                          Schulich profile
+                          <ChevronRight className="h-4 w-4" />
+                        </a>
+                        <Link
+                          href="/team"
+                          className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-all duration-300 hover:border-brand/40 hover:bg-brand/5 hover:text-brand"
+                        >
+                          Full team
+                          <ChevronRight className="h-4 w-4" />
+                        </Link>
+                      </motion.div>
+                    </motion.div>
                   </div>
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <Link
-                      href="/about-pi"
-                      className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-brand/40 hover:bg-brand/5 hover:text-brand"
-                    >
-                      PI biography
-                      <ChevronRight className="h-4 w-4" />
-                    </Link>
-                    <a
-                      href="https://www.schulich.uwo.ca/paediatrics/about_us/people/faculty/ganesan_rishi.html"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-brand/40 hover:bg-brand/5 hover:text-brand"
-                    >
-                      Schulich profile
-                      <ChevronRight className="h-4 w-4" />
-                    </a>
-                    <Link
-                      href="/team"
-                      className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-brand/40 hover:bg-brand/5 hover:text-brand"
-                    >
-                      Full team
-                      <ChevronRight className="h-4 w-4" />
-                    </Link>
-                  </div>
-                </motion.div>
-              </div>
+                </div>
+              </motion.div>
             </div>
           </section>
 

@@ -12,8 +12,13 @@ import {
   Users,
   GraduationCap,
   Briefcase,
+  Search,
+  Brain,
+  Heart,
+  Target,
+  Star,
+  UserPlus,
 } from "lucide-react";
-import PageHero from "@/components/PageHero";
 import {
   teamMembers,
   teamAlumni,
@@ -86,11 +91,25 @@ const FILTER_OPTIONS: {
 
 export default function TeamPage() {
   const [filter, setFilter] = useState<"all" | TeamMemberCategory>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const filtered = useMemo(() => {
-    if (filter === "all") return teamMembers;
-    return teamMembers.filter((m) => m.category === filter);
-  }, [filter]);
+    let filteredMembers =
+      filter === "all"
+        ? teamMembers
+        : teamMembers.filter((m) => m.category === filter);
+
+    if (searchQuery) {
+      filteredMembers = filteredMembers.filter(
+        (m) =>
+          m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          m.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          m.superpower.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+    }
+
+    return filteredMembers;
+  }, [filter, searchQuery]);
 
   const counts = useMemo(() => {
     const students = teamMembers.filter((m) => m.category === "student").length;
@@ -100,11 +119,48 @@ export default function TeamPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHero
-        compact
-        title="Our team"
-        subtitle="Clinicians, trainees, and coordinators advancing pediatric neurocritical care and cognition science."
-      />
+      {/* Modern Header */}
+      <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/30">
+        <div className="absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom_right,white,transparent,white)]" />
+        <div className="container relative mx-auto px-4 py-16 sm:px-6 lg:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mx-auto max-w-4xl text-center"
+          >
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
+              <Users className="h-4 w-4" />
+              Our Research Team
+            </div>
+            <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              Meet the Team
+              <span className="block text-3xl font-semibold text-muted-foreground sm:text-4xl lg:text-5xl">
+                Advancing Brain Health Together
+              </span>
+            </h1>
+            <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+              Clinicians, trainees, and coordinators advancing pediatric
+              neurocritical care and cognition science through innovative
+              research and collaboration.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 text-sm">
+              <div className="flex items-center gap-2 rounded-lg bg-cognition/10 px-4 py-2 text-cognition">
+                <Brain className="h-4 w-4" />
+                Clinical Excellence
+              </div>
+              <div className="flex items-center gap-2 rounded-lg bg-consciousness/10 px-4 py-2 text-consciousness">
+                <Heart className="h-4 w-4" />
+                Compassionate Care
+              </div>
+              <div className="flex items-center gap-2 rounded-lg bg-care/10 px-4 py-2 text-care">
+                <Target className="h-4 w-4" />
+                Research Innovation
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
       <div className="relative">
         <div
@@ -120,7 +176,7 @@ export default function TeamPage() {
           aria-hidden
         />
 
-        {/* PI — gradient frame + split layout */}
+        {/* PI Section */}
         <section className="relative px-4 pb-4 pt-10 sm:px-6 sm:pb-6 sm:pt-12">
           <div className="container mx-auto max-w-7xl">
             <motion.div
@@ -134,7 +190,7 @@ export default function TeamPage() {
                 Leadership
               </span>
               <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                Principal investigator
+                Principal Investigator
               </h2>
               <p className="max-w-2xl text-base text-muted-foreground">
                 Clinical direction, mentorship, and the research vision behind
@@ -238,6 +294,20 @@ export default function TeamPage() {
         {/* Team grid */}
         <section className="relative border-t border-border/50 bg-linear-to-b from-muted/40 via-background to-background px-4 py-16 sm:px-6 sm:py-24">
           <div className="container mx-auto">
+            {/* Search Bar */}
+            <div className="mb-8">
+              <div className="relative max-w-md mx-auto">
+                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Search team members..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full rounded-2xl border border-border bg-background pl-12 pr-4 py-3 text-foreground placeholder-muted-foreground focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 transition-all"
+                />
+              </div>
+            </div>
+
             <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
@@ -250,7 +320,7 @@ export default function TeamPage() {
                   People
                 </span>
                 <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                  Lab members
+                  Lab Members
                 </h2>
                 <p className="mt-4 text-muted-foreground">
                   Students, coordinators, and research staff who keep projects
@@ -274,7 +344,7 @@ export default function TeamPage() {
                       onClick={() => setFilter(id)}
                       className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition ${
                         active
-                          ? "border-brand/40 bg-brand text-primary-foreground shadow-md shadow-brand/20"
+                          ? "border-brand/40 bg-brand text-primary-foreground shadow-md shadow-brand/20 scale-105"
                           : "border-border/80 bg-card text-muted-foreground hover:border-brand/25 hover:text-foreground"
                       }`}
                     >
@@ -294,8 +364,15 @@ export default function TeamPage() {
               className="mt-10 flex flex-wrap gap-4 border-y border-border/60 py-6 text-sm text-muted-foreground"
             >
               <span>
+                <strong className="text-foreground">{filtered.length}</strong>{" "}
+                showing
+              </span>
+              <span className="hidden sm:inline" aria-hidden>
+                ·
+              </span>
+              <span>
                 <strong className="text-foreground">{counts.total}</strong>{" "}
-                members
+                total members
               </span>
               <span className="hidden sm:inline" aria-hidden>
                 ·
@@ -311,11 +388,24 @@ export default function TeamPage() {
                 <strong className="text-foreground">{counts.staff}</strong>{" "}
                 staff
               </span>
+              {searchQuery && (
+                <>
+                  <span className="hidden sm:inline" aria-hidden>
+                    ·
+                  </span>
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="text-brand hover:text-brand-deep transition-colors"
+                  >
+                    Clear search
+                  </button>
+                </>
+              )}
             </motion.div>
 
             <AnimatePresence mode="popLayout">
               <motion.ul
-                key={filter}
+                key={`${filter}-${searchQuery}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -329,9 +419,32 @@ export default function TeamPage() {
             </AnimatePresence>
 
             {filtered.length === 0 ? (
-              <p className="mt-8 text-center text-muted-foreground">
-                No one in this filter yet.
-              </p>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-8 text-center"
+              >
+                <div className="max-w-md mx-auto">
+                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted mx-auto">
+                    <Search className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    No team members found
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    No one matches your current filter or search criteria.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setFilter("all");
+                      setSearchQuery("");
+                    }}
+                    className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-brand-deep transition-colors"
+                  >
+                    Reset filters
+                  </button>
+                </div>
+              </motion.div>
             ) : null}
 
             {/* Alumni Section */}
@@ -392,7 +505,7 @@ export default function TeamPage() {
                       <div className="flex flex-1 flex-col p-4 pt-3">
                         <div className="mt-auto flex gap-2 rounded-xl border border-border/40 bg-muted/20 p-3 transition-colors group-hover:border-brand/10 group-hover:bg-muted/30">
                           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-background shadow-sm">
-                            <Sparkles
+                            <Star
                               className="h-3.5 w-3.5 text-muted-foreground"
                               strokeWidth={2}
                             />
@@ -424,6 +537,7 @@ export default function TeamPage() {
                 href="/join-4c-lab/"
                 className="group inline-flex items-center gap-2 rounded-2xl border border-brand/25 bg-linear-to-r from-brand/10 via-consciousness/5 to-care/10 px-6 py-4 text-sm font-semibold text-foreground shadow-sm transition hover:border-brand/40 hover:shadow-md"
               >
+                <UserPlus className="h-4 w-4" />
                 Interested in joining?
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>

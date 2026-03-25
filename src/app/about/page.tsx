@@ -10,8 +10,13 @@ import {
   ChevronRight,
   Check,
   ArrowRight,
+  Brain,
+  Heart,
+  Eye,
+  Microscope,
+  Users,
+  Lightbulb,
 } from "lucide-react";
-import PageHero from "@/components/PageHero";
 
 const CARD_ACCENTS = [
   "from-cognition via-brand to-consciousness",
@@ -60,6 +65,50 @@ const researchKeyAreas = [
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
+      {/* Modern Header */}
+      <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/30">
+        <div className="absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom_right,white,transparent,white)]" />
+        <div className="container relative mx-auto px-4 py-16 sm:px-6 lg:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mx-auto max-w-4xl text-center"
+          >
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
+              <Brain className="h-4 w-4" />
+              About 4C Research
+            </div>
+            <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              Advancing Brain Health
+              <span className="block text-3xl font-semibold text-muted-foreground sm:text-4xl lg:text-5xl">
+                Cognition, Consciousness & Critical Care
+              </span>
+            </h1>
+            <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+              Our dedicated research group focuses on uncovering groundbreaking
+              discoveries in altered cognition and consciousness in critically
+              ill children through innovative neuroimaging and predictive
+              analytics.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 text-sm">
+              <div className="flex items-center gap-2 rounded-lg bg-cognition/10 px-4 py-2 text-cognition">
+                <Brain className="h-4 w-4" />
+                Clinical Research
+              </div>
+              <div className="flex items-center gap-2 rounded-lg bg-consciousness/10 px-4 py-2 text-consciousness">
+                <Heart className="h-4 w-4" />
+                Patient Care
+              </div>
+              <div className="flex items-center gap-2 rounded-lg bg-care/10 px-4 py-2 text-care">
+                <Eye className="h-4 w-4" />
+                Innovation
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       <div className="relative">
         <div
           className="pointer-events-none absolute left-0 top-20 h-72 w-72 rounded-full bg-cognition/10 blur-3xl"

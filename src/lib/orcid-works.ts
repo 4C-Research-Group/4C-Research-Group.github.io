@@ -130,8 +130,12 @@ export async function fetchOrcidPublications(
   const clean = orcidId.replace(/https?:\/\/orcid\.org\//i, "").trim();
   const url = `https://pub.orcid.org/v3.0/${clean}/works`;
   const res = await fetch(url, {
-    headers: { Accept: ORCID_ACCEPT },
-    cache: "no-store",
+    headers: {
+      Accept: ORCID_ACCEPT,
+      "Accept-Encoding": "gzip, deflate, br",
+    },
+    cache: "force-cache",
+    next: { revalidate: 300 },
   });
   if (!res.ok) {
     throw new Error(`Could not load works from ORCID (${res.status})`);

@@ -4,7 +4,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ExternalLink, Loader2, RefreshCw, Search } from "lucide-react";
 import { FaGoogle, FaOrcid, FaResearchgate } from "react-icons/fa";
 import PageHero from "@/components/PageHero";
-import { PublicationCard } from "@/components/PublicationCard";
+import {
+  PublicationCard,
+  PublicationCardSkeleton,
+} from "@/components/PublicationCard";
 import {
   DEFAULT_ORCID_ID,
   fetchOrcidPublications,
@@ -37,6 +40,7 @@ export default function PublicationsPage() {
   const [publications, setPublications] = useState<OrcidPublication[]>([]);
   const [sortBy, setSortBy] = useState<"year" | "title">("year");
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [lastFetched, setLastFetched] = useState<Date | null>(null);
@@ -46,13 +50,31 @@ export default function PublicationsPage() {
     setError("");
     try {
       const data = await fetchOrcidPublications(DEFAULT_ORCID_ID);
-      setPublications(data);
-      setLastFetched(new Date());
+
+      // Progressive loading: show 2026 first, then rest
+      const pubs2026 = data.filter((pub) => pub.year === 2026);
+      const otherPubs = data.filter((pub) => pub.year !== 2026);
+
+      // Show 2026 publications immediately
+      setPublications(pubs2026);
+      setLoading(false);
+
+      // Then add the rest with a loading indicator
+      if (otherPubs.length > 0) {
+        setLoadingMore(true);
+        setTimeout(() => {
+          setPublications([...pubs2026, ...otherPubs]);
+          setLoadingMore(false);
+          setLastFetched(new Date());
+        }, 300);
+      } else {
+        setLastFetched(new Date());
+      }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Error loading publications");
       setPublications([]);
-    } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   }, []);
 
@@ -121,7 +143,7 @@ export default function PublicationsPage() {
       <div className="container mx-auto px-4 py-8 sm:py-10 max-w-7xl">
         <div className="max-w-6xl mx-auto w-full">
           <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-muted-foreground">
-            <p>
+            <p className="flex items-center gap-2">
               Loaded live from{" "}
               <a
                 href={ORCID_PROFILE_URL}
@@ -131,7 +153,14 @@ export default function PublicationsPage() {
               >
                 ORCID
               </a>
-              . New works you add there appear here on the next visit.
+              {loading && (
+                <span className="flex items-center gap-1 text-xs">
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  Updating...
+                </span>
+              )}
+              {!loading && <span>.</span>} New works you add there appear here
+              on the next visit.
             </p>
             {lastFetched && !loading && (
               <span className="text-xs sm:text-sm tabular-nums">
@@ -191,9 +220,44 @@ export default function PublicationsPage() {
           </div>
 
           {loading && (
-            <div className="flex flex-col items-center justify-center py-16 gap-3 text-muted-foreground">
-              <Loader2 className="w-8 h-8 animate-spin text-brand" />
-              <p className="text-sm">Loading publications from ORCID…</p>
+            <div className="space-y-14">
+              {/* Show skeleton cards in year-grouped layout */}
+              <div className="relative">
+                <div
+                  className="pointer-events-none absolute left-[7.25rem] top-0 bottom-0 hidden lg:block w-px bg-linear-to-b from-cognition/50 via-consciousness/40 to-care/50 opacity-30"
+                  aria-hidden
+                />
+                {/* Skeleton for 2026 */}
+                <section className="relative mb-14 last:mb-0 lg:pl-32">
+                  <div className="mb-6 flex items-baseline gap-3 lg:absolute lg:left-0 lg:top-1 lg:mb-0 lg:w-24 lg:flex-col lg:items-end lg:text-right">
+                    <span className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground tabular-nums">
+                      2026
+                    </span>
+                    <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground lg:mt-1">
+                      Loading...
+                    </span>
+                  </div>
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <PublicationCardSkeleton />
+                    <PublicationCardSkeleton />
+                  </div>
+                </section>
+                {/* Skeleton for 2025 */}
+                <section className="relative mb-14 last:mb-0 lg:pl-32">
+                  <div className="mb-6 flex items-baseline gap-3 lg:absolute lg:left-0 lg:top-1 lg:mb-0 lg:w-24 lg:flex-col lg:items-end lg:text-right">
+                    <span className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground tabular-nums">
+                      2025
+                    </span>
+                    <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground lg:mt-1">
+                      Loading...
+                    </span>
+                  </div>
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <PublicationCardSkeleton />
+                    <PublicationCardSkeleton />
+                  </div>
+                </section>
+              </div>
             </div>
           )}
 
@@ -215,6 +279,7 @@ export default function PublicationsPage() {
               Showing {sortedAndFiltered.length} of {publications.length}{" "}
               publication{publications.length === 1 ? "" : "s"}
               {searchTerm.trim() ? " (filtered)" : ""}
+              {loadingMore && " - loading more..."}
             </p>
           )}
 

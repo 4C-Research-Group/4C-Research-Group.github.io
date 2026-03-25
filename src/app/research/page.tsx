@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
 import {
   Brain,
   Activity,
@@ -9,131 +10,253 @@ import {
   ExternalLink,
   Users2,
   BookOpen,
+  Grid3X3,
+  Beaker,
+  Microscope,
+  Zap,
+  ChevronDown,
+  ChevronRight,
+  Building,
+  Calendar,
+  Link2,
 } from "lucide-react";
-import PageHero from "@/components/PageHero";
 
 export default function Research() {
-  return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-brand-light">
-      <PageHero
-        compact
-        title="Our Research"
-        subtitle="Exploring the frontiers of neuroprognostication and brain monitoring in critical care"
-      />
+  const [expandedTheme, setExpandedTheme] = useState<string | null>(null);
 
-      <section className="py-12 sm:py-16">
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Modern Header Section */}
+      <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/30">
+        <div className="absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom_right,white,transparent,white)]" />
+        <div className="container relative mx-auto px-4 py-16 sm:px-6 lg:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mx-auto max-w-4xl text-center"
+          >
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
+              <Beaker className="h-4 w-4" />
+              Research Excellence
+            </div>
+            <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              Our Research
+              <span className="block text-3xl font-semibold text-muted-foreground sm:text-4xl lg:text-5xl">
+                Advancing Critical Care Neuroscience
+              </span>
+            </h1>
+            <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+              Exploring the frontiers of neuroprognostication and brain
+              monitoring through innovative research, advanced neuroimaging, and
+              collaborative discovery.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 text-sm">
+              <div className="flex items-center gap-2 rounded-lg bg-cognition/10 px-4 py-2 text-cognition">
+                <Brain className="h-4 w-4" />
+                Neuroprognostication
+              </div>
+              <div className="flex items-center gap-2 rounded-lg bg-consciousness/10 px-4 py-2 text-consciousness">
+                <Microscope className="h-4 w-4" />
+                Neuroimaging
+              </div>
+              <div className="flex items-center gap-2 rounded-lg bg-care/10 px-4 py-2 text-care">
+                <Zap className="h-4 w-4" />
+                Critical Care
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Research Themes - Accordion Style */}
+      <section className="py-16 sm:py-24">
         <div className="container mx-auto px-4 sm:px-6">
-          <div className="space-y-12 sm:space-y-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-16 text-center"
+          >
+            <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              Key Research Themes
+            </h2>
+            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+              Click on each theme to explore our detailed research projects and
+              findings.
+            </p>
+          </motion.div>
+
+          <div className="mx-auto max-w-5xl space-y-6">
             {researchThemes.map((theme, themeIndex) => (
               <motion.div
                 key={theme.title}
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 0.45,
-                  delay: Math.min(themeIndex * 0.05, 0.2),
+                  duration: 0.5,
+                  delay: themeIndex * 0.1,
                 }}
                 viewport={{ once: true }}
-                className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden"
+                className="group"
               >
-                <div
-                  className="p-6 sm:p-8 text-primary-foreground"
-                  style={{ background: theme.gradient }}
-                >
-                  <div className="mb-4 flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
-                      <theme.icon className="h-6 w-6 text-primary-foreground" />
-                    </div>
-                    <h2 className="text-2xl font-bold sm:text-3xl">
-                      {theme.title}
-                    </h2>
-                  </div>
-                  <p className="text-base leading-relaxed text-primary-foreground/95 sm:text-lg">
-                    {theme.description}
-                  </p>
-                </div>
-
-                <div className="p-6 sm:p-8 bg-background/50">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    {theme.projects.map((project) => (
-                      <div
-                        key={project.title}
-                        className="rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-brand/25 hover:shadow-md"
-                      >
-                        <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
-                          <h3 className="text-xl font-bold text-foreground">
-                            {project.title}
-                          </h3>
-                          {project.funder && (
-                            <span className="shrink-0 rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand">
-                              {project.funder}
-                            </span>
-                          )}
+                <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-brand/20 hover:shadow-lg">
+                  {/* Theme Header - Clickable */}
+                  <button
+                    onClick={() =>
+                      setExpandedTheme(
+                        expandedTheme === theme.title ? null : theme.title,
+                      )
+                    }
+                    className="w-full px-6 py-5 text-left transition-colors hover:bg-muted/30"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div
+                          className="flex h-12 w-12 items-center justify-center rounded-xl"
+                          style={{
+                            background: theme.gradient.replace(
+                              "135deg",
+                              "to bottom right",
+                            ),
+                          }}
+                        >
+                          <theme.icon className="h-6 w-6 text-white" />
                         </div>
-
-                        <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
-                          {project.description}
-                        </p>
-
-                        {"publications" in project && project.publications && (
-                          <div className="mb-4">
-                            <h4 className="mb-2 flex items-center font-semibold text-foreground">
-                              <BookOpen className="mr-2 h-4 w-4 text-brand" />
-                              Key Publications
-                            </h4>
-                            <ul className="space-y-1">
-                              {project.publications.map(
-                                (
-                                  pub: { title: string; link: string },
-                                  i: number,
-                                ) => (
-                                  <li
-                                    key={i}
-                                    className="flex items-start text-sm text-muted-foreground"
-                                  >
-                                    <ExternalLink className="mr-2 mt-1 h-3 w-3 shrink-0 text-brand" />
-                                    <a
-                                      href={pub.link}
-                                      className="text-brand hover:text-brand-deep transition-colors"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                    >
-                                      {pub.title}
-                                    </a>
-                                  </li>
-                                ),
-                              )}
-                            </ul>
-                          </div>
-                        )}
-
-                        {project.team && (
-                          <div className="mb-4">
-                            <h4 className="mb-2 flex items-center font-semibold text-foreground">
-                              <Users2 className="mr-2 h-4 w-4 text-brand" />
-                              Team Members
-                            </h4>
-                            <div className="flex flex-wrap gap-2">
-                              {project.team.map((member, i) => (
-                                <span
-                                  key={i}
-                                  className="rounded-md bg-muted px-2 py-1 text-sm text-foreground"
-                                >
-                                  {member}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4">
-                          <span className="text-sm text-muted-foreground">
-                            {project.status}
-                          </span>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-foreground">
+                            {theme.title}
+                          </h3>
+                          <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
+                            {theme.description}
+                          </p>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <div className="text-sm font-medium text-foreground">
+                            {theme.projects.length} Projects
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {theme.projects.filter((p) => p.funder).length}{" "}
+                            Funded
+                          </div>
+                        </div>
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted transition-transform duration-200 group-hover:scale-110">
+                          {expandedTheme === theme.title ? (
+                            <ChevronDown className="h-4 w-4 text-foreground" />
+                          ) : (
+                            <ChevronRight className="h-4 w-4 text-foreground" />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Expanded Content */}
+                  {expandedTheme === theme.title && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="border-t border-border bg-muted/20"
+                    >
+                      <div className="p-6">
+                        <div className="mb-6">
+                          <p className="text-sm leading-relaxed text-muted-foreground">
+                            {theme.description}
+                          </p>
+                        </div>
+
+                        <div className="grid gap-6 lg:grid-cols-2">
+                          {theme.projects.map((project, idx) => (
+                            <div
+                              key={idx}
+                              className="rounded-xl border border-border bg-background p-5"
+                            >
+                              <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
+                                <h4 className="text-lg font-bold text-foreground">
+                                  {project.title}
+                                </h4>
+                                {project.funder && (
+                                  <span className="shrink-0 rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand">
+                                    <Building className="mr-1 h-3 w-3 inline" />
+                                    {project.funder}
+                                  </span>
+                                )}
+                              </div>
+
+                              <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
+                                {project.description}
+                              </p>
+
+                              {"publications" in project &&
+                                project.publications && (
+                                  <div className="mb-4">
+                                    <h5 className="mb-3 flex items-center text-sm font-semibold text-foreground">
+                                      <BookOpen className="mr-2 h-4 w-4 text-brand" />
+                                      Key Publications (
+                                      {project.publications.length})
+                                    </h5>
+                                    <div className="space-y-2">
+                                      {project.publications.map(
+                                        (
+                                          pub: { title: string; link: string },
+                                          i: number,
+                                        ) => (
+                                          <div
+                                            key={i}
+                                            className="flex items-start gap-2 rounded-lg bg-muted/30 p-3"
+                                          >
+                                            <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-brand" />
+                                            <a
+                                              href={pub.link}
+                                              className="text-sm text-brand hover:text-brand-deep transition-colors line-clamp-2"
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                            >
+                                              {pub.title}
+                                            </a>
+                                          </div>
+                                        ),
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+
+                              {project.team && (
+                                <div className="mb-4">
+                                  <h5 className="mb-3 flex items-center text-sm font-semibold text-foreground">
+                                    <Users2 className="mr-2 h-4 w-4 text-brand" />
+                                    Team Members ({project.team.length})
+                                  </h5>
+                                  <div className="flex flex-wrap gap-2">
+                                    {project.team.map((member, i) => (
+                                      <span
+                                        key={i}
+                                        className="rounded-lg bg-muted px-3 py-1.5 text-xs font-medium text-foreground"
+                                      >
+                                        {member}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              <div className="flex items-center justify-between rounded-lg bg-muted/20 p-3">
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <Calendar className="h-3 w-3" />
+                                  {project.status}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
               </motion.div>
             ))}
@@ -141,21 +264,26 @@ export default function Research() {
         </div>
       </section>
 
-      <section className="border-t border-border bg-card/40 py-12 sm:py-16">
+      {/* Multi-center Collaborations */}
+      <section className="py-16 sm:py-24 bg-linear-to-br from-slate-50 to-background">
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
             viewport={{ once: true }}
-            className="mb-12 text-center"
+            transition={{ duration: 0.6 }}
+            className="mb-16 text-center"
           >
-            <h2 className="mb-3 text-3xl font-bold text-foreground sm:text-4xl">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
+              <Users className="h-4 w-4" />
+              Global Impact
+            </div>
+            <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Multi-center Collaborations
             </h2>
-            <div className="mx-auto mb-4 h-1 w-24 rounded-full bg-linear-to-r from-cognition via-consciousness to-care" />
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Leading and participating in international research networks
+              Leading and participating in international research networks to
+              advance pediatric critical care worldwide.
             </p>
           </motion.div>
 
@@ -163,46 +291,93 @@ export default function Research() {
             {collaborations.map((collab, index) => (
               <motion.div
                 key={collab.title}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 0.4,
-                  delay: Math.min(index * 0.05, 0.15),
+                  duration: 0.5,
+                  delay: index * 0.1,
                 }}
                 viewport={{ once: true }}
-                className="rounded-xl border border-border bg-card p-6 shadow-sm transition-all hover:border-brand/20 hover:shadow-md"
+                className="group relative"
               >
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-cognition/15">
-                  <Users className="h-6 w-6 text-cognition" />
+                <div className="h-full rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:border-brand/20 hover:shadow-lg hover:shadow-brand/5">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-cognition/15">
+                    <Users className="h-6 w-6 text-cognition" />
+                  </div>
+                  <h3 className="mb-3 text-xl font-bold text-foreground group-hover:text-brand transition-colors">
+                    {collab.title}
+                  </h3>
+                  <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
+                    {collab.description}
+                  </p>
+                  <div className="mb-4 rounded-lg bg-muted/30 p-3">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Role
+                    </span>
+                    <p className="mt-1 text-sm text-foreground">
+                      {collab.role}
+                    </p>
+                  </div>
+                  {collab.link !== "#" ? (
+                    <a
+                      href={collab.link}
+                      className="inline-flex items-center gap-2 text-sm font-medium text-brand hover:text-brand-deep transition-colors"
+                    >
+                      Visit Website
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-sm text-muted-foreground italic">
+                      Link Coming Soon
+                    </span>
+                  )}
                 </div>
-                <h3 className="mb-3 text-xl font-bold text-foreground">
-                  {collab.title}
-                </h3>
-                <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
-                  {collab.description}
-                </p>
-                <div className="mb-4">
-                  <span className="text-sm font-semibold text-foreground">
-                    Role:
-                  </span>
-                  <p className="text-sm text-muted-foreground">{collab.role}</p>
-                </div>
-                {collab.link !== "#" ? (
-                  <a
-                    href={collab.link}
-                    className="inline-flex cursor-pointer items-center gap-1 font-medium text-brand hover:text-brand-deep transition-colors"
-                  >
-                    Visit Website
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                ) : (
-                  <span className="inline-flex items-center gap-1 text-sm text-muted-foreground italic">
-                    Link Coming Soon
-                  </span>
-                )}
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="py-16 sm:py-24">
+        <div className="container mx-auto px-4 sm:px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mx-auto max-w-4xl text-center"
+          >
+            <div className="rounded-3xl border border-border bg-linear-to-br from-card via-background to-muted/30 p-8 sm:p-12 shadow-lg shadow-brand/5">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
+                <Beaker className="h-4 w-4" />
+                Join Our Mission
+              </div>
+              <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Collaborate With Us
+              </h2>
+              <p className="mb-8 text-lg leading-relaxed text-muted-foreground">
+                We welcome collaborations from clinicians, researchers,
+                institutions, and industry partners who share our passion for
+                advancing pediatric neurocritical care.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a
+                  href="/collaborate"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep"
+                >
+                  Start Collaboration
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+                <a
+                  href="/contact"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:border-brand/40 hover:bg-brand/5"
+                >
+                  Contact Us
+                </a>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
     </div>

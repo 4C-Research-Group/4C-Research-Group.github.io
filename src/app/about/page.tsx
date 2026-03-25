@@ -60,12 +60,6 @@ const researchKeyAreas = [
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background">
-      <PageHero
-        compact
-        title="About 4C Research"
-        subtitle="Advancing the frontiers of Cognition, Consciousness, and Critical Care through innovative research"
-      />
-
       <div className="relative">
         <div
           className="pointer-events-none absolute left-0 top-20 h-72 w-72 rounded-full bg-cognition/10 blur-3xl"
@@ -225,13 +219,13 @@ export default function AboutPage() {
 
             <div className="mx-auto max-w-4xl">
               <motion.div
-                className="group relative overflow-hidden rounded-3xl border border-border/80 bg-gradient-to-br from-card via-background to-muted/30 shadow-lg shadow-brand/5 transition-all duration-500 hover:shadow-xl hover:shadow-brand/10"
+                className="group relative overflow-hidden rounded-3xl border border-border/80 bg-linear-to-br from-card via-background to-muted/30 shadow-lg shadow-brand/5 transition-all duration-500 hover:shadow-xl hover:shadow-brand/10"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-cognition/5 via-transparent to-care/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-linear-to-r from-cognition/5 via-transparent to-care/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
                 <div className="relative p-8 md:p-12">
                   <div className="flex flex-col items-center space-y-6 md:flex-row md:items-start md:space-x-8 md:space-y-0">
@@ -242,7 +236,7 @@ export default function AboutPage() {
                       viewport={{ once: true }}
                       transition={{ duration: 0.5, delay: 0.1 }}
                     >
-                      <div className="relative aspect-[4/5] w-32 overflow-hidden rounded-2xl border-4 border-background shadow-lg md:w-40">
+                      <div className="relative aspect-4/5 w-32 overflow-hidden rounded-2xl border-4 border-background shadow-lg md:w-40">
                         <Image
                           src="/team/team-1.jpg"
                           alt="Dr. Rishi Ganesan, Principal Investigator"
@@ -252,7 +246,7 @@ export default function AboutPage() {
                           priority
                         />
                       </div>
-                      <div className="absolute -bottom-2 -right-2 rounded-full bg-gradient-to-r from-cognition to-care p-2 shadow-lg">
+                      <div className="absolute -bottom-2 -right-2 rounded-full bg-linear-to-r from-cognition to-care p-2 shadow-lg">
                         <div className="h-3 w-3 rounded-full bg-white" />
                       </div>
                     </motion.div>
@@ -271,7 +265,7 @@ export default function AboutPage() {
                         <p className="text-sm font-medium text-brand">
                           Head of the 4C Research Group
                         </p>
-                        <div className="mx-auto h-px w-16 bg-gradient-to-r from-cognition via-care to-consciousness md:mx-0" />
+                        <div className="mx-auto h-px w-16 bg-linear-to-r from-cognition via-care to-consciousness md:mx-0" />
                       </div>
 
                       <p className="mt-6 text-sm leading-relaxed text-muted-foreground sm:text-base">
@@ -342,7 +336,7 @@ export default function AboutPage() {
                       >
                         <Link
                           href="/about-pi"
-                          className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cognition to-care px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:shadow-lg hover:shadow-brand/25"
+                          className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-cognition to-care px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:shadow-lg hover:shadow-brand/25"
                         >
                           PI biography
                           <ChevronRight className="h-4 w-4" />

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   Mail,
   Phone,
@@ -35,12 +34,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
           {/* Branding */}
           <div className="space-y-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="flex items-center space-x-3"
-            >
+            <div className="flex items-center space-x-3">
               <img
                 src="/logo.png"
                 alt="4C Research Logo"
@@ -49,22 +43,12 @@ export default function Footer() {
               <span className="text-xl font-bold bg-linear-to-r from-brand to-consciousness bg-clip-text text-transparent">
                 4C RESEARCH
               </span>
-            </motion.div>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-sm text-muted-foreground"
-            >
+            </div>
+            <p className="text-sm text-muted-foreground">
               Advancing research in cognition, consciousness, and critical care
               through innovative science and collaboration.
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex space-x-4 pt-2"
-            >
+            </p>
+            <div className="flex space-x-4 pt-2">
               <a
                 href="https://x.com/Mission_FourC"
                 target="_blank"
@@ -101,15 +85,11 @@ export default function Footer() {
               >
                 <ExternalLink className="h-5 w-5" />
               </a>
-            </motion.div>
+            </div>
           </div>
 
           {/* Quick Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
+          <div>
             <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
               Quick Links
             </h3>
@@ -125,14 +105,10 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
           {/* Contact Info */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          <div>
             <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
               Contact Us
             </h3>
@@ -165,14 +141,10 @@ export default function Footer() {
                 </a>
               </div>
             </address>
-          </motion.div>
+          </div>
 
           {/* Newsletter */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
+          <div>
             <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
               Stay Updated
             </h3>
@@ -202,16 +174,11 @@ export default function Footer() {
                 <ArrowRight className="w-4 h-4 ml-2" />
               </button>
             </form>
-          </motion.div>
+          </div>
         </div>
 
         {/* Copyright */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-12 pt-8 border-t border-border"
-        >
+        <div className="mt-12 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-muted-foreground">
               &copy; {currentYear} 4C Research Group. All rights reserved.
@@ -237,7 +204,7 @@ export default function Footer() {
               </Link>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </footer>
   );

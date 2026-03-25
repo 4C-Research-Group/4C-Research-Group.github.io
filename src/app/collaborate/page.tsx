@@ -330,11 +330,8 @@ export default function Collaborate() {
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {funders.map((funder, index) => (
-              <motion.a
+              <motion.div
                 key={funder.name}
-                href={funder.link}
-                target="_blank"
-                rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -380,7 +377,6 @@ export default function Collaborate() {
                       href={funder.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
                       className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-3 hover:bg-muted/50 transition-colors group"
                     >
                       <span className="text-sm font-medium text-foreground group-hover:text-brand transition-colors">
@@ -393,7 +389,7 @@ export default function Collaborate() {
                     </a>
                   </div>
                 </div>
-              </motion.a>
+              </motion.div>
             ))}
           </div>
         </div>

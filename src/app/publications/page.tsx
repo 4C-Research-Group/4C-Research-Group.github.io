@@ -40,7 +40,6 @@ export default function PublicationsPage() {
   const [publications, setPublications] = useState<OrcidPublication[]>([]);
   const [sortBy, setSortBy] = useState<"year" | "title">("year");
   const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [lastFetched, setLastFetched] = useState<Date | null>(null);
@@ -51,30 +50,14 @@ export default function PublicationsPage() {
     try {
       const data = await fetchOrcidPublications(DEFAULT_ORCID_ID);
 
-      // Progressive loading: show 2026 first, then rest
-      const pubs2026 = data.filter((pub) => pub.year === 2026);
-      const otherPubs = data.filter((pub) => pub.year !== 2026);
-
-      // Show 2026 publications immediately
-      setPublications(pubs2026);
+      // Load all publications at once - animations will handle the visual hierarchy
+      setPublications(data);
       setLoading(false);
-
-      // Then add the rest with a loading indicator
-      if (otherPubs.length > 0) {
-        setLoadingMore(true);
-        setTimeout(() => {
-          setPublications([...pubs2026, ...otherPubs]);
-          setLoadingMore(false);
-          setLastFetched(new Date());
-        }, 300);
-      } else {
-        setLastFetched(new Date());
-      }
+      setLastFetched(new Date());
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Error loading publications");
       setPublications([]);
       setLoading(false);
-      setLoadingMore(false);
     }
   }, []);
 
@@ -279,7 +262,6 @@ export default function PublicationsPage() {
               Showing {sortedAndFiltered.length} of {publications.length}{" "}
               publication{publications.length === 1 ? "" : "s"}
               {searchTerm.trim() ? " (filtered)" : ""}
-              {loadingMore && " - loading more..."}
             </p>
           )}
 
@@ -291,33 +273,39 @@ export default function PublicationsPage() {
                     className="pointer-events-none absolute left-[7.25rem] top-0 bottom-0 hidden lg:block w-px bg-linear-to-b from-cognition/50 via-consciousness/40 to-care/50"
                     aria-hidden
                   />
-                  {groupByYear(sortedAndFiltered).map(
-                    ([yearLabel, yearPubs], sectionIdx) => (
-                      <section
-                        key={yearLabel}
-                        className="relative mb-14 last:mb-0 lg:pl-32"
-                      >
-                        <div className="mb-6 flex items-baseline gap-3 lg:absolute lg:left-0 lg:top-1 lg:mb-0 lg:w-24 lg:flex-col lg:items-end lg:text-right">
-                          <span className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground tabular-nums">
-                            {yearLabel === "Other" ? "Other" : yearLabel}
-                          </span>
-                          <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground lg:mt-1">
-                            {yearPubs.length} work
-                            {yearPubs.length === 1 ? "" : "s"}
-                          </span>
-                        </div>
-                        <div className="grid gap-5 sm:grid-cols-2">
-                          {yearPubs.map((pub, i) => (
-                            <PublicationCard
-                              key={pub.id}
-                              pub={pub}
-                              accentIndex={sectionIdx * 48 + i}
-                            />
-                          ))}
-                        </div>
-                      </section>
-                    ),
-                  )}
+                  {(() => {
+                    let globalIndex = 0;
+                    return groupByYear(sortedAndFiltered).map(
+                      ([yearLabel, yearPubs], sectionIdx) => (
+                        <section
+                          key={yearLabel}
+                          className="relative mb-14 last:mb-0 lg:pl-32"
+                        >
+                          <div className="mb-6 flex items-baseline gap-3 lg:absolute lg:left-0 lg:top-1 lg:mb-0 lg:w-24 lg:flex-col lg:items-end lg:text-right">
+                            <span className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground tabular-nums">
+                              {yearLabel === "Other" ? "Other" : yearLabel}
+                            </span>
+                            <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground lg:mt-1">
+                              {yearPubs.length} work
+                              {yearPubs.length === 1 ? "" : "s"}
+                            </span>
+                          </div>
+                          <div className="grid gap-5 sm:grid-cols-2">
+                            {yearPubs.map((pub, i) => {
+                              const currentIndex = globalIndex++;
+                              return (
+                                <PublicationCard
+                                  key={pub.id}
+                                  pub={pub}
+                                  accentIndex={currentIndex}
+                                />
+                              );
+                            })}
+                          </div>
+                        </section>
+                      ),
+                    );
+                  })()}
                 </div>
               ) : (
                 <div className="grid gap-5 sm:grid-cols-2">

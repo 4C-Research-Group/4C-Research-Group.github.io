@@ -507,7 +507,7 @@ export default function Collaborate() {
                     </div>
                     <div className="flex gap-3">
                       <a
-                        href="https://scholar.google.com/citations?user=YOUR_ID"
+                        href="https://scholar.google.com/citations?user=iuxSVQwAAAAJ&hl=en"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep"
@@ -516,7 +516,7 @@ export default function Collaborate() {
                         <ExternalLink className="h-4 w-4" />
                       </a>
                       <a
-                        href="https://www.researchgate.net/profile/YOUR_PROFILE"
+                        href="https://www.researchgate.net/profile/Saptharishi-Lalgudi-Ganesan"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:border-brand/40 hover:bg-brand/5"

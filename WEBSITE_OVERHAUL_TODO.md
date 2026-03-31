@@ -6,15 +6,17 @@ Based on detailed email requirements, current website needs complete content and
 
 ---
 
-## 🎯 **PHASE 1: CORE CONTENT & STRUCTURE** 
+## 🎯 **PHASE 1: CORE CONTENT & STRUCTURE**
 
 ### Hero Section Redesign
+
 - [ ] **Replace logo with EEG/fNIRS scan images** of healthy volunteers
 - [ ] **Add "foresee/predictive" visual elements** (crystal ball, future prediction imagery)
 - [ ] **Emphasize Detection vs Prediction dichotomy** more prominently
 - [ ] **Update mission statement** to be more specific about real-time vs future focus
 
 ### Navigation Updates
+
 - [ ] **Add "Alumni" section** to navbar
 - [ ] **Remove any "Services" sections** (if they exist)
 - [ ] **Add external links section** (LHSC, Schulich, Western Neurosciences, Brain Canada)
@@ -24,6 +26,7 @@ Based on detailed email requirements, current website needs complete content and
 ## 📊 **PHASE 2: RESEARCH CONTENT OVERHAUL**
 
 ### Neuroprognostication Theme
+
 - [ ] **Add systematic reviews on neuroprognostication** with publication links
 - [ ] **PREDICT ABI Project** - Add AMOSO funding, fNIRS/hdEEG/fMRI details
 - [ ] **Common Data Elements for Disorders of Consciousness** - Add publication links from Google Scholar
@@ -32,7 +35,8 @@ Based on detailed email requirements, current website needs complete content and
 - [ ] **Book chapter** - Add "Approach to child with reduced level of consciousness" link
 - [ ] **Add images**: Barney Scholefield & PI at NCS meeting, Dr. Femke Bekius
 
-### ICU Delirium & Sleep Theme  
+### ICU Delirium & Sleep Theme
+
 - [ ] **TraNSIENCE** - Add Brain Canada funding, >70 enrolments, conference presentation photos
 - [ ] **Systematic review of functional connectivity in delirium** - Add manuscript status
 - [ ] **Systematic review of acute sleep deprivation** - Add Neurological Sciences publication
@@ -42,17 +46,20 @@ Based on detailed email requirements, current website needs complete content and
 - [ ] **Add images**: Srinidhi, Brian, Bobbi presenting at conferences, Karen at CCCF
 
 ### EEG Monitoring Theme
+
 - [ ] **NuANCEd** - Add AMOSO Opportunities funding, nurse-led monitoring details
 - [ ] **Quantitative EEG in PICU delirium** - Add ADR/RAV metrics evaluation
 - [ ] **Add images**: Hiruthika Ravi presenting qEEG research
 
 ### Pain & Comfort Theme
+
 - [ ] **ABOVE trial** - Add CIHR funding, multicentre RCT details, volatile anesthetic agents
 - [ ] **Add team images**: PI, Angela Jerath, Nicole McKinnon, Brian Cuthbertson, Marat Slessarev
 - [ ] **Add publications**: Volatile gas scavenging, Critical Care Explorations, Critical Care Medicine
 - [ ] **In-SYNCC** - Add international survey details, multiple focus areas
 
 ### Multi-center Collaborations
+
 - [ ] **POPCORN project** - Add Scientific committee chair role, Site PI, SnaCCC sub-study
 - [ ] **PROBE** - Add Matthew Kirschen leadership, 2000+ children registry
 - [ ] **BOBBI trial** - Add CIHR funding, Manish Sadarangani PI, Canada lead investigator role
@@ -62,6 +69,7 @@ Based on detailed email requirements, current website needs complete content and
 ## 👥 **PHASE 3: PEOPLE & ALUMNI**
 
 ### Alumni Section Creation
+
 - [ ] **Create dedicated Alumni page/section**
 - [ ] **Add current alumni**: Hiruthika, Brian, Daniela, Sarah
 - [ ] **Add additional alumni**: Donna, Hafsa, Julia, Megha Shetty, Brennan Donville
@@ -69,6 +77,7 @@ Based on detailed email requirements, current website needs complete content and
 - [ ] **Add professional photos** for all alumni and current members
 
 ### Knowledge Mobilization
+
 - [ ] **Disperse conference presentation photos** throughout website
 - [ ] **Create student achievement highlights** section
 - [ ] **Add grad student awards and recognition**
@@ -78,12 +87,14 @@ Based on detailed email requirements, current website needs complete content and
 ## 🔗 **PHASE 4: EXTERNAL INTEGRATIONS**
 
 ### Institution Links
+
 - [ ] **London Health Sciences Center Research Institute** - Add partnership link
 - [ ] **Schulich School of Medicine** - Add PI profile link
 - [ ] **Western Institute for Neurosciences** - Add collaboration link
 - [ ] **Brain Canada** - Add Future Leaders Award $2M funding announcement link
 
 ### Publication Integration
+
 - [ ] **Google Scholar integration** - Auto-add new publications
 - [ ] **Social media integration** - Auto-add research mentions
 - [ ] **Publication feed** - Dynamic updates for all lab members
@@ -93,12 +104,14 @@ Based on detailed email requirements, current website needs complete content and
 ## 🎨 **PHASE 5: VISUAL & DESIGN UPDATES**
 
 ### Foresee/Predictive Theme
+
 - [ ] **Add crystal ball imagery** throughout design
 - [ ] **Future prediction visual elements** in backgrounds
 - [ ] **Consistent "foresee" branding** across all sections
 - [ ] **Update color scheme** to emphasize prediction/foresight
 
 ### Image Updates
+
 - [ ] **Replace all generic images** with real lab photos
 - [ ] **Add EEG/fNIRS scan images** in hero section
 - [ ] **Add conference presentation photos** throughout
@@ -109,6 +122,7 @@ Based on detailed email requirements, current website needs complete content and
 ## 📱 **PHASE 6: TECHNICAL IMPLEMENTATION**
 
 ### New Components Needed
+
 - [ ] **Alumni component** - Dynamic member listing with photos
 - [ ] **Publication feed component** - Auto-updating from external sources
 - [ ] **External links component** - Institution partnerships
@@ -116,6 +130,7 @@ Based on detailed email requirements, current website needs complete content and
 - [ ] **Enhanced project cards** - Detailed funding, team, outcomes
 
 ### Content Management
+
 - [ ] **CMS integration** for easy updates
 - [ ] **Image optimization** for performance
 - [ ] **Responsive design** testing for all new components

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import {
   Mail,
   Phone,
@@ -285,8 +286,15 @@ export default function Collaborate() {
                 className="group"
               >
                 <div className="h-full rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:border-brand/20 hover:shadow-lg hover:shadow-brand/5">
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-brand to-cognition transition-transform duration-300 group-hover:scale-110">
-                    <Building className="h-8 w-8 text-white" />
+                  <div className="mb-4 flex h-24 w-full items-center justify-center rounded-xl bg-linear-to-br from-slate-50 to-slate-100 p-3 transition-transform duration-300 group-hover:scale-105">
+                    <Image
+                      src={partner.image}
+                      alt={`${partner.name} logo`}
+                      width={160}
+                      height={100}
+                      className="h-full w-full object-contain"
+                      style={{ objectFit: "contain" }}
+                    />
                   </div>
                   <h3 className="mb-2 text-lg font-bold text-foreground group-hover:text-brand transition-colors">
                     {partner.name}
@@ -294,9 +302,9 @@ export default function Collaborate() {
                   <p className="mb-4 text-sm text-muted-foreground">
                     {partner.type}
                   </p>
-                  <div className="flex items-center justify-center gap-2 text-sm font-medium text-brand">
-                    <span>Visit</span>
-                    <ExternalLink className="h-4 w-4" />
+                  <div className="flex items-center gap-2 text-sm text-brand transition-opacity duration-300">
+                    <span>Visit Website</span>
+                    <ExternalLink className="h-3 w-3" />
                   </div>
                 </div>
               </motion.a>
@@ -581,21 +589,25 @@ const partners = [
     name: "London Health Sciences Centre Research Institute",
     type: "Research Institute",
     link: "https://www.lhscri.ca/",
+    image: "/images/partners/LHSCRI.png",
   },
   {
     name: "Schulich School of Medicine & Dentistry",
     type: "Academic Partner",
     link: "https://www.schulich.uwo.ca/paediatrics/about_us/people/faculty/ganesan_rishi.html",
+    image: "/images/partners/Schulich.png",
   },
   {
     name: "Western Institute for Neurosciences",
     type: "Research Institute",
     link: "https://win.uwo.ca/",
+    image: "/images/partners/WesternIN.png",
   },
   {
-    name: "Brain Canada Foundation",
-    type: "Funding Partner",
-    link: "https://braincanada.ca/",
+    name: "Children's Health Research Institute",
+    type: "Research Institute",
+    link: "https://www.childhealthresearch.ca/",
+    image: "/images/partners/childrenHRI.png",
   },
 ];
 

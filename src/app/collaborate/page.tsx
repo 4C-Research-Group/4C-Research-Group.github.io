@@ -346,56 +346,48 @@ export default function Collaborate() {
                 viewport={{ once: true }}
                 className="group"
               >
-                <div className="h-full rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:border-brand/20 hover:shadow-lg hover:shadow-brand/5 flex flex-col">
-                  <div className="mb-4 flex items-start justify-between">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-consciousness to-care transition-transform duration-300 group-hover:scale-110">
-                      <Award className="h-8 w-8 text-white" />
+                <div className="h-full rounded-2xl border border-border bg-card p-4 shadow-sm transition-all duration-300 hover:border-brand/20 hover:shadow-lg hover:shadow-brand/5 flex flex-col">
+                  <div className="mb-3 flex justify-center">
+                    <div className="flex h-16 w-full items-center justify-center rounded-xl bg-linear-to-br from-slate-50 to-slate-100 p-2 transition-transform duration-300 group-hover:scale-105">
+                      <Image
+                        src={funder.image}
+                        alt={`${funder.name} logo`}
+                        width={120}
+                        height={80}
+                        className="h-full w-full object-contain"
+                        style={{ objectFit: "contain" }}
+                      />
                     </div>
-                    {funder.amount && (
-                      <div className="rounded-lg bg-brand/10 px-3 py-1 text-right">
-                        <p className="text-xs font-medium text-muted-foreground">
-                          Funding
-                        </p>
-                        <p className="text-sm font-bold text-brand">
-                          {funder.amount}
-                        </p>
-                      </div>
-                    )}
                   </div>
-                  <h3 className="mb-2 text-lg font-bold text-foreground group-hover:text-brand transition-colors">
+                  {funder.amount && (
+                    <div className="mb-2 rounded-lg bg-brand/10 px-2 py-1 text-center">
+                      <p className="text-xs font-medium text-muted-foreground">
+                        Funding
+                      </p>
+                      <p className="text-xs font-bold text-brand leading-tight">
+                        {funder.amount}
+                      </p>
+                    </div>
+                  )}
+                  <h3 className="mb-1 text-sm font-bold text-foreground group-hover:text-brand transition-colors text-center">
                     {funder.name}
                   </h3>
-                  <p className="mb-4 text-sm text-muted-foreground">
+                  <p className="mb-3 text-xs text-muted-foreground text-center">
                     {funder.type}
                   </p>
-                  {funder.announcement && (
-                    <a
-                      href={funder.announcement}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand/10 px-3 py-2 text-xs font-medium text-brand hover:bg-brand/20 transition-colors mb-4"
-                    >
-                      <span>View Award Announcement</span>
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-                  )}
-                  <div className="mt-auto">
-                    <a
-                      href={funder.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between rounded-lg border border-border bg-muted/30 p-3 hover:bg-muted/50 transition-colors group"
-                    >
-                      <span className="text-sm font-medium text-foreground group-hover:text-brand transition-colors">
-                        Visit Website
-                      </span>
-                      <div className="flex items-center gap-1 rounded-lg bg-brand px-2 py-1 text-white group-hover:bg-brand-deep transition-colors">
-                        <span className="text-xs font-medium">Explore</span>
+                  {funder.link && (
+                    <div className="mt-auto">
+                      <a
+                        href={funder.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex w-full items-center justify-center gap-1 rounded-lg bg-brand px-2 py-1.5 text-xs font-medium text-white transition-colors hover:bg-brand-deep"
+                      >
+                        Learn More
                         <ExternalLink className="h-3 w-3" />
-                      </div>
-                    </a>
-                  </div>
+                      </a>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             ))}
@@ -626,6 +618,7 @@ const funders = [
     type: "Federal Funding Agency",
     amount: "Multiple Grants",
     link: "https://cihr-irsc.gc.ca/e/193.html",
+    image: "/images/partners/CHIR.jpg",
   },
   {
     name: "Brain Canada",
@@ -634,17 +627,20 @@ const funders = [
     announcement:
       "https://can01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fbraincanada.ca%2Fannouncements%2F2m-to-support-bold-brain-science-in-canada%2F&data=05%7C02%7Cpranav.jha%40mail.concordia.ca%7C3055554703c14a56c7b408de06742e11%7C5569f185d22f4e139850ce5b1abcd2e8%7C0%7C0%7C638955293870740448%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=Ium8sr0n8w61sQZhk0jyllgqBMXKkBJ30gwon4wsoso%3D&reserved=0",
     link: "https://braincanada.ca/",
+    image: "/images/partners/Logo_BrainCanada.png",
   },
   {
     name: "AMOSO",
     type: "Regional Foundation",
     amount: "Project Funding",
     link: "https://amosoweb.ca/",
+    image: "/images/partners/amoso-logo.png",
   },
   {
     name: "Radboud-Western Collaboration",
     type: "International Partnership",
     amount: "Collaborative Grant",
     link: "https://www.ru.nl/en",
+    image: "/images/partners/radboud-universiteit-open-graph-logo.png",
   },
 ];

@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight, ChevronDown } from "lucide-react";
+import { Menu, X, ArrowRight, ChevronDown, LayoutDashboard } from "lucide-react";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const primaryNav = [
   { label: "Home", href: "/" },
@@ -23,10 +25,13 @@ const moreNav = [
 ] as const;
 
 export default function Navbar() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,6 +41,55 @@ export default function Navbar() {
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    let subscription: { unsubscribe: () => void } | null = null;
+
+    (async () => {
+      try {
+        const supabase = getSupabaseBrowserClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (mounted) setSignedIn(!!user);
+      } catch {
+        if (mounted) setSignedIn(false);
+      } finally {
+        if (mounted) setAuthReady(true);
+      }
+
+      if (!mounted) return;
+      try {
+        const supabase = getSupabaseBrowserClient();
+        const {
+          data: { subscription: sub },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+          if (mounted) setSignedIn(!!session?.user);
+        });
+        subscription = sub;
+      } catch {
+        /* missing env etc. */
+      }
+    })();
+
+    return () => {
+      mounted = false;
+      subscription?.unsubscribe();
+    };
+  }, []);
+
+  async function handleSignOut() {
+    try {
+      const supabase = getSupabaseBrowserClient();
+      await supabase.auth.signOut();
+      setSignedIn(false);
+      setIsOpen(false);
+      router.refresh();
+    } catch {
+      /* ignore */
+    }
+  }
 
   return (
     <>
@@ -136,6 +190,36 @@ export default function Navbar() {
                 )}
               </div>
 
+              {!authReady ? (
+                <span
+                  className="inline-block h-5 w-[5rem] shrink-0 animate-pulse rounded bg-muted"
+                  aria-hidden
+                />
+              ) : signedIn ? (
+                <>
+                  <Link
+                    href="/dashboard/"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-brand"
+                  >
+                    <LayoutDashboard className="h-4 w-4 shrink-0" aria-hidden />
+                    Dashboard
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => void handleSignOut()}
+                    className="text-sm font-medium text-muted-foreground transition-colors hover:text-brand"
+                  >
+                    Sign out
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/login/"
+                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-brand"
+                >
+                  Sign in
+                </Link>
+              )}
               <Link
                 href="/contact"
                 className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-brand px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-brand-deep"
@@ -204,9 +288,41 @@ export default function Navbar() {
                   ))}
                 </div>
               )}
+              {!authReady ? (
+                <div
+                  className="mt-3 h-11 w-full animate-pulse rounded-full bg-muted"
+                  aria-hidden
+                />
+              ) : signedIn ? (
+                <>
+                  <Link
+                    href="/dashboard/"
+                    className="mt-3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-border py-2.5 text-center font-medium text-foreground transition-colors hover:bg-muted"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <LayoutDashboard className="h-4 w-4 shrink-0" aria-hidden />
+                    Dashboard
+                  </Link>
+                  <button
+                    type="button"
+                    className="mt-2 block w-full cursor-pointer rounded-full border border-border py-2.5 text-center font-medium text-foreground transition-colors hover:bg-muted"
+                    onClick={() => void handleSignOut()}
+                  >
+                    Sign out
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/login/"
+                  className="mt-3 block w-full cursor-pointer rounded-full border border-border py-2.5 text-center font-medium text-foreground transition-colors hover:bg-muted"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Sign in
+                </Link>
+              )}
               <Link
                 href="/contact"
-                className="mt-3 block w-full cursor-pointer rounded-full bg-brand px-4 py-2.5 text-center font-medium text-primary-foreground transition-colors hover:bg-brand-deep"
+                className="mt-2 block w-full cursor-pointer rounded-full bg-brand px-4 py-2.5 text-center font-medium text-primary-foreground transition-colors hover:bg-brand-deep"
                 onClick={() => setIsOpen(false)}
               >
                 Contact Us

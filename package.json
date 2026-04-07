@@ -11,6 +11,8 @@
     "deploy": "npm run build && npx gh-pages --dist out --dotfiles"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.10.0",
+    "@supabase/supabase-js": "^2.102.1",
     "framer-motion": "^12.38.0",
     "gh-pages": "^6.3.0",
     "lucide-react": "^0.577.0",

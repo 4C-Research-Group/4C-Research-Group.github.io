@@ -2,9 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight, ChevronDown, LayoutDashboard } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Menu,
+  X,
+  ArrowUpRight,
+  ChevronDown,
+  LayoutDashboard,
+  Shield,
+} from "lucide-react";
+import { useAuthProfile } from "@/lib/auth/use-auth-profile";
+import { canAccessAdmin } from "@/lib/auth/roles";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const primaryNav = [
@@ -24,14 +34,18 @@ const moreNav = [
   { label: "Collaborate", href: "/collaborate" },
 ] as const;
 
+const NAV_H = "h-14";
+
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname() ?? "";
+  const { ready: authReady, userId, role } = useAuthProfile();
+  const signedIn = !!userId;
+  const showAdmin = canAccessAdmin(role);
+
   const [isOpen, setIsOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
-  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
-  const [authReady, setAuthReady] = useState(false);
-  const [signedIn, setSignedIn] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -42,48 +56,23 @@ export default function Navbar() {
     return () => document.removeEventListener("keydown", handleEscape);
   }, []);
 
-  useEffect(() => {
-    let mounted = true;
-    let subscription: { unsubscribe: () => void } | null = null;
-
-    (async () => {
-      try {
-        const supabase = getSupabaseBrowserClient();
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (mounted) setSignedIn(!!user);
-      } catch {
-        if (mounted) setSignedIn(false);
-      } finally {
-        if (mounted) setAuthReady(true);
-      }
-
-      if (!mounted) return;
-      try {
-        const supabase = getSupabaseBrowserClient();
-        const {
-          data: { subscription: sub },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
-          if (mounted) setSignedIn(!!session?.user);
-        });
-        subscription = sub;
-      } catch {
-        /* missing env etc. */
-      }
-    })();
-
-    return () => {
-      mounted = false;
-      subscription?.unsubscribe();
-    };
-  }, []);
+  function navLinkClass(href: string) {
+    const active =
+      href === "/"
+        ? pathname === "/" || pathname === ""
+        : pathname === href || pathname.startsWith(`${href}/`);
+    return [
+      "rounded-full px-3 py-1.5 text-[13px] font-medium tracking-tight transition-colors",
+      active
+        ? "bg-foreground/[0.07] text-foreground"
+        : "text-foreground/65 hover:bg-foreground/[0.05] hover:text-foreground",
+    ].join(" ");
+  }
 
   async function handleSignOut() {
     try {
       const supabase = getSupabaseBrowserClient();
       await supabase.auth.signOut();
-      setSignedIn(false);
       setIsOpen(false);
       router.refresh();
     } catch {
@@ -92,169 +81,159 @@ export default function Navbar() {
   }
 
   return (
-    <>
-      <nav className="fixed top-0 w-full bg-background/90 backdrop-blur-md shadow-sm z-50">
-        <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
-            <motion.div
-              className="flex items-center space-x-3"
-              whileHover={{ scale: 1.05 }}
+    <header className="fixed top-0 right-0 left-0 z-50 border-b border-border/50 bg-background/75 backdrop-blur-xl supports-[backdrop-filter]:bg-background/65">
+      <nav
+        className={`mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 ${NAV_H}`}
+        aria-label="Primary"
+      >
+        <Link
+          href="/"
+          className="group flex shrink-0 items-center gap-2.5 sm:gap-3"
+        >
+          <img
+            src="/logo.png"
+            alt=""
+            className="h-9 w-9 rounded-lg object-cover ring-1 ring-black/5 sm:h-10 sm:w-10"
+          />
+          <div className="min-w-0 text-left">
+            <span className="block text-[15px] font-semibold tracking-tight text-foreground sm:text-base">
+              4C Research
+            </span>
+            <span className="hidden text-[11px] leading-snug tracking-wide text-muted-foreground/90 sm:block">
+              Cognition · Consciousness · Critical Care
+            </span>
+          </div>
+        </Link>
+
+        <div className="hidden items-center gap-0.5 md:flex lg:gap-1">
+          {primaryNav.map((item) => (
+            <Link key={item.href} href={item.href} className={navLinkClass(item.href)}>
+              {item.label}
+            </Link>
+          ))}
+
+          <div
+            ref={moreRef}
+            className="relative"
+            onMouseEnter={() => setMoreOpen(true)}
+            onMouseLeave={() => setMoreOpen(false)}
+          >
+            <button
+              type="button"
+              onClick={() => setMoreOpen((o) => !o)}
+              className={[
+                "inline-flex items-center gap-0.5 rounded-full px-3 py-1.5 text-[13px] font-medium tracking-tight text-foreground/65 transition-colors hover:bg-foreground/[0.05] hover:text-foreground",
+                moreOpen ? "bg-foreground/[0.07] text-foreground" : "",
+              ].join(" ")}
+              aria-expanded={moreOpen}
+              aria-haspopup="menu"
             >
-              <Link
-                href="/"
-                className="flex cursor-pointer items-center space-x-3"
-              >
-                <img
-                  src="/logo.png"
-                  alt="4C Research Lab Logo"
-                  className="w-10 h-10 rounded-lg"
-                />
-                <div className="flex flex-col">
-                  <span className="font-bold text-lg bg-linear-to-r from-brand to-consciousness bg-clip-text text-transparent leading-tight">
-                    4C RESEARCH
-                  </span>
-                  <span className="text-xs text-muted-foreground leading-tight">
-                    Cognition • Consciousness • Critical Care
-                  </span>
-                </div>
-              </Link>
-            </motion.div>
-
-            <div className="hidden md:flex items-center gap-6 lg:gap-8">
-              {primaryNav.map((item) => (
-                <div
-                  key={item.href}
-                  className="relative"
-                  onMouseEnter={() => setHoveredLink(item.href)}
-                  onMouseLeave={() => setHoveredLink(null)}
+              More
+              <ChevronDown
+                className={`h-3.5 w-3.5 opacity-60 transition-transform ${moreOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+            <AnimatePresence>
+              {moreOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 6 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 top-full z-50 pt-2"
+                  role="menu"
                 >
-                  <Link
-                    href={item.href}
-                    className="cursor-pointer text-muted-foreground hover:text-brand transition-colors font-medium text-sm lg:text-base"
-                  >
-                    {item.label}
-                  </Link>
-                  <AnimatePresence>
-                    {hoveredLink === item.href && (
-                      <motion.div
-                        initial={{ width: 0, opacity: 0 }}
-                        animate={{ width: "100%", opacity: 1 }}
-                        exit={{ width: 0, opacity: 0 }}
-                        transition={{ duration: 0.2, ease: "easeInOut" }}
-                        className="absolute bottom-0 left-0 h-0.5 bg-linear-to-r from-brand via-consciousness to-care rounded-full"
-                      />
-                    )}
-                  </AnimatePresence>
-                </div>
-              ))}
-
-              <div
-                ref={moreRef}
-                className="relative"
-                onMouseEnter={() => setMoreOpen(true)}
-                onMouseLeave={() => setMoreOpen(false)}
-              >
-                <button
-                  type="button"
-                  onClick={() => setMoreOpen((o) => !o)}
-                  className="inline-flex cursor-pointer items-center gap-1 text-muted-foreground hover:text-brand transition-colors font-medium text-sm lg:text-base"
-                  aria-expanded={moreOpen}
-                  aria-haspopup="menu"
-                  aria-label="More navigation links"
-                >
-                  More
-                  <ChevronDown
-                    className={`w-4 h-4 transition-transform duration-200 ${moreOpen ? "rotate-180" : ""}`}
-                    aria-hidden
-                  />
-                </button>
-                {moreOpen && (
-                  <div
-                    className="absolute right-0 top-full z-50 min-w-[13rem] pt-2"
-                    role="menu"
-                  >
-                    <div className="rounded-xl border border-border bg-card py-1.5 shadow-lg">
-                      {moreNav.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          role="menuitem"
-                          className="block cursor-pointer px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-muted hover:text-brand"
-                          onClick={() => setMoreOpen(false)}
-                        >
-                          {item.label}
-                        </Link>
-                      ))}
-                    </div>
+                  <div className="min-w-[14rem] rounded-2xl border border-border/80 bg-card/95 py-1.5 shadow-lg shadow-black/5 ring-1 ring-black/5 backdrop-blur-md">
+                    {moreNav.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        role="menuitem"
+                        className="block px-4 py-2 text-[13px] text-foreground/85 transition-colors hover:bg-muted/80 hover:text-foreground"
+                        onClick={() => setMoreOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
                   </div>
-                )}
-              </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
 
-              {!authReady ? (
-                <span
-                  className="inline-block h-5 w-[5rem] shrink-0 animate-pulse rounded bg-muted"
-                  aria-hidden
-                />
-              ) : signedIn ? (
-                <>
-                  <Link
-                    href="/dashboard/"
-                    className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-brand"
-                  >
-                    <LayoutDashboard className="h-4 w-4 shrink-0" aria-hidden />
-                    Dashboard
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => void handleSignOut()}
-                    className="text-sm font-medium text-muted-foreground transition-colors hover:text-brand"
-                  >
-                    Sign out
-                  </button>
-                </>
-              ) : (
+        <div className="hidden items-center gap-2 md:flex">
+          {!authReady ? (
+            <span className="inline-block h-8 w-24 animate-pulse rounded-full bg-muted/80" />
+          ) : signedIn ? (
+            <>
+              {showAdmin && (
                 <Link
-                  href="/login/"
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-brand"
+                  href="/admin/"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-background px-3 py-1.5 text-[13px] font-medium text-foreground/80 transition-colors hover:border-brand/30 hover:text-brand"
                 >
-                  Sign in
+                  <Shield className="h-3.5 w-3.5" aria-hidden />
+                  Admin
                 </Link>
               )}
               <Link
-                href="/contact"
-                className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-brand px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-brand-deep"
+                href="/dashboard/"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-medium text-foreground/65 transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
               >
-                <span>Contact</span>
-                <ArrowRight className="w-4 h-4" />
+                <LayoutDashboard className="h-3.5 w-3.5" aria-hidden />
+                Dashboard
               </Link>
-            </div>
-
-            <button
-              type="button"
-              className="cursor-pointer p-1 md:hidden"
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label={isOpen ? "Close menu" : "Open menu"}
+              <button
+                type="button"
+                onClick={() => void handleSignOut()}
+                className="rounded-full px-3 py-1.5 text-[13px] font-medium text-foreground/55 transition-colors hover:text-foreground"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login/"
+              className="rounded-full px-3 py-1.5 text-[13px] font-medium text-foreground/70 transition-colors hover:text-foreground"
             >
-              {isOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </button>
-          </div>
+              Sign in
+            </Link>
+          )}
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-1 rounded-full bg-brand px-3.5 py-2 text-[13px] font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-brand-deep"
+          >
+            Contact
+            <ArrowUpRight className="h-3.5 w-3.5 opacity-90" />
+          </Link>
+        </div>
 
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="md:hidden py-4 border-t border-border"
-            >
+        <button
+          type="button"
+          className="-mr-1 flex h-10 w-10 items-center justify-center rounded-full text-foreground md:hidden"
+          onClick={() => setIsOpen((o) => !o)}
+          aria-expanded={isOpen}
+          aria-label={isOpen ? "Close menu" : "Open menu"}
+        >
+          {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+      </nav>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden border-b border-border/50 bg-background/95 backdrop-blur-xl md:hidden"
+          >
+            <div className="space-y-0.5 px-4 pb-5 pt-1">
               {primaryNav.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="block cursor-pointer py-2.5 font-medium text-muted-foreground transition-colors hover:text-brand"
+                  className="block rounded-xl px-3 py-2.5 text-[15px] font-medium text-foreground/80 hover:bg-muted/70"
                   onClick={() => setIsOpen(false)}
                 >
                   {item.label}
@@ -262,22 +241,22 @@ export default function Navbar() {
               ))}
               <button
                 type="button"
-                className="flex w-full cursor-pointer items-center justify-between py-2.5 font-medium text-muted-foreground transition-colors hover:text-brand"
+                className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-[15px] font-medium text-foreground/80 hover:bg-muted/70"
                 onClick={() => setMobileMoreOpen((o) => !o)}
                 aria-expanded={mobileMoreOpen}
               >
                 More
                 <ChevronDown
-                  className={`w-4 h-4 shrink-0 transition-transform ${mobileMoreOpen ? "rotate-180" : ""}`}
+                  className={`h-4 w-4 transition-transform ${mobileMoreOpen ? "rotate-180" : ""}`}
                 />
               </button>
               {mobileMoreOpen && (
-                <div className="border-l-2 border-brand/30 pl-3 ml-1 mb-2 space-y-1">
+                <div className="ml-2 space-y-0.5 border-l-2 border-brand/25 pl-3">
                   {moreNav.map((item) => (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="block cursor-pointer py-2 text-sm text-muted-foreground hover:text-brand"
+                      className="block py-2 text-[14px] text-foreground/75"
                       onClick={() => {
                         setIsOpen(false);
                         setMobileMoreOpen(false);
@@ -288,49 +267,59 @@ export default function Navbar() {
                   ))}
                 </div>
               )}
-              {!authReady ? (
-                <div
-                  className="mt-3 h-11 w-full animate-pulse rounded-full bg-muted"
-                  aria-hidden
-                />
-              ) : signedIn ? (
-                <>
+              <div className="border-t border-border/60 pt-3 mt-2 space-y-2">
+                {!authReady ? (
+                  <div className="h-11 animate-pulse rounded-xl bg-muted/70" />
+                ) : signedIn ? (
+                  <>
+                    {showAdmin && (
+                      <Link
+                        href="/admin/"
+                        className="flex items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-[14px] font-medium"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Shield className="h-4 w-4" />
+                        Admin
+                      </Link>
+                    )}
+                    <Link
+                      href="/dashboard/"
+                      className="flex items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-[14px] font-medium"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <LayoutDashboard className="h-4 w-4" />
+                      Dashboard
+                    </Link>
+                    <button
+                      type="button"
+                      className="w-full rounded-xl py-2.5 text-[14px] font-medium text-muted-foreground"
+                      onClick={() => void handleSignOut()}
+                    >
+                      Sign out
+                    </button>
+                  </>
+                ) : (
                   <Link
-                    href="/dashboard/"
-                    className="mt-3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-border py-2.5 text-center font-medium text-foreground transition-colors hover:bg-muted"
+                    href="/login/"
+                    className="block rounded-xl border border-border py-2.5 text-center text-[14px] font-medium"
                     onClick={() => setIsOpen(false)}
                   >
-                    <LayoutDashboard className="h-4 w-4 shrink-0" aria-hidden />
-                    Dashboard
+                    Sign in
                   </Link>
-                  <button
-                    type="button"
-                    className="mt-2 block w-full cursor-pointer rounded-full border border-border py-2.5 text-center font-medium text-foreground transition-colors hover:bg-muted"
-                    onClick={() => void handleSignOut()}
-                  >
-                    Sign out
-                  </button>
-                </>
-              ) : (
+                )}
                 <Link
-                  href="/login/"
-                  className="mt-3 block w-full cursor-pointer rounded-full border border-border py-2.5 text-center font-medium text-foreground transition-colors hover:bg-muted"
+                  href="/contact"
+                  className="flex items-center justify-center gap-1 rounded-xl bg-brand py-3 text-[14px] font-semibold text-primary-foreground"
                   onClick={() => setIsOpen(false)}
                 >
-                  Sign in
+                  Contact
+                  <ArrowUpRight className="h-4 w-4" />
                 </Link>
-              )}
-              <Link
-                href="/contact"
-                className="mt-2 block w-full cursor-pointer rounded-full bg-brand px-4 py-2.5 text-center font-medium text-primary-foreground transition-colors hover:bg-brand-deep"
-                onClick={() => setIsOpen(false)}
-              >
-                Contact Us
-              </Link>
-            </motion.div>
-          )}
-        </div>
-      </nav>
-    </>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
   );
 }

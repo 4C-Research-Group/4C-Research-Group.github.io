@@ -29,7 +29,7 @@ export default function AppChrome({
       {!auth && <Navbar />}
       <main
         className={
-          auth ? "flex min-h-0 flex-1 flex-col pt-0" : "flex-1 pt-16"
+          auth ? "flex min-h-0 flex-1 flex-col pt-0" : "flex-1 pt-14"
         }
       >
         {children}

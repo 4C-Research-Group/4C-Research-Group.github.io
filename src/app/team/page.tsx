@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,11 +20,12 @@ import {
   UserPlus,
 } from "lucide-react";
 import {
-  teamMembers,
-  teamAlumni,
+  teamMembers as staticTeamMembers,
+  teamAlumni as staticTeamAlumni,
   type TeamMember,
   type TeamMemberCategory,
 } from "@/data/team";
+import { fetchTeamFromSupabase } from "@/lib/team/supabase-team";
 
 const ACCENT_ROTATION = [
   "text-cognition",
@@ -92,6 +93,25 @@ const FILTER_OPTIONS: {
 export default function TeamPage() {
   const [filter, setFilter] = useState<"all" | TeamMemberCategory>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [teamMembers, setTeamMembers] =
+    useState<TeamMember[]>(staticTeamMembers);
+  const [teamAlumni, setTeamAlumni] =
+    useState<TeamMember[]>(staticTeamAlumni);
+
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      const fromDb = await fetchTeamFromSupabase();
+      if (!alive || !fromDb) return;
+      if (fromDb.members.length > 0 || fromDb.alumni.length > 0) {
+        setTeamMembers(fromDb.members);
+        setTeamAlumni(fromDb.alumni);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const filtered = useMemo(() => {
     let filteredMembers =
@@ -109,13 +129,13 @@ export default function TeamPage() {
     }
 
     return filteredMembers;
-  }, [filter, searchQuery]);
+  }, [filter, searchQuery, teamMembers]);
 
   const counts = useMemo(() => {
     const students = teamMembers.filter((m) => m.category === "student").length;
     const staff = teamMembers.filter((m) => m.category === "staff").length;
     return { students, staff, total: teamMembers.length };
-  }, []);
+  }, [teamMembers]);
 
   return (
     <div className="min-h-screen bg-background">

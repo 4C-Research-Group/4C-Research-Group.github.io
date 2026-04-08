@@ -97,13 +97,13 @@ function SectionHeader({
 function TitleSubtitleGrid({
   items,
   accent,
-  singleColumn,
+  /** `single` = one column (narrow); `double` = max two columns at sm+; default = 2 cols sm, 3 cols lg */
+  columnLayout,
   noteSize = "xs",
 }: {
   items: PiTitleSubtitle[];
   accent: 0 | 1 | 2;
-  /** One column, full width — for long prose (e.g. grant CV narratives). */
-  singleColumn?: boolean;
+  columnLayout?: "default" | "single" | "double";
   noteSize?: "xs" | "sm";
 }) {
   const titleColors = [
@@ -111,9 +111,12 @@ function TitleSubtitleGrid({
     "text-care",
     "text-consciousness",
   ] as const;
-  const gridClass = singleColumn
-    ? "mx-auto grid max-w-none grid-cols-1 gap-4 lg:max-w-4xl"
-    : "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
+  const gridClass =
+    columnLayout === "single"
+      ? "mx-auto grid max-w-none grid-cols-1 gap-4 lg:max-w-4xl"
+      : columnLayout === "double"
+        ? "mx-auto grid w-full max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5"
+        : "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
   const noteClass =
     noteSize === "sm"
       ? "mt-2 text-sm leading-relaxed text-muted-foreground whitespace-pre-line"
@@ -441,7 +444,6 @@ export default function AboutPiPage() {
             <TitleSubtitleGrid
               items={[...d.grantsOngoing]}
               accent={0}
-              singleColumn
               noteSize="sm"
             />
             <h3 className="mb-3 mt-8 text-sm font-semibold text-foreground">
@@ -450,7 +452,6 @@ export default function AboutPiPage() {
             <TitleSubtitleGrid
               items={[...d.grantsCompleted]}
               accent={1}
-              singleColumn
               noteSize="sm"
             />
           </SectionShell>

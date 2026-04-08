@@ -1,4 +1,7 @@
 /** Fallback when Supabase is unavailable or team_members has not loaded. Prefer data in public.team_members (see seed_team_members.sql, /admin/team/). */
+
+import { slugifyTeamMember } from "@/lib/team/slug";
+
 export type TeamMemberCategory = "staff" | "student";
 
 export interface TeamMember {
@@ -11,15 +14,47 @@ export interface TeamMember {
   superpower: string;
 }
 
+/**
+ * Old `/team/team-N/` (or short) URLs → canonical name-based slug.
+ * Keep in sync with typical `team_members.slug` in DB until you migrate rows.
+ */
+export const LEGACY_TEAM_MEMBER_SLUGS: Record<string, string> = {
+  "team-2": "maysaa-assaf",
+  "team-3": "karen-wong",
+  "team-6": "srinidhi-srinivasan",
+  "team-7": "kyle-sun",
+  "team-8": "tallulah-nyland",
+  "team-10": "sukhnoor-riar",
+  saanvi: "saanvi-mittal",
+};
+
+/** URL slug to use in links and after redirect (`/team/<this>/`). */
+export function resolveCanonicalTeamSlug(slug: string): string {
+  return LEGACY_TEAM_MEMBER_SLUGS[slug] ?? slug;
+}
+
+/** If DB still stores a legacy slug, map canonical (URL) slug → DB `team_members.slug`. */
+export function legacyDbSlugForCanonical(canonical: string): string | undefined {
+  for (const [legacy, next] of Object.entries(LEGACY_TEAM_MEMBER_SLUGS)) {
+    if (next === canonical) return legacy;
+  }
+  return undefined;
+}
+
 export function findStaticTeamMemberBySlug(
   slug: string,
 ): TeamMember | undefined {
-  return [...teamMembers, ...teamAlumni].find((m) => m.slug === slug);
+  const canonical = resolveCanonicalTeamSlug(slug);
+  return [...teamMembers, ...teamAlumni].find((m) => m.slug === canonical);
+}
+
+function s(name: string): string {
+  return slugifyTeamMember(name);
 }
 
 export const teamMembers: TeamMember[] = [
   {
-    slug: "team-2",
+    slug: s("Maysaa Assaf"),
     photoFile: "team-2.jpg",
     name: "Maysaa Assaf",
     initials: "MA",
@@ -28,7 +63,7 @@ export const teamMembers: TeamMember[] = [
     superpower: "My smile!",
   },
   {
-    slug: "team-3",
+    slug: s("Karen Wong"),
     photoFile: "team-3.jpg",
     name: "Karen Wong",
     initials: "KW",
@@ -37,7 +72,7 @@ export const teamMembers: TeamMember[] = [
     superpower: "I play on the Women's Football team at Western!",
   },
   {
-    slug: "team-6",
+    slug: s("Srinidhi Srinivasan"),
     photoFile: "team-6.jpg",
     name: "Srinidhi Srinivasan",
     initials: "SS",
@@ -46,7 +81,7 @@ export const teamMembers: TeamMember[] = [
     superpower: "I am a long-distance runner!",
   },
   {
-    slug: "team-7",
+    slug: s("Kyle Sun"),
     photoFile: "team-7.jpg",
     name: "Kyle Sun",
     initials: "KS",
@@ -55,7 +90,7 @@ export const teamMembers: TeamMember[] = [
     superpower: "Still searching for my superpower... check back later!",
   },
   {
-    slug: "team-8",
+    slug: s("Tallulah Nyland"),
     photoFile: "team-8.jpg",
     name: "Tallulah Nyland",
     initials: "TN",
@@ -64,7 +99,7 @@ export const teamMembers: TeamMember[] = [
     superpower: "Still searching for my superpower... check back later!",
   },
   {
-    slug: "team-10",
+    slug: s("Sukhnoor Riar"),
     photoFile: "team-10.jpg",
     name: "Sukhnoor Riar",
     initials: "SR",
@@ -73,7 +108,7 @@ export const teamMembers: TeamMember[] = [
     superpower: "Quoting Bollywood songs and movies!",
   },
   {
-    slug: "hashmeet",
+    slug: s("Hashmeet"),
     photoFile: "",
     name: "Hashmeet",
     initials: "HS",
@@ -82,7 +117,7 @@ export const teamMembers: TeamMember[] = [
     superpower: "Bringing positive energy to the lab!",
   },
   {
-    slug: "saanvi",
+    slug: s("Saanvi Mittal"),
     photoFile: "",
     name: "Saanvi Mittal",
     initials: "SM",

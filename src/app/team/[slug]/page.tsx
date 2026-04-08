@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { findStaticTeamMemberBySlug } from "@/data/team";
+import { permanentRedirect } from "next/navigation";
+import { findStaticTeamMemberBySlug, resolveCanonicalTeamSlug } from "@/data/team";
 import { getAllTeamMemberSlugsForStaticParams } from "@/lib/team/static-slugs";
 import TeamPortfolioClient from "./TeamPortfolioClient";
 
@@ -21,5 +22,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TeamMemberPortfolioPage({ params }: Props) {
   const { slug } = await params;
-  return <TeamPortfolioClient slug={slug} />;
+  const canonical = resolveCanonicalTeamSlug(slug);
+  if (canonical !== slug) {
+    permanentRedirect(`/team/${canonical}/`);
+  }
+  return <TeamPortfolioClient slug={canonical} />;
 }

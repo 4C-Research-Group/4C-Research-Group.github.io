@@ -15,6 +15,10 @@ import {
 import { useAuthProfile } from "@/lib/auth/use-auth-profile";
 import { canAccessAdmin } from "@/lib/auth/roles";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import {
+  isTeamPortfolioPathname,
+  markTeamListScrollRestorePending,
+} from "@/lib/team/team-list-scroll";
 
 const primaryNav = [
   { label: "Home", href: "/" },
@@ -109,7 +113,16 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-0.5 md:flex lg:gap-1">
           {primaryNav.map((item) => (
-            <Link key={item.href} href={item.href} className={navLinkClass(item.href)}>
+            <Link
+              key={item.href}
+              href={item.href}
+              className={navLinkClass(item.href)}
+              onClick={
+                item.href === "/team" && isTeamPortfolioPathname(pathname)
+                  ? () => markTeamListScrollRestorePending()
+                  : undefined
+              }
+            >
               {item.label}
             </Link>
           ))}
@@ -252,7 +265,12 @@ export default function Navbar() {
                   key={item.href}
                   href={item.href}
                   className="block rounded-xl px-3 py-2.5 text-[15px] font-medium text-foreground/80 hover:bg-muted/70"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => {
+                    if (item.href === "/team" && isTeamPortfolioPathname(pathname)) {
+                      markTeamListScrollRestorePending();
+                    }
+                    setIsOpen(false);
+                  }}
                 >
                   {item.label}
                 </Link>

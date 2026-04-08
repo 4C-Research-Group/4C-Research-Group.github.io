@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -12,14 +11,16 @@ import {
   Sparkles,
 } from "lucide-react";
 import { findStaticTeamMemberBySlug } from "@/data/team";
-import { resolveTeamMemberPhotoUrl } from "@/lib/team/photo-url";
+import { resolveTeamMemberDisplayPhotoUrl } from "@/lib/team/photo-url";
 import { publicationStatusLabel } from "@/lib/team/publication-status";
 import {
+  enrichTeamMemberPhotoFromStatic,
   fetchTeamPortfolioBySlug,
   staticTeamMemberToPortfolio,
   type TeamMemberPortfolio,
   type TeamMemberPublication,
 } from "@/lib/team/supabase-portfolio";
+import { markTeamListScrollRestorePending } from "@/lib/team/team-list-scroll";
 
 function statusBadgeClass(status: TeamMemberPublication["status"]): string {
   switch (status) {
@@ -45,11 +46,13 @@ function MemberHeroPhoto({
   initials: string;
 }) {
   const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
   if (!src || failed) {
     return (
       <div
-        className="flex aspect-[4/5] w-full max-w-[280px] items-center justify-center rounded-2xl border border-border/60 bg-linear-to-br from-brand/20 via-consciousness/15 to-care/20 sm:max-w-[320px]"
-        aria-hidden
+        className="flex aspect-[4/5] w-[min(100%,280px)] shrink-0 items-center justify-center rounded-2xl border border-border/60 bg-linear-to-br from-brand/20 via-consciousness/15 to-care/20 sm:w-[320px]"
       >
         <span className="text-5xl font-bold tracking-tight text-brand sm:text-6xl">
           {initials}
@@ -58,14 +61,17 @@ function MemberHeroPhoto({
     );
   }
   return (
-    <div className="relative aspect-[4/5] w-full max-w-[280px] overflow-hidden rounded-2xl border border-border/60 shadow-lg sm:max-w-[320px]">
-      <Image
+    <div className="w-[min(100%,280px)] shrink-0 overflow-hidden rounded-2xl border border-border/60 shadow-lg sm:w-[320px]">
+      {/* Native img: reliable with static export + basePath; avoids Next/Image `fill` + flex width collapse */}
+      <img
+        key={src}
         src={src}
         alt={alt}
-        fill
-        className="object-cover"
-        style={{ objectPosition: "center 30%" }}
-        sizes="(max-width: 640px) 100vw, 320px"
+        width={320}
+        height={400}
+        className="aspect-[4/5] h-auto w-full object-cover [object-position:center_30%]"
+        loading="eager"
+        decoding="async"
         onError={() => setFailed(true)}
       />
     </div>
@@ -83,11 +89,18 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
       const res = await fetchTeamPortfolioBySlug(slug);
       if (!alive) return;
       if (res.member) {
-        setMember(res.member);
+        setMember(enrichTeamMemberPhotoFromStatic(res.member, slug));
         setPublications(res.publications);
       } else if (!res.usedDatabase) {
         const stat = findStaticTeamMemberBySlug(slug);
-        setMember(stat ? staticTeamMemberToPortfolio(stat) : null);
+        setMember(
+          stat
+            ? enrichTeamMemberPhotoFromStatic(
+                staticTeamMemberToPortfolio(stat),
+                slug,
+              )
+            : null,
+        );
         setPublications([]);
       } else {
         setMember(null);
@@ -121,6 +134,7 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
           </p>
           <Link
             href="/team/"
+            onClick={() => markTeamListScrollRestorePending()}
             className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-brand hover:text-brand-deep"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -131,7 +145,7 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
     );
   }
 
-  const photo = resolveTeamMemberPhotoUrl(member.photoFile);
+  const photo = resolveTeamMemberDisplayPhotoUrl(member.photoFile, member.slug);
   const showBio = member.bio.trim().length > 0;
 
   return (
@@ -140,6 +154,7 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
         <div className="container mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
           <Link
             href="/team/"
+            onClick={() => markTeamListScrollRestorePending()}
             className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-brand hover:text-brand-deep"
           >
             <ArrowLeft className="h-4 w-4 shrink-0" />

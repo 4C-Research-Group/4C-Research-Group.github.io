@@ -1,5 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
-import { teamAlumni, teamMembers } from "@/data/team";
+import {
+  LEGACY_TEAM_MEMBER_SLUGS,
+  teamAlumni,
+  teamMembers,
+} from "@/data/team";
 import type { Database } from "@/lib/supabase/database.types";
 
 /** All `/team/[slug]/` paths for static export: static seed data plus DB slugs at build time when env is set. */
@@ -9,6 +13,9 @@ export async function getAllTeamMemberSlugsForStaticParams(): Promise<
   const slugSet = new Set<string>();
   for (const m of teamMembers) slugSet.add(m.slug);
   for (const m of teamAlumni) slugSet.add(m.slug);
+  for (const legacy of Object.keys(LEGACY_TEAM_MEMBER_SLUGS)) {
+    slugSet.add(legacy);
+  }
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_KEY;

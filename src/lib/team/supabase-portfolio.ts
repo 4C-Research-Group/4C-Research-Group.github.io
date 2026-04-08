@@ -1,6 +1,9 @@
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import {
+  findStaticTeamMemberBySlug,
+  legacyDbSlugForCanonical,
   teamAlumni,
+  resolveCanonicalTeamSlug,
   type TeamMember,
   type TeamMemberCategory,
 } from "@/data/team";
@@ -40,6 +43,27 @@ export function staticTeamMemberToPortfolio(m: TeamMember): TeamMemberPortfolio 
     linkedinUrl: "",
     isAlumni,
   };
+}
+
+/** Use the same `photo_file` fallback as static seed when DB row has no image. */
+export function enrichTeamMemberPhotoFromStatic(
+  member: TeamMemberPortfolio,
+  urlCanonicalSlug: string,
+): TeamMemberPortfolio {
+  if ((member.photoFile ?? "").trim()) return member;
+  const stat =
+    findStaticTeamMemberBySlug(urlCanonicalSlug) ??
+    findStaticTeamMemberBySlug(member.slug);
+  if (stat?.photoFile?.trim()) {
+    return { ...member, photoFile: stat.photoFile };
+  }
+  return member;
+}
+
+function portfolioSlugsToQuery(urlSlug: string): string[] {
+  const canonical = resolveCanonicalTeamSlug(urlSlug);
+  const legacy = legacyDbSlugForCanonical(canonical);
+  return [...new Set([urlSlug, canonical, legacy].filter(Boolean) as string[])];
 }
 
 function rowToMember(r: {
@@ -104,21 +128,44 @@ export async function fetchTeamPortfolioBySlug(slug: string): Promise<{
 }> {
   try {
     const supabase = getSupabaseBrowserClient();
-    const { data: row, error } = await supabase
-      .from("team_members")
-      .select(
-        "id,slug,name,initials,role_title,category,superpower,photo_file,is_alumni,bio,email,linkedin_url"
-      )
-      .eq("slug", slug)
-      .maybeSingle();
-    if (error) {
-      console.warn("[team portfolio]", error.message);
-      return { member: null, publications: [], usedDatabase: false };
+    const canonical = resolveCanonicalTeamSlug(slug);
+    let row: {
+      id: string;
+      slug: string;
+      name: string;
+      initials: string;
+      role_title: string;
+      category: string;
+      superpower: string;
+      photo_file: string;
+      is_alumni: boolean;
+      bio?: string | null;
+      email?: string | null;
+      linkedin_url?: string | null;
+    } | null = null;
+
+    for (const s of portfolioSlugsToQuery(slug)) {
+      const { data, error } = await supabase
+        .from("team_members")
+        .select(
+          "id,slug,name,initials,role_title,category,superpower,photo_file,is_alumni,bio,email,linkedin_url"
+        )
+        .eq("slug", s)
+        .maybeSingle();
+      if (error) {
+        console.warn("[team portfolio]", error.message);
+        return { member: null, publications: [], usedDatabase: false };
+      }
+      if (data) {
+        row = data;
+        break;
+      }
     }
+
     if (!row) {
       return { member: null, publications: [], usedDatabase: true };
     }
-    const member = rowToMember(row);
+    const member = { ...rowToMember(row), slug: canonical };
     const { data: pubRows, error: pubErr } = await supabase
       .from("team_member_publications")
       .select(

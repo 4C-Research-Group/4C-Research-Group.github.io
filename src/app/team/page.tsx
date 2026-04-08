@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,10 +22,21 @@ import {
 import {
   teamMembers as staticTeamMembers,
   teamAlumni as staticTeamAlumni,
+  resolveCanonicalTeamSlug,
   type TeamMember,
   type TeamMemberCategory,
 } from "@/data/team";
-import { resolveTeamMemberPhotoUrl } from "@/lib/team/photo-url";
+import { resolveTeamMemberDisplayPhotoUrl } from "@/lib/team/photo-url";
+import {
+  rememberTeamListScroll,
+  consumeTeamListScrollY,
+  takeTeamListScrollRestorePending,
+  discardSavedTeamListScroll,
+  saveTeamPageScrollBeforeHide,
+  consumeTeamPageReloadScrollY,
+  clearTeamPageReloadScroll,
+  isBrowserReloadNavigation,
+} from "@/lib/team/team-list-scroll";
 import { fetchTeamFromSupabase } from "@/lib/team/supabase-team";
 
 const ACCENT_ROTATION = [
@@ -114,6 +125,39 @@ export default function TeamPage() {
       alive = false;
     };
   }, []);
+
+  useEffect(() => {
+    function onHide() {
+      saveTeamPageScrollBeforeHide();
+    }
+    window.addEventListener("pagehide", onHide);
+    document.addEventListener("freeze", onHide);
+    return () => {
+      window.removeEventListener("pagehide", onHide);
+      document.removeEventListener("freeze", onHide);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    if (teamMembers === null) return;
+    const isReload = isBrowserReloadNavigation();
+
+    if (takeTeamListScrollRestorePending()) {
+      const y = consumeTeamListScrollY();
+      if (y != null) window.scrollTo({ top: y, behavior: "auto" });
+      clearTeamPageReloadScroll();
+      return;
+    }
+
+    discardSavedTeamListScroll();
+
+    if (isReload) {
+      const y = consumeTeamPageReloadScrollY();
+      if (y != null) window.scrollTo({ top: y, behavior: "auto" });
+    } else {
+      clearTeamPageReloadScroll();
+    }
+  }, [teamMembers]);
 
   const filtered = useMemo(() => {
     let filteredMembers =
@@ -521,13 +565,17 @@ export default function TeamPage() {
                     className="group relative list-none"
                   >
                     <Link
-                      href={`/team/${member.slug}/`}
+                      href={`/team/${resolveCanonicalTeamSlug(member.slug)}/`}
+                      onClick={() => rememberTeamListScroll()}
                       className="block h-full rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     >
                     <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/50 bg-muted/30 shadow-sm ring-1 ring-transparent transition duration-300 hover:-translate-y-1 hover:border-brand/15 hover:shadow-md hover:shadow-brand/[0.05] hover:ring-brand/5">
                       <div className="relative aspect-[3/4] overflow-hidden bg-muted/50">
                         <TeamPhoto
-                          src={resolveTeamMemberPhotoUrl(member.photoFile)}
+                          src={resolveTeamMemberDisplayPhotoUrl(
+                            member.photoFile,
+                            member.slug,
+                          )}
                           alt={member.name}
                           initials={member.initials}
                           className="object-cover transition duration-700 ease-out group-hover:scale-[1.02]"
@@ -610,13 +658,17 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
       className="group relative list-none"
     >
       <Link
-        href={`/team/${member.slug}/`}
+        href={`/team/${resolveCanonicalTeamSlug(member.slug)}/`}
+        onClick={() => rememberTeamListScroll()}
         className="block h-full rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
       <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm ring-1 ring-transparent transition duration-300 hover:-translate-y-1 hover:border-brand/20 hover:shadow-xl hover:shadow-brand/[0.07] hover:ring-brand/10">
         <div className="relative aspect-[3/4] overflow-hidden bg-muted">
           <TeamPhoto
-            src={resolveTeamMemberPhotoUrl(member.photoFile)}
+            src={resolveTeamMemberDisplayPhotoUrl(
+              member.photoFile,
+              member.slug,
+            )}
             alt={member.name}
             initials={member.initials}
             className="object-cover transition duration-700 ease-out group-hover:scale-[1.04]"

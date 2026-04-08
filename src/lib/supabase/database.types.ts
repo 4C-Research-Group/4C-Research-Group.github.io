@@ -41,6 +41,9 @@ export interface Database {
           photo_file: string;
           is_alumni: boolean;
           sort_order: number;
+          bio: string;
+          email: string;
+          linkedin_url: string;
           created_at: string;
           updated_at: string;
         };
@@ -55,10 +58,47 @@ export interface Database {
           photo_file?: string;
           is_alumni?: boolean;
           sort_order?: number;
+          bio?: string;
+          email?: string;
+          linkedin_url?: string;
           created_at?: string;
           updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["team_members"]["Insert"]>;
+        Relationships: [];
+      };
+      team_member_publications: {
+        Row: {
+          id: string;
+          team_member_id: string;
+          title: string;
+          authors: string;
+          venue: string;
+          year: string;
+          url: string;
+          notes: string;
+          status: string;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          team_member_id: string;
+          title: string;
+          authors?: string;
+          venue?: string;
+          year?: string;
+          url?: string;
+          notes?: string;
+          status?: string;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["team_member_publications"]["Insert"]
+        >;
         Relationships: [];
       };
       page_content: {

@@ -11,6 +11,12 @@ export interface TeamMember {
   superpower: string;
 }
 
+export function findStaticTeamMemberBySlug(
+  slug: string,
+): TeamMember | undefined {
+  return [...teamMembers, ...teamAlumni].find((m) => m.slug === slug);
+}
+
 export const teamMembers: TeamMember[] = [
   {
     slug: "team-2",

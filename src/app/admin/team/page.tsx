@@ -10,6 +10,7 @@ import {
   Users,
 } from "lucide-react";
 import TeamPhotoField from "@/components/admin/TeamPhotoField";
+import TeamMemberPublicationsEditor from "@/components/admin/TeamMemberPublicationsEditor";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { slugifyTeamMember } from "@/lib/team/slug";
 import {
@@ -30,6 +31,9 @@ type MemberRow = {
   photo_file: string;
   is_alumni: boolean;
   sort_order: number;
+  bio: string;
+  email: string;
+  linkedin_url: string;
 };
 
 type RowEdit = {
@@ -42,6 +46,9 @@ type RowEdit = {
   photo_file: string;
   is_alumni: boolean;
   sort_order: number;
+  bio: string;
+  email: string;
+  linkedin_url: string;
 };
 
 type NewMemberDraft = {
@@ -53,6 +60,9 @@ type NewMemberDraft = {
   superpower: string;
   photo_file: string;
   is_alumni: boolean;
+  bio: string;
+  email: string;
+  linkedin_url: string;
 };
 
 const emptyDraft: NewMemberDraft = {
@@ -64,6 +74,9 @@ const emptyDraft: NewMemberDraft = {
   superpower: "",
   photo_file: "",
   is_alumni: false,
+  bio: "",
+  email: "",
+  linkedin_url: "",
 };
 
 function fromServer(r: MemberRow): RowEdit {
@@ -77,6 +90,9 @@ function fromServer(r: MemberRow): RowEdit {
     photo_file: r.photo_file,
     is_alumni: r.is_alumni,
     sort_order: r.sort_order,
+    bio: r.bio ?? "",
+    email: r.email ?? "",
+    linkedin_url: r.linkedin_url ?? "",
   };
 }
 
@@ -90,7 +106,10 @@ function rowEditsDiffer(a: RowEdit, b: RowEdit): boolean {
     a.superpower !== b.superpower ||
     a.photo_file !== b.photo_file ||
     a.is_alumni !== b.is_alumni ||
-    a.sort_order !== b.sort_order
+    a.sort_order !== b.sort_order ||
+    a.bio !== b.bio ||
+    a.email !== b.email ||
+    a.linkedin_url !== b.linkedin_url
   );
 }
 
@@ -163,6 +182,9 @@ export default function AdminTeamPage() {
         photo_file,
         is_alumni: draft.is_alumni,
         sort_order,
+        bio: draft.bio.trim(),
+        email: draft.email.trim(),
+        linkedin_url: draft.linkedin_url.trim(),
         updated_at: new Date().toISOString(),
       });
       if (error) throw new Error(error.message);
@@ -220,6 +242,9 @@ export default function AdminTeamPage() {
     draft.role_title.trim() !== "" ||
     draft.superpower.trim() !== "" ||
     draft.photo_file.trim() !== "" ||
+    draft.bio.trim() !== "" ||
+    draft.email.trim() !== "" ||
+    draft.linkedin_url.trim() !== "" ||
     draft.is_alumni ||
     pendingPhotoNew !== null;
 
@@ -229,11 +254,18 @@ export default function AdminTeamPage() {
         <h1 className="text-2xl font-bold tracking-tight">Team</h1>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
           Manage who appears on the public{" "}
-          <span className="text-foreground/90">Team</span> page. Each person is a
-          card: edit fields, then <strong className="text-foreground">Save</strong>{" "}
-          to publish changes (stored in{" "}
+          <span className="text-foreground/90">Team</span> page and their{" "}
+          <span className="text-foreground/90">portfolio</span> (
+          <code className="rounded bg-muted px-1 py-0.5 text-xs">/team/your-slug/</code>
+          ). Each person is a card: edit fields, then{" "}
+          <strong className="text-foreground">Save</strong> to publish (stored
+          in{" "}
           <code className="rounded bg-muted px-1 py-0.5 text-xs">
             public.team_members
+          </code>
+          ; publications in{" "}
+          <code className="rounded bg-muted px-1 py-0.5 text-xs">
+            team_member_publications
           </code>
           ). Photos upload to Supabase Storage (bucket{" "}
           <code className="rounded bg-muted px-1 py-0.5 text-xs">team-photos</code>
@@ -250,6 +282,10 @@ export default function AdminTeamPage() {
           <li>
             <strong className="font-medium text-foreground">Sort</strong> controls
             order (lower numbers first).
+          </li>
+          <li>
+            <strong className="font-medium text-foreground">Bio &amp; publications</strong>{" "}
+            appear on each member&apos;s portfolio page.
           </li>
         </ul>
       </div>
@@ -337,6 +373,32 @@ export default function AdminTeamPage() {
               />
             </label>
           </div>
+          <div className="sm:col-span-2 lg:col-span-3">
+            <label className="flex flex-col gap-1.5 text-xs font-medium text-muted-foreground">
+              Portfolio bio (longer; optional)
+              <textarea
+                className="min-h-[6rem] w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
+                value={draft.bio}
+                onChange={(e) => setDraft((d) => ({ ...d, bio: e.target.value }))}
+                rows={4}
+                placeholder="Shown on /team/slug/ under About"
+              />
+            </label>
+          </div>
+          <Field
+            label="Email (portfolio)"
+            value={draft.email}
+            onChange={(email) => setDraft((d) => ({ ...d, email }))}
+            placeholder="name@example.com"
+          />
+          <Field
+            label="LinkedIn URL"
+            value={draft.linkedin_url}
+            onChange={(linkedin_url) =>
+              setDraft((d) => ({ ...d, linkedin_url }))
+            }
+            placeholder="https://linkedin.com/in/…"
+          />
           <label className="flex items-center gap-2.5 pt-1 text-sm text-foreground sm:col-span-2">
             <input
               type="checkbox"
@@ -481,6 +543,9 @@ function TeamMemberCard({
         photo_file,
         is_alumni: local.is_alumni,
         sort_order: local.sort_order,
+        bio: local.bio.trim(),
+        email: local.email.trim(),
+        linkedin_url: local.linkedin_url.trim(),
       });
     } catch (e) {
       reportError(e instanceof Error ? e.message : "Save failed");
@@ -607,6 +672,33 @@ function TeamMemberCard({
             />
           </label>
         </div>
+        <div className="sm:col-span-2 lg:col-span-3">
+          <label className="flex flex-col gap-1.5 text-xs font-medium text-muted-foreground">
+            Portfolio bio (optional)
+            <textarea
+              className="min-h-[6rem] w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
+              value={local.bio}
+              onChange={(e) =>
+                setLocal((s) => ({ ...s, bio: e.target.value }))
+              }
+              rows={5}
+            />
+          </label>
+        </div>
+        <Field
+          label="Email (portfolio)"
+          value={local.email}
+          onChange={(email) => setLocal((s) => ({ ...s, email }))}
+          placeholder="name@example.com"
+        />
+        <Field
+          label="LinkedIn URL"
+          value={local.linkedin_url}
+          onChange={(linkedin_url) =>
+            setLocal((s) => ({ ...s, linkedin_url }))
+          }
+          placeholder="https://linkedin.com/in/…"
+        />
         <label className="flex items-center gap-2.5 text-sm text-foreground sm:col-span-2">
           <input
             type="checkbox"
@@ -618,6 +710,13 @@ function TeamMemberCard({
           />
           Alumni (Lab Alumni section)
         </label>
+      </div>
+
+      <div className="border-t border-border/70 px-4 py-4 sm:px-5">
+        <TeamMemberPublicationsEditor
+          memberId={serverRow.id}
+          memberName={displayName}
+        />
       </div>
 
       <div className="flex flex-col gap-3 border-t border-border/70 bg-muted/10 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">

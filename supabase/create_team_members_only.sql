@@ -56,3 +56,8 @@ create policy "team_admin_update"
 create policy "team_admin_delete"
   on public.team_members for delete
   using (public.current_app_role() in ('admin', 'superuser'));
+
+-- Portfolio + publications (also in cms_schema.sql and team_member_portfolio.sql)
+alter table public.team_members add column if not exists bio text not null default '';
+alter table public.team_members add column if not exists email text not null default '';
+alter table public.team_members add column if not exists linkedin_url text not null default '';

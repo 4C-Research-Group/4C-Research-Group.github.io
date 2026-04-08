@@ -520,6 +520,10 @@ export default function TeamPage() {
                     }}
                     className="group relative list-none"
                   >
+                    <Link
+                      href={`/team/${member.slug}/`}
+                      className="block h-full rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    >
                     <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/50 bg-muted/30 shadow-sm ring-1 ring-transparent transition duration-300 hover:-translate-y-1 hover:border-brand/15 hover:shadow-md hover:shadow-brand/[0.05] hover:ring-brand/5">
                       <div className="relative aspect-[3/4] overflow-hidden bg-muted/50">
                         <TeamPhoto
@@ -560,6 +564,7 @@ export default function TeamPage() {
                         </div>
                       </div>
                     </article>
+                    </Link>
                   </motion.li>
                 ))}
               </motion.ul>
@@ -604,6 +609,10 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
       }}
       className="group relative list-none"
     >
+      <Link
+        href={`/team/${member.slug}/`}
+        className="block h-full rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      >
       <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm ring-1 ring-transparent transition duration-300 hover:-translate-y-1 hover:border-brand/20 hover:shadow-xl hover:shadow-brand/[0.07] hover:ring-brand/10">
         <div className="relative aspect-[3/4] overflow-hidden bg-muted">
           <TeamPhoto
@@ -657,6 +666,7 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
           </div>
         </div>
       </article>
+      </Link>
     </motion.li>
   );
 }

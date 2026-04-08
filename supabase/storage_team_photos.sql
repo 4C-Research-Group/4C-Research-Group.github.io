@@ -1,4 +1,24 @@
--- Public bucket for team headshots. Run after cms_schema.sql (needs public.is_admin_or_superuser).
+-- Public bucket for team headshots (safe to re-run).
+-- Defines is_admin_or_superuser() here so this file runs standalone;
+-- cms_schema.sql uses the same definition if you applied it already.
+
+create or replace function public.is_admin_or_superuser()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.users u
+    where u.id = auth.uid()
+      and u.role in ('admin', 'superuser')
+  );
+$$;
+
+grant execute on function public.is_admin_or_superuser() to authenticated;
+grant execute on function public.is_admin_or_superuser() to service_role;
+
 -- Dashboard: Storage → ensure bucket exists if insert fails.
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)

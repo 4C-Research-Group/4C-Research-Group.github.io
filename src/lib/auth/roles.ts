@@ -1,7 +1,8 @@
 export type AppRole = "user" | "admin" | "superuser";
 
 export function normalizeRole(value: string | null | undefined): AppRole {
-  if (value === "superuser" || value === "admin") return value;
+  const v = typeof value === "string" ? value.trim().toLowerCase() : "";
+  if (v === "superuser" || v === "admin") return v;
   return "user";
 }
 

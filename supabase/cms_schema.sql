@@ -1,4 +1,21 @@
--- Run in Supabase SQL Editor after you have public.users from sign-up.
+-- Run in Supabase SQL Editor (Dashboard → SQL) as a project admin.
+-- Order: this file is self-contained — creates public.users if missing, then CMS tables + RLS.
+--
+-- After running, promote your account once (see bottom): then open Admin → Users to edit anyone’s role.
+
+-- 0) App profile per auth user (roles for CMS / admin)
+create table if not exists public.users (
+  id uuid primary key references auth.users (id) on delete cascade,
+  email text,
+  name text,
+  role text not null default 'user'
+    check (role in ('user', 'admin', 'superuser')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists users_email_lower_idx on public.users (lower(email));
+
 -- 1) Helper: reads role without RLS recursion
 create or replace function public.current_app_role()
 returns text
@@ -10,6 +27,22 @@ as $$
   select coalesce(
     (select u.role from public.users u where u.id = auth.uid()),
     'user'
+  );
+$$;
+
+-- True when the signed-in user’s row in public.users has role superuser. Used in RLS on public.users
+-- so we never call current_app_role() during a per-row users scan (that only ever exposed “self”).
+create or replace function public.is_superuser()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.users u
+    where u.id = auth.uid()
+      and u.role = 'superuser'
   );
 $$;
 
@@ -86,7 +119,10 @@ alter table public.users enable row level security;
 drop policy if exists "users_insert_own" on public.users;
 create policy "users_insert_own"
   on public.users for insert
-  with check (id = auth.uid());
+  with check (
+    id = auth.uid()
+    and role = 'user'
+  );
 
 drop policy if exists "users_self_read" on public.users;
 create policy "users_self_read"
@@ -96,7 +132,7 @@ create policy "users_self_read"
 drop policy if exists "users_super_read_all" on public.users;
 create policy "users_super_read_all"
   on public.users for select
-  using (public.current_app_role() = 'superuser');
+  using (public.is_superuser());
 
 drop policy if exists "users_self_update" on public.users;
 drop policy if exists "users_super_role_update" on public.users;
@@ -105,12 +141,76 @@ create policy "users_update_own_or_super"
   to authenticated
   using (
     id = auth.uid()
-    or public.current_app_role() = 'superuser'
+    or public.is_superuser()
   )
   with check (
     id = auth.uid()
-    or public.current_app_role() = 'superuser'
+    or public.is_superuser()
   );
 
--- 5) Bootstrap first superuser (set YOUR email, run once)
--- update public.users set role = 'superuser' where email = 'you@example.com';
+-- Superuser-only listing: plain SELECT from the client often returns only your own row because RLS
+-- evaluates policies per row and current_app_role() + self-read interact badly. This runs as the
+-- function owner (bypasses RLS on the scan) after verifying the caller is superuser.
+create or replace function public.admin_list_app_users()
+returns table (
+  id uuid,
+  email text,
+  name text,
+  role text
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select u.id, u.email, u.name, u.role
+  from public.users u
+  where (select public.is_superuser())
+  order by u.email asc nulls last;
+$$;
+
+revoke all on function public.admin_list_app_users() from public;
+grant execute on function public.admin_list_app_users() to authenticated;
+
+-- Only superusers may change the role column (stops self-promotion via API).
+create or replace function public.users_enforce_role_change()
+returns trigger
+language plpgsql
+as $$
+begin
+  if OLD.role is distinct from NEW.role then
+    if not public.is_superuser() then
+      raise exception 'Only a superuser can change user roles';
+    end if;
+  end if;
+  return NEW;
+end;
+$$;
+
+drop trigger if exists users_role_guard on public.users;
+create trigger users_role_guard
+  before update on public.users
+  for each row
+  execute function public.users_enforce_role_change();
+
+-- 5) Bootstrap your first superuser (run in SQL Editor; then use Admin → Users for everyone else)
+--
+-- If UPDATE returns "UPDATE 0", there was no public.users row yet (common when you only ever signed in,
+-- not signed up through the app). Use this one statement instead (replace email):
+--
+--   insert into public.users (id, email, name, role, created_at, updated_at)
+--   select u.id, u.email, split_part(coalesce(u.email, ''), '@', 1), 'superuser', now(), now()
+--   from auth.users u
+--   where lower(u.email) = lower('you@example.com')
+--   on conflict (id) do update set role = 'superuser', updated_at = now();
+--
+-- Or, if the row already exists:
+--   update public.users
+--   set role = 'superuser', updated_at = now()
+--   where lower(email) = lower('you@example.com');
+--
+-- If Authentication has more users than public.users (All users list is short), backfill:
+--   insert into public.users (id, email, name, role, created_at, updated_at)
+--   select u.id, u.email, split_part(coalesce(u.email, ''), '@', 1), 'user', now(), now()
+--   from auth.users u
+--   where not exists (select 1 from public.users p where p.id = u.id);

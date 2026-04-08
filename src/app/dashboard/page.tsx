@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { useAuthProfile } from "@/lib/auth/use-auth-profile";
+import SuperuserUsersTable from "@/components/admin/SuperuserUsersTable";
 import {
   canAccessAdmin,
   canManageUsers,
@@ -58,13 +59,16 @@ function DashboardInner() {
     email,
     name,
     role,
+    hasProfileRow,
     profileCreatedAt,
     profileUpdatedAt,
     authCreatedAt,
     lastSignInAt,
+    refresh,
   } = useAuthProfile();
 
   const [sessionChecked, setSessionChecked] = useState(false);
+  const [profileRefreshing, setProfileRefreshing] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -102,6 +106,15 @@ function DashboardInner() {
     await supabase.auth.signOut();
     router.replace("/");
     router.refresh();
+  }
+
+  async function reloadProfile() {
+    setProfileRefreshing(true);
+    try {
+      await refresh();
+    } finally {
+      setProfileRefreshing(false);
+    }
   }
 
   if (!sessionChecked || !profileReady) {
@@ -170,6 +183,20 @@ function DashboardInner() {
             </p>
           )}
 
+          {!hasProfileRow && userId && (
+            <div className="border-b border-neutral-300 bg-amber-50 px-5 py-3 text-sm text-neutral-900 sm:px-8">
+              <p className="font-medium text-neutral-950">
+                No profile row in{" "}
+                <code className="rounded bg-amber-100/80 px-1">public.users</code>
+                . Check Supabase RLS, or create the row in the SQL Editor (use
+                your user id):
+              </p>
+              <code className="mt-2 block break-all rounded border border-amber-200/80 bg-white px-2 py-1.5 text-xs text-neutral-800">
+                {userId}
+              </code>
+            </div>
+          )}
+
           <div className="grid gap-0 lg:grid-cols-12">
             <div className="border-b border-neutral-300 px-5 py-6 sm:px-8 lg:col-span-7 lg:border-b-0 lg:border-r">
               <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-neutral-500">
@@ -197,6 +224,23 @@ function DashboardInner() {
                   label="Permission"
                   value={`${roleLabel(role)} · ${permissionBlurb(role)}`}
                 />
+                <div className="flex flex-col justify-center gap-2 border border-neutral-200 bg-neutral-50/80 px-3 py-3 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between sm:px-4">
+                  <p className="text-xs leading-snug text-neutral-600">
+                    Permission is read from{" "}
+                    <code className="rounded bg-white px-1 text-neutral-800">
+                      public.users.role
+                    </code>
+                    . After changing it in Supabase SQL, reload here.
+                  </p>
+                  <button
+                    type="button"
+                    disabled={profileRefreshing}
+                    onClick={() => void reloadProfile()}
+                    className="shrink-0 border border-neutral-900 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-900 disabled:opacity-50"
+                  >
+                    {profileRefreshing ? "Loading…" : "Reload profile"}
+                  </button>
+                </div>
                 <DetailCell
                   icon={Calendar}
                   label="Account created"
@@ -261,20 +305,16 @@ function DashboardInner() {
                   <li className="flex items-start gap-2">
                     <Users className="mt-0.5 h-4 w-4 shrink-0 text-neutral-950" />
                     <span>
-                      Superuser: set{" "}
+                      Superuser: manage every account’s role in the{" "}
                       <strong className="font-semibold text-neutral-950">
-                        admin
+                        All users
                       </strong>{" "}
-                      or{" "}
-                      <strong className="font-semibold text-neutral-950">
-                        user
-                      </strong>{" "}
-                      in{" "}
+                      section below, or in{" "}
                       <Link
                         href="/admin/users/"
                         className="border-b border-neutral-900 font-medium hover:border-transparent"
                       >
-                        Users
+                        Admin → Users
                       </Link>
                       .
                     </span>
@@ -283,6 +323,42 @@ function DashboardInner() {
               </ul>
             </aside>
           </div>
+
+          {showSuper && (
+            <section
+              className="border-t border-neutral-300 px-5 py-8 sm:px-8"
+              aria-labelledby="dashboard-users-heading"
+            >
+              <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <h2
+                    id="dashboard-users-heading"
+                    className="text-xs font-semibold uppercase tracking-widest text-neutral-500"
+                  >
+                    All users
+                  </h2>
+                  <p className="mt-1 max-w-2xl text-sm text-neutral-600">
+                    Full list from{" "}
+                    <code className="rounded bg-neutral-100 px-1 text-neutral-800">
+                      public.users
+                    </code>
+                    . Use the role dropdown for each row to set member,
+                    administrator, or superuser.
+                  </p>
+                </div>
+                <Link
+                  href="/admin/users/"
+                  className="shrink-0 text-xs font-medium text-neutral-600 underline-offset-2 hover:text-neutral-950 hover:underline"
+                >
+                  Admin → Users
+                </Link>
+              </div>
+              <SuperuserUsersTable
+                variant="dashboard"
+                onRolesChanged={() => void refresh()}
+              />
+            </section>
+          )}
         </div>
       </div>
     </div>

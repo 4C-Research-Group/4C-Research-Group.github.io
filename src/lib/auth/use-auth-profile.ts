@@ -4,12 +4,31 @@ import { useCallback, useEffect, useState } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { normalizeRole, type AppRole } from "./roles";
 
+async function ensureProfileRow(
+  supabase: ReturnType<typeof getSupabaseBrowserClient>,
+  user: { id: string; email?: string | null }
+): Promise<void> {
+  const now = new Date().toISOString();
+  const { error } = await supabase.from("users").insert({
+    id: user.id,
+    email: user.email ?? null,
+    name: (user.email ?? "").split("@")[0] || null,
+    role: "user",
+    created_at: now,
+    updated_at: now,
+  });
+  if (error && error.code !== "23505") {
+    console.warn("[auth] ensureProfileRow insert:", error.code, error.message);
+  }
+}
+
 export function useAuthProfile() {
   const [ready, setReady] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [role, setRole] = useState<AppRole>("user");
   const [name, setName] = useState<string | null>(null);
+  const [hasProfileRow, setHasProfileRow] = useState(false);
   const [profileCreatedAt, setProfileCreatedAt] = useState<string | null>(
     null
   );
@@ -30,6 +49,7 @@ export function useAuthProfile() {
         setEmail(null);
         setName(null);
         setRole("user");
+        setHasProfileRow(false);
         setProfileCreatedAt(null);
         setProfileUpdatedAt(null);
         setAuthCreatedAt(null);
@@ -40,11 +60,24 @@ export function useAuthProfile() {
       setEmail(user.email ?? null);
       setAuthCreatedAt(user.created_at ?? null);
       setLastSignInAt(user.last_sign_in_at ?? null);
-      const { data: row } = await supabase
+      let { data: row, error: rowErr } = await supabase
         .from("users")
         .select("role, name, created_at, updated_at")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
+      if (rowErr) {
+        console.warn("[auth] users select:", rowErr.message);
+      }
+      if (!row) {
+        await ensureProfileRow(supabase, user);
+        const again = await supabase
+          .from("users")
+          .select("role, name, created_at, updated_at")
+          .eq("id", user.id)
+          .maybeSingle();
+        row = again.data;
+      }
+      setHasProfileRow(!!row);
       setRole(normalizeRole(row?.role as string | null | undefined));
       setName((row?.name as string | null | undefined) ?? null);
       setProfileCreatedAt((row?.created_at as string | null | undefined) ?? null);
@@ -54,6 +87,7 @@ export function useAuthProfile() {
       setEmail(null);
       setName(null);
       setRole("user");
+      setHasProfileRow(false);
       setProfileCreatedAt(null);
       setProfileUpdatedAt(null);
       setAuthCreatedAt(null);
@@ -88,6 +122,7 @@ export function useAuthProfile() {
     email,
     name,
     role,
+    hasProfileRow,
     profileCreatedAt,
     profileUpdatedAt,
     authCreatedAt,

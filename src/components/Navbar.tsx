@@ -8,7 +8,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   Menu,
   X,
-  ArrowUpRight,
   ChevronDown,
   LayoutDashboard,
   Shield,
@@ -32,6 +31,7 @@ const moreNav = [
   { label: "Publications", href: "/publications" },
   { label: "Join 4C Lab", href: "/join-4c-lab" },
   { label: "Collaborate", href: "/collaborate" },
+  { label: "Contact", href: "/contact" },
 ] as const;
 
 const NAV_H = "h-14";
@@ -149,7 +149,10 @@ export default function Navbar() {
                         key={item.href}
                         href={item.href}
                         role="menuitem"
-                        className="block px-4 py-2 text-[13px] text-foreground/85 transition-colors hover:bg-muted/80 hover:text-foreground"
+                        className={[
+                          "block px-4 py-2 text-[13px] text-foreground/85 transition-colors hover:bg-muted/80 hover:text-foreground",
+                          item.label === "Contact" ? "mt-1 border-t border-border/70 pt-2" : "",
+                        ].join(" ")}
                         onClick={() => setMoreOpen(false)}
                       >
                         {item.label}
@@ -186,7 +189,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => void handleSignOut()}
-                className="rounded-full px-3 py-1.5 text-[13px] font-medium text-foreground/55 transition-colors hover:text-foreground"
+                className="rounded-full border-2 border-brand bg-background px-3.5 py-2 text-[13px] font-semibold text-brand transition-colors hover:bg-brand/10"
               >
                 Sign out
               </button>
@@ -194,18 +197,11 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login/"
-              className="rounded-full px-3 py-1.5 text-[13px] font-medium text-foreground/70 transition-colors hover:text-foreground"
+              className="inline-flex items-center justify-center rounded-full bg-brand px-3.5 py-2 text-[13px] font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-brand-deep"
             >
               Sign in
             </Link>
           )}
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-1 rounded-full bg-brand px-3.5 py-2 text-[13px] font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-brand-deep"
-          >
-            Contact
-            <ArrowUpRight className="h-3.5 w-3.5 opacity-90" />
-          </Link>
         </div>
 
         <button
@@ -256,7 +252,12 @@ export default function Navbar() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="block py-2 text-[14px] text-foreground/75"
+                      className={[
+                        "block py-2 text-[14px] text-foreground/75",
+                        item.label === "Contact"
+                          ? "mt-1 border-t border-border/60 pt-2"
+                          : "",
+                      ].join(" ")}
                       onClick={() => {
                         setIsOpen(false);
                         setMobileMoreOpen(false);
@@ -292,7 +293,7 @@ export default function Navbar() {
                     </Link>
                     <button
                       type="button"
-                      className="w-full rounded-xl py-2.5 text-[14px] font-medium text-muted-foreground"
+                      className="w-full rounded-xl border-2 border-brand bg-background py-3 text-[14px] font-semibold text-brand transition-colors hover:bg-brand/10"
                       onClick={() => void handleSignOut()}
                     >
                       Sign out
@@ -301,20 +302,12 @@ export default function Navbar() {
                 ) : (
                   <Link
                     href="/login/"
-                    className="block rounded-xl border border-border py-2.5 text-center text-[14px] font-medium"
+                    className="flex w-full items-center justify-center rounded-xl bg-brand py-3 text-[14px] font-semibold text-primary-foreground shadow-sm"
                     onClick={() => setIsOpen(false)}
                   >
                     Sign in
                   </Link>
                 )}
-                <Link
-                  href="/contact"
-                  className="flex items-center justify-center gap-1 rounded-xl bg-brand py-3 text-[14px] font-semibold text-primary-foreground"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Contact
-                  <ArrowUpRight className="h-4 w-4" />
-                </Link>
               </div>
             </div>
           </motion.div>

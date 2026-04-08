@@ -81,7 +81,17 @@ export interface Database {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      admin_list_app_users: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          id: string;
+          email: string | null;
+          name: string | null;
+          role: string | null;
+        }[];
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };

@@ -1,20 +1,4 @@
 import type { NextConfig } from "next";
-import { argv } from "node:process";
-import { DEPLOY_BASE_DEFAULT } from "./src/lib/deploy-base-path";
-
-/** `next dev` only — avoids 404 at http://localhost:3000/ when basePath is set. */
-function isNextDevProcess(): boolean {
-  return argv.some((a) => a === "dev" || a.endsWith("/dev") || a.endsWith("\\dev"));
-}
-
-function resolveBasePathForConfig(): string {
-  if (process.env.NEXT_PUBLIC_BASE_PATH !== undefined) {
-    return process.env.NEXT_PUBLIC_BASE_PATH;
-  }
-  return isNextDevProcess() ? "" : DEPLOY_BASE_DEFAULT;
-}
-
-const basePath = resolveBasePathForConfig();
 
 function supabaseStorageImageHost(): string | undefined {
   const u = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -27,6 +11,10 @@ function supabaseStorageImageHost(): string | undefined {
 }
 
 const storageHost = supabaseStorageImageHost();
+
+/** Optional subpath; leave unset so org `*.github.io` site uses `/team/` not `/repo/team/`. */
+const basePath =
+  (process.env.NEXT_PUBLIC_BASE_PATH ?? "").replace(/\/$/, "") || undefined;
 
 const nextConfig: NextConfig = {
   output: "export",
@@ -43,8 +31,7 @@ const nextConfig: NextConfig = {
         ]
       : [],
   },
-  basePath,
-  assetPrefix: basePath,
+  ...(basePath ? { basePath, assetPrefix: basePath } : {}),
 };
 
 export default nextConfig;

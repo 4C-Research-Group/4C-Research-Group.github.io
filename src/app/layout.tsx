@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppChrome from "@/components/AppChrome";
-import { publicAssetPath } from "@/lib/site-path";
 import Head from "./head";
+import { siteAsset } from "@/lib/site-path";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,17 +21,17 @@ export const metadata: Metadata = {
   description:
     "Advancing the detection and prediction of brain pathologies in critically ill patients through cutting-edge neuroimaging and machine learning technologies.",
   icons: {
-    icon: publicAssetPath("/favicon.ico"),
-    shortcut: publicAssetPath("/favicon.ico"),
+    icon: siteAsset("/favicon.ico"),
+    shortcut: siteAsset("/favicon.ico"),
     apple: [
       {
-        url: publicAssetPath("/apple-touch-icon.png"),
+        url: siteAsset("/apple-touch-icon.png"),
         sizes: "180x180",
         type: "image/png",
       },
     ],
   },
-  manifest: publicAssetPath("/site.webmanifest"),
+  manifest: siteAsset("/site.webmanifest"),
 };
 
 export const viewport: Viewport = {

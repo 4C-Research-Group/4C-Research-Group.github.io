@@ -17,7 +17,6 @@ import {
   Twitter,
 } from "lucide-react";
 import { projects } from "@/data/projectsData";
-import { publicAssetPath } from "@/lib/site-path";
 
 export default function Home() {
   return (
@@ -126,10 +125,13 @@ export default function Home() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="relative z-10"
               >
-                <img
-                  src={publicAssetPath("/logo.png")}
+                <Image
+                  src="/logo.png"
                   alt="4C Research Lab Logo"
+                  width={420}
+                  height={420}
                   className="w-96 h-96 lg:w-[420px] lg:h-[420px] rounded-2xl shadow-2xl bg-white/90"
+                  priority
                 />
               </motion.div>
             </div>

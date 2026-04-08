@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -14,7 +15,6 @@ import {
 import { useAuthProfile } from "@/lib/auth/use-auth-profile";
 import { canAccessAdmin } from "@/lib/auth/roles";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-import { publicAssetPath } from "@/lib/site-path";
 
 const primaryNav = [
   { label: "Home", href: "/" },
@@ -90,9 +90,11 @@ export default function Navbar() {
           href="/"
           className="group flex shrink-0 items-center gap-2.5 sm:gap-3"
         >
-          <img
-            src={publicAssetPath("/logo.png")}
+          <Image
+            src="/logo.png"
             alt=""
+            width={40}
+            height={40}
             className="h-9 w-9 rounded-lg object-cover ring-1 ring-black/5 sm:h-10 sm:w-10"
           />
           <div className="min-w-0 text-left">

@@ -1,22 +1,26 @@
-import { resolveDeployBasePathForBrowser } from "./deploy-base-path";
-
 /**
- * Must match `basePath` in `next.config.ts` (and your deployed path under GitHub Pages).
+ * Must match optional `basePath` in `next.config.ts`. Empty for local dev and for
+ * GitHub org/user Pages when the static export is deployed at the site root.
  */
-export const SITE_BASE_PATH = resolveDeployBasePathForBrowser();
+export const SITE_BASE_PATH = (
+  process.env.NEXT_PUBLIC_BASE_PATH ?? ""
+).replace(/\/$/, "");
 
-/** Static file under `public/` (favicon, logo, manifest) on GitHub Pages. */
-export function publicAssetPath(path: string): string {
-  const p = path.startsWith("/") ? path : `/${path}`;
-  return `${SITE_BASE_PATH}${p}`;
+/** Public folder URL for plain `<link>` / raw paths when basePath is set. */
+export function siteAsset(absPath: string): string {
+  if (!absPath) return absPath;
+  if (/^https?:\/\//i.test(absPath)) return absPath;
+  const path = absPath.startsWith("/") ? absPath : `/${absPath}`;
+  return `${SITE_BASE_PATH}${path}`;
 }
 
 /** Full redirect URL for Supabase email links (PKCE), e.g. confirm signup. */
 export function getAuthCallbackAbsoluteUrl(): string {
+  const prefix = SITE_BASE_PATH ? `${SITE_BASE_PATH}` : "";
   if (typeof window === "undefined") {
     const site = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ?? "";
-    return `${site}${SITE_BASE_PATH}/auth/callback/`;
+    return `${site}${prefix}/auth/callback/`;
   }
   const { origin } = window.location;
-  return `${origin}${SITE_BASE_PATH}/auth/callback/`;
+  return `${origin}${prefix}/auth/callback/`;
 }

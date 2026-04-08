@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="600" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g opacity="0.1">
+    <path d="M0 450C100 400 200 500 300 450C400 400 500 300 600 350C700 400 800 300 900 300C1000 300 1100 350 1200 300" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M0 400C100 350 200 450 300 400C400 350 500 250 600 300C700 350 800 250 900 250C1000 250 1100 300 1200 250" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M0 350C100 300 200 400 300 350C400 300 500 200 600 250C700 300 800 200 900 200C1000 200 1100 250 1200 200" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g opacity="0.08">
+    <path d="M0 500C100 450 200 550 300 500C400 450 500 350 600 400C700 450 800 350 900 350C1000 350 1100 400 1200 350" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M0 550C100 500 200 600 300 550C400 500 500 400 600 450C700 500 800 400 900 400C1000 400 1100 450 1200 400" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>

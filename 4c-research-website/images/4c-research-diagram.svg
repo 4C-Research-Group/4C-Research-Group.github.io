@@ -1,0 +1,167 @@
+<svg width="800" height="800" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1E40AF;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="cognitionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="consciousnessGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="criticalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D97706;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="comfortGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#EC4899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DB2777;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Filters -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="800" fill="#F8FAFC"/>
+  
+  <!-- Central Brain -->
+  <g transform="translate(400, 400)">
+    <!-- Brain Circle Background -->
+    <circle cx="0" cy="0" r="80" fill="url(#brainGradient)" filter="url(#shadow)"/>
+    
+    <!-- Brain Icon -->
+    <g fill="white" opacity="0.9">
+      <!-- Brain outline -->
+      <path d="M-40,-20 Q-50,-30 -45,-40 Q-40,-50 -30,-45 Q-20,-50 -15,-40 Q-10,-50 0,-45 Q10,-50 15,-40 Q20,-50 30,-45 Q40,-50 45,-40 Q50,-30 40,-20 Q45,-10 40,0 Q45,10 40,20 Q50,30 45,40 Q40,50 30,45 Q20,50 15,40 Q10,50 0,45 Q-10,50 -15,40 Q-20,50 -30,45 Q-40,50 -45,40 Q-50,30 -40,20 Q-45,10 -40,0 Q-45,-10 -40,-20 Z"/>
+      
+      <!-- Brain folds -->
+      <path d="M-25,-15 Q-20,-25 -15,-20 Q-10,-25 -5,-20 Q0,-25 5,-20 Q10,-25 15,-20 Q20,-25 25,-15" stroke="white" stroke-width="2" fill="none"/>
+      <path d="M-20,0 Q-15,-10 -10,-5 Q-5,-10 0,-5 Q5,-10 10,-5 Q15,-10 20,0" stroke="white" stroke-width="2" fill="none"/>
+      <path d="M-25,15 Q-20,25 -15,20 Q-10,25 -5,20 Q0,25 5,20 Q10,25 15,20 Q20,25 25,15" stroke="white" stroke-width="2" fill="none"/>
+    </g>
+    
+    <!-- 4C Text -->
+    <text x="0" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1E293B">4C RESEARCH</text>
+  </g>
+  
+  <!-- COGNITION Section (Top) -->
+  <g transform="translate(400, 150)">
+    <!-- Main Circle -->
+    <circle cx="0" cy="0" r="60" fill="url(#cognitionGradient)" filter="url(#shadow)"/>
+    <text x="0" y="-5" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">COGNITION</text>
+    
+    <!-- Child Projects -->
+    <g transform="translate(0, 80)">
+      <!-- CONN & SCOR - SRS -->
+      <rect x="-50" y="-15" width="100" height="30" rx="15" fill="#10B981" opacity="0.9"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">CONN & SCOR - SRS</text>
+      
+      <!-- TRANSCIENCE -->
+      <rect x="-50" y="25" width="100" height="30" rx="15" fill="#10B981" opacity="0.9"/>
+      <text x="0" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">TRANSCIENCE</text>
+      
+      <!-- BRAIN-CASH -->
+      <rect x="-50" y="65" width="100" height="30" rx="15" fill="#10B981" opacity="0.9"/>
+      <text x="0" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">BRAIN-CASH</text>
+    </g>
+  </g>
+  
+  <!-- CONSCIOUSNESS Section (Right) -->
+  <g transform="translate(650, 400)">
+    <!-- Main Circle -->
+    <circle cx="0" cy="0" r="60" fill="url(#consciousnessGradient)" filter="url(#shadow)"/>
+    <text x="0" y="-5" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">CONSCIOUSNESS</text>
+    
+    <!-- Child Projects -->
+    <g transform="translate(-80, 0)">
+      <!-- PREDICT ABI -->
+      <rect x="-50" y="-15" width="100" height="30" rx="15" fill="#8B5CF6" opacity="0.9"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">PREDICT ABI</text>
+      
+      <!-- IN-SYNCC -->
+      <rect x="-50" y="25" width="100" height="30" rx="15" fill="#8B5CF6" opacity="0.9"/>
+      <text x="0" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">IN-SYNCC</text>
+    </g>
+  </g>
+  
+  <!-- CRITICAL TRIALS Section (Bottom) -->
+  <g transform="translate(400, 650)">
+    <!-- Main Circle -->
+    <circle cx="0" cy="0" r="60" fill="url(#criticalGradient)" filter="url(#shadow)"/>
+    <text x="0" y="-5" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">CRITICAL TRIALS</text>
+    
+    <!-- Child Projects -->
+    <g transform="translate(0, -80)">
+      <!-- ABOVE -->
+      <rect x="-50" y="-15" width="100" height="30" rx="15" fill="#F59E0B" opacity="0.9"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">ABOVE</text>
+      
+      <!-- ABOVE 2.0 -->
+      <rect x="-50" y="25" width="100" height="30" rx="15" fill="#F59E0B" opacity="0.9"/>
+      <text x="0" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">ABOVE 2.0</text>
+    </g>
+  </g>
+  
+  <!-- COMFORT Section (Left) -->
+  <g transform="translate(150, 400)">
+    <!-- Main Circle -->
+    <circle cx="0" cy="0" r="60" fill="url(#comfortGradient)" filter="url(#shadow)"/>
+    <text x="0" y="-5" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">COMFORT</text>
+    
+    <!-- Child Projects -->
+    <g transform="translate(80, 0)">
+      <!-- NOPE-ICU -->
+      <rect x="-50" y="-15" width="100" height="30" rx="15" fill="#EC4899" opacity="0.9"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">NOPE-ICU</text>
+      
+      <!-- DOSM-PCCU -->
+      <rect x="-50" y="25" width="100" height="30" rx="15" fill="#EC4899" opacity="0.9"/>
+      <text x="0" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">DOSM-PCCU</text>
+    </g>
+  </g>
+  
+  <!-- Connection Lines -->
+  <g stroke="#64748B" stroke-width="3" fill="none" opacity="0.6">
+    <!-- Brain to COGNITION -->
+    <path d="M 400 320 L 400 210" marker-end="url(#arrowhead)"/>
+    
+    <!-- Brain to CONSCIOUSNESS -->
+    <path d="M 480 400 L 590 400" marker-end="url(#arrowhead)"/>
+    
+    <!-- Brain to CRITICAL TRIALS -->
+    <path d="M 400 480 L 400 590" marker-end="url(#arrowhead)"/>
+    
+    <!-- Brain to COMFORT -->
+    <path d="M 320 400 L 210 400" marker-end="url(#arrowhead)"/>
+  </g>
+  
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748B"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="400" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1E293B">4C Research Group</text>
+  <text x="400" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#64748B">Cognition • Consciousness • Critical Care • Comfort</text>
+</svg> 

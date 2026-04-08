@@ -97,17 +97,29 @@ function SectionHeader({
 function TitleSubtitleGrid({
   items,
   accent,
+  singleColumn,
+  noteSize = "xs",
 }: {
   items: PiTitleSubtitle[];
   accent: 0 | 1 | 2;
+  /** One column, full width — for long prose (e.g. grant CV narratives). */
+  singleColumn?: boolean;
+  noteSize?: "xs" | "sm";
 }) {
   const titleColors = [
     "text-cognition",
     "text-care",
     "text-consciousness",
   ] as const;
+  const gridClass = singleColumn
+    ? "mx-auto grid max-w-none grid-cols-1 gap-4 lg:max-w-4xl"
+    : "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
+  const noteClass =
+    noteSize === "sm"
+      ? "mt-2 text-sm leading-relaxed text-muted-foreground whitespace-pre-line"
+      : "mt-2 text-xs text-muted-foreground whitespace-pre-line";
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className={gridClass}>
       {items.map((item, idx) => (
         <div
           key={`${item.title}-${idx}`}
@@ -116,13 +128,13 @@ function TitleSubtitleGrid({
           <div className={`font-semibold ${titleColors[accent]}`}>
             {item.title}
           </div>
-          <div className="mt-1 text-sm text-muted-foreground">
-            {item.subtitle}
-          </div>
-          {item.note ? (
-            <div className="mt-2 text-xs text-muted-foreground whitespace-pre-line">
-              {item.note}
+          {item.subtitle ? (
+            <div className="mt-1 text-sm text-muted-foreground">
+              {item.subtitle}
             </div>
+          ) : null}
+          {item.note ? (
+            <div className={noteClass}>{item.note}</div>
           ) : null}
         </div>
       ))}
@@ -426,11 +438,21 @@ export default function AboutPiPage() {
             <h3 className="mb-3 text-sm font-semibold text-foreground">
               Ongoing
             </h3>
-            <TitleSubtitleGrid items={[...d.grantsOngoing]} accent={0} />
+            <TitleSubtitleGrid
+              items={[...d.grantsOngoing]}
+              accent={0}
+              singleColumn
+              noteSize="sm"
+            />
             <h3 className="mb-3 mt-8 text-sm font-semibold text-foreground">
               Completed
             </h3>
-            <TitleSubtitleGrid items={[...d.grantsCompleted]} accent={1} />
+            <TitleSubtitleGrid
+              items={[...d.grantsCompleted]}
+              accent={1}
+              singleColumn
+              noteSize="sm"
+            />
           </SectionShell>
 
           <SectionShell>

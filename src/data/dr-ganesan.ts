@@ -815,7 +815,8 @@ export const drGanesanData = {
           "principalInvestigator": "Dr. Caroline Quach-Thanh",
           "type": "Operating Grant",
           "amount": "$1,494,250",
-          "component": "Local RC/RA salary support"
+          "component": "Local RC/RA salary support",
+          "cvNarrative": "2025 – 2027\tCo-Applicant, Canadian Institutes of Health Research, Operating Grant: Pandemic Research Platforms Interim Funding. Pediatric Outcomes imProvement through COordination of Research Networks (POPCORN); NPA – Dr. Caroline Quach-Thanh. Operating Grant: $1,494,250; Dr. Ganesan’s component – Local RC/RA salary support"
         },
         {
           "duration": "2024–2025",
@@ -824,7 +825,8 @@ export const drGanesanData = {
           "title": "Game thEory to chaRacterize Medical decision-makINg in criticAlly iLl children (GERMINAL)",
           "type": "Team-building Grant",
           "amount": "$25,000",
-          "component": "$14,000"
+          "component": "$14,000",
+          "cvNarrative": "2024 – 2025\tPrincipal Applicant, Radboud-Western Collaboration Fund (RWCF)\tGame thEory to chaRacterize Medical decision-makINg in criticAlly iLl children (GERMINAL)\tTeam-building Grant: $25,000; Dr. Ganesan’s component: $14,000"
         },
         {
           "duration": "2024–2025",
@@ -833,7 +835,8 @@ export const drGanesanData = {
           "title": "Increasing Capacity for Maternal and Paediatric Clinical Trials",
           "type": "Salary Grant",
           "amount": "$70,000",
-          "component": "Protected research time"
+          "component": "Protected research time",
+          "cvNarrative": "2024 – 2025\tPrincipal Applicant, Increasing Capacity for Maternal and Paediatric Clinical Trials (IMPaCT) Salary award\tSalary Grant: $70,000; Salary award to Dept. of Paediatrics to protect Dr. Ganesan’s research time"
         },
         {
           "duration": "2024–2026",
@@ -841,7 +844,8 @@ export const drGanesanData = {
           "funder": "AMOSO Innovation Fund",
           "title": "Covert Consciousness in Comatose Critically Ill Children",
           "type": "Operating Grant",
-          "amount": "$214,738"
+          "amount": "$214,738",
+          "cvNarrative": "2024 – 2026\tPrincipal Applicant, Academic Medical Organization of Southwestern Ontario (AMOSO) Innovation Fund, Covert Consciousness in Comatose Critically Ill Children.\tOperating Grant: $214,738"
         },
         {
           "duration": "2023–2026",
@@ -851,7 +855,8 @@ export const drGanesanData = {
           "principalInvestigator": "Dr. Angela Jerath",
           "type": "Operating Grant",
           "amount": "$1,121,997",
-          "component": "Local start-up + per patient cost"
+          "component": "Local start-up + per patient cost",
+          "cvNarrative": "2023 – 2026\tCo-Principal Investigator, Canadian Institutes for Health Research (CIHR), Advancing Brain Outcomes in pediatric critically ill patients sedated with Volatile AnEsthestic Agents: A pilot multicenter randomized controlled trial (ABOVE Trial); NPA – Dr. Angela Jerath. Operating Grant: $1,121,997; Dr. Ganesan’s component – Local start-up costs + cost per recruited patient"
         },
         {
           "duration": "2023–2028",
@@ -861,7 +866,8 @@ export const drGanesanData = {
           "principalInvestigator": "Dr. Ingrid Johnsrude",
           "type": "Platform Grant",
           "amount": "$8,884,426",
-          "component": "~$300,000 equipment"
+          "component": "~$300,000 equipment",
+          "cvNarrative": "2023 – 2028\tTeam Member, Canadian Foundation for Innovation – Innovation Fund, Next-generation Human cognitive neuroscience for real-world applications. NPA: Dr. Ingrid Johnsrude. Platform Grant: $8,884,426; Dr. Ganesan’s component - ~$300,000 for purchase of neuromonitoring research equipment"
         },
         {
           "duration": "2022–2024",
@@ -869,7 +875,8 @@ export const drGanesanData = {
           "funder": "Brain Canada",
           "title": "Brain Connectivity in Critically Ill Children at Risk of Delirium",
           "type": "Operating Grant",
-          "amount": "$99,960"
+          "amount": "$99,960",
+          "cvNarrative": "2022 – 2024\tPrincipal Applicant, Brain Canada Future Leaders 2021 Grant. Characterizing brain connectivity in critically ill children at-risk of delirium. Operating Grant: $99,960"
         },
         {
           "duration": "2022–2026",
@@ -878,7 +885,8 @@ export const drGanesanData = {
           "title": "SPRINT fNIRS Platform",
           "type": "Platform Grant",
           "amount": "$1,311,531",
-          "component": "$60,000"
+          "component": "$60,000",
+          "cvNarrative": "2022 – 2026\tCo-Investigator, Brain Canada Platform Support Grant. SPRINT: fnirS Platform foR braIn moNiToring, analytics and data repository.\tPlatform Grant: $1,311,531; Dr. Ganesan’s component: $60,000 (30,000 matching 1:1)"
         },
         {
           "duration": "2022–2023",
@@ -888,7 +896,8 @@ export const drGanesanData = {
           "principalInvestigator": "Dr. Caroline Quach-Thanh",
           "type": "Operating Grant",
           "amount": "$2,999,580",
-          "component": "$37,500"
+          "component": "$37,500",
+          "cvNarrative": "2022 – 2023\tCo-Principal Investigator, Canadian Institutes for Health Research (CIHR) Op Grant: POPCoRN Supplement, COVID-19 seroepidemiology in children Using Retrieved POPCORN site Leftover Samples (CURNLS). NPA: Dr. Caroline Quach-Thanh. Operating Grant: $2,999,580; Dr. Ganesan’s component: $37,500"
         },
         {
           "duration": "2022–2024",
@@ -898,7 +907,8 @@ export const drGanesanData = {
           "principalInvestigator": "Dr. Caroline Quach-Thanh",
           "type": "Operating Grant",
           "amount": "$6,700,000",
-          "component": "$178,750"
+          "component": "$178,750",
+          "cvNarrative": "2022 – 2024\tCo-Principal Investigator, Canadian Institutes for Health Research (CIHR) Op Grant: Canadian Pediatric COVID-19 Research Platform, Pediatric Outcomes improvement through Coordination of Research Networks (POPCORN). NPA: Dr. Caroline Quach-Thanh. Operating Grant: $6,700,000; Dr. Ganesan’s component: $178,750"
         },
         {
           "duration": "2022–2024",
@@ -906,7 +916,8 @@ export const drGanesanData = {
           "funder": "Departmental Matching Funds",
           "title": "Tracking Neurocognitive States in Encephalopathic Critically Ill Children",
           "type": "Salary Grant",
-          "amount": "$30,000"
+          "amount": "$30,000",
+          "cvNarrative": "2022 – 2024\tPrincipal Investigator, Departmental RA Matching Funds\tTracking neurocognitive states in encephalopathic critically ill children Research Coordinator Salary grant: $30,000"
         },
         {
           "duration": "2021–2024",
@@ -914,7 +925,8 @@ export const drGanesanData = {
           "funder": "AMOSO Opportunities Grant",
           "title": "NuANCEd Study",
           "type": "Salary Grant",
-          "amount": "$113,750"
+          "amount": "$113,750",
+          "cvNarrative": "2021 – 2024\tPrincipal Investigator, AMOSO Opportunities Grant\tNurse-led Advanced monitoring for Non-Convulsive seizures in Encephalopathic critically ill children (NuANCEd)\tSalary Grant: $113,750"
         }
       ],
       "completed": [
@@ -924,7 +936,8 @@ export const drGanesanData = {
           "funder": "Lawson Internal Research Fund",
           "title": "Seizure Diagnosis Practices in Critically Ill Children",
           "type": "Operating Grant",
-          "amount": "$14,994.5"
+          "amount": "$14,994.5",
+          "cvNarrative": "2021 – 2022\tPrincipal Investigator, Lawson Internal Research Fund\tKnowledge, Attitudes and practices regarding seizure diagnosis and management in critically ill children\tOperating Grant: $14,994.5"
         },
         {
           "duration": "2020–2022",
@@ -933,7 +946,8 @@ export const drGanesanData = {
           "title": "Dexmedetomidine vs Midazolam Study",
           "principalInvestigator": "Dr. Douglas Fraser",
           "type": "Operating Grant",
-          "amount": "$108,000"
+          "amount": "$108,000",
+          "cvNarrative": "2020 – 2022\tCo-Investigator, AMOSO Innovation Fund\nSedation Efficacy of Dexmedetomidine versus Midazolam in Critically Ill Ventilated Children; PI: Dr. Douglas Fraser\nOperating Grant: $108,000; Dr. Ganesan’s component: $0"
         },
         {
           "duration": "2017–2019",
@@ -941,7 +955,8 @@ export const drGanesanData = {
           "funder": "RESTRACOMP",
           "title": "EEG as Ischemia Detection Tool",
           "type": "Fellowship",
-          "amount": "$20,000"
+          "amount": "$20,000",
+          "cvNarrative": "2017 – 2019\tTrainee Investigator, Research Training Competition (RESTRACOMP) Fellowship Award\nElectroencephalography as an Ischemia Detection Tool in High-Risk Critically Ill Children\nMentors: Dr. A-M. Guerguerian, Dr. C. Hahn\nSalary Support: $20,000"
         },
         {
           "duration": "2017–2019",
@@ -949,7 +964,8 @@ export const drGanesanData = {
           "funder": "C-BMH",
           "title": "EEG Ischemia Detection Study",
           "type": "Fellowship",
-          "amount": "$20,000"
+          "amount": "$20,000",
+          "cvNarrative": "2017 – 2019\tTrainee Investigator, Center for Brain & Mental Health (C-BMH) Integrative Research Fellowship Award\nElectroencephalography as an Ischemia Detection Tool in High-Risk Critically Ill Children\nMentors: Dr. A-M Guerguerian, Dr. C. Hahn\nSalary Support: $20,000"
         },
         {
           "duration": "2014–2015",
@@ -957,7 +973,8 @@ export const drGanesanData = {
           "funder": "Advanced Pediatrics Center",
           "title": "Ventilation in Pediatric ARDS",
           "type": "Operating Grant",
-          "amount": "100,000 INR"
+          "amount": "100,000 INR",
+          "cvNarrative": "2014 – 2015\tTrainee Investigator, Advanced Pediatrics Center Research Grant\nAirway Pressure Release Ventilation in Pediatric Acute Respiratory Distress Syndrome – a Randomized Controlled Trial\nMentors: Dr. M. Jayashree, Dr. S. Singhi\nOperating Grant: 100,000 INR"
         },
         {
           "duration": "2007–2008",
@@ -965,7 +982,8 @@ export const drGanesanData = {
           "funder": "Indian Council of Medical Research",
           "title": "Hypertension RCT in Young Adults",
           "type": "Studentship",
-          "amount": "5,000 INR"
+          "amount": "5,000 INR",
+          "cvNarrative": "2007 – 2008\tTrainee Investigator, Indian Council of Medical Research – Short Term Studentship Grant\nCommunity-Based Randomized Controlled Trial of Non-Pharmacological Interventions in Hypertensive Young Adults\nMentor: Dr. B. Soudarssanane\nSalary Support: 5,000 INR"
         },
         {
           "duration": "2006–2007",
@@ -973,7 +991,8 @@ export const drGanesanData = {
           "funder": "Indian Council of Medical Research",
           "title": "CETP Gene Polymorphisms Study",
           "type": "Studentship",
-          "amount": "5,000 INR"
+          "amount": "5,000 INR",
+          "cvNarrative": "2006 – 2007\tTrainee Investigator, Indian Council of Medical Research – Short Term Studentship Grant\nCETP Gene Polymorphisms and Severity of Coronary Artery Disease in South Indian Population\nMentor: Dr. C. Adithan\nSalary Support: 5,000 INR"
         }
       ]
     }

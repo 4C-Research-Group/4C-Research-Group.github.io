@@ -307,9 +307,18 @@ type GrantLike = {
   amount: string;
   principalInvestigator?: string;
   component?: string;
+  /** Full CV-style wording (from source CV); shown in full on About PI. */
+  cvNarrative?: string;
 };
 
 function grantToCard(g: GrantLike): PiTitleSubtitle {
+  if (g.cvNarrative?.trim()) {
+    return {
+      title: g.title,
+      subtitle: "",
+      note: g.cvNarrative.trim().replace(/\t/g, " "),
+    };
+  }
   return {
     title: g.title,
     subtitle: [

@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, RotateCcw, Save } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
-import type { AppRole } from "@/lib/auth/roles";
+import { normalizeRole, type AppRole } from "@/lib/auth/roles";
 
 type UserRow = {
   id: string;
@@ -15,18 +15,18 @@ type UserRow = {
 const ROLES: AppRole[] = ["user", "admin", "superuser"];
 
 export type SuperuserUsersTableProps = {
-  variant?: "admin" | "dashboard";
-  /** Called after a role update succeeds (e.g. refresh session profile on dashboard). */
+  /** Called after a role update succeeds (e.g. refresh session profile). */
   onRolesChanged?: () => void | Promise<void>;
 };
 
 export default function SuperuserUsersTable({
-  variant = "admin",
   onRolesChanged,
 }: SuperuserUsersTableProps) {
   const [rows, setRows] = useState<UserRow[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  /** Pending role edits; omitted key means “matches server after last load”. */
+  const [pendingById, setPendingById] = useState<Record<string, AppRole>>({});
 
   const load = useCallback(async () => {
     setErr(null);
@@ -60,16 +60,56 @@ export default function SuperuserUsersTable({
     void load();
   }, [load]);
 
-  async function setRole(id: string, role: AppRole) {
-    setBusyId(id);
+  function serverRole(u: UserRow): AppRole {
+    return normalizeRole(u.role);
+  }
+
+  function roleForRow(u: UserRow): AppRole {
+    const p = pendingById[u.id];
+    if (p !== undefined) return p;
+    return serverRole(u);
+  }
+
+  function isDirty(u: UserRow): boolean {
+    return roleForRow(u) !== serverRole(u);
+  }
+
+  function setDraftRole(id: string, next: AppRole, server: AppRole) {
+    if (next === server) {
+      setPendingById((prev) => {
+        if (prev[id] === undefined) return prev;
+        const { [id]: _, ...rest } = prev;
+        return rest;
+      });
+    } else {
+      setPendingById((prev) => ({ ...prev, [id]: next }));
+    }
+  }
+
+  function revertRow(id: string) {
+    setPendingById((prev) => {
+      if (prev[id] === undefined) return prev;
+      const { [id]: _, ...rest } = prev;
+      return rest;
+    });
+  }
+
+  async function saveRow(u: UserRow) {
+    const role = pendingById[u.id];
+    if (role === undefined || role === serverRole(u)) return;
+    setBusyId(u.id);
     setErr(null);
     try {
       const supabase = getSupabaseBrowserClient();
       const { error } = await supabase
         .from("users")
         .update({ role, updated_at: new Date().toISOString() })
-        .eq("id", id);
+        .eq("id", u.id);
       if (error) throw new Error(error.message);
+      setPendingById((prev) => {
+        const { [u.id]: _, ...rest } = prev;
+        return rest;
+      });
       await load();
       await onRolesChanged?.();
     } catch (e) {
@@ -79,39 +119,10 @@ export default function SuperuserUsersTable({
     }
   }
 
-  const wrap =
-    variant === "dashboard"
-      ? "overflow-x-auto border border-neutral-300 bg-white"
-      : "overflow-x-auto rounded-2xl border border-border bg-card shadow-sm";
-  const thead =
-    variant === "dashboard"
-      ? "border-b border-neutral-300 bg-neutral-100 text-xs font-medium uppercase tracking-wide text-neutral-600"
-      : "border-b border-border bg-muted/40 text-xs font-medium uppercase tracking-wide text-muted-foreground";
-  const rowBorder =
-    variant === "dashboard"
-      ? "border-b border-neutral-200 last:border-0"
-      : "border-b border-border/80 last:border-0";
-  const tdEmail =
-    variant === "dashboard" ? "text-neutral-950" : "text-foreground";
-  const tdName =
-    variant === "dashboard" ? "text-neutral-600" : "text-muted-foreground";
-  const selectClass =
-    variant === "dashboard"
-      ? "w-full max-w-[11rem] border border-neutral-400 bg-white px-2 py-1.5 text-sm text-neutral-900"
-      : "w-full max-w-[11rem] rounded-lg border border-input bg-background px-2 py-1.5 text-sm";
-  const errBox =
-    variant === "dashboard"
-      ? "rounded border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-900"
-      : "rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive";
-  const loadingText =
-    variant === "dashboard" ? "text-neutral-600" : "text-muted-foreground";
-
   if (rows === null) {
     return (
-      <div className={`flex items-center gap-2 ${loadingText}`}>
-        <Loader2
-          className={`h-5 w-5 animate-spin ${variant === "dashboard" ? "text-neutral-900" : "text-brand"}`}
-        />
+      <div className="flex items-center gap-2 text-muted-foreground">
+        <Loader2 className="h-5 w-5 animate-spin text-brand" />
         Loading users…
       </div>
     );
@@ -119,39 +130,89 @@ export default function SuperuserUsersTable({
 
   return (
     <div className="space-y-4">
-      {err && <div className={errBox}>{err}</div>}
-      <div className={wrap}>
-        <table className="w-full min-w-[640px] text-left text-sm">
-          <thead className={thead}>
+      {err && (
+        <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {err}
+        </div>
+      )}
+      <p className="text-xs text-muted-foreground">
+        Choose a role, then <strong className="text-foreground/90">Save</strong>{" "}
+        to write it to the database. <strong className="text-foreground/90">Revert</strong>{" "}
+        discards unsaved changes for that row.
+      </p>
+      <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
+        <table className="w-full min-w-[720px] text-left text-sm">
+          <thead className="border-b border-border bg-muted/40 text-xs font-medium uppercase tracking-wide text-muted-foreground">
             <tr>
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Role</th>
+              <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {rows.map((u) => (
-              <tr key={u.id} className={rowBorder}>
-                <td className={`px-4 py-3 ${tdEmail}`}>{u.email ?? "—"}</td>
-                <td className={`px-4 py-3 ${tdName}`}>{u.name ?? "—"}</td>
-                <td className="px-4 py-3">
-                  <select
-                    className={selectClass}
-                    value={(u.role as AppRole) || "user"}
-                    disabled={busyId === u.id}
-                    onChange={(e) =>
-                      void setRole(u.id, e.target.value as AppRole)
-                    }
-                  >
-                    {ROLES.map((r) => (
-                      <option key={r} value={r}>
-                        {r}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-              </tr>
-            ))}
+            {rows.map((u) => {
+              const dirty = isDirty(u);
+              const saving = busyId === u.id;
+              return (
+                <tr
+                  key={u.id}
+                  className={`border-b border-border/80 last:border-0 ${dirty ? "bg-amber-500/5" : ""}`}
+                >
+                  <td className="px-4 py-3 text-foreground">{u.email ?? "—"}</td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {u.name ?? "—"}
+                  </td>
+                  <td className="px-4 py-3">
+                    <select
+                      className="w-full max-w-[11rem] rounded-lg border border-input bg-background px-2 py-1.5 text-sm"
+                      value={roleForRow(u)}
+                      disabled={saving}
+                      onChange={(e) =>
+                        setDraftRole(
+                          u.id,
+                          e.target.value as AppRole,
+                          serverRole(u)
+                        )
+                      }
+                    >
+                      {ROLES.map((r) => (
+                        <option key={r} value={r}>
+                          {r}
+                        </option>
+                      ))}
+                    </select>
+                    {dirty ? (
+                      <span className="mt-1 block text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">
+                        Unsaved
+                      </span>
+                    ) : null}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        disabled={!dirty || saving}
+                        onClick={() => void saveRow(u)}
+                        className="inline-flex items-center gap-1 rounded-lg bg-brand px-2.5 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-brand-deep disabled:opacity-40"
+                      >
+                        <Save className="h-3.5 w-3.5" aria-hidden />
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        disabled={!dirty || saving}
+                        onClick={() => revertRow(u.id)}
+                        className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted/60 disabled:opacity-40"
+                      >
+                        <RotateCcw className="h-3.5 w-3.5" aria-hidden />
+                        Revert
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

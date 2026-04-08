@@ -170,11 +170,23 @@ export default function Navbar() {
         {/* min-w reserves space so primary nav does not shift when auth resolves */}
         <div className="hidden min-w-[18rem] shrink-0 items-center justify-end gap-2 md:flex">
           {!authReady ? (
-            <div className="flex w-full min-w-0 justify-end" aria-hidden>
+            <div
+              className="flex w-full min-w-0 items-center justify-end gap-2"
+              aria-hidden
+            >
               <span
-                className="inline-flex animate-pulse select-none items-center justify-center rounded-full bg-muted/80 px-3.5 py-2 text-[13px] font-semibold text-transparent"
+                className="inline-flex animate-pulse select-none items-center gap-1.5 rounded-full border border-border/80 bg-muted/80 px-3 py-1.5 text-[13px] font-medium text-transparent"
               >
-                Sign in
+                <LayoutDashboard
+                  className="h-3.5 w-3.5 shrink-0 opacity-0"
+                  aria-hidden
+                />
+                Admin dashboard
+              </span>
+              <span
+                className="inline-flex animate-pulse select-none items-center justify-center rounded-full border-2 border-brand bg-muted/80 px-3.5 py-2 text-[13px] font-semibold text-transparent"
+              >
+                Sign out
               </span>
             </div>
           ) : signedIn ? (
@@ -280,7 +292,24 @@ export default function Navbar() {
               )}
               <div className="border-t border-border/60 pt-3 mt-2 space-y-2">
                 {!authReady ? (
-                  <div className="h-11 animate-pulse rounded-xl bg-muted/70" />
+                  <>
+                    <div
+                      className="flex animate-pulse select-none items-center justify-center gap-2 rounded-xl border border-border bg-muted/80 py-2.5 text-[14px] font-medium text-transparent"
+                      aria-hidden
+                    >
+                      <LayoutDashboard
+                        className="h-4 w-4 shrink-0 opacity-0"
+                        aria-hidden
+                      />
+                      Admin dashboard
+                    </div>
+                    <div
+                      className="flex w-full animate-pulse select-none items-center justify-center rounded-xl border-2 border-brand bg-muted/80 py-3 text-[14px] font-semibold text-transparent"
+                      aria-hidden
+                    >
+                      Sign out
+                    </div>
+                  </>
                 ) : signedIn ? (
                   <>
                     {showAdmin ? (

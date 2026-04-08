@@ -22,11 +22,15 @@ function rowToMember(r: {
   };
 }
 
-/** Returns null if table missing or error; empty arrays if no rows. */
-export async function fetchTeamFromSupabase(): Promise<{
+export type FetchTeamResult = {
   members: TeamMember[];
   alumni: TeamMember[];
-} | null> {
+  /** True when Supabase returned successfully (use data even if empty). False → use static fallback. */
+  usedDatabase: boolean;
+};
+
+/** Loads team from public.team_members. On any error, usedDatabase is false (caller may fall back to static data). */
+export async function fetchTeamFromSupabase(): Promise<FetchTeamResult> {
   try {
     const supabase = getSupabaseBrowserClient();
     const { data, error } = await supabase
@@ -37,18 +41,18 @@ export async function fetchTeamFromSupabase(): Promise<{
       .order("sort_order", { ascending: true });
     if (error) {
       console.warn("[team]", error.message);
-      return null;
+      return { members: [], alumni: [], usedDatabase: false };
     }
-    if (!data?.length) return { members: [], alumni: [] };
+    const rows = data ?? [];
     const active: TeamMember[] = [];
     const alum: TeamMember[] = [];
-    for (const r of data) {
+    for (const r of rows) {
       const m = rowToMember(r);
       if (r.is_alumni) alum.push(m);
       else active.push(m);
     }
-    return { members: active, alumni: alum };
+    return { members: active, alumni: alum, usedDatabase: true };
   } catch {
-    return null;
+    return { members: [], alumni: [], usedDatabase: false };
   }
 }

@@ -4,6 +4,19 @@ import { useCallback, useEffect, useState } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { normalizeRole, type AppRole } from "./roles";
 
+function isStaleRefreshTokenError(err: unknown): boolean {
+  const msg =
+    err && typeof err === "object" && "message" in err
+      ? String((err as { message?: string }).message)
+      : "";
+  const m = msg.toLowerCase();
+  return (
+    m.includes("invalid refresh token") ||
+    m.includes("refresh token not found") ||
+    m.includes("refresh_token_not_found")
+  );
+}
+
 async function ensureProfileRow(
   supabase: ReturnType<typeof getSupabaseBrowserClient>,
   user: { id: string; email?: string | null }
@@ -43,7 +56,27 @@ export function useAuthProfile() {
       const supabase = getSupabaseBrowserClient();
       const {
         data: { user },
+        error: authErr,
       } = await supabase.auth.getUser();
+      if (authErr) {
+        if (isStaleRefreshTokenError(authErr)) {
+          try {
+            await supabase.auth.signOut();
+          } catch {
+            /* ignore */
+          }
+        }
+        setUserId(null);
+        setEmail(null);
+        setName(null);
+        setRole("user");
+        setHasProfileRow(false);
+        setProfileCreatedAt(null);
+        setProfileUpdatedAt(null);
+        setAuthCreatedAt(null);
+        setLastSignInAt(null);
+        return;
+      }
       if (!user) {
         setUserId(null);
         setEmail(null);

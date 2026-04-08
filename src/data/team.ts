@@ -1,3 +1,4 @@
+/** Fallback when Supabase is unavailable or team_members has not loaded. Prefer data in public.team_members (see seed_team_members.sql, /admin/team/). */
 export type TeamMemberCategory = "staff" | "student";
 
 export interface TeamMember {

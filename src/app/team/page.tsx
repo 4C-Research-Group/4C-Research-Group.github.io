@@ -93,19 +93,20 @@ const FILTER_OPTIONS: {
 export default function TeamPage() {
   const [filter, setFilter] = useState<"all" | TeamMemberCategory>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [teamMembers, setTeamMembers] =
-    useState<TeamMember[]>(staticTeamMembers);
-  const [teamAlumni, setTeamAlumni] =
-    useState<TeamMember[]>(staticTeamAlumni);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[] | null>(null);
+  const [teamAlumni, setTeamAlumni] = useState<TeamMember[] | null>(null);
 
   useEffect(() => {
     let alive = true;
     void (async () => {
       const fromDb = await fetchTeamFromSupabase();
-      if (!alive || !fromDb) return;
-      if (fromDb.members.length > 0 || fromDb.alumni.length > 0) {
+      if (!alive) return;
+      if (fromDb.usedDatabase) {
         setTeamMembers(fromDb.members);
         setTeamAlumni(fromDb.alumni);
+      } else {
+        setTeamMembers(staticTeamMembers);
+        setTeamAlumni(staticTeamAlumni);
       }
     })();
     return () => {
@@ -116,8 +117,8 @@ export default function TeamPage() {
   const filtered = useMemo(() => {
     let filteredMembers =
       filter === "all"
-        ? teamMembers
-        : teamMembers.filter((m) => m.category === filter);
+        ? teamMembers ?? []
+        : (teamMembers ?? []).filter((m) => m.category === filter);
 
     if (searchQuery) {
       filteredMembers = filteredMembers.filter(
@@ -132,10 +133,22 @@ export default function TeamPage() {
   }, [filter, searchQuery, teamMembers]);
 
   const counts = useMemo(() => {
-    const students = teamMembers.filter((m) => m.category === "student").length;
-    const staff = teamMembers.filter((m) => m.category === "staff").length;
-    return { students, staff, total: teamMembers.length };
+    const list = teamMembers ?? [];
+    const students = list.filter((m) => m.category === "student").length;
+    const staff = list.filter((m) => m.category === "staff").length;
+    return { students, staff, total: list.length };
   }, [teamMembers]);
+
+  if (teamMembers === null || teamAlumni === null) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3 text-muted-foreground">
+          <div className="h-11 w-11 animate-spin rounded-full border-2 border-brand border-t-transparent" />
+          <p className="text-sm">Loading team…</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -489,6 +502,11 @@ export default function TeamPage() {
               </div>
 
               <motion.ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-8">
+                {teamAlumni.length === 0 ? (
+                  <li className="col-span-full list-none text-center text-sm text-muted-foreground">
+                    No alumni listed yet.
+                  </li>
+                ) : null}
                 {teamAlumni.map((member, index) => (
                   <motion.li
                     key={member.slug}

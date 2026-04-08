@@ -63,6 +63,22 @@ create table if not exists public.team_members (
   updated_at timestamptz default now()
 );
 
+create or replace function public.touch_team_members_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists team_members_set_updated_at on public.team_members;
+create trigger team_members_set_updated_at
+  before update on public.team_members
+  for each row
+  execute function public.touch_team_members_updated_at();
+
 alter table public.team_members enable row level security;
 
 drop policy if exists "team_public_read" on public.team_members;

@@ -144,7 +144,8 @@ export default function TeamPage() {
 
     if (takeTeamListScrollRestorePending()) {
       const y = consumeTeamListScrollY();
-      if (y != null) window.scrollTo({ top: y, behavior: "auto" });
+      // `instant` ignores root `scroll-smooth` so we don't animate from the top.
+      if (y != null) window.scrollTo({ top: y, behavior: "instant" });
       clearTeamPageReloadScroll();
       return;
     }
@@ -153,7 +154,7 @@ export default function TeamPage() {
 
     if (isReload) {
       const y = consumeTeamPageReloadScrollY();
-      if (y != null) window.scrollTo({ top: y, behavior: "auto" });
+      if (y != null) window.scrollTo({ top: y, behavior: "instant" });
     } else {
       clearTeamPageReloadScroll();
     }

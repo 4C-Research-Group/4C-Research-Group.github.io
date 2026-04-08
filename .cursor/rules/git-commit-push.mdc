@@ -1,0 +1,15 @@
+---
+description: After code changes, commit and push to origin
+alwaysApply: true
+---
+
+# Git: commit and push
+
+When you finish substantive edits in this repo (user-facing fixes, features, or anything they asked to keep), **commit and push** unless they explicitly say not to.
+
+1. `git status` — confirm changed files.
+2. `git add` only what belongs in the commit.
+3. `git commit -m "type(scope): short imperative summary"` — Conventional-style message.
+4. `git push` to `origin` (current branch).
+
+If there is nothing to commit, say so. If push fails, diagnose (auth, conflicts) and retry or report clearly.

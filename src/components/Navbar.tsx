@@ -167,9 +167,16 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="hidden items-center gap-2 md:flex">
+        {/* min-w reserves space so primary nav does not shift when auth resolves */}
+        <div className="hidden min-w-[18rem] shrink-0 items-center justify-end gap-2 md:flex">
           {!authReady ? (
-            <span className="inline-block h-8 w-24 animate-pulse rounded-full bg-muted/80" />
+            <div
+              className="flex w-full min-w-0 items-center justify-end gap-2"
+              aria-hidden
+            >
+              <span className="h-8 w-[11rem] max-w-[60%] shrink-0 animate-pulse rounded-full bg-muted/80" />
+              <span className="h-8 w-[5.5rem] shrink-0 animate-pulse rounded-full bg-muted/80" />
+            </div>
           ) : signedIn ? (
             <>
               {showAdmin ? (

@@ -287,6 +287,22 @@ export default function AdminTeamPage() {
             <strong className="font-medium text-foreground">Bio &amp; publications</strong>{" "}
             appear on each member&apos;s portfolio page.
           </li>
+          <li>
+            <strong className="font-medium text-foreground">Join page testimonials</strong>{" "}
+            — linked members can edit theirs on their portfolio; run{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-[11px]">
+              supabase/team_member_testimonials.sql
+            </code>{" "}
+            and set{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-[11px]">
+              public.users.team_member_id
+            </code>{" "}
+            (superuser only) to connect a login to a row in{" "}
+            <code className="rounded bg-muted px-1 py-0.5 text-[11px]">
+              team_members
+            </code>
+            .
+          </li>
         </ul>
       </div>
 

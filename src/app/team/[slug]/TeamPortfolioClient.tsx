@@ -21,6 +21,8 @@ import {
   type TeamMemberPublication,
 } from "@/lib/team/supabase-portfolio";
 import { markTeamListScrollRestorePending } from "@/lib/team/team-list-scroll";
+import { useAuthProfile } from "@/lib/auth/use-auth-profile";
+import MemberTestimonialForm from "@/components/team/MemberTestimonialForm";
 
 function statusBadgeClass(status: TeamMemberPublication["status"]): string {
   switch (status) {
@@ -79,6 +81,7 @@ function MemberHeroPhoto({
 }
 
 export default function TeamPortfolioClient({ slug }: { slug: string }) {
+  const { ready: authReady, userId, teamMemberId } = useAuthProfile();
   const [ready, setReady] = useState(false);
   const [member, setMember] = useState<TeamMemberPortfolio | null>(null);
   const [publications, setPublications] = useState<TeamMemberPublication[]>([]);
@@ -147,6 +150,12 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
 
   const photo = resolveTeamMemberDisplayPhotoUrl(member.photoFile, member.slug);
   const showBio = member.bio.trim().length > 0;
+  const isOwnProfile =
+    authReady &&
+    !!userId &&
+    !!teamMemberId &&
+    !!member.id &&
+    teamMemberId === member.id;
 
   return (
     <div className="min-h-screen bg-background">
@@ -240,6 +249,14 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
           </div>
         </div>
       </div>
+
+      {isOwnProfile ? (
+        <div className="border-t border-border/40 bg-background px-4 py-10 sm:px-6">
+          <div className="container mx-auto max-w-5xl">
+            <MemberTestimonialForm teamMemberId={member.id} />
+          </div>
+        </div>
+      ) : null}
 
       <section className="border-t border-border/40 bg-muted/15 px-4 py-14 sm:px-6 sm:py-20">
         <div className="container mx-auto max-w-5xl">

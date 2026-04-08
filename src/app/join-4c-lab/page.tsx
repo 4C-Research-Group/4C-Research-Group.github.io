@@ -1,10 +1,15 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Mail, GraduationCap, Users, Lightbulb, School } from "lucide-react";
 import PageHero from "@/components/PageHero";
-import { joinTestimonials } from "@/data/join-testimonials";
+import {
+  joinTestimonials,
+  type JoinTestimonial,
+} from "@/data/join-testimonials";
+import { fetchJoinPageTestimonialsFromSupabase } from "@/lib/team/supabase-testimonials";
 
 const CONTACT_EMAIL = "rishi.ganesan@lhsc.on.ca";
 const MAILTO = `mailto:${CONTACT_EMAIL}`;
@@ -32,7 +37,24 @@ const joinContent = {
 };
 
 export default function Join4CLabPage() {
-  const testimonials = joinTestimonials;
+  const [fromDb, setFromDb] = useState<JoinTestimonial[]>([]);
+
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      const rows = await fetchJoinPageTestimonialsFromSupabase();
+      if (!alive) return;
+      setFromDb(rows);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const testimonials = useMemo(
+    () => [...fromDb, ...joinTestimonials],
+    [fromDb],
+  );
 
   return (
     <div className="min-h-screen bg-background">

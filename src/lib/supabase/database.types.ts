@@ -15,6 +15,7 @@ export interface Database {
           email: string | null;
           name: string | null;
           role: string | null;
+          team_member_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -23,6 +24,7 @@ export interface Database {
           email?: string | null;
           name?: string | null;
           role?: string | null;
+          team_member_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -118,6 +120,38 @@ export interface Database {
         };
         Update: Partial<Database["public"]["Tables"]["page_content"]["Insert"]>;
         Relationships: [];
+      };
+      team_member_testimonials: {
+        Row: {
+          id: string;
+          team_member_id: string;
+          quote: string;
+          testimonial_bio: string;
+          education: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          team_member_id: string;
+          quote: string;
+          testimonial_bio: string;
+          education: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["team_member_testimonials"]["Insert"]
+        >;
+        Relationships: [
+          {
+            foreignKeyName: "team_member_testimonials_team_member_id_fkey";
+            columns: ["team_member_id"];
+            isOneToOne: true;
+            referencedRelation: "team_members";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
     Views: Record<string, never>;

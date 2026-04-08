@@ -50,6 +50,7 @@ export function useAuthProfile() {
   );
   const [authCreatedAt, setAuthCreatedAt] = useState<string | null>(null);
   const [lastSignInAt, setLastSignInAt] = useState<string | null>(null);
+  const [teamMemberId, setTeamMemberId] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -75,6 +76,7 @@ export function useAuthProfile() {
         setProfileUpdatedAt(null);
         setAuthCreatedAt(null);
         setLastSignInAt(null);
+        setTeamMemberId(null);
         return;
       }
       if (!user) {
@@ -87,6 +89,7 @@ export function useAuthProfile() {
         setProfileUpdatedAt(null);
         setAuthCreatedAt(null);
         setLastSignInAt(null);
+        setTeamMemberId(null);
         return;
       }
       setUserId(user.id);
@@ -95,7 +98,7 @@ export function useAuthProfile() {
       setLastSignInAt(user.last_sign_in_at ?? null);
       let { data: row, error: rowErr } = await supabase
         .from("users")
-        .select("role, name, created_at, updated_at")
+        .select("role, name, created_at, updated_at, team_member_id")
         .eq("id", user.id)
         .maybeSingle();
       if (rowErr) {
@@ -105,7 +108,7 @@ export function useAuthProfile() {
         await ensureProfileRow(supabase, user);
         const again = await supabase
           .from("users")
-          .select("role, name, created_at, updated_at")
+          .select("role, name, created_at, updated_at, team_member_id")
           .eq("id", user.id)
           .maybeSingle();
         row = again.data;
@@ -115,6 +118,9 @@ export function useAuthProfile() {
       setName((row?.name as string | null | undefined) ?? null);
       setProfileCreatedAt((row?.created_at as string | null | undefined) ?? null);
       setProfileUpdatedAt((row?.updated_at as string | null | undefined) ?? null);
+      setTeamMemberId(
+        (row?.team_member_id as string | null | undefined) ?? null,
+      );
     } catch {
       setUserId(null);
       setEmail(null);
@@ -125,6 +131,7 @@ export function useAuthProfile() {
       setProfileUpdatedAt(null);
       setAuthCreatedAt(null);
       setLastSignInAt(null);
+      setTeamMemberId(null);
     } finally {
       setReady(true);
     }
@@ -160,6 +167,7 @@ export function useAuthProfile() {
     profileUpdatedAt,
     authCreatedAt,
     lastSignInAt,
+    teamMemberId,
     refresh,
   };
 }

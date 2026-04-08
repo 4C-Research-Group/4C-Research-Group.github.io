@@ -175,19 +175,19 @@ export default function Join4CLabPage() {
             viewport={{ once: true }}
             className="mb-16"
           >
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+            <div className="text-center mb-8 md:mb-10">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
                 Student Testimonials
               </h2>
-              <div className="w-32 h-1.5 bg-linear-to-r from-cognition via-consciousness to-care rounded-full mx-auto" />
-              <p className="text-lg text-muted-foreground mt-4 max-w-2xl mx-auto">
+              <div className="w-24 h-1 bg-linear-to-r from-cognition via-consciousness to-care rounded-full mx-auto" />
+              <p className="text-base text-muted-foreground mt-3 max-w-2xl mx-auto">
                 Hear from our previous students about their experiences with the
                 4C Research Group
               </p>
             </div>
 
             {testimonials.length > 0 ? (
-              <div className="space-y-8 w-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6 w-full">
                 {testimonials.map((testimonial) => (
                   <motion.div
                     key={testimonial.id}
@@ -195,22 +195,22 @@ export default function Join4CLabPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4 }}
                     viewport={{ once: true }}
-                    className="bg-card rounded-2xl border border-border shadow-lg overflow-hidden"
+                    className="bg-card rounded-xl border border-border shadow-md overflow-hidden h-full flex flex-col"
                   >
-                    <div className="md:flex">
-                      <div className="md:w-1/3 p-6 flex items-center justify-center bg-muted/50">
-                        <div className="relative w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-card shadow-lg bg-muted">
+                    <div className="p-4 sm:p-5 flex flex-col flex-1">
+                      <div className="flex justify-center mb-3">
+                        <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-border shadow-sm bg-muted shrink-0">
                           {testimonial.imageSrc ? (
                             <Image
                               src={testimonial.imageSrc}
                               alt={testimonial.name}
                               fill
                               className="object-cover"
-                              sizes="(max-width: 768px) 192px, 224px"
+                              sizes="(max-width: 768px) 80px, 96px"
                             />
                           ) : (
                             <div className="w-full h-full bg-linear-to-br from-cognition to-brand-deep flex items-center justify-center">
-                              <span className="text-5xl md:text-6xl text-primary-foreground font-bold">
+                              <span className="text-2xl sm:text-3xl text-primary-foreground font-bold">
                                 {testimonial.name
                                   .split(/\s+/)
                                   .map((n) => n[0])
@@ -221,31 +221,29 @@ export default function Join4CLabPage() {
                         </div>
                       </div>
 
-                      <div className="md:w-2/3 p-8">
-                        <div className="relative pl-4 border-l-4 border-cognition mb-6">
-                          <p className="text-foreground/90 italic pl-4 text-lg leading-relaxed">
-                            &ldquo;{testimonial.quote}&rdquo;
-                          </p>
-                        </div>
+                      <div className="relative pl-3 border-l-2 border-cognition mb-3 flex-1 min-h-0">
+                        <p className="text-foreground/90 italic pl-2.5 text-sm leading-relaxed">
+                          &ldquo;{testimonial.quote}&rdquo;
+                        </p>
+                      </div>
 
-                        <div className="mt-6 pt-6 border-t border-border">
-                          <h3 className="text-xl font-bold text-foreground mb-1">
-                            {testimonial.name}
-                          </h3>
-                          <p className="text-brand font-medium mb-4">
-                            {testimonial.role}
-                          </p>
+                      <div className="pt-3 border-t border-border mt-auto">
+                        <h3 className="text-base font-bold text-foreground">
+                          {testimonial.name}
+                        </h3>
+                        <p className="text-sm text-brand font-medium mb-2">
+                          {testimonial.role}
+                        </p>
 
-                          <h4 className="font-semibold text-foreground mb-2">
-                            Bio
-                          </h4>
-                          <p className="text-muted-foreground mb-4 leading-relaxed">
-                            {testimonial.bio}
-                          </p>
-                          <div className="flex items-start text-sm text-muted-foreground gap-2">
-                            <GraduationCap className="mt-0.5 shrink-0 w-4 h-4" />
-                            <span>{testimonial.education}</span>
-                          </div>
+                        <h4 className="text-xs font-semibold text-foreground mb-1">
+                          Bio
+                        </h4>
+                        <p className="text-xs sm:text-sm text-muted-foreground mb-2 leading-relaxed">
+                          {testimonial.bio}
+                        </p>
+                        <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <GraduationCap className="mt-0.5 shrink-0 w-3.5 h-3.5" />
+                          <span>{testimonial.education}</span>
                         </div>
                       </div>
                     </div>

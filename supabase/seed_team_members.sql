@@ -1,5 +1,6 @@
 -- One-time: copy legacy static team into public.team_members (idempotent on slug).
--- Run in Supabase SQL Editor after cms_schema.sql. Admins then manage rows at /admin/team/.
+-- Run in Supabase SQL Editor after cms_schema.sql (or run supabase/team_member_portfolio.sql
+-- once if your DB was created before portfolio + publications). Admins manage rows at /admin/team/.
 
 insert into public.team_members (
   slug,

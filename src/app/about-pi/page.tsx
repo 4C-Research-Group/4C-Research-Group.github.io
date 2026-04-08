@@ -8,9 +8,15 @@ import {
   Brain,
   Briefcase,
   Building2,
+  DollarSign,
+  FileText,
   GraduationCap,
   HeartHandshake,
+  Languages as LanguagesIcon,
+  MapPin,
+  Mic,
   Quote,
+  Scale,
   Stethoscope,
   Star,
 } from "lucide-react";
@@ -18,8 +24,12 @@ import { FaGoogle, FaLinkedin, FaResearchgate } from "react-icons/fa";
 import { SiOrcid } from "react-icons/si";
 import { aboutPiData } from "@/data/about-pi";
 import type {
+  PiBiographical,
+  PiInvitedLecture,
+  PiLanguage,
   PiLicense,
   PiOrganization,
+  PiPeerReviewBlock,
   PiPublicationHighlight,
   PiRecommendation,
   PiTitleSubtitle,
@@ -142,6 +152,72 @@ function SocialButton({
   );
 }
 
+function BiographicalBlock({ bio }: { bio: PiBiographical }) {
+  return (
+    <div className="grid gap-6 sm:grid-cols-2">
+      <div className="space-y-3 text-sm text-muted-foreground">
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-foreground">
+            Legal name
+          </div>
+          <p className="mt-1">{bio.legalName}</p>
+        </div>
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-foreground">
+            Practice location
+          </div>
+          <address className="mt-1 not-italic">
+            {bio.practiceLines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </address>
+        </div>
+      </div>
+      <div className="space-y-3 text-sm text-muted-foreground">
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-foreground">
+            Contact
+          </div>
+          <p className="mt-1">Tel: {bio.telephone}</p>
+          <p>Fax: {bio.fax}</p>
+          <div className="mt-1">
+            <span className="text-foreground">Email: </span>
+            {bio.emails.map((e, i) => (
+              <span key={e}>
+                {i > 0 ? " · " : ""}
+                <a
+                  href={`mailto:${e}`}
+                  className="text-brand underline-offset-4 hover:underline"
+                >
+                  {e}
+                </a>
+              </span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-foreground">
+            Administrative assistant
+          </div>
+          <p className="mt-1">{bio.administrativeAssistant}</p>
+        </div>
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-foreground">
+            Published author names
+          </div>
+          <ul className="mt-1 list-disc space-y-1 pl-4">
+            {bio.publishedAuthorLines.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AboutPiPage() {
   const d = aboutPiData;
   const titlePills = d.title.split("|").map((t) => t.trim());
@@ -155,72 +231,93 @@ export default function AboutPiPage() {
           <div className="absolute bottom-8 left-1/3 h-52 w-52 rounded-full bg-care/12 blur-3xl" />
         </div>
 
-        <div className="container relative z-10 mx-auto px-4 py-14 text-center sm:px-6 md:py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
-            className="relative mx-auto mb-6 h-36 w-36 overflow-hidden rounded-3xl border-4 border-card shadow-xl shadow-brand/10 sm:h-44 sm:w-44"
-          >
-            <Image
-              src={d.imageSrc}
-              alt={d.name}
-              fill
-              className="object-cover"
-              style={{ objectPosition: "center 30%" }}
-              priority
-              sizes="(max-width: 640px) 144px, 176px"
-            />
-          </motion.div>
+        <div className="container relative z-10 mx-auto px-4 py-14 sm:px-6 md:py-20">
+          <div className="mx-auto flex max-w-5xl flex-col items-center gap-8 md:flex-row md:items-start md:gap-10 lg:gap-12">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45 }}
+              className="relative h-36 w-36 shrink-0 overflow-hidden rounded-3xl border-4 border-card shadow-xl shadow-brand/10 sm:h-44 sm:w-44 md:h-48 md:w-48"
+            >
+              <Image
+                src={d.imageSrc}
+                alt={d.name}
+                fill
+                className="object-cover"
+                style={{ objectPosition: "center 30%" }}
+                priority
+                sizes="(max-width: 768px) 176px, 192px"
+              />
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.05 }}
-          >
-            <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-              <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
-                {d.name}
-              </span>
-            </h1>
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              {titlePills.map((pill) => (
-                <span
-                  key={pill}
-                  className="rounded-full border border-care/25 bg-care/10 px-3 py-1 text-xs font-semibold text-foreground sm:text-sm"
-                >
-                  {pill}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.05 }}
+              className="min-w-0 flex-1 text-center md:text-left"
+            >
+              <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+                <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+                  {d.name}
                 </span>
-              ))}
-            </div>
+              </h1>
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-2 md:justify-start">
+                {titlePills.map((pill) => (
+                  <span
+                    key={pill}
+                    className="rounded-full border border-care/25 bg-care/10 px-3 py-1 text-xs font-semibold text-foreground sm:text-sm"
+                  >
+                    {pill}
+                  </span>
+                ))}
+              </div>
 
-            <div className="mt-5 flex flex-wrap justify-center gap-3">
-              {d.linkedinUrl ? (
-                <SocialButton href={d.linkedinUrl} label="LinkedIn">
-                  <FaLinkedin className="h-5 w-5" />
-                </SocialButton>
+              {d.datePrepared ? (
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Curriculum vitae current as of{" "}
+                  <time dateTime={d.datePrepared}>{d.datePrepared}</time>
+                </p>
               ) : null}
-              {d.googleScholarUrl ? (
-                <SocialButton href={d.googleScholarUrl} label="Google Scholar">
-                  <FaGoogle className="h-5 w-5" />
-                </SocialButton>
-              ) : null}
-              {d.researchgateUrl ? (
-                <SocialButton href={d.researchgateUrl} label="ResearchGate">
-                  <FaResearchgate className="h-5 w-5" />
-                </SocialButton>
-              ) : null}
-              {d.orcidUrl ? (
-                <SocialButton href={d.orcidUrl} label="ORCID">
-                  <SiOrcid className="h-5 w-5" />
-                </SocialButton>
-              ) : null}
-            </div>
 
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              {d.heroDescription}
-            </p>
-          </motion.div>
+              <div className="mt-5 flex flex-wrap justify-center gap-3 md:justify-start">
+                {d.linkedinUrl ? (
+                  <SocialButton href={d.linkedinUrl} label="LinkedIn">
+                    <FaLinkedin className="h-5 w-5" />
+                  </SocialButton>
+                ) : null}
+                {d.googleScholarUrl ? (
+                  <SocialButton href={d.googleScholarUrl} label="Google Scholar">
+                    <FaGoogle className="h-5 w-5" />
+                  </SocialButton>
+                ) : null}
+                {d.researchgateUrl ? (
+                  <SocialButton href={d.researchgateUrl} label="ResearchGate">
+                    <FaResearchgate className="h-5 w-5" />
+                  </SocialButton>
+                ) : null}
+                {d.orcidUrl ? (
+                  <SocialButton href={d.orcidUrl} label="ORCID">
+                    <SiOrcid className="h-5 w-5" />
+                  </SocialButton>
+                ) : null}
+              </div>
+
+              <ul className="mt-6 list-none space-y-3 border-t border-border/50 pt-6 text-left">
+                {d.heroLines.map((line, i) => (
+                  <li
+                    key={`hero-line-${i}`}
+                    className={`text-base leading-relaxed sm:text-lg ${
+                      i === 0
+                        ? "font-semibold text-foreground"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {line}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -249,6 +346,15 @@ export default function AboutPiPage() {
                 <p key={i}>{para}</p>
               ))}
             </div>
+          </SectionShell>
+
+          <SectionShell>
+            <SectionHeader
+              icon={MapPin}
+              title="Biographical & contact"
+              variant={1}
+            />
+            <BiographicalBlock bio={d.biographical} />
           </SectionShell>
 
           <SectionShell>
@@ -282,8 +388,134 @@ export default function AboutPiPage() {
           </SectionShell>
 
           <SectionShell>
-            <SectionHeader icon={Brain} title="Research & awards" variant={0} />
+            <SectionHeader
+              icon={Brain}
+              title="Honors, awards & recognition"
+              variant={0}
+            />
             <TitleSubtitleGrid items={[...d.researchAwards]} accent={0} />
+          </SectionShell>
+
+          <SectionShell>
+            <SectionHeader
+              icon={GraduationCap}
+              title="Trainee scholarships & awards"
+              variant={1}
+            />
+            <TitleSubtitleGrid items={[...d.traineeScholarAwards]} accent={1} />
+          </SectionShell>
+
+          <SectionShell>
+            <SectionHeader
+              icon={Star}
+              title="Leadership development awards"
+              variant={2}
+            />
+            <TitleSubtitleGrid
+              items={[...d.leadershipDevelopmentAwards]}
+              accent={2}
+            />
+          </SectionShell>
+
+          <SectionShell>
+            <SectionHeader
+              icon={DollarSign}
+              title="Peer-reviewed grants & funding"
+              variant={0}
+            />
+            <h3 className="mb-3 text-sm font-semibold text-foreground">
+              Ongoing
+            </h3>
+            <TitleSubtitleGrid items={[...d.grantsOngoing]} accent={0} />
+            <h3 className="mb-3 mt-8 text-sm font-semibold text-foreground">
+              Completed
+            </h3>
+            <TitleSubtitleGrid items={[...d.grantsCompleted]} accent={1} />
+          </SectionShell>
+
+          <SectionShell>
+            <SectionHeader
+              icon={LanguagesIcon}
+              title="Language proficiency"
+              variant={1}
+            />
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {d.languages.map((lang: PiLanguage) => (
+                <div
+                  key={lang.language}
+                  className="rounded-2xl border border-border/60 bg-muted/25 p-4"
+                >
+                  <div className="font-semibold text-care">{lang.language}</div>
+                  <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-muted-foreground">
+                    {lang.lines.map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </SectionShell>
+
+          <SectionShell>
+            <SectionHeader icon={Mic} title="Invited lectures" variant={2} />
+            <details className="group rounded-2xl border border-border/60 bg-muted/15">
+              <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-foreground marker:hidden [&::-webkit-details-marker]:hidden">
+                <span className="group-open:hidden">
+                  Show all invited lectures & presentations (
+                  {d.invitedLectures.length})
+                </span>
+                <span className="hidden group-open:inline">
+                  Hide invited lectures & presentations
+                </span>
+              </summary>
+              <div className="max-h-[28rem] space-y-3 overflow-y-auto border-t border-border/50 px-4 py-3">
+                {d.invitedLectures.map((lec: PiInvitedLecture, idx) => (
+                  <div
+                    key={`${lec.title}-${lec.year}-${idx}`}
+                    className="rounded-xl border border-border/40 bg-card/50 p-3 text-sm"
+                  >
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                      <span className="font-medium text-cognition">
+                        {lec.year}
+                      </span>
+                      <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                        {lec.scope}
+                      </span>
+                    </div>
+                    <div className="mt-1 font-medium text-foreground">
+                      {lec.title}
+                    </div>
+                    {lec.detail ? (
+                      <div className="mt-1 text-muted-foreground">
+                        {lec.detail}
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </details>
+          </SectionShell>
+
+          <SectionShell>
+            <SectionHeader
+              icon={Scale}
+              title="Editorial & peer review"
+              variant={0}
+            />
+            <div className="space-y-6">
+              {d.peerReviewBlocks.map((block: PiPeerReviewBlock) => (
+                <div key={block.heading}>
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {block.heading}
+                  </h3>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+                    {block.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </SectionShell>
 
           <SectionShell>
@@ -396,9 +628,13 @@ export default function AboutPiPage() {
           </SectionShell>
 
           <SectionShell>
-            <SectionHeader icon={Building2} title="Organizations" variant={2} />
+            <SectionHeader
+              icon={Building2}
+              title="Committees & leadership roles"
+              variant={2}
+            />
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {d.organizations.map((item: PiOrganization, idx) => (
+              {d.committeesAndLeadership.map((item: PiOrganization, idx) => (
                 <div
                   key={`${item.name}-${idx}`}
                   className="flex h-full flex-col rounded-2xl border border-border/60 bg-muted/25 p-4"
@@ -417,6 +653,48 @@ export default function AboutPiPage() {
                 </div>
               ))}
             </div>
+            <h3 className="mb-3 mt-10 text-sm font-semibold text-foreground">
+              Society memberships
+            </h3>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {d.membershipsAll.map((item: PiOrganization, idx) => (
+                <div
+                  key={`${item.name}-m-${idx}`}
+                  className="flex h-full flex-col rounded-2xl border border-border/60 bg-muted/25 p-4"
+                >
+                  <div className="font-semibold text-consciousness">
+                    {item.name}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {item.role}
+                    {item.period ? ` · ${item.period}` : ""}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </SectionShell>
+
+          <SectionShell>
+            <SectionHeader
+              icon={FileText}
+              title="Teaching, supervision & professional development"
+              variant={0}
+            />
+            <p className="mb-3 text-sm text-muted-foreground">
+              Verbatim sections F–J from the curriculum vitae (teaching,
+              supervision, thesis committees, courses, and leadership narrative).
+            </p>
+            <details className="group rounded-2xl border border-border/60 bg-muted/15">
+              <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-foreground marker:hidden [&::-webkit-details-marker]:hidden">
+                <span className="group-open:hidden">
+                  Expand full CV text (sections F–J)
+                </span>
+                <span className="hidden group-open:inline">Collapse</span>
+              </summary>
+              <pre className="max-h-[32rem] overflow-auto whitespace-pre-wrap border-t border-border/50 px-4 py-3 font-sans text-xs leading-relaxed text-muted-foreground">
+                {d.cvFullTextSectionsFJ}
+              </pre>
+            </details>
           </SectionShell>
 
           <SectionShell>

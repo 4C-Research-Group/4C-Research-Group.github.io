@@ -1,0 +1,1195 @@
+export const drGanesanData = {
+  "name": "Dr. Rishi Ganesan",
+  "degrees": ["MBBS", "MD", "DM", "FACNS"],
+  "positions": [
+    {
+      title: "Pediatric Neurocritical Care Physician",
+      organization: "Children’s Hospital – LHSC"
+    },
+    {
+      title: "Assistant Professor",
+      department: "Department of Paediatrics & Clinical Neurological Sciences",
+      organization: "Schulich School of Medicine & Dentistry (SSMD), Western University"
+    }
+  ],
+  "crossAppointments": [
+    "Epidemiology & Biostatistics",
+    "Physiology & Pharmacology",
+    "Medical Biophysics"
+  ],
+  "affiliations": [
+    {
+      role: "Scientist",
+      organization: "Lawson Health Research Institute (LHRI)"
+    },
+    {
+      role: "Member",
+      organization: "The Western Institute of Neurosciences (WIN), Western University"
+    },
+    {
+      role: "Member (Neurosciences)",
+      organization: "School of Graduate & Postdoctoral Studies (SGPS)"
+    },
+    {
+      role: "Hospital Donation Physician",
+      organization: "Children’s Hospital – LHSC, Ontario Health"
+    }
+  ],
+  "datePrepared": "2025-06-30",
+  "biographicalInformation": {
+    legalName: "Lalgudi Ganesan, Saptharishi",
+    practiceLocation: {
+      hospital: "Victoria Hospital – London Health Sciences Centre",
+      address: "800 Commissioners Road E",
+      room: "Room C2-844, Department of Paediatrics",
+      city: "London",
+      province: "Ontario",
+      postalCode: "N6A 5W9"
+    },
+    contact: {
+      telephone: "(519) 685-8500 Ext. 74702",
+      fax: "(519) 685-8766 (Attention: Dr. Rishi Ganesan)",
+      email: [
+        "Rishi.Ganesan@lhsc.on.ca",
+        "slalgud@uwo.ca"
+      ]
+    },
+    administrativeAssistant: {
+      name: "Ms. Nija Baby",
+      phone: "(519) 685-8500 Ext. 58052"
+    },
+    publishedAuthorNames: [
+      {
+        name: "Saptharishi L G",
+        year: "2015"
+      },
+      {
+        name: "Saptharishi Lalgudi Ganesan",
+        year: "2016 onward"
+      },
+      {
+        name: "Rishi Ganesan",
+        note: "preferred name"
+      }
+    ]
+  },
+  "education": {
+  "degrees": [
+    {
+      "year": "2016",
+      "degree": "Doctorate in Medicine (D.M.)",
+      "equivalent": "PhD Equivalent",
+      "specialization": "Paediatric Critical Care",
+      "institution": "Post Graduate Institute of Medical, Education & Research, (PGIMER)",
+      "location": "Chandigarh, India"
+    },
+    {
+      "year": "2012",
+      "degree": "Doctor of Medicine (M.D.)",
+      "specialization": "Paediatrics",
+      "institution": "Post Graduate Institute of Medical, Education & Research, (PGMIER)",
+      "location": "Chandigarh, India"
+    },
+    {
+      "year": "2008",
+      "degree": "Bachelor of Medicine & Bachelor of Surgery (M.B., B.S.)",
+      "institution": "Jawaharlal Institute of Postgraduate Medical Education & Research",
+      "location": "Puducherry, India"
+    }
+  ],
+  "postgraduateTraining": [
+    {
+      "duration": "2017–2019",
+      "title": "Clinical-Research Fellowship - Critical Care Medicine",
+      "institution": "The Hospital for Sick Children, University of Toronto",
+      "location": "Toronto, ON"
+    },
+    {
+      "duration": "2016–2017",
+      "title": "Clinical Fellowship - Pediatric Neurocritical Care",
+      "institution": "The Hospital for Sick Children, University of Toronto",
+      "location": "Toronto, ON"
+    },
+    {
+      "year": "2016",
+      "title": "Chief Fellow, Pediatric Critical Care",
+      "institution": "Post Graduate Institute of Medical Education & Research (PGIMER)",
+      "location": "Chandigarh, India"
+    },
+    {
+      "duration": "2013–2015",
+      "title": "Clinical Fellowship - Pediatric Critical Care",
+      "institution": "Post Graduate Institute of Medical Education & Research (PGIMER)",
+      "location": "Chandigarh, India"
+    },
+    {
+      "year": "2013",
+      "title": "Clinical Fellowship (Senior Residency) - Paediatric Acute Care Neurology",
+      "institution": "Post Graduate Institute of Medical Education & Research (PGIMER)",
+      "location": "Chandigarh, India"
+    },
+    {
+      "duration": "2010–2012",
+      "title": "Post-graduate Medical Education (Residency) - Paediatrics",
+      "institution": "Post Graduate Institute of Medical Education & Research (PGIMER)",
+      "location": "Chandigarh, India"
+    }
+  ],
+  "certifications": [
+    {
+      "duration": "2022–Present",
+      "authority": "College of Physicians & Surgeons of Ontario (CPSO)",
+      "designation": "Recognized Specialist – Critical Care Medicine",
+      "licenseNumber": "#110481"
+    },
+    {
+      "duration": "2019–Present",
+      "authority": "College of Physicians & Surgeons of Ontario (CPSO)",
+      "designation": "Recognized Specialist – Paediatrics",
+      "licenseNumber": "#110481"
+    },
+    {
+      "duration": "2016–2019",
+      "authority": "College of Physicians & Surgeons of Ontario (CPSO)",
+      "designation": "Educational License",
+      "licenseNumber": "#110481"
+    },
+    {
+      "duration": "2016–Present",
+      "authority": "Medical Council of India (MCI)",
+      "designation": "Pediatric Critical Care - Independent",
+      "licenseNumber": "#17-27052"
+    },
+    {
+      "duration": "2013–Present",
+      "authority": "Medical Council of India (MCI)",
+      "designation": "Pediatrics - Independent",
+      "licenseNumber": "#15-19514"
+    },
+    {
+      "duration": "2009–Present",
+      "authority": "Tamil Nadu Medical Council (TNMC), Medical Council of India",
+      "designation": "Physician – Independent",
+      "licenseNumber": "#88470"
+    }
+  ]
+},
+"employment": {
+  "academicAppointments": [
+    {
+      "duration": "2023–Present",
+      "title": "Assistant Professor",
+      "details": "Cross appointments to Department of Medical Biophysics and Department of Epidemiology & Biostatistics",
+      "organization": "Schulich School of Medicine & Dentistry, Western University",
+      "location": "London, ON"
+    },
+    {
+      "duration": "2023–Present",
+      "title": "Assistant Professor",
+      "department": "Department of Clinical Neurological Sciences",
+      "organization": "Schulich School of Medicine & Dentistry, Western University",
+      "location": "London, ON"
+    },
+    {
+      "duration": "2020–2022",
+      "title": "Program Director",
+      "details": "Paediatric Critical Care Medicine Sub-specialty residency and clinical fellowship program",
+      "organization": "Post-graduate Medical Education (PGME), Schulich School of Medicine & Dentistry, Western University",
+      "location": "London, ON"
+    },
+    {
+      "duration": "2019–Present",
+      "title": "Assistant Professor",
+      "department": "Department of Paediatrics",
+      "organization": "Schulich School of Medicine & Dentistry, Western University",
+      "location": "London, ON"
+    },
+    {
+      "duration": "2019–Present",
+      "title": "Assistant Professor",
+      "department": "Department of Physiology & Pharmacology",
+      "organization": "Schulich School of Medicine & Dentistry, Western University",
+      "location": "London, ON"
+    }
+  ],
+  "clinicalAppointments": [
+    {
+      "duration": "2020–Present",
+      "title": "Hospital Donation Physician",
+      "organization": "Children’s Hospital – LHSC, Trillium Gift of Life Network (TGLN), Ontario Health"
+    },
+    {
+      "duration": "2020–Present",
+      "title": "Acquired Brain Injury / Neurorehabilitation Physician",
+      "department": "Department of Paediatrics",
+      "organization": "Children’s Hospital – LHSC",
+      "location": "London, ON"
+    },
+    {
+      "duration": "2019–Present",
+      "title": "Paediatric Intensivist",
+      "department": "Division of Paediatric Critical Care Medicine",
+      "organization": "Children’s Hospital – LHSC",
+      "location": "London, ON"
+    },
+    {
+      "duration": "2018–2019",
+      "title": "Assistant Staff Physician, Critical Care Medicine",
+      "organization": "The Hospital for Sick Children",
+      "location": "Toronto, ON"
+    }
+  ],
+  "researchAppointments": [
+    {
+      "duration": "2024–Present",
+      "role": "Member (Master’s)",
+      "program": "Program in Neurosciences",
+      "organization": "School of Graduate and Postdoctoral Studies (SGPS), Western University",
+      "location": "London, ON"
+    },
+    {
+      "duration": "2021–Present",
+      "role": "Member",
+      "organization": "Western Institute for Neurosciences, Western University",
+      "location": "London, ON"
+    },
+    {
+      "duration": "2019–Present",
+      "role": "Associate Scientist",
+      "program": "Children’s Health & Therapeutics",
+      "organization": "Children’s Health Research Institute, Lawson Health Research Institute",
+      "location": "London, ON"
+    },
+    {
+      "duration": "2019–2021",
+      "role": "Associate Member",
+      "organization": "The Brain and Mind Institute, Western University",
+      "location": "London, ON"
+    },
+    {
+      "duration": "2019–2024",
+      "role": "Associate Member",
+      "program": "Program in Neurosciences",
+      "organization": "School of Graduate and Postdoctoral Studies (SGPS), Western University",
+      "location": "London, ON"
+    }
+  ]
+},
+"recognitions": {
+  "research": [
+    {
+      "year": "2025",
+      "title": "Honorable Mention, Health Research Poster Competition",
+      "organization": "International Congress on Academic Medicine"
+    },
+    {
+      "year": "2024",
+      "title": "Michael Ward Award – Best Basic/Translational Science Study",
+      "organization": "Critical Care Canada Forum"
+    },
+    {
+      "duration": "2023–2024",
+      "title": "Institutional Nominee - Journeys & Frontiers in Pediatric Research Program",
+      "organization": "American Pediatric Society & Society for Pediatric Research"
+    },
+    {
+      "year": "2023",
+      "title": "Fellow of the American Clinical Neurophysiology Society (FACNS)"
+    },
+    {
+      "year": "2022",
+      "title": "Best Elevator Pitch Award",
+      "organization": "Canadian Child Health Clinician-Scientist Program (CCHCSP) Annual Symposium"
+    },
+    {
+      "year": "2022",
+      "title": "Best Capstone Project Presentation",
+      "organization": "Schulich-Ivey Quality in Healthcare Consultancy – CQUINS"
+    },
+    {
+      "duration": "2021–2023",
+      "title": "PILLAR Scientist",
+      "organization": "Canadian Child Health Clinician Scientist Program (CCHCSP), Western University"
+    },
+    {
+      "year": "2020",
+      "title": "Rising Researcher",
+      "organization": "Canadian Child Health Clinician Scientist Program Symposium, Western University"
+    },
+    {
+      "year": "2018",
+      "title": "Prof. R. Nath Gold Medal in Biomedical Sciences",
+      "organization": "PGIMER, Chandigarh, India"
+    },
+    {
+      "year": "2018",
+      "title": "Ernst A. Rodin Distinguished Fellowship",
+      "organization": "ACNS & ACMEGS"
+    },
+    {
+      "year": "2018",
+      "title": "IFCN Fellowship",
+      "organization": "ACNS & International Federation of Clinical Neurophysiology"
+    },
+    {
+      "year": "2017",
+      "title": "Young Investigator Travel Award",
+      "organization": "Neurocritical Care Society"
+    },
+    {
+      "year": "2017",
+      "title": "Best Research Abstract",
+      "organization": "SickKids Brain & Mental Health Day"
+    },
+    {
+      "year": "2016",
+      "title": "ISHLT Travel Fellowship",
+      "organization": "International Society for Heart & Lung Transplantation"
+    },
+    {
+      "year": "2016",
+      "title": "Best Research Paper",
+      "details": "Global Health Summit (Clinical and Patient-Based Research)"
+    },
+    {
+      "year": "2016",
+      "title": "S.T. Achar Endowment Award for Best Research",
+      "organization": "Indian Academy of Pediatrics"
+    },
+    {
+      "year": "2015",
+      "title": "Best Research Abstract",
+      "organization": "National Assembly of Pediatric Emergency Medicine (NAPEM)"
+    },
+    {
+      "year": "2013",
+      "title": "Best Postgraduate Thesis",
+      "organization": "Indian Journal of Pediatrics"
+    },
+    {
+      "year": "2009",
+      "title": "Best Research Paper of the Year",
+      "organization": "Indian Journal of Community Medicine"
+    },
+    {
+      "year": "2009",
+      "title": "JAANA Award for Best Research",
+      "organization": "JIPMER"
+    },
+    {
+      "year": "2008",
+      "title": "Dr. Vijai Narain Memorial Award - Best Research",
+      "organization": "AIPSMCON"
+    },
+    {
+      "year": "2007",
+      "title": "JSS Award for Best Research",
+      "organization": "JIPMER"
+    }
+  ],
+  "academic": [
+    {
+      "year": "2024",
+      "title": "Best Grand Rounds of the Year (2023–2024)",
+      "organization": "Department of Paediatrics, SSMD"
+    },
+    {
+      "year": "2022",
+      "title": "Supporting Resident Scholarship Award",
+      "organization": "Department of Paediatrics, SSMD"
+    },
+    {
+      "year": "2020",
+      "title": "A. Kotsakis Teaching Award",
+      "organization": "TACTICS – Canadian Critical Care Forum"
+    },
+    {
+      "year": "2019",
+      "title": "A. Kotsakis Teaching Award",
+      "organization": "TACTICS – Canadian Critical Care Forum"
+    },
+    {
+      "year": "2014",
+      "title": "Best Resident Award",
+      "organization": "PGIMER, Chandigarh, India"
+    },
+    {
+      "year": "2013",
+      "title": "All India National Champion",
+      "organization": "Indian Academy of Pediatrics Postgraduate Medical Quiz"
+    },
+    {
+      "year": "2011–2012",
+      "title": "Best Resident Academic Rounds"
+    },
+    {
+      "year": "2010",
+      "title": "Best Intern of Medical School Class"
+    },
+    {
+      "year": "2010",
+      "title": "Best Outgoing Graduate of Medical School"
+    },
+    {
+      "year": "2010",
+      "title": "Valedictorian of Medical School Class"
+    }
+  ],
+  "supervisor": [
+    {
+      "duration": "2025–2028",
+      "award": "Canada Graduate Scholarship – Doctoral Award",
+      "trainee": "Karen Wong",
+      "level": "PhD Student"
+    },
+    {
+      "year": "2025",
+      "award": "Ontario Graduate Scholarship",
+      "trainee": "Kyle (Haonan) Sun",
+      "level": "MSc Student"
+    },
+    {
+      "year": "2025",
+      "award": "Ontario Graduate Scholarship",
+      "trainee": "Tallulah Nyland",
+      "level": "MSc Student"
+    },
+    {
+      "year": "2025",
+      "award": "Department of Pediatrics Summer Studentship",
+      "trainee": "Shamim Norozi",
+      "level": "Undergraduate Student"
+    },
+    {
+      "year": "2025",
+      "award": "Western Undergraduate Summer Research Internship (USRI)",
+      "trainee": "Hashmeet Kainth",
+      "level": "Undergraduate Student"
+    },
+    {
+      "duration": "2024–2025",
+      "award": "CHRI Graduate Studentship Award",
+      "trainee": "Kyle Sun",
+      "level": "MSc Student"
+    },
+    {
+      "duration": "2024–2025",
+      "award": "Dept. of Paediatrics Graduate Studentship Award",
+      "trainee": "Tallulah Nyland",
+      "level": "MSc Student"
+    },
+    {
+      "year": "2024",
+      "award": "CHRI Trainee Travel Award",
+      "trainee": "Hiruthika Ravi",
+      "level": "MSc Student"
+    },
+    {
+      "duration": "2024–2025",
+      "award": "Ontario Graduate Scholarship",
+      "trainee": "Brian Krivoruk",
+      "level": "MSc Student"
+    },
+    {
+      "duration": "2023–2024",
+      "award": "Dept. of Paediatrics Graduate Studentship Award",
+      "trainee": "Brian Krivoruk",
+      "level": "MSc Student"
+    },
+    {
+      "duration": "2023–2024",
+      "award": "Ontario Graduate Scholarship (OGS)",
+      "trainee": "Karen Wong",
+      "level": "MSc Student"
+    },
+    {
+      "duration": "2023–2024",
+      "award": "Dept. of Paediatrics Graduate Studentship Award",
+      "trainee": "Karen Wong",
+      "level": "MSc Student"
+    },
+    {
+      "duration": "2023–2024",
+      "award": "Children’s Health Research Institute Trainee Travel Award",
+      "trainee": "Karen Wong",
+      "level": "MSc Student"
+    },
+    {
+      "duration": "2020–2021",
+      "award": "Summer Research Training Project",
+      "trainee": "Mary-Claire Verbeke",
+      "level": "Medical Student",
+      "organization": "Schulich School of Medicine & Dentistry, Western University"
+    }
+  ],
+  "leadership": [
+    {
+      "year": "2024",
+      "title": "CTA-UWO Faculty Professional Development Fund",
+      "amount": "$5000"
+    },
+    {
+      "year": "2021",
+      "title": "PSO Leadership Development Award",
+      "details": "4th annual",
+      "amount": "$1500"
+    }
+  ]
+},
+"leadership": {
+  "international": [
+    {
+      "duration": "2025–Present",
+      "role": "Co-Chair",
+      "committee": "Pediatric Disorders of Consciousness Committee",
+      "organization": "Curing Coma Campaign, Neurocritical Care Society"
+    },
+    {
+      "duration": "2024–2026",
+      "role": "Co-Chair",
+      "committee": "Communications Committee",
+      "organization": "American Clinical Neurophysiology Society"
+    },
+    {
+      "duration": "2024–Present",
+      "role": "Member",
+      "committee": "Bylaws Committee",
+      "organization": "Pediatric Neurocritical Care Research Group"
+    },
+    {
+      "duration": "2023–Present",
+      "role": "Member",
+      "committee": "Pediatric Disorders of Consciousness Committee",
+      "organization": "Curing Coma Campaign, Neurocritical Care Society"
+    },
+    {
+      "duration": "2022–2024",
+      "role": "Co-Chair Elect",
+      "committee": "Communications Committee",
+      "organization": "American Clinical Neurophysiology Society"
+    },
+    {
+      "duration": "2021–2023",
+      "role": "Member",
+      "committee": "International Scientific Committee",
+      "organization": "World Federation of Pediatric Intensive & Critical Care Societies"
+    },
+    {
+      "duration": "2020–2023",
+      "role": "Member",
+      "committee": "Membership Committee",
+      "organization": "American Clinical Neurophysiology Society"
+    },
+    {
+      "duration": "2020–Present",
+      "role": "Member",
+      "committee": "Communications Committee",
+      "organization": "American Clinical Neurophysiology Society"
+    },
+    {
+      "duration": "2020–2023",
+      "role": "Member",
+      "committee": "Guidelines Committee",
+      "organization": "American Clinical Neurophysiology Society"
+    },
+    {
+      "duration": "2021–2022",
+      "role": "Member",
+      "committee": "Translational Science Sub-committee",
+      "organization": "Neurocritical Care Society"
+    },
+    {
+      "duration": "2021–2022",
+      "role": "Member",
+      "committee": "Research Committee",
+      "organization": "American Delirium Society"
+    }
+  ],
+  "national": [
+    {
+      "duration": "2024–Present",
+      "role": "Lead",
+      "committee": "Neurocritical Care Module Group",
+      "organization": "Canadian Pediatric Intensive Care Consortium (CanPICC), Canadian Critical Care Trials Group"
+    },
+    {
+      "duration": "2023–Present",
+      "role": "Member",
+      "committee": "National PCCM Organ/Tissue Donation Curriculum Working Group",
+      "organization": "Royal College of Physicians & Surgeons of Canada"
+    },
+    {
+      "duration": "2022–Present",
+      "role": "Member",
+      "committee": "National Scientific Committee – POPCORN & CURNLS Project"
+    },
+    {
+      "duration": "2020–2023",
+      "role": "Lead",
+      "committee": "Governance Subgroup - National Pediatric Critical Care Data Initiative",
+      "organization": "Canadian Critical Care Trials Group"
+    }
+  ],
+  "localRegional": [
+    {
+      "duration": "2024–Present",
+      "role": "Member",
+      "committee": "Finance Management Committee",
+      "organization": "Department of Paediatrics, SSMD, Western University"
+    },
+    {
+      "duration": "2024–Present",
+      "role": "Member",
+      "committee": "Resident Research Committee",
+      "details": "Sub-committee - Residency Program Committee",
+      "organization": "Department of Paediatrics, SSMD, Western University"
+    },
+    {
+      "duration": "2024–Present",
+      "role": "Member",
+      "committee": "Research Advisory Committee",
+      "organization": "Western Institute for Neurosciences, Western University"
+    },
+    {
+      "duration": "2024–Present",
+      "role": "Member",
+      "committee": "CHRI Operations Committee",
+      "organization": "Children’s Health Research Institute"
+    },
+    {
+      "year": "2024",
+      "role": "Member",
+      "committee": "OH-PGP Rapid Genome-wide Sequencing Working Group",
+      "organization": "Ontario Health – Provincial Genetics Program"
+    },
+    {
+      "duration": "2019–Present",
+      "role": "Founding Member & Lead",
+      "organization": "ECHELON, Department of Paediatrics, SSMD, Western University"
+    },
+    {
+      "duration": "2019–Present",
+      "role": "Member",
+      "committee": "Residency Program Committee",
+      "organization": "Paediatric Critical Care Medicine Program, SSMD, Western University"
+    },
+    {
+      "duration": "2019–Present",
+      "role": "Member",
+      "committee": "Competence Committee",
+      "organization": "Paediatric Critical Care Medicine Program, SSMD, Western University"
+    },
+    {
+      "duration": "2019–2022",
+      "role": "Member",
+      "committee": "Medical Advisory Board – Medical Innovation Fellowship",
+      "organization": "WORLD Discoveries, Western University"
+    },
+    {
+      "duration": "2020–2022",
+      "role": "Mentor",
+      "program": "Mini-MIF Program",
+      "organization": "WORLD Discoveries, Western University"
+    },
+    {
+      "duration": "2018–2019",
+      "role": "Member",
+      "organization": "Trainee Council, PGCRL, SickKids"
+    },
+    {
+      "duration": "2017–2019",
+      "role": "Co-Chair",
+      "committee": "Social Media Management",
+      "organization": "Critical Care Medicine, SickKids"
+    },
+    {
+      "year": "2016",
+      "role": "Chief Fellow",
+      "organization": "PGIMER, Chandigarh, India"
+    },
+    {
+      "year": "2014",
+      "role": "Treasurer",
+      "organization": "Association of Resident Doctors and Fellows, PGIMER"
+    },
+    {
+      "year": "2014",
+      "role": "Organizing Secretary",
+      "organization": "Resident Doctors and Fellows’ Cultural & Sports Festival, PGIMER"
+    },
+    {
+      "year": "2007",
+      "role": "President",
+      "organization": "JIPMER Students Association"
+    },
+    {
+      "year": "2007",
+      "role": "Organizing Secretary",
+      "organization": "All-India Students’ Cultural, Literary & Sports Festival, JIPMER"
+    },
+    {
+      "year": "2007",
+      "role": "Panel Representative",
+      "organization": "Autonomy for JIPMER Movement"
+    },
+    {
+      "duration": "2005–2006",
+      "role": "Lead",
+      "organization": "Medical Students’ Movement for Equality, JIPMER"
+    },
+    {
+      "duration": "2005–2007",
+      "role": "Class Representative",
+      "organization": "JIPMER"
+    }
+  ],
+  "memberships": [
+    { "year": "2024–Present", "organization": "Canadian Association for Neuroscience" },
+    { "year": "2021–Present", "organization": "American Delirium Society" },
+    { "year": "2021–Present", "organization": "Canadian Donation & Transplantation Research Program" },
+    { "year": "2019–Present", "organization": "Canadian Critical Care Trials Group" },
+    { "year": "2019–Present", "organization": "Pediatric Neurocritical Care Research Group" },
+    { "year": "2019–Present", "organization": "Critical Care EEG Monitoring Research Consortium" },
+    { "year": "2019–Present", "organization": "Ontario Medical Association" },
+    { "year": "2019–Present", "organization": "Canadian Medical Association" },
+    { "year": "2017–Present", "organization": "American Clinical Neurophysiology Society" },
+    { "year": "2017–Present", "organization": "Neurocritical Care Society" },
+    { "year": "2016–Present", "organization": "Indian Society of Critical Care Medicine" },
+    { "year": "2015–Present", "organization": "Intensive Care Chapter - Indian Academy of Pediatrics" },
+    { "year": "2013–Present", "organization": "Indian Academy of Pediatrics" }
+  ],
+  "peerReview": {
+    "grantReview": [
+      {
+        "year": "2025",
+        "organization": "Canadian Institutes of Health Research",
+        "type": "Project Grant"
+      },
+      {
+        "duration": "2022–Present",
+        "organization": "Lawson Internal Research Fund",
+        "type": "Grant Review Panel"
+      },
+      {
+        "duration": "2023–Present",
+        "organization": "Brain Canada",
+        "type": "Future Leaders Grant Competition"
+      }
+    ],
+    "editorialBoards": [
+      {
+        "duration": "2020–2024",
+        "role": "Associate Editor",
+        "journal": "Journal of Clinical Neurophysiology"
+      }
+    ],
+    "journalReviewer": [
+      { "year": "2023–Present", "journal": "Intensive Care Medicine – Pediatric & Neonatal" },
+      { "year": "2023–Present", "journal": "Neurology" },
+      { "year": "2022–Present", "journal": "Canadian Journal of Anesthesia" },
+      { "year": "2021–Present", "journal": "Clinical Neurophysiology" },
+      { "year": "2021–Present", "journal": "Frontiers in Pediatrics" },
+      { "year": "2021–Present", "journal": "Developmental Medicine & Child Neurology" },
+      { "year": "2020–Present", "journal": "Journal of Clinical Neurophysiology" },
+      { "year": "2020–Present", "journal": "Indian Journal of Critical Care Medicine" },
+      { "year": "2019–Present", "journal": "Neurocritical Care" },
+      { "year": "2019–Present", "journal": "Pediatric Critical Care Medicine" },
+      { "year": "2019–Present", "journal": "Canadian Journal of Neurological Sciences" },
+      { "year": "2019–Present", "journal": "Acta Neurological Belgica" },
+      { "year": "2019–Present", "journal": "Epilepsy Research" },
+      { "year": "2016–Present", "journal": "Indian Journal of Pediatrics" },
+      { "year": "2015–Present", "journal": "Indian Pediatrics" }
+    ]
+  }
+},
+"academicHistory": {
+  "researchStatement": "My research program aims to improve the long-term neurological outcomes of critically ill children. We use information from high-density electroencephalography, functional near-infrared spectroscopy, and functional magnetic resonance imaging in children during the acute phase of critical illness to assess their neurological function accurately and predict long-term neurological morbidities. This inter-disciplinary research program sits at the intersection of critical care medicine, computational neuroscience, and functional neuroimaging. My program of research also uses novel randomized controlled trial designs to test complex functional neuroimaging modalities for enhanced screening and diagnosis of neuropathology such as delirium, to assess novel prognostic tools in brain-injured children, and to evaluate novel therapeutic interventions such as inhaled sedation in critically ill children.",
+  "researchAwards": {
+    "peerReviewedGrants": {
+      "ongoing": [
+        {
+          "duration": "2025–2027",
+          "role": "Co-Applicant",
+          "funder": "Canadian Institutes of Health Research (CIHR)",
+          "title": "Pediatric Outcomes imProvement through COordination of Research Networks (POPCORN)",
+          "principalInvestigator": "Dr. Caroline Quach-Thanh",
+          "type": "Operating Grant",
+          "amount": "$1,494,250",
+          "component": "Local RC/RA salary support"
+        },
+        {
+          "duration": "2024–2025",
+          "role": "Principal Applicant",
+          "funder": "Radboud-Western Collaboration Fund (RWCF)",
+          "title": "Game thEory to chaRacterize Medical decision-makINg in criticAlly iLl children (GERMINAL)",
+          "type": "Team-building Grant",
+          "amount": "$25,000",
+          "component": "$14,000"
+        },
+        {
+          "duration": "2024–2025",
+          "role": "Principal Applicant",
+          "funder": "IMPaCT",
+          "title": "Increasing Capacity for Maternal and Paediatric Clinical Trials",
+          "type": "Salary Grant",
+          "amount": "$70,000",
+          "component": "Protected research time"
+        },
+        {
+          "duration": "2024–2026",
+          "role": "Principal Applicant",
+          "funder": "AMOSO Innovation Fund",
+          "title": "Covert Consciousness in Comatose Critically Ill Children",
+          "type": "Operating Grant",
+          "amount": "$214,738"
+        },
+        {
+          "duration": "2023–2026",
+          "role": "Co-Principal Investigator",
+          "funder": "CIHR",
+          "title": "ABOVE Trial",
+          "principalInvestigator": "Dr. Angela Jerath",
+          "type": "Operating Grant",
+          "amount": "$1,121,997",
+          "component": "Local start-up + per patient cost"
+        },
+        {
+          "duration": "2023–2028",
+          "role": "Team Member",
+          "funder": "Canadian Foundation for Innovation",
+          "title": "Next-generation Human Cognitive Neuroscience",
+          "principalInvestigator": "Dr. Ingrid Johnsrude",
+          "type": "Platform Grant",
+          "amount": "$8,884,426",
+          "component": "~$300,000 equipment"
+        },
+        {
+          "duration": "2022–2024",
+          "role": "Principal Applicant",
+          "funder": "Brain Canada",
+          "title": "Brain Connectivity in Critically Ill Children at Risk of Delirium",
+          "type": "Operating Grant",
+          "amount": "$99,960"
+        },
+        {
+          "duration": "2022–2026",
+          "role": "Co-Investigator",
+          "funder": "Brain Canada",
+          "title": "SPRINT fNIRS Platform",
+          "type": "Platform Grant",
+          "amount": "$1,311,531",
+          "component": "$60,000"
+        },
+        {
+          "duration": "2022–2023",
+          "role": "Co-Principal Investigator",
+          "funder": "CIHR",
+          "title": "CURNLS COVID-19 Pediatric Study",
+          "principalInvestigator": "Dr. Caroline Quach-Thanh",
+          "type": "Operating Grant",
+          "amount": "$2,999,580",
+          "component": "$37,500"
+        },
+        {
+          "duration": "2022–2024",
+          "role": "Co-Principal Investigator",
+          "funder": "CIHR",
+          "title": "POPCORN Platform",
+          "principalInvestigator": "Dr. Caroline Quach-Thanh",
+          "type": "Operating Grant",
+          "amount": "$6,700,000",
+          "component": "$178,750"
+        },
+        {
+          "duration": "2022–2024",
+          "role": "Principal Investigator",
+          "funder": "Departmental Matching Funds",
+          "title": "Tracking Neurocognitive States in Encephalopathic Critically Ill Children",
+          "type": "Salary Grant",
+          "amount": "$30,000"
+        },
+        {
+          "duration": "2021–2024",
+          "role": "Principal Investigator",
+          "funder": "AMOSO Opportunities Grant",
+          "title": "NuANCEd Study",
+          "type": "Salary Grant",
+          "amount": "$113,750"
+        }
+      ],
+      "completed": [
+        {
+          "duration": "2021–2022",
+          "role": "Principal Investigator",
+          "funder": "Lawson Internal Research Fund",
+          "title": "Seizure Diagnosis Practices in Critically Ill Children",
+          "type": "Operating Grant",
+          "amount": "$14,994.5"
+        },
+        {
+          "duration": "2020–2022",
+          "role": "Co-Investigator",
+          "funder": "AMOSO Innovation Fund",
+          "title": "Dexmedetomidine vs Midazolam Study",
+          "principalInvestigator": "Dr. Douglas Fraser",
+          "type": "Operating Grant",
+          "amount": "$108,000"
+        },
+        {
+          "duration": "2017–2019",
+          "role": "Trainee Investigator",
+          "funder": "RESTRACOMP",
+          "title": "EEG as Ischemia Detection Tool",
+          "type": "Fellowship",
+          "amount": "$20,000"
+        },
+        {
+          "duration": "2017–2019",
+          "role": "Trainee Investigator",
+          "funder": "C-BMH",
+          "title": "EEG Ischemia Detection Study",
+          "type": "Fellowship",
+          "amount": "$20,000"
+        },
+        {
+          "duration": "2014–2015",
+          "role": "Trainee Investigator",
+          "funder": "Advanced Pediatrics Center",
+          "title": "Ventilation in Pediatric ARDS",
+          "type": "Operating Grant",
+          "amount": "100,000 INR"
+        },
+        {
+          "duration": "2007–2008",
+          "role": "Trainee Investigator",
+          "funder": "Indian Council of Medical Research",
+          "title": "Hypertension RCT in Young Adults",
+          "type": "Studentship",
+          "amount": "5,000 INR"
+        },
+        {
+          "duration": "2006–2007",
+          "role": "Trainee Investigator",
+          "funder": "Indian Council of Medical Research",
+          "title": "CETP Gene Polymorphisms Study",
+          "type": "Studentship",
+          "amount": "5,000 INR"
+        }
+      ]
+    }
+  },
+  "publications": {
+    "peerReviewed": [
+      "Lalgudi Ganesan S, Garros D, Foster J, et al. Pediatric critical care capacity in Canada. Paediatrics & Child Health 2025; 30(1): 30 -39.",
+      "Scholefield BR, Tijssen J, Lalgudi Ganesan S, et al. Prediction of good neurological outcomes after return of circulation following paediatric cardiac arrest: a systematic review and meta-analysis. Resuscitation 2024. https://doi.org/10.1016/j.resuscitation.2024.110483",
+      "Reise K, Macartney J, La R, et al. Volatile gas scavenging in the pediatric intensive care unit: Occupational health and safety assessment. Can J Resp Therapy 2024; doi: 10.29390/001c.118513",
+      "Gorsky K, Cunninghame S, Jayaraj K, et al. Inhaled Volatiles for Status Asthmaticus, Epilepsy, and Difficult Sedation in Adult ICU and PICU: A Systematic Review. Critical Care Explorations 6(2): p e1050, February 2024.",
+      "Roumeliotis N, Carwana M, Charland K, et al. Pandemic Stringency Measures and Hospital Admissions for Eating Disorders. JAMA Pediatr. 2024;178(9):879\u2013887. doi:10.1001/jamapediatrics.2024.2044",
+      "Roumeliotis N, Carwana M, Trudeau O, et al. Mental Health Hospitalizations in Canadian Children, Adolescents, and Young Adults Over the COVID-19 Pandemic. JAMA Netw Open. 2024;7(7): e2422833. doi:10.1001/jamanetworkopen.2024.22833",
+      "Lu A, Geerlinks A, Lalgudi Ganesan S, et al. Hyperleukocytosis Secondary to Pertussis in an Unvaccinated Child. Journal of Pediatric Hematology/Oncology 46(6): p e430-e432.",
+      "Gorsky K, Cunninghame S, Jayaraj K, et al. Inhaled volatiles for status asthmaticus, epilepsy, and difficult sedation in adult ICU and PICU: a systematic review. Crit Care Explor. 2024 Feb 20;6(2): e1050.",
+      "Boerwinkle VL, Appavu B, Cediel EG, et al. Common Data Elements for Disorders of Consciousness: Recommendations from the Working Group in the Pediatric Population. Neurocrit. Care 2024; 40: 65-73.",
+      "Lalgudi Ganesan S, Hornby L, Weiss M, et al. Brain-based arterial pulse pressure threshold for death determination: a systematic review. Can J Anesthesia 2023; 70: 685 \u2013 698.",
+      "Benedetti GM, Morgan LA, Sansevere AJ, et al. The Spectrum of Quantitative EEG Utilization Across North America - A Cross-Sectional Survey. Ped Neurol 2023; 141: 1-8.",
+      "M. Kolisnyk, Wang X, Guo C, et al. Prediction of Functional Recovery Post-Cardiac Arrest Using an Ensemble of Extreme Gradient-Boosted Trees. Computing in Cardiology (CinC) 2023:1-4, doi: 10.22489/CinC.2023.457.",
+      "Lewis A, Young MJ, Rohaut B, et al. Ethics along the continuum of research involving persons with disorders of consciousness. Neurocrit Care. 2023 Dec; 39(3): 565-577.",
+      "Murphy N, Weijer C, Lalgudi Ganesan S, et al. Non-therapeutic research with imminently dying and recently deceased study populations: addressing practical and ethical challenges. Can J Anesth 2023; 70: 596-602.",
+      "Lewis A, Young MJ, Rohaut B, et al. & The Curing Coma Campaign and its Contributing Members. Ethics along the continuum of research involving persons with disorders of consciousness. Neurocrit Care 2023. https://doi.org/10.1007/s12028-023-01708-2.",
+      "Lalgudi Ganesan S, Hahn CD. Spectrograms for seizure detection in critically ill children. J Clin Neurophysiol. 2022; 39(3): 195-206.",
+      "Alkhachroum A, Lalgudi Ganesan S, Koren JP, et al. Quantitative EEG-Based Seizure Estimation in Super-Refractory Status Epilepticus. Neurocrit Care 2022; 36: 897-904.",
+      "Brar JS, Verma R, Al-Omari M, et al. Moyamoya syndrome in an infant with Aicardi-Gouti\u00e8res and William syndromes: a case report. Neuropediatr 2022. 53(03): 204-207.",
+      "Daley M, Cameron S, Lalgudi Ganesan S, et al. Pediatric severe traumatic brain injury mortality prediction determined with machine learning-based modeling. Injury 2022; 53(3): 992-998.",
+      "Kirschen MP, LaRovere K, Balakrishnan B, et al. A survey of Neuromonitoring practices in North American Pediatric Intensive Care Units. Pediatric Neurol. 2022; 126: 125-130.",
+      "Wyckoff MH, Singletary EM, Soar J, et al. 2021 International consensus on cardiopulmonary resuscitation and emergency cardiovascular care science with treatment recommendations: Summary From the Basic Life Support; Advanced Life Support; Neonatal Life Support; Education, Implementation, and Teams; First Aid Task Forces; and the COVID-19 Working Group. Circulation 2022; 145(9): https://doi.org/10.1161/CIR.0000000000001017.",
+      "Lalgudi Ganesan S, Mehta A, Keshavamurthy L, et al. Community-acquired Methicillin-resistant Staphylococcus aureus infections in acutely ill children: a retrospective case-control study. Indian J Pediatr 2021; 88: 141-146.",
+      "Kripalani A, Garabon J, Amos K, et al. Thrombotic thrombocytopenic purpura temporally associated with BNT162b2 vaccination in an adolescent successfully treated with caplacizumab. Br J Haematol. 2021.doi: 10.1111/bjh.17782",
+      "Din F, Lalgudi Ganesan S, Akiyama T, et al. Seizure detection algorithms in critically ill children: a comparative evaluation. Crit Care Med 2020; 48(4):545-552.",
+      "Varghese T, Ganesan SL. Mothballs, status dystonicus and critical care: an unusual case of G6PD deficiciency. U Western Ontario Med. J. 2020; 89(2).",
+      "Reddy MV, Lalgudi Ganesan S, Narayanan K, et al. Liquid mosquito repellant ingestion in children. Indian J Pediatr 2019; 87: 12-16.",
+      "Lalgudi Ganesan S, Hahn CD. Electrographic seizure burden and outcomes following pediatric status epilepticus. Epilepsy & Behavior 2019; 101 (B): 106409.",
+      "Lalgudi Ganesan S. Airway Pressure Release Ventilation in Children. Curr Opin Crit Care 2019; 25(1):63-70.",
+      "Lalgudi Ganesan S, Stewart CP, Atenafu EG, et al. Seizure identification by critical care providers using quantitative electroencephalography. Crit Care Med 2018; 46(12): e1105-e1111.",
+      "Lalgudi Ganesan S, Jayashree M, Singhi S, Bansal A. Airway Pressure Release Ventilation in Pediatric Acute Respiratory Distress Syndrome: an open-label, parallel-arm randomized controlled trial. Am J Respir Crit Care Med 2018; 198(9): 1199-1207.",
+      "Lal N, Bhardwaj S, Lalgudi Ganesan S, et al. Case of hypomagnesemia with secondary hypocalcemia with a novel TRPM6 mutation. Neurol India 2018; 66(6): 1795-1800.",
+      "Saini AG, Sahu JK, Lalgudi Ganesan S, et al. Steroid-responsive encephalopathy, dropped head syndrome, and hypertension in a toddler: Is there a clue? Pediatr Neurol 2016; 57: 95-7.",
+      "Saptharishi LG, Jayashree M, Singhi S. Development and validation of the Pediatric Risk of Nosocomial Sepsis (PRiNS) score for health care\u2013associated infections in a medical pediatric intensive care unit of a developing economy\u2014a prospective observational cohort study. J Crit Care 2015; 32: 152-158.",
+      "Sankhyan N, Saptharishi LG, Sasidaran K, et al. Clinical profile of scrub typhus in children and its association with hemophagocytic lymphohistiocytosis. Indian Pediatrics 2014; 51:651-653.",
+      "Saini AG, Singhi P, Sahu JK, et al. Hyperactivity, Unexplained speech delay, and coarse facies \u2013 Is it Sanfilippo syndrome? J Child Neurol 2013; 29 (8).",
+      "Subramanian H, Soudarssanane MB, Jayalakshmy R, et al. Non-pharmacological interventions in hypertension: A community-based cross-over randomized controlled trial. Indian J Community Med 2011; 36(3): 191-6.",
+      "Saptharishi LG, Soudarssanane M, Thiruselvakumar D, et al. Community-based Randomized Controlled Trial of Non-pharmacological interventions in prevention and control of hypertension among young adults. Indian J Community Med 2009; 34(4): 329-34."
+    ],
+      "editorialsAndLetters": [
+        "Lalgudi Ganesan S. Combining Electrophysiology and Neuroimaging to Enhance Accuracy of Neuroprognostication in Children After Cardiac Arrest. Neurology 2024 Mar 12;102(5): e209254.",
+        "Lalgudi Ganesan S, Husain AM. Clinical neurophysiology and social media: Time to Take the Plunge! J Clin. Neurophysiol. 2021; 38(6): 467-469.",
+        "Lalgudi Ganesan S. Continuous EEG for Diagnosis of Electrographic Seizures in the Pediatric Cardiac Critical Care Unit: Using a Precious Resource Wisely. NeuroCrit Care. 2021. DOI :10.1007/s12028-021-01314-0.",
+        "Lalgudi Ganesan S. Electrographic seizures in critically ill children: empowering critical care providers with quantitative electroencephalography. Dev Med Child Neurol. 2021 May 27. doi: 10.1111/dmcn.14944.",
+        "Lalgudi Ganesan S, Parameswaran N. Composite outcomes for clinical trials in critical care: The devil is in the detail. Indian J Crit Care Med 2020; 24(10): 903-904",
+        "Lalgudi Ganesan S, Jayashree M. Reply to Dong et al.: Airway Pressure Release Ventilation: Is it really different in adults and children? Am J Respir Crit Care Med 2019; 200(6).",
+        "Lalgudi Ganesan S, Jayashree M. Reply to Daxon and Kyo et al. Am J Respir Crit Care Med 2018; 198(11):1460-1462.",
+        "Lalgudi Ganesan S. Intracranial pressure-cerebral perfusion pressure time integral: Is it a better predictor of clinical outcomes in children with severe traumatic brain injury? Pediatr Crit Care Med 2016; 17(9): 904.",
+        "Lalgudi Ganesan S. Costs associated with determinants of adherence: Essential for evaluation of the cost-effectiveness of any guideline-driven care? Pediatr Crit Care Med 2016; 17(9): 901.",
+        "Lalgudi Ganesan S, Jayashree M. Dopamine in Pediatric Fluid-refractory septic shock: Too early to sound the death knell? Crit Care Med 2016; 44(2): e110-111.",
+        "Saptharishi LG, Baalaaji M, Singhi SC. Ventilator-associated pneumonia or bacterial colonization of airway - What do probiotics decrease? Intensiv Care Med 2015; 41(6): 1161.",
+        "Singhi S, Saptharishi LG, Karthi N. Maintenance intravenous fluids for children with central nervous system infections. Indian J Pediatr 2015: 82(1):1-2.",
+        "Saptharishi LG, Vaidya PC. HIV status non-disclosure in HIV-infected families. Indian Pediatrics 2015 Sep; 52: 811.",
+        "Saptharishi LG, Singhi S. Reply to InFocus: Think twice before routinely administering oxygen. Emergency Medicine News 2014; 36(3):8-11.",
+        "Saptharishi LG. Ten ‘out-of-the-box’ lessons for pediatric emergency physicians. Emergency Medicine News 2014; 36 (5B)."
+      ],
+      "peerReviewInPress": [
+        "Wong K, Norton L, Stojanoski B, et al. The impact of model order and spatial template on resting state network identification in children. NeuroImage [Under review]",
+        "Kumar D, Narayan A, Lalgudi Ganesan S. A limited-montage EEG-based machine learning framework for diagnosing acute sleep deprivation. Sleep [Under Review]"
+      ],
+      "publishedAbstracts": [
+        "Koitsopoulos B, Cuthbertson B, Chapman M, et al. Analgo-sedative drug use in burn ICU patients after initiation of inhaled volatile-based sedation. Crit Care Med., 2024; 52(1): S455.",
+        "Scholefield B, Tijssen J, Lalgudi Ganesan S, et al. Prediction of good neurological outcome after return of circulation following pediatric cardiac arrest: a systematic review and meta-analysis. Pediatr Crit Care Med 2024; 25 (11S): pe26 – e27.",
+        "Al Ali A, Ganesan SL, Nouri M, Ranger A, Tay KY. Chiropractic treatments and stroke with arterial dissection in an infant. Crit Care Med 2021; 49(1): 364.",
+        "Din F, Lalgudi Ganesan S, Ochi A, Otsubo H, Go C, Whitney R, Chau V, Cortez M, Sharma R, Hahn CD. Clinical utility of critical care EEG monitoring in a Canadian Paediatric Centre. 54th Annual Congress of the Canadian Neurological Sciences Federation. Can J Neurol Sci 2019; 46(s1): S10-S11.",
+        "Lalgudi Ganesan S, Stewart CP, Atenafu EG, Ochi A, Otsubo H, Go C, Hahn CD. Factors that reduce the accuracy of seizure identification using quantitative EEG displays. International Congress of Clinical Neurophysiology (ICCN) Washington DC, USA 2018. Clin Neurophysiol 2018; 129(1 Suppl): e30-e31.",
+        "Baalaaji M, Lalgudi Ganesan S, Singhi SC, Jayashree M, Bansal A, Nallasamy K. Clinical profile and outcomes of children with malignancies admitted to the pediatric intensive care unit of a resource-limited setting. World Federation of Societies of Intensive & Critical Care Medicine (WFSICCM), Seoul, South Korea 2015. J Crit Care 2015; 30(4): 853-854.",
+        "Saptharishi LG, Narayanan K, Jayashree M, Singhi SC, Bansal A. Can arterial oxygen levels influence the risk of healthcare-associated infections in critically ill children? Pediatric Intensive Care Congress (PICC), Istanbul, Turkey 2014. Pediatr Crit Care Med 2014; 15(4 Suppl): 159.",
+        "Saptharishi LG, Narayanan K, Jayashree M, Singhi SC, Bansal A. Ideal arterial oxygen levels in mechanically ventilated critically ill children during the acute phase of illness. Pediatric Intensive Care Congress (PICC), Istanbul, Turkey 2014. Pediatr Crit Care Med 2014; 15(4 Suppl):15.",
+        "Narayanan K, Saptharishi LG, Jayashree M, Singhi SC, Bansal A. Dysnatremias and sodium variability as predictors of outcome in critically ill children. Pediatric Intensive Care Congress (PICC), Istanbul, Turkey 2014. Pediatr Crit Care Med 2014; 15(4 Suppl):26.",
+        "Saptharishi LG, Narayanan K, Bansal A, Singhi S. Mosquito repellent liquidizer poisoning in young children in summer. What to anticipate? Pediatric Intensive Care Congress (PICC), Istanbul, Turkey 2014. Pediatr Crit Care Med 2014; 15(4 Suppl): 187."
+      ],
+      "conferenceAbstracts": [
+        "Hosang S, Nyland T, Kumar D, Wong K, Lalgudi Ganesan S. Functional brain connectivity in healthcare providers immediately and in the days after a 24-hour on-call shift. International Congress on Academic Medicine 2025.",
+        "Ravi H, Wong K, Assaf M, Krivoruk B, Srinivasan S, Carvalho D, Mohsenzadeh Y, Stojanoski B, Lalgudi Ganesan S. Quantitative electroencephalography and functional connectivity in critically ill children with and without delirium: an exploratory study. Critical Care Canada Forum 2024 – Invited oral presentation.",
+        "Srinivasan S, Assaf M, Carvalho D, Wong K, Krivoruk B, Ravi H, Duerden E, Mohsenzadeh Y, Stojanoski B, Lalgudi Ganesan S. Bedside functional neuroimaging in critically ill children with delirium: feasibility data from a pilot study. Critical Care Canada Forum 2024.",
+        "Wong K, Patil V, Ravi H, Krivoruk B, Pushpaharan J, Stojanoski B, Norton L, Mohsenzadeh Y, Hamilton D, Lalgudi Ganesan S. Brain connectivity changes associated with delirium in the acute care setting: A systematic review. Critical Care Canada Forum 2024.",
+        "Hosang S, Wong K, Mlinarevic D, Krivoruk B, Ravi H, Hamilton D, Norton L, Stojanoski B, Lalgudi Ganesan S. Brain connectivity changes associated with acute sleep deprivation: A systematic review. Critical Care Canada Forum 2024.",
+        "Krivoruk B, Wong K, Ravi H, Assaf M, Vahidi H, Stubbs K, Carvalho D, Srinivasan S, Duerden E, Lalgudi Ganesan S. Functional Near-Infrared Spectroscopy (fNIRS) to characterize functional brain connectivity in critically ill children with delirium: a pilot study. Critical Care Canada Forum 2024.",
+        "Wong K, Stojanoski B, Mohsenzadeh Y, Eagleson R, de Ribaupierre S, Lalgudi Ganesan S. Brain Age: Resting state functional connectivity-based prediction of age in healthy children. London Health Research Day 2024",
+        "Wong K, Norton L, Stojanoski B, Owen A, Eagleson R, de Ribaupierre S, Lalgudi Ganesan S. The impact of model order and spatial template on resting-state network identification in children. SOGS Western Research Forum 2024.",
+        "Lim-Hing K, Hernandez FS, Bouthillet KA, Lalgudi Ganesan S, Sarwal A, Hemphill JC, Olson DW, Dangayach N. A role for patient family advisory councils in the curing coma initiative. Neurocritical care Society Annual Meeting 2024.",
+        "Shetty M, Donville B, Cameron S, Hamilton D, Tijssen J, Ogilvie J, Nouri M, Fraser D, Lalgudi Ganesan S. Models predicting survival and/or favorable neurological outcomes in critically ill children post extracorporeal cardiopulmonary resuscitation: a systematic review. Critical Care Canada Forum 2021.",
+        "Semaan A, Kudchadkar S, Lalgudi Ganesan S. Diagnosis of delirium in critically ill children: a contemporary review of tools, nuances, and gaps. Critical Care Canada Forum 2021.",
+        "Donville B, Shetty M, Cameron S, Hamilton D, Tijssen J, Ogilvie J, Nouri M, Fraser D, Lalgudi Ganesan S.  Models Predicting Survival and/or Favorable Neurological Outcomes in Critically Ill Children After In-Hospital Cardiac Arrest: A Systematic Review. Critical Care Canada Forum 2021.",
+        "Shetty M, Donville B, Cameron S, Hamilton D, Tijssen J, Ogilvie J, Nouri M, Fraser D, Lalgudi Ganesan S. Models Predicting Survival and/or Favorable Neurological Outcomes in Critically Ill Children Post Out-of-Hospital Cardiac Arrest: A Systematic Review. Critical Care Canada Forum 2021."
+      ],
+      "bookEditor": [
+        "Lalgudi Ganesan S. Section Editor – Neurocritical Care. PGIMER PICU Protocol Book (2024). Editors: Jayashree M, Bansal A, Angurana SK & Nallasamy K."
+      ],
+      "booksAndChapters": [
+        "Lalgudi Ganesan S. Approach to a child with reduced level of consciousness. Textbook of Rapid Response Systems: Concept and Implementation (2025). Editor: Michael A. DeVita. Publisher: Springer Nature. Pg: 571 – 581. https://doi.org/10.1007/978-3-031-67951-3_49",
+        "Lalgudi Ganesan S, Hahn C. Acute Pediatric Stroke. Neuromonitoring in neonatal and pediatric critical care (2022). Editors: Courtney Wusthoff, Cecil D Hahn. Cambridge University Press. Pp 286 – 288. https://doi.org/10.1017/9781316536001.041.",
+        "Lalgudi Ganesan S, Jain P. Status Epilepticus – Chapter 42.11. Post Graduate Textbook of Pediatrics (2018). Editors: Piyush Gupta, PSN Menon, Siddharth Ramji. 2nd Edition. Jaypee Brothers Medical Publishers (P) Ltd. 2018. ISBN: 978-93-5270-231-2.",
+        "Saptharishi LG, Singhi S. Pediatric Septic shock. Critical Care (2016). Editor: Narendra Rungta, Rajesh Panda, Manish Munjal, Sudhir Khunteta. Jaypee Brothers Medical Publishers (P) Ltd. 2016. ISBN: 978-93-5152-213-3.",
+        "Saptharishi LG, Vaidya PC. Pediatric Pulmonary Hemorrhage. Case Reviews in Pediatric Pulmonology (2016). Editors: Sushil Kabra, Kana R Jat, Rakesh Lodha, Jhuma Sankar. Jaypee Brothers Medical Publishers. 2016. ISBN: 978-93-8589-186-1.",
+        "Saptharishi LG, Sankhyan N. Scrub typhus: From hills to plains. Current Pediatrics Practice (2015). Editor: Sunit Singhi, J L Mathew. PEEPEE publishers & Distributors (P) Ltd. February 28, 2015. ISBN: 978-81-8445-179-5.",
+        "Saptharishi LG, Vaidya PC. Medical Management of Pediatric Empyema Thoracis (2014). Editor: Meenu Singh. Published by the Pediatric pulmonology unit, Department of Pediatrics, Advanced Pediatrics Center, PGIMER, Chandigarh."
+      ]
+    }
+  },
+  "invitedLecturesAndPresentations": {
+      "international": [
+        {"year": 2024, "title": "Network dysconnectivity as the basis for delirium", "conference": "American Clinical Neurophysiology Society Meeting, Orlando"},
+        {"year": 2024, "title": "Neurophysiology of Delirium", "conference": "American Clinical Neurophysiology Society Meeting, Orlando", "role": "Session Director"},
+        {"year": 2024, "title": "Inhaled sedation in critically ill children: the ABOVE trial", "conference": "Pediatric Neurocritical Care Research Group (PNCRG) Spring Meeting"},
+        {"year": 2024, "title": "Quantitative EEG in the Intensive Care Unit", "conference": "Virtual Commissioned Training in Neurocritical care, Hong Kong Children’s Hospital"},
+        {"year": 2023, "title": "Electrical & Functional Neuroimaging in Delirium", "conference": "13th American Delirium Society Meeting, Providence (Rhode Island)"},
+        {"year": 2023, "title": "Brain-Lung Interactions", "conference": "16th European Conference on Pediatric & Neonatal Ventilation (EPNV)"},
+        {"year": 2023, "title": "Airway Pressure Release Ventilation: Time to forget?", "conference": "16th European Conference on Pediatric & Neonatal Ventilation (EPNV)"},
+        {"year": 2022, "title": "Management of raised intracranial pressure in critically ill children", "conference": "Kuwait Pediatric Conference 2022, Kuwait"},
+        {"year": 2022, "title": "Pediatric Stroke: Diagnosis and management", "conference": "Kuwait Pediatric Conference 2022, Kuwait"},
+        {"year": 2022, "title": "Ethical challenges in Neuroprognostication", "conference": "Neurocritical Care Society Annual Meeting, San Antonio (Texas)"},
+        {"year": 2022, "title": "Social Media & Clinical Neurophysiology", "conference": "American Clinical Neurophysiology Society (ACNS) Annual Meeting"},
+        {"year": 2021, "title": "Year in Review – Critical Care Delirium", "conference": "American Delirium Society Year in Review Webinar 2021"},
+        {"year": 2021, "title": "QEEG based seizure diagnosis in PICU", "conference": "PNCRG Mini-Symposium on Neuromonitoring 2021"},
+        {"year": 2020, "title": "Early Career Researcher Session – World Federation of Pediatric Intensive & Critical Care Societies (WFPICCS) 2020", "role": "Moderator & Speaker"},
+        {"year": 2020, "title": "Timely detection of seizures in critically ill children – qEEG and beyond", "conference": "Birmingham Children’s Hospital – Neurocritical Care Study Day"},
+        {"year": 2020, "title": "Training bedside critical care providers to identify seizures on QEEG", "conference": "American Clinical Neurophysiology Society, New Orleans, USA"},
+        {"year": 2019, "title": "Airway Pressure Release Ventilation in Pediatric ARDS", "conference": "World Congress of Intensive Care, Melbourne, Australia"},
+        {"year": 2019, "title": "Immersive Reality – In-Situ Simulation in the Intensive Care Unit", "conference": "Pediatric & Neonatal Cruise Conference", "role": "Invited Keynote Speaker"},
+        {"year": 2019, "title": "Resuscitation in PICU – Putting it All Together", "conference": "Pediatric & Neonatal Cruise Conference 2019"},
+        {"year": 2017, "title": "Neurocritical Care Workshop", "conference": "National Conference of Pediatric Intensive Care, Chandigarh, India", "role": "Presenter & Facilitator"},
+        {"year": 2017, "title": "Multimodal Neuromonitoring: The Faithful Watchdogs", "conference": "National Conference of Pediatric Intensive Care, Chandigarh, India"},
+        {"year": 2017, "title": "Quantitative Electroencephalography Use by Critical Care Providers to Detect Seizures in Critically Ill Children", "conference": "Annual Meeting, American Clinical Neurophysiology Society (ACNS) Phoenix, Arizona"},
+        {"year": 2016, "title": "Prediction of Healthcare-Associated Infections in the Pediatric Intensive Care Unit", "conference": "Global Health Summit. New Delhi, India", "award": "Best Research Paper Award – Second Prize"}
+      ],
+      "national": [
+        {"year": 2025, "title": "Critical Care Canada Forum x 3 talks", "note": "to be added"},
+        {"year": 2025, "title": "Study of Neurological Complications in Children with COVID-19", "conference": "POPCORN Annual Conference, Montreal"},
+        {"year": 2025, "title": "Delirium: Code Gridlock in the Brain", "conference": "Department of Pediatrics Grand Rounds, Children’s Hospital of Eastern Ontario (CHEO), Ottawa, Canada"},
+        {"year": 2024, "title": "Brain Networks and ICU Delirium", "conference": "Gabriel Ronan Keynote Lecture, McMaster Neuroscience Day 2024, Hamilton, Canada"},
+        {"year": 2024, "title": "Inhaled Sedation in critically ill children: the ABOVE trial", "conference": "Department of Pediatrics, McMaster Children’s Hospital"},
+        {"year": 2024, "title": "Neuroprognostication in critically ill children", "conference": "Critical Care Canada Forum 2024, Toronto, Canada"},
+        {"year": 2024, "title": "Pediatric Organ Donation Update", "conference": "LHSC Excellence in Donation & Transplantation Symposium"},
+        {"year": 2023, "title": "Functional neuroimaging in Critical Care", "conference": "Critical Care Canada Forum 2023, Toronto, Canada"},
+        {"year": 2023, "title": "EEG made ridiculously simple for Intensivists", "conference": "Critical Care Canada Forum 2023, Toronto, Canada"},
+        {"year": 2022, "title": "Quantitative EEG for neuromonitoring in the intensive care unit", "conference": "Critical Care Forum Canada 2022, Toronto, Canada"},
+        {"year": 2022, "title": "Pediatric FIRES/NORSE: Clinical profile, EEG findings & outcomes", "conference": "Annual Congress of the Canadian Neurological Sciences Federation (CNSF), Montreal, Canada"},
+        {"year": 2021, "title": "Quantitative EEG in the intensive care unit – Neurocritical Care Track", "conference": "Critical Care Forum Canada 2021"},
+        {"year": 2021, "title": "PCCU CARES Project – Paediatric Critical Care Unit’s Comprehensive program to Augment Recovery and Enhance Survivorship", "conference": "Children’s Healthcare Canada Annual Conference 2021", "role": "Member Spotlight"},
+        {"year": 2021, "title": "EEEG for the critical care provider – Neurocritical Care Symposium", "conference": "Indian Academy of Pediatrics – West Bengal Branch"},
+        {"year": 2020, "title": "An approach to continuous EEG monitoring and treatment implications in paediatric patients with NORSE/FIRES or RSE", "conference": "55th Congress of the Canadian Neurological Sciences Federation (CNSF), Banff, Canada"},
+        {"year": 2019, "title": "Advanced Monitoring of the Neurocritical Care Patient - ‘Timely detection of seizures in the ICU’", "conference": "54th Congress of the Canadian Neurological Sciences Federation (CNSF), Montreal, Canada"},
+        {"year": 2016, "title": "Development and Validation of the Pediatric Risk of Nosocomial Sepsis (PRiNS) score for Healthcare-Associated Infections in a Medical Pediatric Intensive Care Unit of a Developing Economy", "conference": "Annual Conference of Indian Academy of Pediatrics (PEDICON). Hyderabad, India", "award": "S T Achar Award - Best Research of the Conference"},
+        {"year": 2016, "title": "Airway Pressure Release Ventilation in Pediatric ARDS: An Open-Label, Parallel-Arm Randomized Controlled Trial", "conference": "Annual Conference of Indian Society of Critical Care Medicine. Agra, India"},
+        {"year": 2015, "title": "Predicting the Length of Mechanical Ventilation for Children with Landry Guillain Barre Syndrome Admitted to the Pediatric Intensive Care Unit of a Resource-Limited Setting: A Five-Year Experience-Based Analysis", "conference": "17th National Conference of Pediatric Critical Care (NCPCC), Jaipur, India"},
+        {"year": 2015, "title": "Prediction of Clinical Outcomes in a Pediatric Emergency Using a Five-Level Triage System", "conference": "National Assembly of Pediatric Emergency Medicine (NAPEM), Coimbatore, India", "award": "Best Research Presentation"}
+      ],
+      "regionalOrLocal": [
+        {"year": 2025, "title": "Keynote lecture: Gamechangers in Impending pediatric respiratory failure", "conference": "Annual Paediatric Emergency Medicine Refresher, London (ON)"},
+        {"year": 2025, "title": "Trials & Triumphs: A Researcher’s love-hate relationship with RCTs", "conference": "Epidemiology & Biostatistics Seminar Series, Department of Epidemiology and Biostatistics, Schulich School of Medicine & Dentistry"},
+        {"year": 2024, "title": "Paediatric Organ & Tissue donation: ‘It takes a village’", "conference": "Department of Paediatrics Grand Rounds, Schulich School of Medicine & Dentistry, Western University"},
+        {"year": 2024, "title": "Management of Status epilepticus in children", "conference": "Pediatric Regional Outreach Program (PROP) Virtual Case-based lecture, Dept. of Paediatrics, SSMD (Western University)"},
+        {"year": 2024, "title": "Bioethics Network Meeting", "conference": "Department of Philosophy, Western University"},
+        {"year": 2023, "title": "Brain-based definition of death, criteria for its determination & clinical implications", "conference": "Dept. of Paediatrics Grand Rounds, SSMD (Western University)"},
+        {"year": 2021, "title": "Principles of Cerebral Physiology", "conference": "Ontario-wide provincial PCCM academic half day – Neurocritical Care"},
+        {"year": 2021, "title": "Spectrograms for diagnosis of seizures in the ICU", "conference": "Neuroscience Rounds – Division of Paediatric Neurology, Western University, London, Canada"},
+        {"year": 2020, "title": "Timely detection of non-convulsive seizures in critically ill children", "conference": "Seminar Series - Department of Physiology & Pharmacology, Western University, London, Canada"},
+        {"year": 2019, "title": "Alpha-Delta Ratio Can Reveal Cerebral Dysfunction Associated with Elevated Body Temperature", "conference": "Art Slutsky Research Day 2019 – Interdepartmental Division of Critical Care, Toronto, Ontario"},
+        {"year": 2018, "title": "Automated Seizure Detection in Critically Ill Children: Man V. Machine", "conference": "Canadian Critical Care Forum (CCCF) Toronto, Ontario"},
+        {"year": 2018, "title": "Factors That Make Seizure Identification on Quantitative EEG Displays Challenging", "conference": "Canadian Critical Care Forum (CCCF), Toronto, Ontario"},
+        {"year": 2018, "title": "Factors that make seizure identification on quantitative EEG displays challenging", "conference": "Art Slutsky Research Day 2018 – Interdepartmental Division of Critical Care, Toronto, Ontario", "award": "Finalist - Best Research Abstract"},
+        {"year": 2018, "title": "Automated Seizure Detection in Critically Ill Children: Man V. Machine", "conference": "Art Slutsky Research Day 2018 – Interdepartmental Division of Critical Care, Toronto, Ontario"},
+        {"year": 2018, "title": "High Dose Phenobarbital Therapy in Children with Sustained Refractory Status Epilepticus", "conference": "Art Slutsky Research Day 2018 – Interdepartmental Division of Critical Care, Toronto, Ontario"},
+        {"year": 2018, "title": "Prolonged Extra-Corporeal Membrane Oxygenation in Pediatric Respiratory Failure: Characteristics and Outcomes", "conference": "Art Slutsky Research Day 2018 – Interdepartmental Division of Critical Care, Toronto, Ontario"},
+        {"year": 2017, "title": "Can Critical Care Providers Be Trained to Reliably Detect Seizures Using Quantitative EEG In the Intensive Care Unit?", "conference": "Canadian Critical Care Forum (CCCF) Toronto, Ontario"},
+        {"year": 2017, "title": "Seizure Identification by Critical Care Providers Using Quantitative EEG Displays and Determinants of Performance", "conference": "Annual Brain & Mental Health Research Day Conference, Toronto, Ontario", "award": "Best Research Abstract Award"},
+        {"year": 2017, "title": "Seizure Identification by Critical Care Providers on Quantitative EEG Display Trends", "conference": "Art Slutsky Research Day 2017 Interdepartmental Division of Critical Care, Toronto, Ontario"}
+      ]
+  },
+  "languageProficiency": [
+    {
+      "language": "English",
+      "lines": [
+        "Fluent (speaking, reading & writing)",
+        "IELTS Band Score 9 – Native Speaker Equivalency"
+      ]
+    },
+    {
+      "language": "French",
+      "lines": [
+        "Intermediate (reading)",
+        "Basic (speaking, writing)"
+      ]
+    },
+    {
+      "language": "Tamil",
+      "lines": [
+        "Fluent (speaking, reading and writing)",
+        "Native Language"
+      ]
+    },
+    {
+      "language": "Hindi",
+      "lines": [
+        "Fluent (speaking, reading and writing)"
+      ]
+    },
+    {
+      "language": "Punjabi",
+      "lines": [
+        "Intermediate (speaking)",
+        "Basic (reading, writing)"
+      ]
+    }
+  ],
+  "professionalNetworks": [
+    {"network": "LinkedIn", "url": "https://www.linkedin.com/in/saptharishi-lalgudi-ganesan-b1730a60/"},
+    {"network": "Google Scholar", "url": "https://scholar.google.ca/citations?user=iuxSVQwAAAAJ&hl=en"},
+    {"network": "ResearchGate", "url": "https://www.researchgate.net/profile/Saptharishi_Lalgudi_Ganesan"}
+  ],
+  "cvSectionsFThroughJFromTxt": "F. TEACHING AND CURRICULUM DESIGN\n\nContinuing Medical Education\n2024 - Present\tProcedural Bootcamp for Pediatric Emergency Physicians – Chest tube insertion, femoral central venous catheterization & advanced airway skills – twice a year\nPostgraduate Teaching \n2023 - 2024\tPCCM Organ Donation Curriculum Working Group, Royal College of Physicians and Surgeons of Canada – National Working Group\n2020 - 2021\tProvince-wide academic half days for PCCM trainees (Ontario)            Co-Lead, Province-wide PCCM Learning Initiative\n2019 -\tYearly academic half day – Neuromonitoring – PCCM Trainees, Children’s Hospital of Western Ontario, London Health Sciences Center\n2019 -\tYearly academic half day – Neuroprognostication – PCCM Trainees, Children’s Hospital of Western Ontario, London Health Sciences Center \n2017 - 2019\tACTS Clinicians Training\t\nTopic: Management of Neurological Emergencies for Acute Care Transport Service (ACTS) \nInstitution: The Hospital for Sick Children, Toronto\n2017\tACTS Teaching Bootcamp - Transport Fellows & Physicians\t\nTopic: Management of Neurological Emergencies \nInstitution: The Hospital for Sick Children, Toronto\n2017\tPERLs Resident Teaching Half-Day\t\nTopic: Hands-On Procedural Teaching Session\nInstitution: The Hospital for Sick Children, Toronto (Evaluations available)\n2017\tPERLs Resident Teaching\t\nTopic: Code Blue Cases \nInstitution: The Hospital for Sick Children, Toronto (Evaluations available)\n2016 - 2019\tACRP Resident Teaching \nTopic: Managing Neurological Emergencies\nInstitution: The Hospital for Sick Children, Toronto \t\t\t     Evaluation: >4.5 out of 5 for Teaching Performance\n2016 - 2018\tRadiology and EEG Rounds - Fellow Lead \nInstitution: The Hospital for Sick Children, Toronto\nDeveloped a standard template for dissemination of weekly case list and facilitated discussion of clinical, radiological, and neurophysiological data \n2016 - 2018\tPICU/CCCU Fellows Teaching\t\t\t\t        Institution: The Hospital for Sick Children, Toronto (Evaluations available)\nLed interactive teaching session on MRI brain, status epilepticus and evoked potentials in critically ill children\n2016 - 2018\tPICU/CCCU Monthly Resident Lecture Series\nTopics: Management of Raised Intracranial Pressure, Traumatic Brain Injury, Shock Management, Blood Gas Analysis, Respiratory Failure\nInstitution: The Hospital for Sick Children, Toronto, Ontario\nEvaluations: > 4.5 out of 5 for Teaching Performance\n2013 - 2016\tPICU/CCCU Fellow Academics\t\nTopic: ICU (Journal Clubs, Seminars, & Case Vignettes)\nInstitution: Post Graduate Institute of Medical Education & Research (PGIMER), Chandigarh, India\n2013 - 2016\tPICU/CCCU Resident Lecture Series\t\nTopics: Raised ICP, Shock, Airway, Blood Gas, Respiratory Failure, Status Epilepticus, Diabetic Ketoacidosis, Mechanical Ventilation\nInstitution: Post Graduate Institute of Medical Education & Research (PGIMER), Chandigarh, India\nSimulation-based Education\n2021\tTACTICS Simulation Bootcamp \nTopic: Cerebral Edema in Diabetic Ketoacidosis \nInstitution: Canadian Critical Care Forum\t\t\t\t      Co-Facilitator: Dr. Nicole McKinnon\n2020\tTACTICS Simulation Bootcamp \nTopic: Pediatric Stroke \nInstitution: Canadian Critical Care Forum\t\t\t\t      Co-Facilitator: Dr. Nicole McKinnon\n2019 – present \tPCCU -Resident Simulation session, Department of Paediatrics\t Topics: Status Epilepticus, Depressed Level of consciousness   Institution: Children’s Hospital of Western Ontario - LHSC\n2019\tTACTICS Simulation Bootcamp \nTopic: Complications of Traumatic Brain Injury \nInstitution: Canadian Critical Care Forum\nCo-Facilitators: Dr. Geraldine Patterson & Dr. Nicole McKinnon \t\n2018\tTACTICS Simulation Bootcamp\nTopic: Cerebral Edema in Diabetic Ketoacidosis\nInstitution: Canadian Critical Care Forum\nCo-Facilitator: Dr. Jonathan Duff\n2017 - 18\tImmersive Reality – In-unit simulation-based team training\nTopic: Multiple PCCU and CCCU scenarios\nInstitution: Hospital for Sick Children, Toronto\nDeveloped scenarios and facilitated high-fidelity immersive reality sessions for fellows, nurses, respiratory therapists and the ICU team.\n2018\tSIM Half Day for Fellows\t\nTopic: Cerebral Edema in Diabetic Ketoacidosis\t\t        Institution: Hospital for Sick Children, Toronto (Evaluation available)\nCo-Facilitators: Dr. Brian Kavanagh & Dr. Briseida Mema \n2017\tFellows Simulation Bootcamp\t\nTopic: Neurological Determination of Death\t\t\t         Institution: Canadian Critical Care Forum\nCo-Facilitators: Dr. Sonny Dhanani & Dr. Briseida Mema\n2015 - 2016\tPediatric Advanced Life Support Training\t\n‘Indian Academy of Pediatrics – Pediatric Advanced Life Support’ Certified Basic & Advanced Life Support Instructor \nCurriculum Development & Testing \n2019 – 2025\tPCCU Nurses, PCCU Trainees & PCCU Attendings\t\t\t  Topic: Non-convulsive seizure on QEEG trends\t\t         Institution: Children’s Hospital – London Health Sciences Center\n2018 - 2019\tPICU & CCCU Nurses & Fellows QEEG Education (Fellow Lead)\t\nTopic: Basics of Critical Care EEG and Seizure Identification Using Simplified Quantitative EEG Tools \nInstitution: The Hospital for Sick Children, Toronto, Ontario\n2016\tPediatric Procedural Sedation Module\t\nI developed and implemented an interactive educational module on procedural sedation for training residents, fellows and nurses. \nPost Graduate Institute of Medical Education & Research (PGIMER), Chandigarh, India\nMentor: Dr. M. Jayashree \n2016\tPro-Con Debate Sessions - Fellows\t\nAs chief fellow, I initiated monthly pro-con evidence-based debate sessions on clinically relevant critical care questions for fellows. \nPost Graduate Institute of Medical Education & Research (PGIMER), Chandigarh, India\n\nG. RESEARCH SUPERVISION / MENTORSHIP \n1. UNDERGRADUATE\n2025\tResearch Supervisor, Shamim Norozi   \t\t\t            Current Position: BHSc,Honors Specialization\t\t               Dept. of Paediatrics Summer Studentship award\n2025\tResearch Supervisor, Hashmeet Kainth   \t\t\t            Current Position: BMSc, Medical Sciences\t\t            Undergraduate Summer Research Internship (USRI) award\n2024 \tMentor, Sukhnoor Riar                                     \t\t            Current Position: BSc, Double Major in Biology & Medical Science\n2021 – 2023\tResearch Supervisor, Vivek Patil\t\t\t\t\t Project Title: Structural/functional brain connectivity in delirium in critically ill patients: a scientific narrative review\t\t\t            Current position: MD Student, McMaster University (MD Candidate 2026)\n2. GRADUATE \n2025 – Present\tMSc Supervisor, Ankit Bakshi\t\t\t\t\t Project Title: Using light and sound to detect delirium in critically ill children\n2025 – Present\tMSc Supervisor, Shveta Suresh\t\t\t\t             Project Title: Using EEG and sound to detect delirium in critically ill children\n2024 – Present\tMSc Supervisor, Tallulah Nyland\t\t\t\t\t Project Title: EEG for detection of covert awareness in children unresponsive after an acquired brain injury\n2024 – Present\tMSc Supervisor, Kyle (Haonan) Sun\t\t\t\t\t Project Title: Functional NIRS for detection of covert awareness in children unresponsive after an acquired brain injury\n2024 (Jan – Mar)\tClinical Research Supervisor, Daniela Carvalho, Julia Kaf-Alghazal, Devorah Dolman, Hafsa Mir. Interdisciplinary Medical Sciences Program – Master of Science (MSc)\n2023 – 2025\tMSc Supervisor, Hiruthika Ravi\t\t\t\t\t Project Title: Electrophysiological markers of delirium in critically ill children\n2023 – 2025\tMSc Supervisor, Brian Krivoruk\t\t\t\t\t Project Title: Functional near-infrared spectroscopy-based markers of delirium in critically ill children \n2022 – Present\tPhD Supervisor, Karen Wong\t\t\t\t\t Project Title: Neuroprognostication after acquired brain injury in critically ill children using functional magnetic resonance imaging\n\t\t\t\t\n3. MEDICAL STUDENTS \n2025 - \tResearch Supervisor (Longitudinal), Saanvi Mital \t\t            Project: International survey of neuroprognostication practices in brain injured children\nCurrent position: Medical Student, Western University\n2020 - 2024\tResearch Supervisor, Megha Shetty\nProject: Systematic review of neuroprognostication in critically ill children with traumatic and anoxic brain injury\nCurrent position: Resident, Internal Medicine, McGill University\n2020 - 2024\tResearch Supervisor, Brennan Donville \nProject: Systematic review of neuroprognostication in critically ill children with traumatic and anoxic brain injury\nCurrent position: Resident, Paediatrics, Cincinnati Children’s Hospital\n2021 – 2022\tResearch Supervisor, Komal Jariwala\t\t\t\t Project Title: Long-term outcomes and post-intensive care syndrome in critically ill children: a systematic review of literature\t\t            Current position: MD Student, Schulich School of Medicine & Dentistry, Western University\n2021 \tResearch Supervisor, Amrose Khaira, Eshana Ghuman, Donna Mohseni Mofidi, Dorsa Kord\t\t\t\t\t\t Project Title: Nurse-led Advanced monitoring for Non-Convulsive Seizures in Encephalopathic critically ill children (NuANCEd)           Current position: MD students, Schulich School of Medicine & Dentistry, Western University\n2021\tResearch Supervisor, Arielle Sutton, Zara Ahmad, Mary-Claire Verbeke, Joshua Jordan Neposlan\t\t\t\t\t\t\t  Project Title: Critical Illness Recovery Support Program (CRISP) for children and families\t\t\t\t\t\t             Current position: MD students, Schulich School of Medicine & Dentistry, Western University\n4. POSTGRADUATE TRAINEES\nMedical Residents/Fellows\n2025 – Present\tSupervisor, Dr. Sunny Kim \t\t\t\t\t\t\t Dept. of Paediatrics, Children’s Hospital – LHSC, London (ON);      Project: Evoked and event-related potentials in Sleep deprived healthcare providers; Current Position: Pediatric Resident (PGY-1), CH-LHSC\n2022 – 2025\tSupervisor, Dr. Stephanie Hosang\t\t\t\t\t    Dept. of Paediatrics, Children’s Hospital – LHSC, London (ON);      Project: Brain Connectivity in Sleep deprived healthcare providers (BrainCASH); Current Position: Pediatrician\n2020 – 2023\tSupervisor, Dr. Justin Garabon\t\t\t\t     Department of Paediatrics, Children’s Hospital – LHSC, London (ON); Project: Utilization, yield and impact of continuous electroencephalography in the pediatric critical care unit: a single-center retrospective study; Current Position: Pediatric Emergency Medicine Physician, CH-LHSC\n2018 - 2019\tCo-Supervisor & Research Project Advisor, Dr. F. Din\nThe Hospital for Sick Children, Canada Division of Paediatric Neurology, Department of Paediatrics; Project: Seizure detection algorithms in critically ill children – a comparative evaluation\t\t            Current position: Pediatric Neurology Resident, SickKids, Toronto \n2015 - 2016 \tMentor, Dr. J. Ismail (Pediatric Critical Care Fellow)\nPost Graduate Institute of Medical Education & Research (PGIMER), Department of Paediatrics, Chandigarh, India\nCurrent Position: Pediatric Intensivist, NMC Royal Khalifa City, UAE\n2015 - 2016 \tMentor, Dr. M. Reddy (Pediatric Critical Care Fellow)\nInstitution: Post Graduate Institute of Medical Education & Research (PGIMER), Department of Paediatrics, Chandigarh, India\t            Current Position: Pediatric intensivist, Assistant Professor, St. John’s Medical College, Bengaluru, India\n\nMedical Innovation Fellows\n2020 – 2021\tMentor, Sherif Abdou, Sheyla Abdic, Saumik Biswas, Kirill Fedorov, Michael Lavdas, Gordon Ngo, Eveline Pasman\nInstitution: WORLDiscoveries – Medical Innovation Fellowship & London Health Sciences Centre, Children’s Hospital, London, Ontario\n\n2019 – 2020 \tMentor, Bashar Yafouz, Wagner H. Souza, Maryam Majedi, Sathyanarayanan Sridhar, Adam Paish & Jeiran Eskandari\nInstitution: WORLDiscoveries – Medical Innovation Fellowship & London Health Sciences Centre, Children’s Hospital, London, Ontario\n\nH. THESIS DEFENCE & PROGRAM ADVISORY COMMITTEE ROLES\n2025\tMSc Defense; Role: University Examiner\t\t\t            Student Name: Michael Francesco Dinatolo. Program: Biomedical Engineering. Thesis: BOLD Signal Variability as a Clinical Biomarker of Normative Pediatric Neurodevelopment\n2024\tMSc Defense; Role: Exam Chair\t\t\t\t            Student Name: Ira Gupta. Program: Neuroscience\t\t\t Thesis: Quantifying Resting-State Functional Connectivity in Critically Brain Injured Patients: A Graph-Theoretical Approach with fNIRS\n2024\t\t\tPhD Defense; Role: University Examiner\t\t\t\t\t\t\t\tStudent Name: Karnig Kazazian. Program: Neuroscience\t\t\t\t\t\tThesis:\t Improving diagnosis and prognosis after severe acute brain injury\n2023\t\t\tPhD Defense; Role: University Examiner\t\t\t\t\t\t\t\tStudent Name: Jessica Du Toit. Program: Philosophy\n\t\t\tThesis What Do We Owe the Other Animals in Health-Related \t\t\t\t\tResearch?\n2022\t\t\tMSc Defense; Role: Exam Chair\t\t\t\t\t\t\t\t\tStudent Name: Lilian Kebaya. Program: Neuroscience\t\t\t\t\t\tThesis: Three dimensional and functional infrared spectroscopy for \t\t\t\tbedside monitoring of intraventricular hemorrhage in preterm infants\nI. PROFESSIONAL DEVELOPMENT \nCourses and Workshops\n2025\tThe Three Invisible Forces Workshop – Leadership Development by Alexandre Messager\n2025\tFamily Engagement in Research (FER) Course, McMaster University\n2024\tNeurocritical Care Masterclass, Critical Care Canada Forum\n2024\tFaculty Support Program, National Centre for Faculty Development & Diversity (NCFDD) – Supported by FSP Summer 2024 Scholarship ($1650 USD) and the CTA-UWO Fund ($3600 USD)\n2022\tComputational Neuroscience Workshop, Campus Alberta Neuroscience\n2021 – 2022\tSchulich-Ivey Quality in Healthcare Consultancy, The Centre for Quality, Innovation & Safety (CQUINS), Western University in collaboration with Ivey School of Business & Schulich School of Medicine & Dentistry\n2021\tData Science Without Tears, University of Western Ontario's Presidential Data Fellows. Course Directors – Ghazal Farhani, Alexis Lerner, Devan Becker, Mark Daley\n2021\tLeadership begins with self-awareness (CORE), Canadian Medical Association JOULE (https://shop.cma.ca/products/leadership-begins-with-self-awareness-course) \n2021\tHands-on Workshop Project Management for Research, Centre for Research & Innovative Support (CRIS), University of Toronto\n2021\tClinical Research Course, Pediatric Acute Lung Injury & Sepsis Investigators (PALISI) Research Group\n2021\tCIHR Early Career Researcher Peer Review Observer\t\t\t    Behavioral Sciences & Cognition (BSC-B) Committee\n2019\tGrant Writing – Nuts & Bolts of Research (NABOR)\nTwo half-days grant writing workshop led by Dr. Hannah Wunsch\nGrant Reviewers: Dr. D Scales, Dr. J Marshall, Dr. N Adhikari \n2019\tSub-specialty Residency Program Education Retreat\t\nDepartment of Critical Care Medicine, Sickkids, Toronto, Ontario\nRetreat Director: Dr. B Mema\n2019\tICU EEG Course\nTwo-Day Course -The American Clinical Neurophysiology Society (ACNS) Meeting, Las Vegas\nCourse Directors: Jong Woo Lee, Courtney J. Wusthoff\n2019\tEvoked Potentials Course\t\nAmerican Clinical Neurophysiology Society (ACNS) Meeting, Las Vegas\nCourse Directors: Elayna O. Rubens, Viet Nguyen\n2019\tAutonomic Neurophysiology Course\t\nAmerican Clinical Neurophysiology Society (ACNS) Meeting, Las Vegas \nCourse Directors: Claus Reinsberger, Jeffrey Liou\n2019\tNeonatal EEG Workshop\t\nAmerican Clinical Neurophysiology Society (ACNS) Meeting, Las Vegas\nCourse Director: Shavonne Massey\n2018\tNeurocritical Care Workshop\t\nLooking Ahead in Neurocritical Care: Improving Prognostication and Outcomes; Canadian Critical Care Forum 2018, Toronto, Ontario\nCourse Directors: Jeff Singh, Vickie McCredie\n2018\tClinical Observership \nNeurological Intensive Care Unit, Columbia University Medical Center, New York-Presbyterian Hospital, New York\nMentor: Dr. Jan Claassen\n2018\tICU EEG Course\t\n31st International Congress of Clinical Neurophysiology, Washington DC\nCourse Directors: Lawrence J. Hirsch, Eugen Trinka\n2018\tNeurophysiological Intra-Operative Monitoring Course\t\n31st International Congress of Clinical Neurophysiology, Washington DC\nCourse Directors: Jay Shils, Jamie Lopez, Andrea Szelenyi\n2016\tClinical Observership \nInternational Observership, Boston Children’s Hospital, International Society for Heart & Lung Transplantation (ISHLT)\nMentor: Dr. Jeffrey Burns                                               \n2015\tExtra-Corporeal Life Support (ECLS) Workshop\t\nExtracorporeal Life Support Organization (ELSO) – Extracorporeal Membrane Oxygenation (ECMO), Hyderabad, India \nWorkshop Director: Dr. Suneel Pooboni\nOnline Certificate Courses\n2019 \tMachine Learning – 12-Week Online Certificate Course (Coursera)\nStanford University, California, United States of America\nProgram Director: Andrew Ng\n2016 \tPediatric Nutrition (PGPN) - Post Graduate Program – 24-Week Online Program\nBoston University School of Medicine, Boston, United States of America\nProgram Director: Carine M Lenders\nJ. LEADERSHIP & INNOVATION \nEducation Initiatives\n2023 - \tMember, Royal College PCCM Organ Donation Working Group, The Royal College of Physicians & Surgeons of Canada (RCPSC)\t\nQuality & Safety Initiatives\n2023 - \tFaculty Lead, Optimization of standardized assessment of sedation, analgesia & delirium in critically ill children, Paediatric Critical Care Medicine, Children’s Hospital – London Health Sciences Center     \n2022 – 2023\tMember, Innovative Virtual Care Taskforce, Dept. of Paediatrics Children’s Hospital – London Health Sciences Center\n2020 – 2022\tMember, Pediatric Code Stroke protocol, Dept. of Paediatrics      Children’s Hospital – London Health Sciences Center\n2021 – 2022\tMember, Nil Per Oral Guidelines Committee, Dept. of Paediatrics Children’s Hospital – London Health Sciences Center\n2021 - \tLead, PCCU CARES program – Paediatric Critical Care Unit’s Comprehensive program to Augment Recovery & Enhance Survivorship\n2019\tCo-Lead, Nurses & Trainees Communication Task Force \nDepartment of Critical Care Medicine, The Hospital for Sick Children, Toronto, Ontario\n2018 - 2019\tFellow Lead, Sedation, Analgesia & Delirium Working Group\nDepartment of Critical Care Medicine, The Hospital for Sick Children, Toronto, Ontario\n2017 - 2018\tFellow Lead, Quantitative EEG for Seizure Identification in the ICU\nDepartment of Critical Care Medicine, The Hospital for Sick Children, Toronto, Ontario\n2016 - 2018\tFellow Lead, Improving the Educational Value of Radiology/EEG Rounds Department of Critical Care Medicine, The Hospital for Sick Children, Toronto, Ontario\n2015\tFellow Lead, Procedural Sedation & Analgesia \nDivision of Pediatric Emergency & Critical Care, Post Graduate Institute of Medical Education & Research (PGIMER), Chandigarh, India \n2015\tFellow Lead, Reducing Delays in ICU Transfer\nDivision of Pediatric Emergency & Critical Care, Post Graduate Institute of Medical Education & Research (PGIMER), Chandigarh, India\n2014-2015\tFellow Lead, Antimicrobial Stewardship and Prevention of HCAIs\nDivision of Pediatric Emergency & Critical Care, Post Graduate Institute of Medical Education & Research (PGIMER), Chandigarh, India\n\nVolunteer Work\n2025 \tMD Admission Interviewer\n2024 - Present\tMD/DDS Admissions Application Rater\t\t\t\t\t  Western University, Class of 2028\n2021\tMD Admissions Application Rater\t\t\t\t           Western University, Class of 2025\n2020\tMD Admissions Interviewer & Application Rater\nWestern University, Class of 2024\n2018 - 2019\tMD Admissions Interviewer & Application Rater\nUniversity of Toronto – Class of 2022 and 2023\n2013 - 2014\t(92.7 Big FM) Radio Broadcasts - Improve Awareness: Dengue and Malaria \nChandigarh, India \n2008 - 2016\tBlood Donor and Organizer - Blood Donation Camps \nChandigarh, India\n2008\tVisited 12 remote villages in the Indian province of Tamil Nadu to impart health education sessions on the importance of breastfeeding to mothers as part of World Breastfeeding awareness week\n2004\tTsunami Relief Work – Medical Transport Team\nCuddalore, Tamil Nadu\n"
+};

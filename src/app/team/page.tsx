@@ -25,6 +25,7 @@ import {
   type TeamMember,
   type TeamMemberCategory,
 } from "@/data/team";
+import { resolveTeamMemberPhotoUrl } from "@/lib/team/photo-url";
 import { fetchTeamFromSupabase } from "@/lib/team/supabase-team";
 
 const ACCENT_ROTATION = [
@@ -522,7 +523,7 @@ export default function TeamPage() {
                     <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/50 bg-muted/30 shadow-sm ring-1 ring-transparent transition duration-300 hover:-translate-y-1 hover:border-brand/15 hover:shadow-md hover:shadow-brand/[0.05] hover:ring-brand/5">
                       <div className="relative aspect-[3/4] overflow-hidden bg-muted/50">
                         <TeamPhoto
-                          src={`/team/${member.photoFile}`}
+                          src={resolveTeamMemberPhotoUrl(member.photoFile)}
                           alt={member.name}
                           initials={member.initials}
                           className="object-cover transition duration-700 ease-out group-hover:scale-[1.02]"
@@ -606,7 +607,7 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
       <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm ring-1 ring-transparent transition duration-300 hover:-translate-y-1 hover:border-brand/20 hover:shadow-xl hover:shadow-brand/[0.07] hover:ring-brand/10">
         <div className="relative aspect-[3/4] overflow-hidden bg-muted">
           <TeamPhoto
-            src={`/team/${member.photoFile}`}
+            src={resolveTeamMemberPhotoUrl(member.photoFile)}
             alt={member.name}
             initials={member.initials}
             className="object-cover transition duration-700 ease-out group-hover:scale-[1.04]"

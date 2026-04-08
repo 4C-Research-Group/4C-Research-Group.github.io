@@ -46,6 +46,21 @@ as $$
   );
 $$;
 
+-- Admin or superuser (for Storage CMS policies; SECURITY DEFINER avoids RLS oddities on lookups).
+create or replace function public.is_admin_or_superuser()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.users u
+    where u.id = auth.uid()
+      and u.role in ('admin', 'superuser')
+  );
+$$;
+
 -- 2) Team CMS
 create table if not exists public.team_members (
   id uuid primary key default gen_random_uuid(),

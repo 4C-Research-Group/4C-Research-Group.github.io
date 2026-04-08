@@ -9,8 +9,15 @@ import {
   Trash2,
   Users,
 } from "lucide-react";
+import TeamPhotoField from "@/components/admin/TeamPhotoField";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { slugifyTeamMember } from "@/lib/team/slug";
+import {
+  deleteTeamPhotoAtPublicUrl,
+  teamPhotoPathFromPublicUrl,
+  uploadTeamMemberPhoto,
+  validateTeamPhotoFile,
+} from "@/lib/team/team-photo-storage";
 
 type MemberRow = {
   id: string;
@@ -91,6 +98,7 @@ export default function AdminTeamPage() {
   const [rows, setRows] = useState<MemberRow[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [draft, setDraft] = useState(emptyDraft);
+  const [pendingPhotoNew, setPendingPhotoNew] = useState<File | null>(null);
   const [adding, setAdding] = useState(false);
   const [syncEpoch, setSyncEpoch] = useState(0);
 
@@ -128,9 +136,21 @@ export default function AdminTeamPage() {
       setErr("Name is required; slug is generated from name if left blank.");
       return;
     }
+    if (pendingPhotoNew) {
+      const photoErr = validateTeamPhotoFile(pendingPhotoNew);
+      if (photoErr) {
+        setErr(photoErr);
+        return;
+      }
+    }
     setAdding(true);
     setErr(null);
     try {
+      let photo_file = draft.photo_file.trim();
+      if (pendingPhotoNew) {
+        const { publicUrl } = await uploadTeamMemberPhoto(pendingPhotoNew, slug);
+        photo_file = publicUrl;
+      }
       const supabase = getSupabaseBrowserClient();
       const sort_order = rows === null ? 10 : nextSortOrder(rows);
       const { error } = await supabase.from("team_members").insert({
@@ -140,13 +160,14 @@ export default function AdminTeamPage() {
         role_title: draft.role_title.trim(),
         category: draft.category,
         superpower: draft.superpower.trim(),
-        photo_file: draft.photo_file.trim(),
+        photo_file,
         is_alumni: draft.is_alumni,
         sort_order,
         updated_at: new Date().toISOString(),
       });
       if (error) throw new Error(error.message);
       setDraft(emptyDraft);
+      setPendingPhotoNew(null);
       await load();
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Insert failed");
@@ -199,7 +220,8 @@ export default function AdminTeamPage() {
     draft.role_title.trim() !== "" ||
     draft.superpower.trim() !== "" ||
     draft.photo_file.trim() !== "" ||
-    draft.is_alumni;
+    draft.is_alumni ||
+    pendingPhotoNew !== null;
 
   return (
     <div className="space-y-8">
@@ -213,11 +235,11 @@ export default function AdminTeamPage() {
           <code className="rounded bg-muted px-1 py-0.5 text-xs">
             public.team_members
           </code>
-          ). Photos must exist under{" "}
-          <code className="rounded bg-muted px-1 py-0.5 text-xs">
-            public/team/
-          </code>{" "}
-          as named files.
+          ). Photos upload to Supabase Storage (bucket{" "}
+          <code className="rounded bg-muted px-1 py-0.5 text-xs">team-photos</code>
+          ); you can instead use a legacy file from{" "}
+          <code className="rounded bg-muted px-1 py-0.5 text-xs">public/team/</code>{" "}
+          or any image URL.
         </p>
         <ul className="mt-3 list-inside list-disc text-xs text-muted-foreground">
           <li>Explicit save — nothing is written until you save each card.</li>
@@ -285,12 +307,23 @@ export default function AdminTeamPage() {
               <option value="student">Student / trainee</option>
             </select>
           </label>
-          <Field
-            label="Photo filename"
-            value={draft.photo_file}
-            onChange={(photo_file) => setDraft((d) => ({ ...d, photo_file }))}
-            placeholder="team-2.jpg"
-          />
+          <div className="sm:col-span-2 lg:col-span-3">
+            <TeamPhotoField
+              storedRaw={draft.photo_file}
+              onStoredRawChange={(photo_file) =>
+                setDraft((d) => ({ ...d, photo_file }))
+              }
+              pendingFile={pendingPhotoNew}
+              onPendingFileChange={setPendingPhotoNew}
+              disabled={adding}
+            />
+            <Field
+              label="Image URL or legacy filename (optional)"
+              value={draft.photo_file}
+              onChange={(photo_file) => setDraft((d) => ({ ...d, photo_file }))}
+              placeholder="https://… or team-2.jpg"
+            />
+          </div>
           <div className="sm:col-span-2 lg:col-span-3">
             <label className="flex flex-col gap-1.5 text-xs font-medium text-muted-foreground">
               Superpower (short bio line)
@@ -329,7 +362,10 @@ export default function AdminTeamPage() {
           {newFormDirty && (
             <button
               type="button"
-              onClick={() => setDraft(emptyDraft)}
+              onClick={() => {
+                setDraft(emptyDraft);
+                setPendingPhotoNew(null);
+              }}
               className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground hover:bg-muted/60"
             >
               <RotateCcw className="h-3.5 w-3.5" aria-hidden />
@@ -369,6 +405,7 @@ export default function AdminTeamPage() {
                 syncEpoch={syncEpoch}
                 onSave={(patch) => updateRow(r.id, patch)}
                 onDelete={() => removeRow(r.id)}
+                reportError={setErr}
               />
             ))}
           </div>
@@ -383,28 +420,39 @@ function TeamMemberCard({
   syncEpoch,
   onSave,
   onDelete,
+  reportError,
 }: {
   serverRow: MemberRow;
   syncEpoch: number;
   onSave: (patch: Partial<MemberRow>) => Promise<void>;
   onDelete: () => void;
+  reportError: (message: string) => void;
 }) {
   const [local, setLocal] = useState<RowEdit>(() => fromServer(serverRow));
+  const [pendingPhoto, setPendingPhoto] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     setLocal(fromServer(serverRow));
+    setPendingPhoto(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- reset after successful load
   }, [syncEpoch]);
 
   const baseline = useMemo(() => fromServer(serverRow), [serverRow]);
-  const dirty = rowEditsDiffer(local, baseline);
+  const dirty = rowEditsDiffer(local, baseline) || pendingPhoto !== null;
 
   async function handleSave() {
     const slugInput = local.slug.trim();
     const slugFinal = slugifyTeamMember(slugInput) || slugInput;
     if (!slugFinal) {
       return;
+    }
+    if (pendingPhoto) {
+      const photoErr = validateTeamPhotoFile(pendingPhoto);
+      if (photoErr) {
+        reportError(photoErr);
+        return;
+      }
     }
     if (slugFinal !== serverRow.slug) {
       const ok = confirm(
@@ -414,6 +462,15 @@ function TeamMemberCard({
     }
     setSaving(true);
     try {
+      let photo_file = local.photo_file.trim();
+      if (pendingPhoto) {
+        const prev = serverRow.photo_file.trim();
+        const { publicUrl } = await uploadTeamMemberPhoto(pendingPhoto, slugFinal);
+        if (teamPhotoPathFromPublicUrl(prev)) {
+          await deleteTeamPhotoAtPublicUrl(prev);
+        }
+        photo_file = publicUrl;
+      }
       await onSave({
         slug: slugFinal,
         name: local.name.trim(),
@@ -421,10 +478,12 @@ function TeamMemberCard({
         role_title: local.role_title.trim(),
         category: local.category,
         superpower: local.superpower.trim(),
-        photo_file: local.photo_file.trim(),
+        photo_file,
         is_alumni: local.is_alumni,
         sort_order: local.sort_order,
       });
+    } catch (e) {
+      reportError(e instanceof Error ? e.message : "Save failed");
     } finally {
       setSaving(false);
     }
@@ -518,12 +577,23 @@ function TeamMemberCard({
             }
           />
         </label>
-        <Field
-          label="Photo filename"
-          value={local.photo_file}
-          onChange={(photo_file) => setLocal((s) => ({ ...s, photo_file }))}
-            placeholder="team-2.jpg"
-        />
+        <div className="sm:col-span-2 lg:col-span-3">
+          <TeamPhotoField
+            storedRaw={local.photo_file}
+            onStoredRawChange={(photo_file) =>
+              setLocal((s) => ({ ...s, photo_file }))
+            }
+            pendingFile={pendingPhoto}
+            onPendingFileChange={setPendingPhoto}
+            disabled={saving}
+          />
+          <Field
+            label="Image URL or legacy filename (optional)"
+            value={local.photo_file}
+            onChange={(photo_file) => setLocal((s) => ({ ...s, photo_file }))}
+            placeholder="https://… or team-2.jpg"
+          />
+        </div>
         <div className="sm:col-span-2 lg:col-span-3">
           <label className="flex flex-col gap-1.5 text-xs font-medium text-muted-foreground">
             Superpower
@@ -576,7 +646,10 @@ function TeamMemberCard({
           <button
             type="button"
             disabled={!dirty || saving}
-            onClick={() => setLocal(fromServer(serverRow))}
+            onClick={() => {
+              setLocal(fromServer(serverRow));
+              setPendingPhoto(null);
+            }}
             className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/60 disabled:opacity-40"
           >
             <RotateCcw className="h-4 w-4 shrink-0" aria-hidden />

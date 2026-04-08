@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { useAuthProfile } from "@/lib/auth/use-auth-profile";
-import SuperuserUsersTable from "@/components/admin/SuperuserUsersTable";
 import {
   AccountDetailsSection,
   roleBadgeClassName,
@@ -239,41 +238,6 @@ export default function AdminDashboardOverview() {
           </ul>
         </aside>
       </div>
-
-      {showSuper ? (
-        <section
-          className="rounded-2xl border border-border/70 bg-card/30 px-4 py-8 sm:px-6"
-          aria-labelledby="admin-all-users-heading"
-        >
-          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h2
-                id="admin-all-users-heading"
-                className="text-xs font-semibold uppercase tracking-widest text-muted-foreground"
-              >
-                All users
-              </h2>
-              <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-                From{" "}
-                <code className="rounded bg-muted px-1 text-foreground/90">
-                  public.users
-                </code>
-                . Open the dedicated page for more space:
-              </p>
-            </div>
-            <Link
-              href="/admin/users/"
-              className="shrink-0 text-xs font-medium text-brand underline-offset-2 hover:underline"
-            >
-              Users &amp; roles →
-            </Link>
-          </div>
-          <SuperuserUsersTable
-            variant="admin"
-            onRolesChanged={() => void refresh()}
-          />
-        </section>
-      ) : null}
     </div>
   );
 }

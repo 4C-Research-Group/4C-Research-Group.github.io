@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { publicAssetPath } from "@/lib/site-path";
 import {
   Mail,
   Phone,
@@ -36,7 +37,7 @@ export default function Footer() {
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <img
-                src="/logo.png"
+                src={publicAssetPath("/logo.png")}
                 alt="4C Research Logo"
                 className="w-8 h-8 rounded-lg"
               />

@@ -14,6 +14,7 @@ import {
 import { useAuthProfile } from "@/lib/auth/use-auth-profile";
 import { canAccessAdmin } from "@/lib/auth/roles";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { publicAssetPath } from "@/lib/site-path";
 
 const primaryNav = [
   { label: "Home", href: "/" },
@@ -90,7 +91,7 @@ export default function Navbar() {
           className="group flex shrink-0 items-center gap-2.5 sm:gap-3"
         >
           <img
-            src="/logo.png"
+            src={publicAssetPath("/logo.png")}
             alt=""
             className="h-9 w-9 rounded-lg object-cover ring-1 ring-black/5 sm:h-10 sm:w-10"
           />

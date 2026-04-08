@@ -170,12 +170,12 @@ export default function Navbar() {
         {/* min-w reserves space so primary nav does not shift when auth resolves */}
         <div className="hidden min-w-[18rem] shrink-0 items-center justify-end gap-2 md:flex">
           {!authReady ? (
-            <div
-              className="flex w-full min-w-0 items-center justify-end gap-2"
-              aria-hidden
-            >
-              <span className="h-8 w-[11rem] max-w-[60%] shrink-0 animate-pulse rounded-full bg-muted/80" />
-              <span className="h-8 w-[5.5rem] shrink-0 animate-pulse rounded-full bg-muted/80" />
+            <div className="flex w-full min-w-0 justify-end" aria-hidden>
+              <span
+                className="inline-flex animate-pulse select-none items-center justify-center rounded-full bg-muted/80 px-3.5 py-2 text-[13px] font-semibold text-transparent"
+              >
+                Sign in
+              </span>
             </div>
           ) : signedIn ? (
             <>

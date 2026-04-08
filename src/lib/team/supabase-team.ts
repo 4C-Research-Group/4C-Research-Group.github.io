@@ -1,5 +1,6 @@
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { TeamMember, TeamMemberCategory } from "@/data/team";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { writeTeamSessionCache } from "@/lib/team/team-session-cache";
 
 function rowToMember(r: {
   slug: string;
@@ -29,30 +30,48 @@ export type FetchTeamResult = {
   usedDatabase: boolean;
 };
 
+let inFlightTeamFetch: Promise<FetchTeamResult> | null = null;
+
 /** Loads team from public.team_members. On any error, usedDatabase is false (caller may fall back to static data). */
 export async function fetchTeamFromSupabase(): Promise<FetchTeamResult> {
-  try {
-    const supabase = getSupabaseBrowserClient();
-    const { data, error } = await supabase
-      .from("team_members")
-      .select(
-        "slug,name,initials,role_title,category,superpower,photo_file,is_alumni,sort_order"
-      )
-      .order("sort_order", { ascending: true });
-    if (error) {
-      console.warn("[team]", error.message);
+  if (inFlightTeamFetch) return inFlightTeamFetch;
+
+  inFlightTeamFetch = (async (): Promise<FetchTeamResult> => {
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { data, error } = await supabase
+        .from("team_members")
+        .select(
+          "slug,name,initials,role_title,category,superpower,photo_file,is_alumni,sort_order"
+        )
+        .order("sort_order", { ascending: true });
+      if (error) {
+        console.warn("[team]", error.message);
+        return { members: [], alumni: [], usedDatabase: false };
+      }
+      const rows = data ?? [];
+      const active: TeamMember[] = [];
+      const alum: TeamMember[] = [];
+      for (const r of rows) {
+        const m = rowToMember(r);
+        if (r.is_alumni) alum.push(m);
+        else active.push(m);
+      }
+      const result: FetchTeamResult = {
+        members: active,
+        alumni: alum,
+        usedDatabase: true,
+      };
+      writeTeamSessionCache(active, alum);
+      return result;
+    } catch {
       return { members: [], alumni: [], usedDatabase: false };
     }
-    const rows = data ?? [];
-    const active: TeamMember[] = [];
-    const alum: TeamMember[] = [];
-    for (const r of rows) {
-      const m = rowToMember(r);
-      if (r.is_alumni) alum.push(m);
-      else active.push(m);
-    }
-    return { members: active, alumni: alum, usedDatabase: true };
-  } catch {
-    return { members: [], alumni: [], usedDatabase: false };
+  })();
+
+  try {
+    return await inFlightTeamFetch;
+  } finally {
+    inFlightTeamFetch = null;
   }
 }

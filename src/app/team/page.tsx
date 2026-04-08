@@ -37,6 +37,7 @@ import {
   clearTeamPageReloadScroll,
   isBrowserReloadNavigation,
 } from "@/lib/team/team-list-scroll";
+import { readTeamSessionCache } from "@/lib/team/team-session-cache";
 import { fetchTeamFromSupabase } from "@/lib/team/supabase-team";
 
 const ACCENT_ROTATION = [
@@ -117,13 +118,21 @@ export default function TeamPage() {
         setTeamMembers(fromDb.members);
         setTeamAlumni(fromDb.alumni);
       } else {
-        setTeamMembers(staticTeamMembers);
-        setTeamAlumni(staticTeamAlumni);
+        // Keep session-cached DB snapshot if refresh fails; only use static on first load.
+        setTeamMembers((prev) => (prev === null ? staticTeamMembers : prev));
+        setTeamAlumni((prev) => (prev === null ? staticTeamAlumni : prev));
       }
     })();
     return () => {
       alive = false;
     };
+  }, []);
+
+  useLayoutEffect(() => {
+    const cached = readTeamSessionCache();
+    if (!cached) return;
+    setTeamMembers(cached.members);
+    setTeamAlumni(cached.alumni);
   }, []);
 
   useEffect(() => {

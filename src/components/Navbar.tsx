@@ -10,7 +10,6 @@ import {
   X,
   ChevronDown,
   LayoutDashboard,
-  Shield,
 } from "lucide-react";
 import { useAuthProfile } from "@/lib/auth/use-auth-profile";
 import { canAccessAdmin } from "@/lib/auth/roles";
@@ -170,22 +169,23 @@ export default function Navbar() {
             <span className="inline-block h-8 w-24 animate-pulse rounded-full bg-muted/80" />
           ) : signedIn ? (
             <>
-              {showAdmin && (
+              {showAdmin ? (
                 <Link
                   href="/admin/"
                   className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-background px-3 py-1.5 text-[13px] font-medium text-foreground/80 transition-colors hover:border-brand/30 hover:text-brand"
                 >
-                  <Shield className="h-3.5 w-3.5" aria-hidden />
-                  Admin
+                  <LayoutDashboard className="h-3.5 w-3.5" aria-hidden />
+                  Admin dashboard
+                </Link>
+              ) : (
+                <Link
+                  href="/dashboard/"
+                  className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-medium text-foreground/65 transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
+                >
+                  <LayoutDashboard className="h-3.5 w-3.5" aria-hidden />
+                  Account
                 </Link>
               )}
-              <Link
-                href="/dashboard/"
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-medium text-foreground/65 transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
-              >
-                <LayoutDashboard className="h-3.5 w-3.5" aria-hidden />
-                Dashboard
-              </Link>
               <button
                 type="button"
                 onClick={() => void handleSignOut()}
@@ -273,24 +273,25 @@ export default function Navbar() {
                   <div className="h-11 animate-pulse rounded-xl bg-muted/70" />
                 ) : signedIn ? (
                   <>
-                    {showAdmin && (
+                    {showAdmin ? (
                       <Link
                         href="/admin/"
                         className="flex items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-[14px] font-medium"
                         onClick={() => setIsOpen(false)}
                       >
-                        <Shield className="h-4 w-4" />
-                        Admin
+                        <LayoutDashboard className="h-4 w-4" />
+                        Admin dashboard
+                      </Link>
+                    ) : (
+                      <Link
+                        href="/dashboard/"
+                        className="flex items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-[14px] font-medium"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <LayoutDashboard className="h-4 w-4" />
+                        Account
                       </Link>
                     )}
-                    <Link
-                      href="/dashboard/"
-                      className="flex items-center justify-center gap-2 rounded-xl border border-border py-2.5 text-[14px] font-medium"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <LayoutDashboard className="h-4 w-4" />
-                      Dashboard
-                    </Link>
                     <button
                       type="button"
                       className="w-full rounded-xl border-2 border-brand bg-background py-3 text-[14px] font-semibold text-brand transition-colors hover:bg-brand/10"

@@ -33,7 +33,7 @@ export default function AdminGate({
         <p className="text-sm">Checking access…</p>
         {ready && userId && !canAccessAdmin(role) && (
           <Link href="/dashboard/" className="text-sm text-brand hover:underline">
-            Back to dashboard
+            Back to account
           </Link>
         )}
       </div>

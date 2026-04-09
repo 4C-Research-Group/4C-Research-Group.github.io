@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "deploy": "npm run build && node scripts/clean-gh-pages-cache.mjs && npx gh-pages --dist out --dotfiles",
-    "seed-km": "tsx --env-file=.env.local scripts/seed-knowledge-mobilization.ts"
+    "seed-km": "tsx scripts/seed-knowledge-mobilization.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.0",
@@ -28,6 +28,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
+    "dotenv": "^16.4.7",
     "eslint-config-next": "16.2.0",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",

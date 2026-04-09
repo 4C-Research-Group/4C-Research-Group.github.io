@@ -2,28 +2,51 @@
  * Replaces all Knowledge Mobilization rows with the bundled curriculum from
  * `src/data/knowledge-mobilization.ts`.
  *
- * Requires in `.env.local` (or env):
+ * Requires in `.env.local` (project root) or env:
  *   NEXT_PUBLIC_SUPABASE_URL
- *   SUPABASE_SERVICE_ROLE_KEY
+ *   SUPABASE_SERVICE_ROLE_KEY or SUPABASE_SERVICE_KEY (service_role secret — not the anon key)
  *
  * Usage:
  *   npm run seed-km
  *   npm run seed-km -- --force   # required if tables already have modules
  */
 
+import path from "node:path";
+import { config as loadEnv } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import { kmModules } from "../src/data/knowledge-mobilization";
 import type { Database } from "../src/lib/supabase/database.types";
 
+loadEnv({ path: path.resolve(process.cwd(), ".env") });
+loadEnv({ path: path.resolve(process.cwd(), ".env.local"), override: true });
+
 const ZERO = "00000000-0000-0000-0000-000000000000";
 
+function serviceRoleKey(): string | undefined {
+  return (
+    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ||
+    process.env.SUPABASE_SERVICE_KEY?.trim()
+  );
+}
+
 async function main() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !serviceKey) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const serviceKey = serviceRoleKey();
+  const missing: string[] = [];
+  if (!url) missing.push("NEXT_PUBLIC_SUPABASE_URL");
+  if (!serviceKey) {
+    missing.push("SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SERVICE_KEY)");
+  }
+  if (missing.length > 0) {
+    console.error(`Missing from environment: ${missing.join(", ")}`);
     console.error(
-      "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in environment.",
+      "Loaded .env then .env.local from project root (npm run seed-km uses cwd).",
     );
+    if (!serviceKey && url) {
+      console.error(
+        "Seeding bypasses RLS — set SUPABASE_SERVICE_ROLE_KEY or SUPABASE_SERVICE_KEY to the service_role JWT (Supabase → Settings → API). Do not use the anon key.",
+      );
+    }
     process.exit(1);
   }
 

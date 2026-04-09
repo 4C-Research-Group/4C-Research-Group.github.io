@@ -121,6 +121,46 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["page_content"]["Insert"]>;
         Relationships: [];
       };
+      blog_posts: {
+        Row: {
+          id: string;
+          slug: string;
+          title: string;
+          excerpt: string;
+          content: string;
+          category: string;
+          created_at: string;
+          updated_at: string;
+          read_time: string;
+          image_url: string;
+          tags: Json;
+          featured: boolean;
+          published: boolean;
+          author_name: string;
+          author_role: string;
+          author_image_url: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          title: string;
+          excerpt?: string;
+          content?: string;
+          category?: string;
+          created_at?: string;
+          updated_at?: string;
+          read_time?: string;
+          image_url?: string;
+          tags?: Json;
+          featured?: boolean;
+          published?: boolean;
+          author_name?: string;
+          author_role?: string;
+          author_image_url?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["blog_posts"]["Insert"]>;
+        Relationships: [];
+      };
       team_member_testimonials: {
         Row: {
           id: string;

@@ -33,6 +33,7 @@ const moreNav = [
   { label: "Knowledge Mobilization", href: "/knowledge-mobilization" },
   { label: "Gallery", href: "/gallery" },
   { label: "Publications", href: "/publications" },
+  { label: "Blog", href: "/blog" },
   { label: "Join 4C Lab", href: "/join-4c-lab" },
   { label: "Collaborate", href: "/collaborate" },
   { label: "Contact", href: "/contact" },

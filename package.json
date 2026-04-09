@@ -10,7 +10,8 @@
     "lint": "eslint",
     "deploy": "npm run build && node scripts/clean-gh-pages-cache.mjs && npx gh-pages --dist out --dotfiles",
     "seed-km": "tsx scripts/seed-knowledge-mobilization.ts",
-    "seed-projects": "tsx scripts/seed-research-projects.ts"
+    "seed-projects": "tsx scripts/seed-research-projects.ts",
+    "seed-blog": "tsx scripts/seed-blog-posts.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.0",

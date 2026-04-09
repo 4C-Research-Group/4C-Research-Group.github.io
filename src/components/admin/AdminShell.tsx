@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  Newspaper,
   ShieldUser,
   Users,
   X,
@@ -31,6 +32,7 @@ const NAV_BASE: NavItem[] = [
   { href: "/admin/", label: "Overview", icon: LayoutDashboard, end: true },
   { href: "/admin/team/", label: "Team", icon: Users },
   { href: "/admin/projects/", label: "Projects", icon: FolderKanban },
+  { href: "/admin/blog/", label: "Blog", icon: Newspaper },
   { href: "/admin/content/", label: "Content", icon: FileText },
 ];
 

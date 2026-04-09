@@ -4,6 +4,12 @@ import "./globals.css";
 import AppChrome from "@/components/AppChrome";
 import Head from "./head";
 import { siteAsset } from "@/lib/site-path";
+import { getMetadataBaseUrl } from "@/lib/site-url";
+
+const siteTitle =
+  "4C Research Group - Advancing Research in Cognition, Consciousness & Critical Care";
+const siteDescription =
+  "Advancing the detection and prediction of brain pathologies in critically ill patients through cutting-edge neuroimaging and machine learning technologies.";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,11 +21,34 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const metadataBase = getMetadataBaseUrl();
+
 export const metadata: Metadata = {
-  title:
-    "4C Research Group - Advancing Research in Cognition, Consciousness & Critical Care",
-  description:
-    "Advancing the detection and prediction of brain pathologies in critically ill patients through cutting-edge neuroimaging and machine learning technologies.",
+  metadataBase,
+  title: siteTitle,
+  description: siteDescription,
+  openGraph: {
+    type: "website",
+    locale: "en_CA",
+    url: metadataBase,
+    siteName: "4C Research Group",
+    title: siteTitle,
+    description: siteDescription,
+    images: [
+      {
+        url: "/logo.png",
+        width: 512,
+        height: 512,
+        alt: "4C Research Group logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: ["/logo.png"],
+  },
   icons: {
     icon: siteAsset("/favicon.ico"),
     shortcut: siteAsset("/favicon.ico"),

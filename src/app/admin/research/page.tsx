@@ -3,7 +3,14 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2, Plus, Save, Trash2, ChevronUp, ChevronDown } from "lucide-react";
+import {
+  Loader2,
+  Plus,
+  Save,
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+} from "lucide-react";
 import { defaultResearchPageDocument } from "@/data/research-page-default";
 import { mergeResearchPageDocument } from "@/lib/research-page/document";
 import {
@@ -50,8 +57,12 @@ export default function AdminResearchPage() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [published, setPublished] = useState(true);
-  const [selectedThemeIndex, setSelectedThemeIndex] = useState<number | null>(null);
-  const [selectedProjectIndex, setSelectedProjectIndex] = useState<number | null>(null);
+  const [selectedThemeIndex, setSelectedThemeIndex] = useState<number | null>(
+    null,
+  );
+  const [selectedProjectIndex, setSelectedProjectIndex] = useState<
+    number | null
+  >(null);
 
   const load = useCallback(async () => {
     setErr(null);
@@ -125,10 +136,19 @@ export default function AdminResearchPage() {
 
   function updateCurrentProject(partial: Partial<ResearchProject>) {
     const theme = getCurrentTheme();
-    if (!theme || selectedProjectIndex === null || !doc) return;
+    if (
+      !theme ||
+      selectedProjectIndex === null ||
+      selectedThemeIndex === null ||
+      !doc
+    )
+      return;
     const themes = [...doc.themes];
     const projects = [...theme.projects];
-    projects[selectedProjectIndex] = { ...projects[selectedProjectIndex], ...partial };
+    projects[selectedProjectIndex] = {
+      ...projects[selectedProjectIndex],
+      ...partial,
+    };
     themes[selectedThemeIndex] = { ...theme, projects };
     setDoc({ ...doc, themes });
   }
@@ -154,25 +174,36 @@ export default function AdminResearchPage() {
     const newIndex = selectedThemeIndex + dir;
     if (newIndex < 0 || newIndex >= doc.themes.length) return;
     const themes = [...doc.themes];
-    [themes[selectedThemeIndex], themes[newIndex]] = [themes[newIndex], themes[selectedThemeIndex]];
+    [themes[selectedThemeIndex], themes[newIndex]] = [
+      themes[newIndex],
+      themes[selectedThemeIndex],
+    ];
     setDoc({ ...doc, themes });
     setSelectedThemeIndex(newIndex);
   }
 
   function addProjectToCurrentTheme() {
+    if (selectedThemeIndex === null || !doc) return;
     const theme = getCurrentTheme();
-    if (!theme || selectedThemeIndex === null || !doc) return;
+    if (!theme) return;
     const themes = [...doc.themes];
-    themes[selectedThemeIndex] = { ...theme, projects: [...theme.projects, emptyProject()] };
+    themes[selectedThemeIndex] = {
+      ...theme,
+      projects: [...theme.projects, emptyProject()],
+    };
     setDoc({ ...doc, themes });
     setSelectedProjectIndex(theme.projects.length); // Select new project
   }
 
   function removeCurrentProject() {
+    if (selectedThemeIndex === null || selectedProjectIndex === null || !doc)
+      return;
     const theme = getCurrentTheme();
-    if (!theme || selectedProjectIndex === null || !doc || theme.projects.length <= 1) return;
+    if (!theme || theme.projects.length <= 1) return;
     const themes = [...doc.themes];
-    const projects = theme.projects.filter((_, i) => i !== selectedProjectIndex);
+    const projects = theme.projects.filter(
+      (_, i) => i !== selectedProjectIndex,
+    );
     themes[selectedThemeIndex] = { ...theme, projects };
     setDoc({ ...doc, themes });
     setSelectedProjectIndex(Math.max(0, selectedProjectIndex - 1)); // Select previous project
@@ -180,7 +211,14 @@ export default function AdminResearchPage() {
 
   function addPublicationToCurrentProject() {
     const project = getCurrentProject();
-    if (!project || !getCurrentTheme() || selectedThemeIndex === null || selectedProjectIndex === null || !doc) return;
+    if (
+      !project ||
+      !getCurrentTheme() ||
+      selectedThemeIndex === null ||
+      selectedProjectIndex === null ||
+      !doc
+    )
+      return;
     const themes = [...doc.themes];
     const projects = [...getCurrentTheme()!.projects];
     projects[selectedProjectIndex] = {
@@ -191,9 +229,20 @@ export default function AdminResearchPage() {
     setDoc({ ...doc, themes });
   }
 
-  function updateCurrentPublication(idx: number, partial: Partial<ResearchProjectPublication>) {
+  function updateCurrentPublication(
+    idx: number,
+    partial: Partial<ResearchProjectPublication>,
+  ) {
     const project = getCurrentProject();
-    if (!project || !project.publications || !getCurrentTheme() || selectedThemeIndex === null || selectedProjectIndex === null || !doc) return;
+    if (
+      !project ||
+      !project.publications ||
+      !getCurrentTheme() ||
+      selectedThemeIndex === null ||
+      selectedProjectIndex === null ||
+      !doc
+    )
+      return;
     const themes = [...doc.themes];
     const projects = [...getCurrentTheme()!.projects];
     const publications = [...project.publications];
@@ -205,7 +254,15 @@ export default function AdminResearchPage() {
 
   function removeCurrentPublication(idx: number) {
     const project = getCurrentProject();
-    if (!project || !project.publications || !getCurrentTheme() || selectedThemeIndex === null || selectedProjectIndex === null || !doc) return;
+    if (
+      !project ||
+      !project.publications ||
+      !getCurrentTheme() ||
+      selectedThemeIndex === null ||
+      selectedProjectIndex === null ||
+      !doc
+    )
+      return;
     const themes = [...doc.themes];
     const projects = [...getCurrentTheme()!.projects];
     const publications = project.publications.filter((_, i) => i !== idx);
@@ -239,7 +296,9 @@ export default function AdminResearchPage() {
     });
   }
 
-  function setThemesSection(partial: Partial<ResearchPageDocument["themesSection"]>) {
+  function setThemesSection(
+    partial: Partial<ResearchPageDocument["themesSection"]>,
+  ) {
     setDoc((d) =>
       d ? { ...d, themesSection: { ...d.themesSection, ...partial } } : d,
     );
@@ -262,9 +321,13 @@ export default function AdminResearchPage() {
     setDoc((d) => (d ? { ...d, cta: { ...d.cta, ...partial } } : d));
   }
 
-  function setCtaPrimary(partial: Partial<ResearchPageDocument["cta"]["primary"]>) {
+  function setCtaPrimary(
+    partial: Partial<ResearchPageDocument["cta"]["primary"]>,
+  ) {
     setDoc((d) =>
-      d ? { ...d, cta: { ...d.cta, primary: { ...d.cta.primary, ...partial } } } : d,
+      d
+        ? { ...d, cta: { ...d.cta, primary: { ...d.cta.primary, ...partial } } }
+        : d,
     );
   }
 
@@ -273,7 +336,10 @@ export default function AdminResearchPage() {
   ) {
     setDoc((d) =>
       d
-        ? { ...d, cta: { ...d.cta, secondary: { ...d.cta.secondary, ...partial } } }
+        ? {
+            ...d,
+            cta: { ...d.cta, secondary: { ...d.cta.secondary, ...partial } },
+          }
         : d,
     );
   }
@@ -290,7 +356,9 @@ export default function AdminResearchPage() {
 
   function addCollaboration() {
     setDoc((d) =>
-      d ? { ...d, collaborations: [...d.collaborations, emptyCollaboration()] } : d,
+      d
+        ? { ...d, collaborations: [...d.collaborations, emptyCollaboration()] }
+        : d,
     );
   }
 
@@ -330,9 +398,13 @@ export default function AdminResearchPage() {
             /research/
           </Link>
           . Apply{" "}
-          <code className="rounded bg-muted px-1 text-xs">supabase/research_page.sql</code>
+          <code className="rounded bg-muted px-1 text-xs">
+            supabase/research_page.sql
+          </code>
           , then optional{" "}
-          <code className="rounded bg-muted px-1 text-xs">npm run seed-research-page</code>
+          <code className="rounded bg-muted px-1 text-xs">
+            npm run seed-research-page
+          </code>
           .
         </p>
       </header>
@@ -361,7 +433,7 @@ export default function AdminResearchPage() {
             ))}
           </select>
         </label>
-        
+
         {currentTheme && (
           <label className="text-sm font-medium text-muted-foreground">
             Project
@@ -388,7 +460,11 @@ export default function AdminResearchPage() {
           onClick={() => void handleSave()}
           className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
         >
-          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+          {saving ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4" />
+          )}
           Save
         </button>
         <label className="flex items-center gap-2 text-sm">
@@ -406,7 +482,9 @@ export default function AdminResearchPage() {
         <div className="grid gap-6 lg:grid-cols-2">
           <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-5">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-foreground">Theme Details</h2>
+              <h2 className="text-sm font-semibold text-foreground">
+                Theme Details
+              </h2>
               <div className="flex gap-1">
                 <button
                   type="button"
@@ -422,7 +500,10 @@ export default function AdminResearchPage() {
                   title="Move down"
                   className="rounded-md border border-border p-1.5 hover:bg-muted/60"
                   onClick={() => moveTheme(1)}
-                  disabled={selectedThemeIndex >= doc.themes.length - 1}
+                  disabled={
+                    selectedThemeIndex === null ||
+                    selectedThemeIndex >= doc.themes.length - 1
+                  }
                 >
                   <ChevronDown className="h-4 w-4" />
                 </button>
@@ -436,7 +517,7 @@ export default function AdminResearchPage() {
                 </button>
               </div>
             </div>
-            
+
             <label className={label}>
               Theme title
               <input
@@ -451,7 +532,9 @@ export default function AdminResearchPage() {
                 className={input}
                 rows={3}
                 value={currentTheme.description}
-                onChange={(e) => updateCurrentTheme({ description: e.target.value })}
+                onChange={(e) =>
+                  updateCurrentTheme({ description: e.target.value })
+                }
               />
             </label>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -461,7 +544,9 @@ export default function AdminResearchPage() {
                   className={input}
                   value={currentTheme.icon}
                   onChange={(e) =>
-                    updateCurrentTheme({ icon: e.target.value as ResearchThemeIcon })
+                    updateCurrentTheme({
+                      icon: e.target.value as ResearchThemeIcon,
+                    })
                   }
                 >
                   {RESEARCH_THEME_ICONS.map((ic) => (
@@ -476,7 +561,9 @@ export default function AdminResearchPage() {
                 <input
                   className={input}
                   value={currentTheme.gradient}
-                  onChange={(e) => updateCurrentTheme({ gradient: e.target.value })}
+                  onChange={(e) =>
+                    updateCurrentTheme({ gradient: e.target.value })
+                  }
                 />
               </label>
             </div>
@@ -486,7 +573,9 @@ export default function AdminResearchPage() {
           {currentProject && (
             <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-5">
               <div className="flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-foreground">Project Details</h2>
+                <h2 className="text-sm font-semibold text-foreground">
+                  Project Details
+                </h2>
                 <div className="flex gap-1">
                   <button
                     type="button"
@@ -506,13 +595,15 @@ export default function AdminResearchPage() {
                   </button>
                 </div>
               </div>
-              
+
               <label className={label}>
                 Title
                 <input
                   className={input}
                   value={currentProject.title}
-                  onChange={(e) => updateCurrentProject({ title: e.target.value })}
+                  onChange={(e) =>
+                    updateCurrentProject({ title: e.target.value })
+                  }
                 />
               </label>
               <label className={label}>
@@ -521,7 +612,9 @@ export default function AdminResearchPage() {
                   className={input}
                   rows={3}
                   value={currentProject.description}
-                  onChange={(e) => updateCurrentProject({ description: e.target.value })}
+                  onChange={(e) =>
+                    updateCurrentProject({ description: e.target.value })
+                  }
                 />
               </label>
               <label className={label}>
@@ -529,7 +622,9 @@ export default function AdminResearchPage() {
                 <input
                   className={input}
                   value={currentProject.status}
-                  onChange={(e) => updateCurrentProject({ status: e.target.value })}
+                  onChange={(e) =>
+                    updateCurrentProject({ status: e.target.value })
+                  }
                 />
               </label>
               <label className={label}>
@@ -553,7 +648,7 @@ export default function AdminResearchPage() {
                   onChange={(e) => setTeamFromText(e.target.value)}
                 />
               </label>
-              
+
               {/* Publications */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -626,11 +721,15 @@ export default function AdminResearchPage() {
 
       {/* Other Sections (Hero, Collaborations, CTA) */}
       <div className="space-y-6">
-        <h2 className="text-lg font-semibold text-foreground">Other Page Sections</h2>
-        
+        <h2 className="text-lg font-semibold text-foreground">
+          Other Page Sections
+        </h2>
+
         {/* Hero Section */}
         <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-5">
-          <h3 className="text-sm font-semibold text-foreground">Hero Section</h3>
+          <h3 className="text-sm font-semibold text-foreground">
+            Hero Section
+          </h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className={label}>
               Badge
@@ -680,7 +779,9 @@ export default function AdminResearchPage() {
 
         {/* Themes Section Header */}
         <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-5">
-          <h3 className="text-sm font-semibold text-foreground">Themes Section Header</h3>
+          <h3 className="text-sm font-semibold text-foreground">
+            Themes Section Header
+          </h3>
           <label className={label}>
             Heading
             <input
@@ -702,7 +803,9 @@ export default function AdminResearchPage() {
 
         {/* Collaborations */}
         <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-5">
-          <h3 className="text-sm font-semibold text-foreground">Collaborations Section</h3>
+          <h3 className="text-sm font-semibold text-foreground">
+            Collaborations Section
+          </h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className={label}>
               Badge
@@ -730,10 +833,12 @@ export default function AdminResearchPage() {
               />
             </label>
           </div>
-          
+
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-foreground">Collaboration Partners</span>
+              <span className="text-xs font-medium text-foreground">
+                Collaboration Partners
+              </span>
               <button
                 type="button"
                 onClick={addCollaboration}
@@ -744,7 +849,10 @@ export default function AdminResearchPage() {
               </button>
             </div>
             {doc.collaborations.map((c, i) => (
-              <div key={i} className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-3">
+              <div
+                key={i}
+                className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-3"
+              >
                 <div className="flex justify-end">
                   <button
                     type="button"
@@ -761,7 +869,9 @@ export default function AdminResearchPage() {
                     <input
                       className={input}
                       value={c.title}
-                      onChange={(e) => updateCollab(i, { title: e.target.value })}
+                      onChange={(e) =>
+                        updateCollab(i, { title: e.target.value })
+                      }
                     />
                   </label>
                   <label className={label}>
@@ -769,7 +879,9 @@ export default function AdminResearchPage() {
                     <input
                       className={input}
                       value={c.link}
-                      onChange={(e) => updateCollab(i, { link: e.target.value })}
+                      onChange={(e) =>
+                        updateCollab(i, { link: e.target.value })
+                      }
                     />
                   </label>
                   <label className={`${label} sm:col-span-2`}>
@@ -778,7 +890,9 @@ export default function AdminResearchPage() {
                       className={input}
                       rows={2}
                       value={c.description}
-                      onChange={(e) => updateCollab(i, { description: e.target.value })}
+                      onChange={(e) =>
+                        updateCollab(i, { description: e.target.value })
+                      }
                     />
                   </label>
                   <label className={`${label} sm:col-span-2`}>
@@ -787,7 +901,9 @@ export default function AdminResearchPage() {
                       className={input}
                       rows={2}
                       value={c.role}
-                      onChange={(e) => updateCollab(i, { role: e.target.value })}
+                      onChange={(e) =>
+                        updateCollab(i, { role: e.target.value })
+                      }
                     />
                   </label>
                   <label className={label}>
@@ -810,7 +926,9 @@ export default function AdminResearchPage() {
 
         {/* CTA Section */}
         <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-5">
-          <h3 className="text-sm font-semibold text-foreground">Call to Action</h3>
+          <h3 className="text-sm font-semibold text-foreground">
+            Call to Action
+          </h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className={label}>
               Badge

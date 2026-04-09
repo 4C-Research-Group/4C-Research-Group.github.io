@@ -43,21 +43,25 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero — light, fast (no remote image), clear hierarchy */}
-      <section className="relative isolate flex min-h-[calc(100dvh-3.5rem)] flex-col justify-center overflow-hidden border-b border-border/60 bg-linear-to-br from-slate-50 via-background to-brand-light/35">
+      <section className="relative isolate flex min-h-[calc(100dvh-3.5rem)] flex-col justify-center overflow-hidden border-b border-border/50 bg-linear-to-br from-slate-50 via-background to-brand-light/40">
         <div
-          className="pointer-events-none absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom,white_0%,white_55%,transparent_100%)]"
+          className="pointer-events-none absolute inset-0 bg-linear-to-tr from-brand/[0.04] via-transparent to-brand/[0.06]"
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute -left-32 top-1/4 h-[420px] w-[420px] rounded-full bg-cognition/15 blur-3xl"
+          className="pointer-events-none absolute inset-0 bg-grid-black/[0.04] mask-[linear-gradient(to_bottom,white_0%,white_55%,transparent_100%)]"
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute -right-24 bottom-0 h-[380px] w-[380px] rounded-full bg-consciousness/12 blur-3xl"
+          className="pointer-events-none absolute -left-32 top-1/3 h-[380px] w-[380px] rounded-full bg-brand/10 blur-3xl"
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute left-1/2 top-0 h-64 w-[min(80%,48rem)] -translate-x-1/2 rounded-full bg-care/10 blur-3xl"
+          className="pointer-events-none absolute -right-28 bottom-0 h-[340px] w-[340px] rounded-full bg-consciousness/10 blur-3xl"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute left-1/2 top-0 h-56 w-[min(85%,44rem)] -translate-x-1/2 rounded-full bg-care/8 blur-3xl"
           aria-hidden
         />
 
@@ -70,14 +74,14 @@ export default function Home() {
               className="lg:col-span-7"
             >
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-brand sm:text-[13px]">
-                <Sparkles className="h-3.5 w-3.5" aria-hidden />
+                <Sparkles className="h-3.5 w-3.5 text-brand/80" aria-hidden />
                 Pediatric neurocritical care research
               </div>
 
               <h1 className="text-[2.25rem] font-bold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                4C Research Group
+                <span className="text-brand">4C</span> Research Group
               </h1>
-              <p className="mt-2 text-lg font-medium text-muted-foreground sm:text-xl">
+              <p className="mt-2 text-sm font-medium leading-snug tracking-wide text-muted-foreground sm:text-base">
                 Cognition · Consciousness · Critical Care
               </p>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-[17px]">
@@ -89,23 +93,23 @@ export default function Home() {
               <div className="mt-8 flex flex-wrap gap-2 sm:gap-3">
                 <Link
                   href="/research/"
-                  className="inline-flex items-center gap-2 rounded-full border border-cognition/25 bg-cognition/10 px-3.5 py-1.5 text-sm font-medium text-cognition transition-colors hover:bg-cognition/15"
+                  className="inline-flex items-center gap-2 rounded-full border border-border/90 bg-background/90 px-3.5 py-1.5 text-sm font-medium text-cognition transition-colors hover:border-cognition/30 hover:bg-cognition/5"
                 >
-                  <Brain className="h-4 w-4 shrink-0" aria-hidden />
+                  <Brain className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
                   Cognition
                 </Link>
                 <Link
                   href="/research/"
-                  className="inline-flex items-center gap-2 rounded-full border border-consciousness/25 bg-consciousness/10 px-3.5 py-1.5 text-sm font-medium text-consciousness transition-colors hover:bg-consciousness/15"
+                  className="inline-flex items-center gap-2 rounded-full border border-border/90 bg-background/90 px-3.5 py-1.5 text-sm font-medium text-consciousness transition-colors hover:border-consciousness/30 hover:bg-consciousness/5"
                 >
-                  <Microscope className="h-4 w-4 shrink-0" aria-hidden />
+                  <Microscope className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
                   Consciousness
                 </Link>
                 <Link
                   href="/research/"
-                  className="inline-flex items-center gap-2 rounded-full border border-care/25 bg-care/10 px-3.5 py-1.5 text-sm font-medium text-care transition-colors hover:bg-care/15"
+                  className="inline-flex items-center gap-2 rounded-full border border-border/90 bg-background/90 px-3.5 py-1.5 text-sm font-medium text-care transition-colors hover:border-care/30 hover:bg-care/5"
                 >
-                  <Zap className="h-4 w-4 shrink-0" aria-hidden />
+                  <Zap className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
                   Critical care
                 </Link>
               </div>
@@ -113,26 +117,26 @@ export default function Home() {
               <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                 <Link
                   href="/research/"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-primary-foreground shadow-md shadow-brand/20 transition-colors hover:bg-brand-deep"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-brand-deep"
                 >
                   Explore research
                   <ArrowRight className="h-4 w-4" aria-hidden />
                 </Link>
                 <Link
                   href="/collaborate/"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-border bg-background px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:border-brand/35 hover:bg-brand/5"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:border-brand/35 hover:bg-brand/5"
                 >
                   Collaborate
                 </Link>
                 <Link
                   href="/team/"
-                  className="inline-flex items-center justify-center rounded-full px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                  className="inline-flex items-center justify-center rounded-full px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-foreground/[0.04] hover:text-foreground"
                 >
                   Meet the team
                 </Link>
               </div>
 
-              <p className="mt-8 max-w-lg text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-8 max-w-lg border-l border-brand/25 pl-4 text-sm leading-relaxed text-muted-foreground">
                 Interested in partnering? We work with clinicians, hospitals,
                 and industry on studies from neuroprognostication to ICU
                 delirium and quantitative EEG.
@@ -145,11 +149,15 @@ export default function Home() {
               transition={{ duration: 0.55, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
               className="relative lg:col-span-5"
             >
-              <div className="absolute inset-0 -z-10 scale-105 rounded-[2rem] bg-linear-to-br from-brand/20 via-consciousness/15 to-care/15 blur-2xl" />
-              <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-card/90 p-8 shadow-xl shadow-black/[0.06] ring-1 ring-black/[0.04] backdrop-blur-sm sm:p-10">
-                <div className="mx-auto flex max-w-[260px] flex-col items-center text-center sm:max-w-[280px]">
+              <div className="absolute inset-0 -z-10 scale-[1.02] rounded-[2rem] bg-brand/8 blur-2xl" />
+              <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-card p-8 shadow-lg shadow-black/[0.04] ring-1 ring-black/[0.03] backdrop-blur-sm sm:p-10">
+                <div
+                  className="pointer-events-none absolute -right-12 top-1/4 h-40 w-40 rounded-full bg-brand/6 blur-2xl"
+                  aria-hidden
+                />
+                <div className="relative mx-auto flex max-w-[260px] flex-col items-center text-center sm:max-w-[280px]">
                   <div className="relative">
-                    <div className="absolute -inset-3 rounded-2xl bg-linear-to-br from-brand/10 to-transparent" />
+                    <div className="absolute -inset-2 rounded-2xl bg-brand/5" />
                     <Image
                       src="/logo.png"
                       alt="4C Research Group logo"
@@ -167,10 +175,10 @@ export default function Home() {
                   </p>
                   <Link
                     href="/gallery/"
-                    className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-background py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted/60"
+                    className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-background py-2.5 text-sm font-medium text-foreground transition-colors hover:border-brand/30 hover:bg-muted/50 hover:text-brand"
                   >
                     View gallery
-                    <ArrowRight className="h-4 w-4 opacity-70" aria-hidden />
+                    <ArrowRight className="h-4 w-4 opacity-60" aria-hidden />
                   </Link>
                 </div>
               </div>
@@ -191,7 +199,7 @@ export default function Home() {
             <span className="text-[11px] font-semibold uppercase tracking-[0.2em]">
               Continue
             </span>
-            <ChevronDown className="h-5 w-5 motion-safe:animate-bounce" aria-hidden />
+            <ChevronDown className="h-5 w-5 motion-safe:animate-bounce opacity-80 group-hover:opacity-100" aria-hidden />
           </a>
         </motion.div>
       </section>

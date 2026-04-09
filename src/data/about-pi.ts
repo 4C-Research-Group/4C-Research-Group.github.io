@@ -538,7 +538,7 @@ const publicationHighlights: PiPublicationHighlight[] = pubLines
 export const aboutPiData = {
   name: cv.name,
   title: titlePills,
-  imageSrc: "/team/team-1.jpg",
+  imageSrc: "/images/team/team-1.jpg",
   heroLines,
   linkedinUrl: networkUrl("LinkedIn"),
   googleScholarUrl: networkUrl("Google Scholar"),

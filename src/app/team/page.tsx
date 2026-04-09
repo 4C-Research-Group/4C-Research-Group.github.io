@@ -366,7 +366,7 @@ export default function TeamPage() {
 
                   <div className="relative aspect-[4/5] w-32 min-h-[120px] lg:col-span-2 lg:w-40 rounded-2xl overflow-hidden border-4 border-background shadow-lg mx-auto lg:mx-0 order-1 lg:order-2">
                     <TeamPhoto
-                      src="/team/team-1.jpg"
+                      src="/images/team/team-1.jpg"
                       alt="Dr. Rishi Ganesan"
                       initials="RG"
                       className="object-cover"

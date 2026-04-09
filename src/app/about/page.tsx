@@ -287,7 +287,7 @@ export default function AboutPage() {
                     >
                       <div className="relative aspect-4/5 w-32 overflow-hidden rounded-2xl border-4 border-background shadow-lg md:w-40">
                         <Image
-                          src="/team/team-1.jpg"
+                          src="/images/team/team-1.jpg"
                           alt="Dr. Rishi Ganesan, Principal Investigator"
                           fill
                           className="object-cover"

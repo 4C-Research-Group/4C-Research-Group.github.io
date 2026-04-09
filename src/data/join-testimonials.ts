@@ -20,7 +20,7 @@ export const joinTestimonials: JoinTestimonial[] = [
     bio: "Julia completed her BSc. (Honours) in Behaviour, Cognition, and Neuroscience at the University of Windsor, and her MSc. in Interdisciplinary Medical Sciences at Western University where she completed her clinical rotation under the supervision of Dr. Ganesan. In Fall 2024, she started her first year of the Doctor of Dental Surgery (DDS) program at the Schulich School of Medicine and Dentistry at Western University.",
     education:
       "BSc (Honours) in Behaviour, Cognition, and Neuroscience, University of Windsor; MSc in Interdisciplinary Medical Sciences, Western University; DDS Student at Schulich School of Medicine and Dentistry, Western University",
-    imageSrc: "/team/team-12.jpg",
+    imageSrc: "/images/team/team-12.jpg",
   },
   {
     id: "devorah",
@@ -31,7 +31,7 @@ export const joinTestimonials: JoinTestimonial[] = [
     bio: "Devorah completed her undergraduate degree in cognitive and developmental neurosciences (BSc) at Western University, and a master's in interdisciplinary medical sciences (MSC) at Western University. Through her education, Devorah has gained several translational and technical skills that she hopes to apply in her future career in healthcare.",
     education:
       "BSc in Cognitive and Developmental Neurosciences, Western University; MSc in Interdisciplinary Medical Sciences, Western University",
-    imageSrc: "/team/team-13.jpg",
+    imageSrc: "/images/team/team-13.jpg",
   },
   {
     id: "daniela",
@@ -42,7 +42,7 @@ export const joinTestimonials: JoinTestimonial[] = [
     bio: "Daniela completed her Bachelor of Life Sciences (Honours) degree at McMaster University and went on to complete her MSc. In Interdisciplinary Medical Sciences at the University of Western Ontario. Through her master's program, she completed a clinical-based rotation, where she was able to gain shadowing and research experience. Daniela will now be continuing to pursue her research interests in Dr. Ganesan's lab as a Research Assistant.",
     education:
       "BSc (Honours) in Life Sciences, McMaster University; MSc in Interdisciplinary Medical Sciences, Western University",
-    imageSrc: "/team/team-9.jpg",
+    imageSrc: "/images/team/team-9.jpg",
   },
   {
     id: "hafsa",

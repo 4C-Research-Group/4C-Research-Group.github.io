@@ -8,7 +8,8 @@ import { siteAsset } from "@/lib/site-path";
  * `photo_file` may be:
  * - empty → no image
  * - full URL (Supabase Storage or other https) → use as-is
- * - legacy filename (e.g. team-2.jpg) → served from `public/team/` (with `basePath` via `siteAsset`)
+ * - legacy filename (e.g. team-2.jpg) → `public/images/team/` (URL `/images/team/…`, not `/team/…`, so
+ *   it does not collide with the `/team/[slug]` app route)
  */
 export function resolveTeamMemberPhotoUrl(
   photoFile: string | null | undefined,
@@ -16,8 +17,10 @@ export function resolveTeamMemberPhotoUrl(
   const raw = (photoFile ?? "").trim();
   if (!raw) return "";
   if (/^https?:\/\//i.test(raw)) return raw;
-  const path = raw.replace(/^\/+/, "");
-  return siteAsset(`/team/${path}`);
+  let path = raw.replace(/^\/+/, "");
+  // Old site stored files under `public/team/` (URL `/team/foo.jpg`), which collided with `/team/[slug]`.
+  if (path.startsWith("team/")) path = path.slice("team/".length);
+  return siteAsset(`/images/team/${path}`);
 }
 
 /**

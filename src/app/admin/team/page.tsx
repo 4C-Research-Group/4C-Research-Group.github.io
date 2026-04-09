@@ -275,6 +275,9 @@ export default function AdminTeamPage() {
         <p className="mt-1 text-sm text-muted-foreground">
           Edit fields below or upload photos. Each member has a portfolio page at{" "}
           <code className="rounded bg-muted px-1 text-xs">/team/slug/</code>.
+          Legacy headshots belong in{" "}
+          <code className="rounded bg-muted px-1 text-xs">public/images/team/</code>{" "}
+          (not <code className="rounded bg-muted px-1 text-xs">public/team/</code>, which clashes with those URLs).
           Run <code className="rounded bg-muted px-1 text-xs">seed_team_members.sql</code>{" "}
           once to import legacy team members.
         </p>

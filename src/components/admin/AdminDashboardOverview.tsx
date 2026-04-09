@@ -236,7 +236,7 @@ export default function AdminDashboardOverview() {
               <span>
                 Team photos can be uploaded to storage or use legacy files in{" "}
                 <code className="rounded bg-muted px-1 text-xs text-foreground/90">
-                  public/team/
+                  public/images/team/
                 </code>
                 .
               </span>

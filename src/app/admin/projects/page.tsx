@@ -272,7 +272,9 @@ export default function AdminProjectsPage() {
           Edit fields below or upload gallery images (stored in{" "}
           <code className="rounded bg-muted px-1 text-xs">project-images</code>).
           Run <code className="rounded bg-muted px-1 text-xs">npm run seed-projects</code>{" "}
-          once to copy bundled projects into the database.
+          once to copy bundled projects into the database. Public project links use{" "}
+          <code className="rounded bg-muted px-1 text-xs">/projects/view/?id=slug</code>{" "}
+          so new projects work on static hosting without redeploying.
         </p>
       </header>
 

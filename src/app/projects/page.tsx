@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { fallbackProjects, type Project } from "@/data/projectsData";
 import { fetchPublishedProjectsFromSupabase } from "@/lib/projects/supabase-projects";
+import { projectDetailHref } from "@/lib/projects/project-detail-href";
 
 const statusColors = {
   active:
@@ -234,7 +235,7 @@ export default function ProjectsPage() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="group"
                 >
-                  <Link href={`/projects/${project.id}/`}>
+                  <Link href={projectDetailHref(project.id)}>
                     <article className="h-full flex flex-col bg-card rounded-3xl border border-border shadow-sm hover:shadow-2xl hover:border-brand/20 transition-all duration-500 overflow-hidden">
                       {/* Project Image */}
                       <div className="relative h-56 overflow-hidden">

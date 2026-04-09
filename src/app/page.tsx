@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { fallbackProjects } from "@/data/projectsData";
 import { fetchPublishedProjectsFromSupabase } from "@/lib/projects/supabase-projects";
+import { projectDetailHref } from "@/lib/projects/project-detail-href";
 
 export default function Home() {
   const [featuredProjects, setFeaturedProjects] = useState(() =>
@@ -615,7 +616,7 @@ export default function Home() {
                       <span>{project.teamMembers?.length || 0} members</span>
                     </div>
                     <Link
-                      href={`/projects/${project.id}/`}
+                      href={projectDetailHref(project.id)}
                       className="text-brand hover:text-brand-deep font-medium flex items-center space-x-1 group-hover:translate-x-1 transition-transform"
                     >
                       <span>Learn More</span>

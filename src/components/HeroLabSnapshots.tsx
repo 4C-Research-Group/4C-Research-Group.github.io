@@ -3,11 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import type { HomepagePayload } from "@/data/homepage-defaults";
+import { siteAsset } from "@/lib/site-path";
 
 const BLUR =
   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A8A";
 
-const SNAPSHOTS = [
+const FALLBACK_SNAPSHOTS: HomepagePayload["heroSnapshots"] = [
   {
     src: "/images/lab-images/20240423_095244.jpg",
     alt: "Researchers collaborating in the lab",
@@ -20,9 +22,24 @@ const SNAPSHOTS = [
     src: "/images/lab-images/20230613_093841.jpg",
     alt: "Team discussion during research",
   },
-] as const;
+];
 
-export function HeroLabSnapshots() {
+type HeroLabSnapshotsProps = {
+  items?: HomepagePayload["heroSnapshots"];
+};
+
+function resolveSnapshotSrc(src: string): string {
+  const t = src.trim();
+  if (!t) return t;
+  if (/^https?:\/\//i.test(t)) return t;
+  return siteAsset(t.startsWith("/") ? t : `/${t}`);
+}
+
+export function HeroLabSnapshots({ items }: HeroLabSnapshotsProps) {
+  const filtered = (items ?? []).filter((x) => x.src.trim());
+  const SNAPSHOTS = filtered.length
+    ? filtered.map((x) => ({ ...x, src: resolveSnapshotSrc(x.src) }))
+    : FALLBACK_SNAPSHOTS.map((x) => ({ ...x, src: resolveSnapshotSrc(x.src) }));
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -38,7 +55,7 @@ export function HeroLabSnapshots() {
         <div className="flex items-end justify-center gap-2 sm:gap-3">
           {SNAPSHOTS.map((item, i) => (
             <motion.div
-              key={item.src}
+              key={`${item.src}-${i}`}
               initial={{ opacity: 0, y: 16, rotate: 0 }}
               animate={{
                 opacity: 1,

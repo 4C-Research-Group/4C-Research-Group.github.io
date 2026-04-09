@@ -121,6 +121,22 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["page_content"]["Insert"]>;
         Relationships: [];
       };
+      homepage_settings: {
+        Row: {
+          id: string;
+          payload: Json;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          payload: Json;
+          updated_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["homepage_settings"]["Insert"]
+        >;
+        Relationships: [];
+      };
       blog_posts: {
         Row: {
           id: string;

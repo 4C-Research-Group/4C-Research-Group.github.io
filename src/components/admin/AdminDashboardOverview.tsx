@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   FileText,
   FolderKanban,
+  House,
   LayoutDashboard,
   Loader2,
   Microscope,
@@ -24,6 +25,12 @@ import {
 import { canManageUsers } from "@/lib/auth/roles";
 
 const QUICK_LINKS = [
+  {
+    href: "/admin/homepage/",
+    title: "Homepage",
+    desc: "Hero, mission, gallery, news, CTAs, and images.",
+    icon: House,
+  },
   {
     href: "/admin/team/",
     title: "Team",

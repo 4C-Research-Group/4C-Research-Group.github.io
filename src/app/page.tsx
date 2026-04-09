@@ -71,7 +71,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:col-span-7"
+              className="min-w-0 lg:col-span-7"
             >
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-brand sm:text-[13px]">
                 <Sparkles className="h-3.5 w-3.5 text-brand/80" aria-hidden />
@@ -147,41 +147,25 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="relative lg:col-span-5"
+              className="relative z-[1] flex min-w-0 flex-col items-center justify-center gap-6 lg:col-span-5"
             >
-              <div className="absolute inset-0 -z-10 scale-[1.02] rounded-[2rem] bg-brand/8 blur-2xl" />
-              <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-card p-8 shadow-lg shadow-black/[0.04] ring-1 ring-black/[0.03] backdrop-blur-sm sm:p-10">
-                <div
-                  className="pointer-events-none absolute -right-12 top-1/4 h-40 w-40 rounded-full bg-brand/6 blur-2xl"
-                  aria-hidden
+              <div className="flex max-w-[min(100%,28rem)] flex-col items-center text-center sm:max-w-[30rem]">
+                <Image
+                  src="/logo.png"
+                  alt="4C Research Group logo"
+                  width={400}
+                  height={400}
+                  className="h-72 w-72 rounded-2xl object-cover sm:h-80 sm:w-80 lg:h-96 lg:w-96"
+                  priority
                 />
-                <div className="relative mx-auto flex max-w-[260px] flex-col items-center text-center sm:max-w-[280px]">
-                  <div className="relative">
-                    <div className="absolute -inset-2 rounded-2xl bg-brand/5" />
-                    <Image
-                      src="/logo.png"
-                      alt="4C Research Group logo"
-                      width={240}
-                      height={240}
-                      className="relative h-44 w-44 rounded-2xl object-cover shadow-md ring-1 ring-black/5 sm:h-52 sm:w-52"
-                      priority
-                    />
-                  </div>
-                  <p className="mt-6 text-sm font-semibold text-foreground">
-                    4C Research Group
-                  </p>
-                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                    Clinical neurocritical care research and collaboration
-                  </p>
-                  <Link
-                    href="/gallery/"
-                    className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-background py-2.5 text-sm font-medium text-foreground transition-colors hover:border-brand/30 hover:bg-muted/50 hover:text-brand"
-                  >
-                    View gallery
-                    <ArrowRight className="h-4 w-4 opacity-60" aria-hidden />
-                  </Link>
-                </div>
+                <p className="mt-6 text-sm font-semibold text-foreground">
+                  4C Research Group
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  Clinical neurocritical care research and collaboration
+                </p>
               </div>
+   
             </motion.div>
           </div>
         </div>
@@ -190,11 +174,11 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2"
+          className="pointer-events-none absolute bottom-6 left-1/2 z-20 -translate-x-1/2"
         >
           <a
             href="#mission"
-            className="group flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-foreground"
+            className="pointer-events-auto group flex flex-col items-center gap-1 text-muted-foreground transition-colors hover:text-foreground"
           >
             <span className="text-[11px] font-semibold uppercase tracking-[0.2em]">
               Continue

@@ -136,9 +136,7 @@ function TitleSubtitleGrid({
               {item.subtitle}
             </div>
           ) : null}
-          {item.note ? (
-            <div className={noteClass}>{item.note}</div>
-          ) : null}
+          {item.note ? <div className={noteClass}>{item.note}</div> : null}
         </div>
       ))}
     </div>
@@ -301,7 +299,10 @@ export default function AboutPiPage() {
                   </SocialButton>
                 ) : null}
                 {d.googleScholarUrl ? (
-                  <SocialButton href={d.googleScholarUrl} label="Google Scholar">
+                  <SocialButton
+                    href={d.googleScholarUrl}
+                    label="Google Scholar"
+                  >
                     <FaGoogle className="h-5 w-5" />
                   </SocialButton>
                 ) : null}
@@ -317,14 +318,14 @@ export default function AboutPiPage() {
                 ) : null}
               </div>
 
-              <ul className="mt-6 list-none space-y-3 border-t border-border/50 pt-6 text-left">
+              <ul className="mt-6 list-none space-y-2 border-t border-border/50 pt-6 text-left">
                 {d.heroLines.map((line, i) => (
                   <li
                     key={`hero-line-${i}`}
-                    className={`text-base leading-relaxed sm:text-lg ${
+                    className={`${
                       i === 0
-                        ? "font-semibold text-foreground"
-                        : "text-muted-foreground"
+                        ? "text-sm leading-tight sm:text-base font-medium text-foreground"
+                        : "text-xs leading-tight sm:text-sm text-muted-foreground"
                     }`}
                   >
                     {line}
@@ -705,7 +706,8 @@ export default function AboutPiPage() {
             />
             <p className="mb-3 text-sm text-muted-foreground">
               Verbatim sections F–J from the curriculum vitae (teaching,
-              supervision, thesis committees, courses, and leadership narrative).
+              supervision, thesis committees, courses, and leadership
+              narrative).
             </p>
             <details className="group rounded-2xl border border-border/60 bg-muted/15">
               <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-foreground marker:hidden [&::-webkit-details-marker]:hidden">

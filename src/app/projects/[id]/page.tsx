@@ -27,7 +27,7 @@ export async function generateMetadata({
       ? `${project.description.slice(0, 157)}…`
       : project.description;
   const ogImages = [
-    { url: project.images[0] ?? "/logo.png", alt: project.title },
+    { url: project.images[0] ?? "/logo.png", alt: project.title, loading: "eager" },
   ];
 
   return {

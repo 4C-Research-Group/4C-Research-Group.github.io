@@ -31,6 +31,8 @@ type WorkGroup = {
 export type OrcidPublication = {
   id: string;
   title: string;
+  /** Comma-separated contributor names from ORCID work detail (when available). */
+  authors: string | null;
   journal: string | null;
   year: number | null;
   type: string | null;
@@ -113,6 +115,7 @@ export function mapOrcidWorksResponse(data: {
     out.push({
       id: String(putCode),
       title,
+      authors: null,
       journal: s["journal-title"]?.value?.trim() || null,
       year: Number.isFinite(finalYear as number) ? finalYear : null,
       type: formatWorkType(s.type),
@@ -121,6 +124,59 @@ export function mapOrcidWorksResponse(data: {
     });
   }
 
+  return out;
+}
+
+type OrcidWorkContributor = {
+  "credit-name"?: { value?: string };
+};
+
+type OrcidWorkDetail = {
+  contributors?: { contributor?: OrcidWorkContributor[] };
+};
+
+async function fetchWorkAuthorsString(
+  orcidClean: string,
+  putCode: string,
+): Promise<string | null> {
+  const url = `https://pub.orcid.org/v3.0/${orcidClean}/work/${putCode}`;
+  const res = await fetch(url, {
+    headers: {
+      Accept: ORCID_ACCEPT,
+      "Accept-Encoding": "gzip, deflate, br",
+    },
+    cache: "force-cache",
+    next: { revalidate: 300 },
+  });
+  if (!res.ok) return null;
+  const data = (await res.json()) as OrcidWorkDetail;
+  const contributors = data.contributors?.contributor;
+  if (!Array.isArray(contributors) || contributors.length === 0) return null;
+  const names = contributors
+    .map((c) => c["credit-name"]?.value?.trim())
+    .filter((n): n is string => Boolean(n));
+  if (names.length === 0) return null;
+  return names.join(", ");
+}
+
+const AUTHOR_ENRICH_BATCH = 8;
+
+/** Fetches each work’s detail so contributor names appear (ORCID list endpoint omits them). */
+async function enrichWithAuthors(
+  orcidClean: string,
+  pubs: OrcidPublication[],
+): Promise<OrcidPublication[]> {
+  if (pubs.length === 0) return pubs;
+  const out: OrcidPublication[] = [];
+  for (let i = 0; i < pubs.length; i += AUTHOR_ENRICH_BATCH) {
+    const slice = pubs.slice(i, i + AUTHOR_ENRICH_BATCH);
+    const authorStrings = await Promise.all(
+      slice.map((p) => fetchWorkAuthorsString(orcidClean, p.id)),
+    );
+    for (let j = 0; j < slice.length; j++) {
+      out.push({ ...slice[j], authors: authorStrings[j] });
+    }
+  }
   return out;
 }
 
@@ -141,7 +197,8 @@ export async function fetchOrcidPublications(
     throw new Error(`Could not load works from ORCID (${res.status})`);
   }
   const data = await res.json();
-  return mapOrcidWorksResponse(data);
+  const list = mapOrcidWorksResponse(data);
+  return enrichWithAuthors(clean, list);
 }
 
 export const DEFAULT_ORCID_ID = "0000-0002-2599-9119";

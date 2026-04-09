@@ -154,6 +154,7 @@ export default function Home() {
                     alt="4C Research Group logo"
                     width={400}
                     height={400}
+                    loading="eager"
                     className="h-72 w-72 rounded-2xl object-cover shadow-lg ring-1 ring-black/5 sm:h-80 sm:w-80 lg:h-96 lg:w-96"
                     priority
                   />

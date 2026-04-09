@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import type { OrcidPublication } from "@/lib/orcid-works";
 
@@ -112,6 +112,20 @@ export function PublicationCard({
         >
           {pub.title}
         </motion.h3>
+        {pub.authors && (
+          <motion.p
+            className="mt-2 flex gap-1.5 text-sm leading-snug text-muted-foreground"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: accentIndex * 0.03 + 0.22 }}
+          >
+            <Users
+              className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground/80"
+              aria-hidden
+            />
+            <span className="line-clamp-3">{pub.authors}</span>
+          </motion.p>
+        )}
         {!showYearBadge && pub.year != null && (
           <motion.p
             className="mt-2 text-sm tabular-nums text-muted-foreground"

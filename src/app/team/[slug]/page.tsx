@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
 import { permanentRedirect } from "next/navigation";
 import { findStaticTeamMemberBySlug, resolveCanonicalTeamSlug } from "@/data/team";
-import { getAllTeamMemberSlugsForStaticParams } from "@/lib/team/static-slugs";
 import TeamPortfolioClient from "./TeamPortfolioClient";
 
+/**
+ * Load slug list via dynamic import so this module does not statically depend on
+ * `@supabase/supabase-js` (Turbopack + `output: "export"` can otherwise fail to
+ * associate `generateStaticParams` with `/team/[slug]`). Merges repo + Supabase slugs when env is set.
+ */
 export async function generateStaticParams() {
+  const { getAllTeamMemberSlugsForStaticParams } = await import(
+    "@/lib/team/static-slugs"
+  );
   return getAllTeamMemberSlugsForStaticParams();
 }
 

@@ -85,6 +85,7 @@ export default function PublicationsPage() {
       pubs = pubs.filter(
         (pub) =>
           pub.title.toLowerCase().includes(term) ||
+          (pub.authors?.toLowerCase().includes(term) ?? false) ||
           (pub.journal?.toLowerCase().includes(term) ?? false) ||
           (pub.doi?.toLowerCase().includes(term) ?? false) ||
           (pub.type?.toLowerCase().includes(term) ?? false),

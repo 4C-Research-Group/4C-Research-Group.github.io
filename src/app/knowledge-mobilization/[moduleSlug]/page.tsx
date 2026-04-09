@@ -25,5 +25,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function KnowledgeModulePage({ params }: Props) {
   const { moduleSlug } = await params;
-  return <ModuleRunner moduleSlug={moduleSlug} />;
+  return <ModuleRunner key={moduleSlug} moduleSlug={moduleSlug} />;
 }

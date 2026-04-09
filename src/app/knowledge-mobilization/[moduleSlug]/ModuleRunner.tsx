@@ -27,6 +27,11 @@ import {
   orderedKmModulesFromFetch,
 } from "@/lib/km/supabase-km-curriculum";
 import { useKmProgress } from "@/contexts/KmProgressContext";
+import {
+  clearKmQuizDraft,
+  loadKmQuizDraft,
+  saveKmQuizDraft,
+} from "@/lib/km/km-quiz-draft";
 
 function TopicBlock({
   topic,
@@ -149,13 +154,15 @@ export default function ModuleRunner({ moduleSlug }: { moduleSlug: string }) {
   const [curriculumReady, setCurriculumReady] = useState(false);
   const [module, setModule] = useState<KMModule | null>(null);
   const [ordered, setOrdered] = useState<KMModule[]>([]);
-  const [answers, setAnswers] = useState<Record<string, number | null>>({});
+  const [answers, setAnswers] = useState<Record<string, number | null>>(() =>
+    loadKmQuizDraft(moduleSlug).answers,
+  );
   const [submitted, setSubmitted] = useState<{
     scorePercent: number;
     passed: boolean;
     correctCount: number;
     total: number;
-  } | null>(null);
+  } | null>(() => loadKmQuizDraft(moduleSlug).submitted);
 
   useEffect(() => {
     let alive = true;
@@ -171,6 +178,11 @@ export default function ModuleRunner({ moduleSlug }: { moduleSlug: string }) {
       alive = false;
     };
   }, [moduleSlug]);
+
+  useEffect(() => {
+    if (!module) return;
+    saveKmQuizDraft(module.slug, { answers, submitted });
+  }, [module, answers, submitted]);
 
   const topicsReady = module ? allTopicsReviewed(module, progress) : false;
   const alreadyPassed = module
@@ -206,6 +218,7 @@ export default function ModuleRunner({ moduleSlug }: { moduleSlug: string }) {
   }
 
   function handleRetake() {
+    if (module) clearKmQuizDraft(module.slug);
     setAnswers({});
     setSubmitted(null);
   }

@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -84,6 +85,10 @@ export function KmProgressProvider({
   const [loadedKey, setLoadedKey] = useState<string | null>(null);
   const [syncError, setSyncError] = useState<string | null>(null);
   const remoteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const flushLocalRef = useRef({
+    ready: false,
+    payload: emptyKmProgressPayload() as KmProgressPayload,
+  });
 
   const progressReady = authReady && loadedKey === hydrateKey;
 
@@ -125,10 +130,14 @@ export function KmProgressProvider({
     };
   }, [authReady, hydrateKey, userId]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    flushLocalRef.current = { ready: progressReady, payload };
     if (!progressReady) return;
     persistLocalMirror(payload);
-    if (!userId) return;
+  }, [progressReady, payload]);
+
+  useEffect(() => {
+    if (!progressReady || !userId) return;
     if (remoteTimerRef.current) clearTimeout(remoteTimerRef.current);
     remoteTimerRef.current = setTimeout(() => {
       remoteTimerRef.current = null;
@@ -138,6 +147,23 @@ export function KmProgressProvider({
       if (remoteTimerRef.current) clearTimeout(remoteTimerRef.current);
     };
   }, [payload, progressReady, userId, flushRemote]);
+
+  useEffect(() => {
+    function persistBeforeLeave() {
+      const { ready, payload: p } = flushLocalRef.current;
+      if (!ready) return;
+      persistLocalMirror(p);
+    }
+    window.addEventListener("pagehide", persistBeforeLeave);
+    const onVis = () => {
+      if (document.visibilityState === "hidden") persistBeforeLeave();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      window.removeEventListener("pagehide", persistBeforeLeave);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, []);
 
   const markTopicReviewed = useCallback((moduleSlug: string, topicId: string) => {
     setPayload((prev) => {

@@ -8,6 +8,7 @@ import {
   FolderKanban,
   LayoutDashboard,
   Loader2,
+  Microscope,
   Newspaper,
   ShieldUser,
   Sparkles,
@@ -40,6 +41,12 @@ const QUICK_LINKS = [
     title: "Blog",
     desc: "News posts, HTML content, featured items.",
     icon: Newspaper,
+  },
+  {
+    href: "/admin/research/",
+    title: "Research page",
+    desc: "Themes, projects, collaborations, CTA.",
+    icon: Microscope,
   },
   {
     href: "/admin/content/",

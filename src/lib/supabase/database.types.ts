@@ -343,6 +343,26 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["km_user_progress"]["Insert"]>;
         Relationships: [];
       };
+      research_page: {
+        Row: {
+          id: string;
+          slug: string;
+          document: Json;
+          published: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug?: string;
+          document?: Json;
+          published?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["research_page"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

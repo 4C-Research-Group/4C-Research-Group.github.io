@@ -239,6 +239,20 @@ export interface Database {
           },
         ];
       };
+      km_user_progress: {
+        Row: {
+          user_id: string;
+          payload: Json;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          payload?: Json;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["km_user_progress"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

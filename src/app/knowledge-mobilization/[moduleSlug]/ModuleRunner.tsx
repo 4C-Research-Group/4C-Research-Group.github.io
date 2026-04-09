@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -20,29 +20,24 @@ import {
 } from "@/data/knowledge-mobilization";
 import {
   allTopicsReviewed,
-  loadKmProgress,
-  markTopicReviewed,
-  recordQuizAttempt,
-  unmarkTopicReviewed,
   modulePassed,
 } from "@/lib/km-progress";
 import {
   fetchKmCurriculumFromSupabase,
   orderedKmModulesFromFetch,
 } from "@/lib/km/supabase-km-curriculum";
+import { useKmProgress } from "@/contexts/KmProgressContext";
 
 function TopicBlock({
   topic,
-  moduleSlug,
   reviewed,
   defaultOpen,
-  onToggleReviewed,
+  onSetReviewed,
 }: {
   topic: KMTopic;
-  moduleSlug: string;
   reviewed: boolean;
   defaultOpen: boolean;
-  onToggleReviewed: () => void;
+  onSetReviewed: (reviewed: boolean) => void;
 }) {
   const [open, setOpen] = useState(defaultOpen);
 
@@ -120,12 +115,7 @@ function TopicBlock({
                   type="checkbox"
                   checked={reviewed}
                   onChange={() => {
-                    if (reviewed) {
-                      unmarkTopicReviewed(moduleSlug, topic.id);
-                    } else {
-                      markTopicReviewed(moduleSlug, topic.id);
-                    }
-                    onToggleReviewed();
+                    onSetReviewed(!reviewed);
                   }}
                   className="mt-1 h-4 w-4 rounded border-border text-brand focus:ring-brand"
                 />
@@ -148,10 +138,17 @@ function TopicBlock({
 }
 
 export default function ModuleRunner({ moduleSlug }: { moduleSlug: string }) {
+  const {
+    ready: kmReady,
+    progress,
+    syncsToAccount,
+    markTopicReviewed,
+    unmarkTopicReviewed,
+    recordQuizAttempt,
+  } = useKmProgress();
   const [curriculumReady, setCurriculumReady] = useState(false);
   const [module, setModule] = useState<KMModule | null>(null);
   const [ordered, setOrdered] = useState<KMModule[]>([]);
-  const [tick, setTick] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number | null>>({});
   const [submitted, setSubmitted] = useState<{
     scorePercent: number;
@@ -175,16 +172,9 @@ export default function ModuleRunner({ moduleSlug }: { moduleSlug: string }) {
     };
   }, [moduleSlug]);
 
-  const refresh = useCallback(() => setTick((t) => t + 1), []);
-
-  const progressSnapshot = useMemo(() => {
-    void tick;
-    return loadKmProgress();
-  }, [tick]);
-
-  const topicsReady = module ? allTopicsReviewed(module, progressSnapshot) : false;
+  const topicsReady = module ? allTopicsReviewed(module, progress) : false;
   const alreadyPassed = module
-    ? modulePassed(module.slug, progressSnapshot)
+    ? modulePassed(module.slug, progress)
     : false;
 
   const selfIndex = module
@@ -207,7 +197,6 @@ export default function ModuleRunner({ moduleSlug }: { moduleSlug: string }) {
     }
     const scorePercent = total === 0 ? 0 : Math.round((correct / total) * 100);
     const { passed } = recordQuizAttempt(module.slug, scorePercent);
-    refresh();
     setSubmitted({
       scorePercent,
       passed,
@@ -228,12 +217,14 @@ export default function ModuleRunner({ moduleSlug }: { moduleSlug: string }) {
       (q) => typeof answers[q.id] === "number" && answers[q.id] !== null,
     );
 
-  if (!curriculumReady) {
+  if (!curriculumReady || !kmReady) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3 text-muted-foreground">
           <div className="h-11 w-11 animate-spin rounded-full border-2 border-brand border-t-transparent" />
-          <p className="text-sm">Loading module…</p>
+          <p className="text-sm">
+            {!curriculumReady ? "Loading module…" : "Loading progress…"}
+          </p>
         </div>
       </div>
     );
@@ -280,7 +271,8 @@ export default function ModuleRunner({ moduleSlug }: { moduleSlug: string }) {
           {alreadyPassed ? (
             <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-care/12 px-3 py-1.5 text-sm font-medium text-care">
               <CheckCircle2 className="h-4 w-4" />
-              You have already passed this module on this device.
+              You have already passed this module
+              {syncsToAccount ? "" : " on this device"}.
             </p>
           ) : null}
         </div>
@@ -303,14 +295,19 @@ export default function ModuleRunner({ moduleSlug }: { moduleSlug: string }) {
               <TopicBlock
                 key={topic.id}
                 topic={topic}
-                moduleSlug={module.slug}
                 defaultOpen={ti === 0}
                 reviewed={
-                  progressSnapshot.modules[
-                    module.slug
-                  ]?.reviewedTopicIds.includes(topic.id) ?? false
+                  progress.modules[module.slug]?.reviewedTopicIds.includes(
+                    topic.id,
+                  ) ?? false
                 }
-                onToggleReviewed={refresh}
+                onSetReviewed={(next) => {
+                  if (next) {
+                    markTopicReviewed(module.slug, topic.id);
+                  } else {
+                    unmarkTopicReviewed(module.slug, topic.id);
+                  }
+                }}
               />
             ))}
           </div>

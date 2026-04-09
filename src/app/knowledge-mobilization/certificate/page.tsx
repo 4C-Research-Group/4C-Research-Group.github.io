@@ -5,24 +5,30 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Award, Download, Loader2, Printer, ArrowLeft } from "lucide-react";
 import PageHero from "@/components/PageHero";
+import { useKmProgress } from "@/contexts/KmProgressContext";
 import {
   createCertificateCanvas,
   downloadCertificatePng,
-  loadCertificateDisplayName,
   printCertificate,
-  saveCertificateDisplayName,
 } from "@/lib/km-certificate";
-import { allModulesPassed, loadKmProgress } from "@/lib/km-progress";
+import { allModulesPassed } from "@/lib/km-progress";
 import {
   fetchKmCurriculumFromSupabase,
   orderedKmModulesFromFetch,
 } from "@/lib/km/supabase-km-curriculum";
+import type { KMModule } from "@/data/knowledge-mobilization";
 
 export default function CertificatePage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [ready, setReady] = useState(false);
-  const [eligible, setEligible] = useState<boolean | null>(null);
-  const [moduleTitles, setModuleTitles] = useState<string[]>([]);
+  const {
+    ready: kmReady,
+    progress,
+    certificateDisplayName,
+    setCertificateDisplayName,
+    syncsToAccount,
+  } = useKmProgress();
+  const [curriculumReady, setCurriculumReady] = useState(false);
+  const [ordered, setOrdered] = useState<KMModule[]>([]);
   const [name, setName] = useState("");
   const [downloading, setDownloading] = useState(false);
 
@@ -30,18 +36,24 @@ export default function CertificatePage() {
     let alive = true;
     void (async () => {
       const result = await fetchKmCurriculumFromSupabase();
-      const ordered = orderedKmModulesFromFetch(result);
-      const progress = loadKmProgress();
+      const list = orderedKmModulesFromFetch(result);
       if (!alive) return;
-      setModuleTitles(ordered.map((m) => m.title));
-      setEligible(allModulesPassed(ordered, progress));
-      setName(loadCertificateDisplayName());
-      setReady(true);
+      setOrdered(list);
+      setCurriculumReady(true);
     })();
     return () => {
       alive = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (!kmReady) return;
+    setName(certificateDisplayName);
+  }, [kmReady, certificateDisplayName]);
+
+  const moduleTitles = ordered.map((m) => m.title);
+  const eligible =
+    curriculumReady && ordered.length > 0 && allModulesPassed(ordered, progress);
 
   const redrawPreview = useCallback((displayName: string, titles: string[]) => {
     const canvas = canvasRef.current;
@@ -55,19 +67,19 @@ export default function CertificatePage() {
   }, []);
 
   useEffect(() => {
-    if (eligible !== true || moduleTitles.length === 0) return;
+    if (!eligible || moduleTitles.length === 0) return;
     redrawPreview(name, moduleTitles);
   }, [eligible, name, moduleTitles, redrawPreview]);
 
   function handleNameBlur() {
-    saveCertificateDisplayName(name);
+    setCertificateDisplayName(name);
     redrawPreview(name, moduleTitles);
   }
 
   function handleDownload() {
     const trimmed = name.trim();
     if (!trimmed) return;
-    saveCertificateDisplayName(trimmed);
+    setCertificateDisplayName(trimmed);
     setDownloading(true);
     requestAnimationFrame(() => {
       try {
@@ -81,11 +93,11 @@ export default function CertificatePage() {
   function handlePrint() {
     const trimmed = name.trim();
     if (!trimmed) return;
-    saveCertificateDisplayName(trimmed);
+    setCertificateDisplayName(trimmed);
     printCertificate(trimmed, moduleTitles);
   }
 
-  if (!ready || eligible === null) {
+  if (!curriculumReady || !kmReady) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-brand" aria-label="Loading" />
@@ -103,7 +115,9 @@ export default function CertificatePage() {
         />
         <div className="container mx-auto max-w-lg px-4 py-16 text-center">
           <p className="text-muted-foreground">
-            Your progress on this browser does not show all modules passed yet.
+            {syncsToAccount
+              ? "Your saved progress does not show all modules passed yet. "
+              : "Your progress on this browser does not show all modules passed yet. "}
             Finish each module quiz with a score of at least 80%, then return
             here.
           </p>
@@ -140,7 +154,18 @@ export default function CertificatePage() {
             <Award className="mt-0.5 h-5 w-5 shrink-0 text-care" />
             <p>
               This certificate is generated in your browser for completing all
-              modules on <strong className="text-foreground">this device</strong>
+              modules
+              {syncsToAccount ? (
+                <>
+                  {" "}
+                  tied to <strong className="text-foreground">your account</strong>
+                </>
+              ) : (
+                <>
+                  {" "}
+                  on <strong className="text-foreground">this device</strong>
+                </>
+              )}
               . It is not a substitute for employer or college transcripts. For
               official training records, follow your institution’s process.
             </p>

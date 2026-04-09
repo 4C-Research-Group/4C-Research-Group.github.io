@@ -50,8 +50,10 @@ async function main() {
     process.exit(1);
   }
 
+  const supabaseUrl = url as string;
+  const supabaseKey = serviceKey as string;
   const force = process.argv.includes("--force");
-  const supabase = createClient<Database>(url, serviceKey);
+  const supabase = createClient<Database>(supabaseUrl, supabaseKey);
 
   const { count, error: countErr } = await supabase
     .from("km_modules")

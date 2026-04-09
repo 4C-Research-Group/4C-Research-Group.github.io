@@ -26,7 +26,7 @@ function emptyModuleProgress(): KMModuleProgress {
   };
 }
 
-export function loadKmProgress(): KMStoredProgress {
+export function loadKmProgressFromLocal(): KMStoredProgress {
   if (typeof window === "undefined") {
     return { version: 1, modules: {} };
   }
@@ -43,7 +43,7 @@ export function loadKmProgress(): KMStoredProgress {
   }
 }
 
-export function saveKmProgress(data: KMStoredProgress): void {
+export function saveKmProgressToLocal(data: KMStoredProgress): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -52,46 +52,100 @@ export function saveKmProgress(data: KMStoredProgress): void {
   }
 }
 
-function getOrCreateModuleEntry(
+/** @deprecated Prefer `loadKmProgressFromLocal` or `useKmProgress()` for signed-in sync. */
+export function loadKmProgress(): KMStoredProgress {
+  return loadKmProgressFromLocal();
+}
+
+/** @deprecated Prefer `saveKmProgressToLocal` or `useKmProgress()` for signed-in sync. */
+export function saveKmProgress(data: KMStoredProgress): void {
+  saveKmProgressToLocal(data);
+}
+
+export function applyMarkTopicReviewed(
   data: KMStoredProgress,
   moduleSlug: string,
-): KMModuleProgress {
-  if (!data.modules[moduleSlug]) {
-    data.modules[moduleSlug] = emptyModuleProgress();
-  }
-  return data.modules[moduleSlug];
+  topicId: string,
+): KMStoredProgress {
+  const modules = { ...data.modules };
+  const cur = modules[moduleSlug] ?? emptyModuleProgress();
+  if (cur.reviewedTopicIds.includes(topicId)) return data;
+  modules[moduleSlug] = {
+    ...cur,
+    reviewedTopicIds: [...cur.reviewedTopicIds, topicId],
+  };
+  return { ...data, modules };
 }
 
+export function applyUnmarkTopicReviewed(
+  data: KMStoredProgress,
+  moduleSlug: string,
+  topicId: string,
+): KMStoredProgress {
+  const modules = { ...data.modules };
+  const cur = modules[moduleSlug];
+  if (!cur) return data;
+  modules[moduleSlug] = {
+    ...cur,
+    reviewedTopicIds: cur.reviewedTopicIds.filter((id) => id !== topicId),
+  };
+  return { ...data, modules };
+}
+
+export function applyRecordQuizAttempt(
+  data: KMStoredProgress,
+  moduleSlug: string,
+  scorePercent: number,
+): {
+  next: KMStoredProgress;
+  passed: boolean;
+  bestScorePercent: number;
+} {
+  const modules = { ...data.modules };
+  const cur = modules[moduleSlug] ?? emptyModuleProgress();
+  const attempts = cur.attempts + 1;
+  const lastAttemptAt = new Date().toISOString();
+  const bestScorePercent = Math.max(cur.bestScorePercent, scorePercent);
+  const passed = bestScorePercent >= KM_PASS_PERCENT;
+  modules[moduleSlug] = {
+    ...cur,
+    attempts,
+    lastAttemptAt,
+    bestScorePercent,
+    passed,
+  };
+  return {
+    next: { ...data, modules },
+    passed,
+    bestScorePercent,
+  };
+}
+
+/** @deprecated Use `useKmProgress().markTopicReviewed` when inside Knowledge Mobilization. */
 export function markTopicReviewed(moduleSlug: string, topicId: string): void {
-  const data = loadKmProgress();
-  const m = getOrCreateModuleEntry(data, moduleSlug);
-  if (!m.reviewedTopicIds.includes(topicId)) {
-    m.reviewedTopicIds = [...m.reviewedTopicIds, topicId];
-  }
-  saveKmProgress(data);
+  const data = loadKmProgressFromLocal();
+  saveKmProgressToLocal(applyMarkTopicReviewed(data, moduleSlug, topicId));
 }
 
+/** @deprecated Use `useKmProgress().unmarkTopicReviewed` when inside Knowledge Mobilization. */
 export function unmarkTopicReviewed(moduleSlug: string, topicId: string): void {
-  const data = loadKmProgress();
-  const m = getOrCreateModuleEntry(data, moduleSlug);
-  m.reviewedTopicIds = m.reviewedTopicIds.filter((id) => id !== topicId);
-  saveKmProgress(data);
+  const data = loadKmProgressFromLocal();
+  saveKmProgressToLocal(applyUnmarkTopicReviewed(data, moduleSlug, topicId));
 }
 
+/** @deprecated Use `useKmProgress().recordQuizAttempt` when inside Knowledge Mobilization. */
 export function recordQuizAttempt(
   moduleSlug: string,
   scorePercent: number,
 ): { passed: boolean; bestScorePercent: number } {
-  const data = loadKmProgress();
-  const m = getOrCreateModuleEntry(data, moduleSlug);
-  m.attempts += 1;
-  m.lastAttemptAt = new Date().toISOString();
-  const best = Math.max(m.bestScorePercent, scorePercent);
-  m.bestScorePercent = best;
-  const passed = best >= KM_PASS_PERCENT;
-  m.passed = passed;
-  saveKmProgress(data);
-  return { passed, bestScorePercent: best };
+  const data = loadKmProgressFromLocal();
+  const { next, passed, bestScorePercent } = applyRecordQuizAttempt(
+    data,
+    moduleSlug,
+    scorePercent,
+  );
+  saveKmProgressToLocal(next);
+  return { passed, bestScorePercent };
 }
 
 export function isTopicReviewed(
@@ -99,7 +153,7 @@ export function isTopicReviewed(
   topicId: string,
   progress?: KMStoredProgress,
 ): boolean {
-  const data = progress ?? loadKmProgress();
+  const data = progress ?? loadKmProgressFromLocal();
   return data.modules[moduleSlug]?.reviewedTopicIds.includes(topicId) ?? false;
 }
 
@@ -107,7 +161,7 @@ export function allTopicsReviewed(
   mod: KMModule,
   progress?: KMStoredProgress,
 ): boolean {
-  const data = progress ?? loadKmProgress();
+  const data = progress ?? loadKmProgressFromLocal();
   const reviewed = new Set(data.modules[mod.slug]?.reviewedTopicIds ?? []);
   return mod.topics.every((t) => reviewed.has(t.id));
 }
@@ -116,24 +170,24 @@ export function modulePassed(
   moduleSlug: string,
   progress?: KMStoredProgress,
 ): boolean {
-  const data = progress ?? loadKmProgress();
+  const data = progress ?? loadKmProgressFromLocal();
   return data.modules[moduleSlug]?.passed ?? false;
 }
 
-/** Module at index is unlocked if previous module passed, or it is the first module. */
 export function isModuleUnlocked(
   mod: KMModule,
   ordered: KMModule[],
   progress?: KMStoredProgress,
 ): boolean {
-  const data = progress ?? loadKmProgress();
+  const data = progress ?? loadKmProgressFromLocal();
   const idx = ordered.findIndex((m) => m.slug === mod.slug);
   if (idx <= 0) return true;
   const prev = ordered[idx - 1];
   return modulePassed(prev.slug, data);
 }
 
-export function resetKmProgress(): void {
+/** Clears only local storage (browser). Remote reset is handled in `useKmProgress().resetAll`. */
+export function resetKmProgressLocalOnly(): void {
   if (typeof window === "undefined") return;
   localStorage.removeItem(STORAGE_KEY);
   try {
@@ -143,12 +197,16 @@ export function resetKmProgress(): void {
   }
 }
 
-/** True when every module in `ordered` has been passed on this device. */
+/** @deprecated Use `resetKmProgressLocalOnly` or context `resetAll`. */
+export function resetKmProgress(): void {
+  resetKmProgressLocalOnly();
+}
+
 export function allModulesPassed(
   ordered: KMModule[],
   progress?: KMStoredProgress,
 ): boolean {
-  const data = progress ?? loadKmProgress();
+  const data = progress ?? loadKmProgressFromLocal();
   if (ordered.length === 0) return false;
   return ordered.every((m) => modulePassed(m.slug, data));
 }

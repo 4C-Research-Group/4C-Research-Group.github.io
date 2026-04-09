@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { KmProgressProvider } from "@/contexts/KmProgressContext";
 
 export const metadata: Metadata = {
   title: "Knowledge Mobilization | 4C Research Group",
@@ -11,5 +12,5 @@ export default function KnowledgeMobilizationLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return <KmProgressProvider>{children}</KmProgressProvider>;
 }

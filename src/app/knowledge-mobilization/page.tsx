@@ -14,14 +14,12 @@ import {
   Sparkles,
 } from "lucide-react";
 import PageHero from "@/components/PageHero";
+import { useKmProgress } from "@/contexts/KmProgressContext";
 import type { KMModule } from "@/data/knowledge-mobilization";
 import {
-  loadKmProgress,
   isModuleUnlocked,
   modulePassed,
   allModulesPassed,
-  resetKmProgress,
-  type KMStoredProgress,
 } from "@/lib/km-progress";
 import {
   fetchKmCurriculumFromSupabase,
@@ -29,13 +27,15 @@ import {
 } from "@/lib/km/supabase-km-curriculum";
 
 export default function KnowledgeMobilizationHubPage() {
-  const [progress, setProgress] = useState<KMStoredProgress | null>(null);
+  const {
+    ready: kmReady,
+    progress,
+    resetAll,
+    syncsToAccount,
+    syncError,
+  } = useKmProgress();
   const [ordered, setOrdered] = useState<KMModule[]>([]);
   const [curriculumReady, setCurriculumReady] = useState(false);
-
-  useEffect(() => {
-    setProgress(loadKmProgress());
-  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -50,23 +50,17 @@ export default function KnowledgeMobilizationHubPage() {
     };
   }, []);
 
-  function refreshProgress() {
-    setProgress(loadKmProgress());
-  }
-
   function handleReset() {
-    if (
-      typeof window !== "undefined" &&
-      window.confirm(
-        "Clear all Knowledge Mobilization progress on this browser? This cannot be undone.",
-      )
-    ) {
-      resetKmProgress();
-      refreshProgress();
+    if (typeof window === "undefined") return;
+    const msg = syncsToAccount
+      ? "Clear all Knowledge Mobilization progress for your account and this browser? This removes your saved progress in the cloud for this login."
+      : "Clear all Knowledge Mobilization progress on this browser? This cannot be undone.";
+    if (window.confirm(msg)) {
+      resetAll();
     }
   }
 
-  if (!curriculumReady) {
+  if (!curriculumReady || !kmReady) {
     return (
       <div className="min-h-screen bg-background">
         <PageHero
@@ -77,7 +71,9 @@ export default function KnowledgeMobilizationHubPage() {
         <div className="flex min-h-[40vh] items-center justify-center border-t border-border/60">
           <div className="flex flex-col items-center gap-3 text-muted-foreground">
             <div className="h-11 w-11 animate-spin rounded-full border-2 border-brand border-t-transparent" />
-            <p className="text-sm">Loading curriculum…</p>
+            <p className="text-sm">
+              {!curriculumReady ? "Loading curriculum…" : "Loading progress…"}
+            </p>
           </div>
         </div>
       </div>
@@ -93,6 +89,12 @@ export default function KnowledgeMobilizationHubPage() {
       />
 
       <div className="relative border-t border-border/60">
+        {syncError ? (
+          <div className="border-b border-amber-500/30 bg-amber-500/10 px-4 py-2 text-center text-xs text-amber-900 dark:text-amber-100">
+            Could not sync progress to your account: {syncError}. Quiz data is
+            still saved in this browser.
+          </div>
+        ) : null}
         <div
           className="pointer-events-none absolute left-0 top-20 h-72 w-72 rounded-full bg-cognition/10 blur-3xl"
           aria-hidden
@@ -118,6 +120,23 @@ export default function KnowledgeMobilizationHubPage() {
                   <h2 className="text-lg font-semibold text-foreground">
                     How it works
                   </h2>
+                  {syncsToAccount ? (
+                    <p className="mt-1 text-xs text-care font-medium">
+                      Signed in — your progress syncs to your account so you can
+                      continue on another device after logging in again.
+                    </p>
+                  ) : (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      <Link
+                        href="/login/"
+                        className="font-medium text-brand hover:underline"
+                      >
+                        Sign in
+                      </Link>{" "}
+                      to save progress to your account (otherwise it stays in
+                      this browser only).
+                    </p>
+                  )}
                   <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
                     <li className="flex gap-2">
                       <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-care" />
@@ -133,7 +152,9 @@ export default function KnowledgeMobilizationHubPage() {
                     <li className="flex gap-2">
                       <RotateCcw className="mt-0.5 h-4 w-4 shrink-0 text-consciousness" />
                       If you score below 80%, retake the quiz until you pass —
-                      your best score is saved on this device only.
+                      your best score is saved
+                      {syncsToAccount ? " to your account" : " on this device"}
+                      .
                     </li>
                   </ul>
                 </div>
@@ -168,13 +189,9 @@ export default function KnowledgeMobilizationHubPage() {
           ) : (
           <ol className="space-y-5">
             {ordered.map((mod, index) => {
-              const unlocked = progress
-                ? isModuleUnlocked(mod, ordered, progress)
-                : index === 0;
-              const passed = progress
-                ? modulePassed(mod.slug, progress)
-                : false;
-              const mp = progress?.modules[mod.slug];
+              const unlocked = isModuleUnlocked(mod, ordered, progress);
+              const passed = modulePassed(mod.slug, progress);
+              const mp = progress.modules[mod.slug];
               const topicTotal = mod.topics.length;
               const reviewed = mp?.reviewedTopicIds.length ?? 0;
 
@@ -289,12 +306,14 @@ export default function KnowledgeMobilizationHubPage() {
               />
               <div>
                 <p className="text-lg font-semibold text-foreground">
-                  You passed every module on this device
+                  You passed every module
+                  {syncsToAccount ? "" : " on this device"}
                 </p>
                 <p className="mt-2 max-w-md text-sm text-muted-foreground">
                   Download a certificate with your name, or print / save as PDF.
                   Use <em>Reset progress</em> only if you need to redo the track
-                  for a demo — that also clears your saved certificate name.
+                  — that also clears your saved certificate name
+                  {syncsToAccount ? " and account progress" : ""}.
                 </p>
               </div>
               <Link

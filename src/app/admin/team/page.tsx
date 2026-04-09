@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Loader2,
   Plus,
@@ -51,34 +51,6 @@ type RowEdit = {
   linkedin_url: string;
 };
 
-type NewMemberDraft = {
-  slug: string;
-  name: string;
-  initials: string;
-  role_title: string;
-  category: "staff" | "student";
-  superpower: string;
-  photo_file: string;
-  is_alumni: boolean;
-  bio: string;
-  email: string;
-  linkedin_url: string;
-};
-
-const emptyDraft: NewMemberDraft = {
-  slug: "",
-  name: "",
-  initials: "",
-  role_title: "",
-  category: "staff",
-  superpower: "",
-  photo_file: "",
-  is_alumni: false,
-  bio: "",
-  email: "",
-  linkedin_url: "",
-};
-
 function fromServer(r: MemberRow): RowEdit {
   return {
     slug: r.slug,
@@ -114,12 +86,25 @@ function rowEditsDiffer(a: RowEdit, b: RowEdit): boolean {
 }
 
 export default function AdminTeamPage() {
-  const [rows, setRows] = useState<MemberRow[] | null>(null);
+  const [items, setItems] = useState<MemberRow[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [draft, setDraft] = useState(emptyDraft);
-  const [pendingPhotoNew, setPendingPhotoNew] = useState<File | null>(null);
-  const [adding, setAdding] = useState(false);
-  const [syncEpoch, setSyncEpoch] = useState(0);
+  const [saving, setSaving] = useState(false);
+  const [originalId, setOriginalId] = useState<string | null>(null);
+  const [form, setForm] = useState<RowEdit>({
+    slug: "",
+    name: "",
+    initials: "",
+    role_title: "",
+    category: "staff",
+    superpower: "",
+    photo_file: "",
+    is_alumni: false,
+    sort_order: 0,
+    bio: "",
+    email: "",
+    linkedin_url: "",
+  });
+  const [pendingPhoto, setPendingPhoto] = useState<File | null>(null);
 
   const load = useCallback(async () => {
     setErr(null);
@@ -130,11 +115,10 @@ export default function AdminTeamPage() {
         .select("*")
         .order("sort_order", { ascending: true });
       if (error) throw new Error(error.message);
-      setRows((data as MemberRow[]) ?? []);
-      setSyncEpoch((e) => e + 1);
+      setItems((data as MemberRow[]) ?? []);
     } catch (e) {
-      setErr(e instanceof Error ? e.message : "Failed to load team");
-      setRows([]);
+      setErr(e instanceof Error ? e.message : "Load failed");
+      setItems([]);
     }
   }, []);
 
@@ -142,215 +126,263 @@ export default function AdminTeamPage() {
     void load();
   }, [load]);
 
-  function nextSortOrder(list: MemberRow[]): number {
-    if (list.length === 0) return 10;
-    return Math.max(...list.map((r) => r.sort_order), 0) + 10;
+  function pickRow(row: MemberRow) {
+    setOriginalId(row.id);
+    setForm(fromServer(row));
+    setPendingPhoto(null);
   }
 
-  async function addMember() {
-    const name = draft.name.trim();
-    const slug =
-      draft.slug.trim() || (name ? slugifyTeamMember(name) : "");
-    if (!slug || !name) {
-      setErr("Name is required; slug is generated from name if left blank.");
-      return;
-    }
-    if (pendingPhotoNew) {
-      const photoErr = validateTeamPhotoFile(pendingPhotoNew);
-      if (photoErr) {
-        setErr(photoErr);
-        return;
-      }
-    }
-    setAdding(true);
+  function startNew() {
+    setOriginalId(null);
+    setForm({
+      slug: "",
+      name: "",
+      initials: "",
+      role_title: "",
+      category: "staff",
+      superpower: "",
+      photo_file: "",
+      is_alumni: false,
+      sort_order: items ? Math.max(...items.map(r => r.sort_order), 0) + 10 : 10,
+      bio: "",
+      email: "",
+      linkedin_url: "",
+    });
+    setPendingPhoto(null);
+  }
+
+  async function save() {
+    setSaving(true);
     setErr(null);
     try {
-      let photo_file = draft.photo_file.trim();
-      if (pendingPhotoNew) {
-        const { publicUrl } = await uploadTeamMemberPhoto(pendingPhotoNew, slug);
+      const slugInput = form.slug.trim();
+      const slugFinal = slugifyTeamMember(slugInput) || slugInput;
+      if (!slugFinal || !form.name.trim()) {
+        throw new Error("Name is required; slug is generated from name if left blank.");
+      }
+      
+      if (pendingPhoto) {
+        const photoErr = validateTeamPhotoFile(pendingPhoto);
+        if (photoErr) {
+          throw new Error(photoErr);
+        }
+      }
+
+      let photo_file = form.photo_file.trim();
+      if (pendingPhoto) {
+        const { publicUrl } = await uploadTeamMemberPhoto(pendingPhoto, slugFinal);
+        if (originalId && teamPhotoPathFromPublicUrl(form.photo_file.trim())) {
+          await deleteTeamPhotoAtPublicUrl(form.photo_file.trim());
+        }
         photo_file = publicUrl;
       }
+
       const supabase = getSupabaseBrowserClient();
-      const sort_order = rows === null ? 10 : nextSortOrder(rows);
-      const { error } = await supabase.from("team_members").insert({
-        slug,
-        name,
-        initials: draft.initials.trim(),
-        role_title: draft.role_title.trim(),
-        category: draft.category,
-        superpower: draft.superpower.trim(),
+      const updateData = {
+        slug: slugFinal,
+        name: form.name.trim(),
+        initials: form.initials.trim(),
+        role_title: form.role_title.trim(),
+        category: form.category,
+        superpower: form.superpower.trim(),
         photo_file,
-        is_alumni: draft.is_alumni,
-        sort_order,
-        bio: draft.bio.trim(),
-        email: draft.email.trim(),
-        linkedin_url: draft.linkedin_url.trim(),
+        is_alumni: form.is_alumni,
+        sort_order: form.sort_order,
+        bio: form.bio.trim(),
+        email: form.email.trim(),
+        linkedin_url: form.linkedin_url.trim(),
         updated_at: new Date().toISOString(),
-      });
-      if (error) throw new Error(error.message);
-      setDraft(emptyDraft);
-      setPendingPhotoNew(null);
+      };
+
+      if (originalId) {
+        const { error } = await supabase
+          .from("team_members")
+          .update(updateData)
+          .eq("id", originalId);
+        if (error) throw new Error(error.message);
+      } else {
+        const { error } = await supabase
+          .from("team_members")
+          .insert(updateData);
+        if (error) throw new Error(error.message);
+      }
+
       await load();
+      if (!originalId) {
+        // Get the newly created member's ID
+        const { data } = await supabase
+          .from("team_members")
+          .select("id")
+          .eq("slug", slugFinal)
+          .single();
+        if (data) {
+          setOriginalId(data.id);
+        }
+      }
     } catch (e) {
-      setErr(e instanceof Error ? e.message : "Insert failed");
+      setErr(e instanceof Error ? e.message : "Save failed");
     } finally {
-      setAdding(false);
+      setSaving(false);
     }
   }
 
-  async function updateRow(id: string, patch: Partial<MemberRow>) {
+  async function remove() {
+    if (!originalId) return;
+    const member = items?.find(m => m.id === originalId);
+    if (!member) return;
+    if (!confirm(`Delete team member "${member.name}"?`)) return;
+    
     setErr(null);
     try {
       const supabase = getSupabaseBrowserClient();
       const { error } = await supabase
         .from("team_members")
-        .update({ ...patch, updated_at: new Date().toISOString() })
-        .eq("id", id);
+        .delete()
+        .eq("id", originalId);
       if (error) throw new Error(error.message);
-      await load();
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : "Update failed");
-    }
-  }
-
-  async function removeRow(id: string) {
-    if (!confirm("Remove this person from the database?")) return;
-    setErr(null);
-    try {
-      const supabase = getSupabaseBrowserClient();
-      const { error } = await supabase.from("team_members").delete().eq("id", id);
-      if (error) throw new Error(error.message);
+      
+      // Delete photo if it's a Supabase storage photo
+      if (teamPhotoPathFromPublicUrl(member.photo_file.trim())) {
+        await deleteTeamPhotoAtPublicUrl(member.photo_file.trim());
+      }
+      
+      setOriginalId(null);
       await load();
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Delete failed");
     }
   }
 
-  if (rows === null) {
+  const list = items ?? [];
+  const baseline = originalId ? items?.find(m => m.id === originalId) : null;
+  const dirty = baseline ? rowEditsDiffer(form, fromServer(baseline)) || pendingPhoto !== null : true;
+
+  if (items === null) {
     return (
-      <div className="flex items-center gap-2 text-muted-foreground">
-        <Loader2 className="h-5 w-5 animate-spin text-brand" />
-        Loading team…
+      <div className="flex min-h-[30vh] items-center justify-center gap-2 text-muted-foreground">
+        <Loader2 className="h-6 w-6 animate-spin text-brand" />
+        <span className="text-sm">Loading team members...</span>
       </div>
     );
   }
 
-  const newFormDirty =
-    draft.name.trim() !== "" ||
-    draft.slug.trim() !== "" ||
-    draft.initials.trim() !== "" ||
-    draft.role_title.trim() !== "" ||
-    draft.superpower.trim() !== "" ||
-    draft.photo_file.trim() !== "" ||
-    draft.bio.trim() !== "" ||
-    draft.email.trim() !== "" ||
-    draft.linkedin_url.trim() !== "" ||
-    draft.is_alumni ||
-    pendingPhotoNew !== null;
-
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Team</h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          Manage who appears on the public{" "}
-          <span className="text-foreground/90">Team</span> page and their{" "}
-          <span className="text-foreground/90">portfolio</span> (
-          <code className="rounded bg-muted px-1 py-0.5 text-xs">/team/your-slug/</code>
-          ). Each person is a card: edit fields, then{" "}
-          <strong className="text-foreground">Save</strong> to publish (stored
-          in{" "}
-          <code className="rounded bg-muted px-1 py-0.5 text-xs">
-            public.team_members
-          </code>
-          ; publications in{" "}
-          <code className="rounded bg-muted px-1 py-0.5 text-xs">
-            team_member_publications
-          </code>
-          ). Photos upload to Supabase Storage (bucket{" "}
-          <code className="rounded bg-muted px-1 py-0.5 text-xs">team-photos</code>
-          ); you can instead use a legacy file from{" "}
-          <code className="rounded bg-muted px-1 py-0.5 text-xs">public/team/</code>{" "}
-          or any image URL.
+      <header>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          Team members
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Edit fields below or upload photos. Each member has a portfolio page at{" "}
+          <code className="rounded bg-muted px-1 text-xs">/team/slug/</code>.
+          Run <code className="rounded bg-muted px-1 text-xs">seed_team_members.sql</code>{" "}
+          once to import legacy team members.
         </p>
-        <ul className="mt-3 list-inside list-disc text-xs text-muted-foreground">
-          <li>Explicit save — nothing is written until you save each card.</li>
-          <li>
-            <strong className="font-medium text-foreground">Alumni</strong> moves
-            them to the alumni section on the site.
-          </li>
-          <li>
-            <strong className="font-medium text-foreground">Sort</strong> controls
-            order (lower numbers first).
-          </li>
-          <li>
-            <strong className="font-medium text-foreground">Bio &amp; publications</strong>{" "}
-            appear on each member&apos;s portfolio page.
-          </li>
-          <li>
-            <strong className="font-medium text-foreground">Join page testimonials</strong>{" "}
-            — linked members can edit theirs on their portfolio; run{" "}
-            <code className="rounded bg-muted px-1 py-0.5 text-[11px]">
-              supabase/team_member_testimonials.sql
-            </code>{" "}
-            and set{" "}
-            <code className="rounded bg-muted px-1 py-0.5 text-[11px]">
-              public.users.team_member_id
-            </code>{" "}
-            (superuser only) to connect a login to a row in{" "}
-            <code className="rounded bg-muted px-1 py-0.5 text-[11px]">
-              team_members
-            </code>
-            .
-          </li>
-        </ul>
+      </header>
+
+      {err ? (
+        <p className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {err}
+        </p>
+      ) : null}
+
+      <div className="flex flex-wrap items-center gap-3">
+        <label className="text-sm font-medium text-muted-foreground">
+          Select
+          <select
+            className="ml-2 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
+            value={originalId ?? ""}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (!v) return;
+              const row = list.find((x) => x.id === v);
+              if (row) pickRow(row);
+            }}
+          >
+            <option value="">Select a member...</option>
+            {list.map((row) => (
+              <option key={row.id} value={row.id}>
+                {row.name} ({row.slug})
+              </option>
+            ))}
+          </select>
+        </label>
+        <button
+          type="button"
+          onClick={() => startNew()}
+          className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium hover:bg-muted/60"
+        >
+          <Plus className="h-4 w-4" />
+          New member
+        </button>
+        <button
+          type="button"
+          disabled={saving || !dirty}
+          onClick={() => void save()}
+          className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+        >
+          {saving ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4" />
+          )}
+          Save
+        </button>
+        {originalId ? (
+          <button
+            type="button"
+            onClick={() => void remove()}
+            className="inline-flex items-center gap-2 rounded-lg border border-destructive/40 px-3 py-2 text-sm text-destructive hover:bg-destructive/10"
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete
+          </button>
+        ) : null}
       </div>
 
-      {err && (
-        <div className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          {err}
-        </div>
-      )}
-
-      <section className="rounded-2xl border border-border bg-card p-5 shadow-sm">
-        <h2 className="mb-1 flex items-center gap-2 text-sm font-semibold text-foreground">
-          <Plus className="h-4 w-4" aria-hidden />
-          Add member
-        </h2>
-        <p className="mb-4 text-xs text-muted-foreground">
-          New entries appear on the site after you save. Slug can be left blank
-          to generate from the name.
+      {list.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          No team members in database. Add someone above or run the seed script.
         </p>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      ) : null}
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-5">
+          <h2 className="text-sm font-semibold text-foreground">Core Information</h2>
+          
           <Field
             label="Name *"
-            value={draft.name}
-            onChange={(name) => setDraft((d) => ({ ...d, name }))}
+            value={form.name}
+            onChange={(name) => setForm((f) => ({ ...f, name }))}
           />
+          
           <Field
             label="Slug (optional)"
-            value={draft.slug}
-            onChange={(slug) => setDraft((d) => ({ ...d, slug }))}
+            value={form.slug}
+            onChange={(slug) => setForm((f) => ({ ...f, slug }))}
             placeholder="auto from name"
           />
+          
           <Field
             label="Initials"
-            value={draft.initials}
-            onChange={(initials) => setDraft((d) => ({ ...d, initials }))}
+            value={form.initials}
+            onChange={(initials) => setForm((f) => ({ ...f, initials }))}
           />
+          
           <Field
             label="Role / title"
-            value={draft.role_title}
-            onChange={(role_title) => setDraft((d) => ({ ...d, role_title }))}
+            value={form.role_title}
+            onChange={(role_title) => setForm((f) => ({ ...f, role_title }))}
           />
-          <label className="flex flex-col gap-1.5 text-xs font-medium text-muted-foreground">
+          
+          <label className="block text-xs font-medium text-muted-foreground">
             Category
             <select
-              className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
-              value={draft.category}
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground"
+              value={form.category}
               onChange={(e) =>
-                setDraft((d) => ({
-                  ...d,
+                setForm((f) => ({
+                  ...f,
                   category: e.target.value as "staff" | "student",
                 }))
               }
@@ -359,429 +391,96 @@ export default function AdminTeamPage() {
               <option value="student">Student / trainee</option>
             </select>
           </label>
-          <div className="sm:col-span-2 lg:col-span-3">
-            <TeamPhotoField
-              storedRaw={draft.photo_file}
-              onStoredRawChange={(photo_file) =>
-                setDraft((d) => ({ ...d, photo_file }))
-              }
-              pendingFile={pendingPhotoNew}
-              onPendingFileChange={setPendingPhotoNew}
-              disabled={adding}
+          
+          <label className="block text-xs font-medium text-muted-foreground">
+            Sort order
+            <input
+              type="number"
+              value={form.sort_order}
+              onChange={(e) => setForm((f) => ({ ...f, sort_order: Number(e.target.value) || 0 }))}
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
             />
-            <Field
-              label="Image URL or legacy filename (optional)"
-              value={draft.photo_file}
-              onChange={(photo_file) => setDraft((d) => ({ ...d, photo_file }))}
-              placeholder="https://… or team-2.jpg"
-            />
-          </div>
-          <div className="sm:col-span-2 lg:col-span-3">
-            <label className="flex flex-col gap-1.5 text-xs font-medium text-muted-foreground">
-              Superpower (short bio line)
-              <textarea
-                className="min-h-[4rem] w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
-                value={draft.superpower}
-                onChange={(e) =>
-                  setDraft((d) => ({ ...d, superpower: e.target.value }))
-                }
-                rows={2}
-              />
-            </label>
-          </div>
-          <div className="sm:col-span-2 lg:col-span-3">
-            <label className="flex flex-col gap-1.5 text-xs font-medium text-muted-foreground">
-              Portfolio bio (longer; optional)
-              <textarea
-                className="min-h-[6rem] w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
-                value={draft.bio}
-                onChange={(e) => setDraft((d) => ({ ...d, bio: e.target.value }))}
-                rows={4}
-                placeholder="Shown on /team/slug/ under About"
-              />
-            </label>
-          </div>
-          <Field
-            label="Email (portfolio)"
-            value={draft.email}
-            onChange={(email) => setDraft((d) => ({ ...d, email }))}
-            placeholder="name@example.com"
-          />
-          <Field
-            label="LinkedIn URL"
-            value={draft.linkedin_url}
-            onChange={(linkedin_url) =>
-              setDraft((d) => ({ ...d, linkedin_url }))
-            }
-            placeholder="https://linkedin.com/in/…"
-          />
-          <label className="flex items-center gap-2.5 pt-1 text-sm text-foreground sm:col-span-2">
+          </label>
+          
+          <label className="flex items-center gap-2.5 pt-1 text-sm text-foreground">
             <input
               type="checkbox"
               className="h-4 w-4 rounded border-input"
-              checked={draft.is_alumni}
-              onChange={(e) =>
-                setDraft((d) => ({ ...d, is_alumni: e.target.checked }))
-              }
+              checked={form.is_alumni}
+              onChange={(e) => setForm((f) => ({ ...f, is_alumni: e.target.checked }))}
             />
             Alumni (show under Lab Alumni on the site)
           </label>
         </div>
-        <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-border/60 pt-4">
-          <button
-            type="button"
-            disabled={adding || !draft.name.trim()}
-            onClick={() => void addMember()}
-            className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-brand-deep disabled:opacity-50"
-          >
-            <Save className="h-4 w-4" aria-hidden />
-            {adding ? "Saving…" : "Save new member"}
-          </button>
-          {newFormDirty && (
-            <button
-              type="button"
-              onClick={() => {
-                setDraft(emptyDraft);
-                setPendingPhotoNew(null);
-              }}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground hover:bg-muted/60"
-            >
-              <RotateCcw className="h-3.5 w-3.5" aria-hidden />
-              Clear form
-            </button>
-          )}
-        </div>
-      </section>
 
-      <section className="space-y-4">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight text-foreground">
-            <Users className="h-5 w-5 text-brand" aria-hidden />
-            People ({rows.length})
-          </h2>
-          <p className="text-xs text-muted-foreground">
-            One card per person · scroll to edit
-          </p>
-        </div>
-
-        {rows.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border bg-muted/20 px-6 py-12 text-center">
-            <p className="text-sm text-muted-foreground">
-              No team members yet. Add someone above or run{" "}
-              <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
-                seed_team_members.sql
-              </code>{" "}
-              in Supabase to import the legacy list.
-            </p>
+        <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-5">
+          <h2 className="text-sm font-semibold text-foreground">Profile & Media</h2>
+          
+          <div className="space-y-3">
+            <TeamPhotoField
+              storedRaw={form.photo_file}
+              onStoredRawChange={(photo_file) =>
+                setForm((f) => ({ ...f, photo_file }))
+              }
+              pendingFile={pendingPhoto}
+              onPendingFileChange={setPendingPhoto}
+              disabled={saving}
+            />
+            <Field
+              label="Image URL or legacy filename (optional)"
+              value={form.photo_file}
+              onChange={(photo_file) => setForm((f) => ({ ...f, photo_file }))}
+              placeholder="https://... or team-2.jpg"
+            />
           </div>
-        ) : (
-          <div className="space-y-6">
-            {rows.map((r) => (
-              <TeamMemberCard
-                key={r.id}
-                serverRow={r}
-                syncEpoch={syncEpoch}
-                onSave={(patch) => updateRow(r.id, patch)}
-                onDelete={() => removeRow(r.id)}
-                reportError={setErr}
-              />
-            ))}
-          </div>
-        )}
-      </section>
-    </div>
-  );
-}
-
-function TeamMemberCard({
-  serverRow,
-  syncEpoch,
-  onSave,
-  onDelete,
-  reportError,
-}: {
-  serverRow: MemberRow;
-  syncEpoch: number;
-  onSave: (patch: Partial<MemberRow>) => Promise<void>;
-  onDelete: () => void;
-  reportError: (message: string) => void;
-}) {
-  const [local, setLocal] = useState<RowEdit>(() => fromServer(serverRow));
-  const [pendingPhoto, setPendingPhoto] = useState<File | null>(null);
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    setLocal(fromServer(serverRow));
-    setPendingPhoto(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- reset after successful load
-  }, [syncEpoch]);
-
-  const baseline = useMemo(() => fromServer(serverRow), [serverRow]);
-  const dirty = rowEditsDiffer(local, baseline) || pendingPhoto !== null;
-
-  async function handleSave() {
-    const slugInput = local.slug.trim();
-    const slugFinal = slugifyTeamMember(slugInput) || slugInput;
-    if (!slugFinal) {
-      return;
-    }
-    if (pendingPhoto) {
-      const photoErr = validateTeamPhotoFile(pendingPhoto);
-      if (photoErr) {
-        reportError(photoErr);
-        return;
-      }
-    }
-    if (slugFinal !== serverRow.slug) {
-      const ok = confirm(
-        `Change slug from "${serverRow.slug}" to "${slugFinal}"? Links that used the old slug may break.`,
-      );
-      if (!ok) return;
-    }
-    setSaving(true);
-    try {
-      let photo_file = local.photo_file.trim();
-      if (pendingPhoto) {
-        const prev = serverRow.photo_file.trim();
-        const { publicUrl } = await uploadTeamMemberPhoto(pendingPhoto, slugFinal);
-        if (teamPhotoPathFromPublicUrl(prev)) {
-          await deleteTeamPhotoAtPublicUrl(prev);
-        }
-        photo_file = publicUrl;
-      }
-      await onSave({
-        slug: slugFinal,
-        name: local.name.trim(),
-        initials: local.initials.trim(),
-        role_title: local.role_title.trim(),
-        category: local.category,
-        superpower: local.superpower.trim(),
-        photo_file,
-        is_alumni: local.is_alumni,
-        sort_order: local.sort_order,
-        bio: local.bio.trim(),
-        email: local.email.trim(),
-        linkedin_url: local.linkedin_url.trim(),
-      });
-    } catch (e) {
-      reportError(e instanceof Error ? e.message : "Save failed");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  const displayName =
-    local.name.trim() || serverRow.name || "Untitled member";
-
-  return (
-    <article className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-      <div className="flex flex-col gap-3 border-b border-border/70 bg-muted/20 px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:px-5">
-        <div className="min-w-0">
-          <h3 className="truncate text-base font-semibold text-foreground">
-            {displayName}
-          </h3>
-          <p className="mt-0.5 font-mono text-xs text-muted-foreground">
-            {local.slug || "—"}
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {dirty && (
-            <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-amber-800 dark:text-amber-200">
-              Unsaved
-            </span>
-          )}
-          <span
-            className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${
-              local.category === "student"
-                ? "bg-brand/15 text-brand"
-                : "bg-foreground/10 text-foreground/80"
-            }`}
-          >
-            {local.category === "student" ? "Trainee" : "Staff"}
-          </span>
-          {local.is_alumni && (
-            <span className="rounded-full bg-muted px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-              Alumni
-            </span>
-          )}
-        </div>
-      </div>
-
-      <div className="grid gap-4 p-4 sm:p-5 sm:grid-cols-2 lg:grid-cols-3">
-        <Field
-          label="Slug"
-          value={local.slug}
-          onChange={(slug) => setLocal((s) => ({ ...s, slug }))}
-        />
-        <Field
-          label="Name"
-          value={local.name}
-          onChange={(name) => setLocal((s) => ({ ...s, name }))}
-        />
-        <Field
-          label="Initials"
-          value={local.initials}
-          onChange={(initials) => setLocal((s) => ({ ...s, initials }))}
-        />
-        <Field
-          label="Role / title"
-          value={local.role_title}
-          onChange={(role_title) => setLocal((s) => ({ ...s, role_title }))}
-        />
-        <label className="flex flex-col gap-1.5 text-xs font-medium text-muted-foreground">
-          Category
-          <select
-            className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
-            value={local.category}
-            onChange={(e) =>
-              setLocal((s) => ({
-                ...s,
-                category: e.target.value as "staff" | "student",
-              }))
-            }
-          >
-            <option value="staff">Staff</option>
-            <option value="student">Student / trainee</option>
-          </select>
-        </label>
-        <label className="flex flex-col gap-1.5 text-xs font-medium text-muted-foreground">
-          Sort order
-          <input
-            type="number"
-            className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
-            value={local.sort_order}
-            onChange={(e) =>
-              setLocal((s) => ({
-                ...s,
-                sort_order: Number(e.target.value) || 0,
-              }))
-            }
-          />
-        </label>
-        <div className="sm:col-span-2 lg:col-span-3">
-          <TeamPhotoField
-            storedRaw={local.photo_file}
-            onStoredRawChange={(photo_file) =>
-              setLocal((s) => ({ ...s, photo_file }))
-            }
-            pendingFile={pendingPhoto}
-            onPendingFileChange={setPendingPhoto}
-            disabled={saving}
-          />
+          
+          <label className="block text-xs font-medium text-muted-foreground">
+            Superpower (short bio line)
+            <textarea
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              value={form.superpower}
+              onChange={(e) => setForm((f) => ({ ...f, superpower: e.target.value }))}
+              rows={2}
+            />
+          </label>
+          
+          <label className="block text-xs font-medium text-muted-foreground">
+            Portfolio bio (longer; optional)
+            <textarea
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              value={form.bio}
+              onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
+              rows={4}
+              placeholder="Shown on /team/slug/ under About"
+            />
+          </label>
+          
           <Field
-            label="Image URL or legacy filename (optional)"
-            value={local.photo_file}
-            onChange={(photo_file) => setLocal((s) => ({ ...s, photo_file }))}
-            placeholder="https://… or team-2.jpg"
+            label="Email (portfolio)"
+            value={form.email}
+            onChange={(email) => setForm((f) => ({ ...f, email }))}
+            placeholder="name@example.com"
+          />
+          
+          <Field
+            label="LinkedIn URL"
+            value={form.linkedin_url}
+            onChange={(linkedin_url) => setForm((f) => ({ ...f, linkedin_url }))}
+            placeholder="https://linkedin.com/in/..."
           />
         </div>
-        <div className="sm:col-span-2 lg:col-span-3">
-          <label className="flex flex-col gap-1.5 text-xs font-medium text-muted-foreground">
-            Superpower
-            <textarea
-              className="min-h-[4.5rem] w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
-              value={local.superpower}
-              onChange={(e) =>
-                setLocal((s) => ({ ...s, superpower: e.target.value }))
-              }
-              rows={3}
-            />
-          </label>
-        </div>
-        <div className="sm:col-span-2 lg:col-span-3">
-          <label className="flex flex-col gap-1.5 text-xs font-medium text-muted-foreground">
-            Portfolio bio (optional)
-            <textarea
-              className="min-h-[6rem] w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
-              value={local.bio}
-              onChange={(e) =>
-                setLocal((s) => ({ ...s, bio: e.target.value }))
-              }
-              rows={5}
-            />
-          </label>
-        </div>
-        <Field
-          label="Email (portfolio)"
-          value={local.email}
-          onChange={(email) => setLocal((s) => ({ ...s, email }))}
-          placeholder="name@example.com"
-        />
-        <Field
-          label="LinkedIn URL"
-          value={local.linkedin_url}
-          onChange={(linkedin_url) =>
-            setLocal((s) => ({ ...s, linkedin_url }))
-          }
-          placeholder="https://linkedin.com/in/…"
-        />
-        <label className="flex items-center gap-2.5 text-sm text-foreground sm:col-span-2">
-          <input
-            type="checkbox"
-            className="h-4 w-4 rounded border-input"
-            checked={local.is_alumni}
-            onChange={(e) =>
-              setLocal((s) => ({ ...s, is_alumni: e.target.checked }))
-            }
+      </div>
+
+      {originalId && (
+        <div className="rounded-2xl border border-border/80 bg-card p-5">
+          <h2 className="text-sm font-semibold text-foreground mb-4">Publications</h2>
+          <TeamMemberPublicationsEditor
+            memberId={originalId}
+            memberName={form.name || "Untitled member"}
           />
-          Alumni (Lab Alumni section)
-        </label>
-      </div>
-
-      <div className="border-t border-border/70 px-4 py-4 sm:px-5">
-        <TeamMemberPublicationsEditor
-          memberId={serverRow.id}
-          memberName={displayName}
-        />
-      </div>
-
-      <div className="flex flex-col gap-3 border-t border-border/70 bg-muted/10 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
-        <p className="text-xs text-muted-foreground">
-          {dirty ? (
-            <>
-              <span className="font-medium text-amber-700 dark:text-amber-300">
-                You have unsaved changes.
-              </span>{" "}
-              Save to update the live site.
-            </>
-          ) : (
-            <span className="text-muted-foreground/90">Saved — matches database.</span>
-          )}
-        </p>
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            disabled={!dirty || saving}
-            onClick={() => void handleSave()}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-brand-deep disabled:opacity-40"
-          >
-            <Save className="h-4 w-4 shrink-0" aria-hidden />
-            {saving ? "Saving…" : "Save"}
-          </button>
-          <button
-            type="button"
-            disabled={!dirty || saving}
-            onClick={() => {
-              setLocal(fromServer(serverRow));
-              setPendingPhoto(null);
-            }}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/60 disabled:opacity-40"
-          >
-            <RotateCcw className="h-4 w-4 shrink-0" aria-hidden />
-            Revert
-          </button>
-          <button
-            type="button"
-            disabled={saving}
-            onClick={() => onDelete()}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-destructive/40 bg-background px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 disabled:opacity-40"
-          >
-            <Trash2 className="h-4 w-4 shrink-0" aria-hidden />
-            Delete
-          </button>
         </div>
-      </div>
-    </article>
+      )}
+    </div>
   );
 }
 
@@ -797,10 +496,10 @@ function Field({
   placeholder?: string;
 }) {
   return (
-    <label className="flex flex-col gap-1.5 text-xs font-medium text-muted-foreground">
+    <label className="block text-xs font-medium text-muted-foreground">
       {label}
       <input
-        className="rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground"
+        className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}

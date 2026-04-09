@@ -9,7 +9,6 @@ import {
   Twitter,
   Linkedin,
   Github,
-  ArrowRight,
   ExternalLink,
 } from "lucide-react";
 
@@ -21,88 +20,100 @@ export default function Footer() {
     { name: "About", href: "/about" },
     { name: "About PI", href: "/about-pi" },
     { name: "Research", href: "/research" },
+    { name: "Projects", href: "/projects" },
     { name: "Team", href: "/team" },
     { name: "Publications", href: "/publications" },
+    { name: "Gallery", href: "/gallery" },
+    { name: "Blog", href: "/blog" },
     { name: "Join 4C Lab", href: "/join-4c-lab" },
     { name: "Contact", href: "/contact" },
     { name: "Collaborate", href: "/collaborate" },
     { name: "Knowledge Mobilization", href: "/knowledge-mobilization" },
   ];
 
+  const linkClass =
+    "text-[13px] font-medium tracking-tight text-muted-foreground transition-colors hover:text-foreground";
+
+  const sectionTitleClass =
+    "mb-4 text-sm font-semibold tracking-tight text-foreground";
+
   return (
-    <footer className="border-t border-border bg-card">
-      <div className="container mx-auto px-6 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12">
-          {/* Branding */}
+    <footer className="border-t border-border/50 bg-background">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-12 lg:grid-cols-4">
+          {/* Branding — matches Navbar lockup */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-3">
+            <Link
+              href="/"
+              className="group inline-flex items-center gap-2.5 sm:gap-3"
+            >
               <Image
                 src="/logo.png"
-                alt="4C Research Logo"
-                width={32}
-                height={32}
-                className="w-8 h-8 rounded-lg"
+                alt=""
+                width={40}
+                height={40}
+                className="h-9 w-9 shrink-0 rounded-lg object-cover ring-1 ring-black/5 sm:h-10 sm:w-10"
               />
-              <span className="text-xl font-bold bg-linear-to-r from-brand to-consciousness bg-clip-text text-transparent">
-                4C RESEARCH
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground">
+              <div className="min-w-max shrink-0 text-left">
+                <span className="block whitespace-nowrap text-[15px] font-semibold tracking-tight text-foreground sm:text-base">
+                  <span className="text-brand">4C</span> Research
+                </span>
+                <span className="mt-0.5 block whitespace-nowrap text-[11px] leading-snug tracking-wide text-muted-foreground sm:text-xs">
+                  Cognition · Consciousness · Critical Care
+                </span>
+              </div>
+            </Link>
+            <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
               Advancing research in cognition, consciousness, and critical care
               through innovative science and collaboration.
             </p>
-            <div className="flex space-x-4 pt-2">
+            <div className="flex gap-3 pt-1">
               <a
                 href="https://x.com/Mission_FourC"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-brand transition-colors"
+                className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
                 aria-label="Twitter"
               >
-                <Twitter className="h-5 w-5" />
+                <Twitter className="h-4 w-4" />
               </a>
               <a
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-brand transition-colors"
+                className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
                 aria-label="LinkedIn"
               >
-                <Linkedin className="h-5 w-5" />
+                <Linkedin className="h-4 w-4" />
               </a>
               <a
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-brand transition-colors"
+                className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
                 aria-label="GitHub"
               >
-                <Github className="h-5 w-5" />
+                <Github className="h-4 w-4" />
               </a>
               <a
                 href="https://www.researchgate.net/lab/4C-Foresee-Research-Group-Cognition-Consciousness-Critical-Care-Saptharishi-Lalgudi-Ganesan"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-brand transition-colors"
+                className="rounded-full p-2 text-muted-foreground transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
                 aria-label="ResearchGate"
               >
-                <ExternalLink className="h-5 w-5" />
+                <ExternalLink className="h-4 w-4" />
               </a>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
-              Quick Links
-            </h3>
-            <ul className="space-y-3">
-              {navItems.slice(0, 4).map((item) => (
+            <h3 className={sectionTitleClass}>Quick links</h3>
+            <ul className="space-y-2.5">
+              {navItems.slice(0, 7).map((item) => (
                 <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className="text-sm text-muted-foreground hover:text-brand transition-colors"
-                  >
+                  <Link href={item.href} className={linkClass}>
                     {item.name}
                   </Link>
                 </li>
@@ -110,102 +121,84 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact Info */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
-              Contact Us
-            </h3>
+            <h3 className={sectionTitleClass}>More</h3>
+            <ul className="space-y-2.5">
+              {navItems.slice(7).map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className={linkClass}>
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h3 className={sectionTitleClass}>Contact</h3>
             <address className="not-italic space-y-3">
-              <div className="flex items-start">
-                <MapPin className="h-5 w-5 text-brand mt-0.5 mr-3 shrink-0" />
-                <span className="text-sm text-muted-foreground">
-                  800 Commissioners Rd E<br />
+              <div className="flex gap-3">
+                <MapPin
+                  className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground"
+                  aria-hidden
+                />
+                <span className="text-sm leading-relaxed text-muted-foreground">
+                  800 Commissioners Rd E
+                  <br />
                   London, ON N6A 5W9
                   <br />
                   Canada
                 </span>
               </div>
-              <div className="flex items-center">
-                <Mail className="h-4 w-4 text-brand mr-3" />
+              <div className="flex items-center gap-3">
+                <Mail
+                  className="h-4 w-4 shrink-0 text-muted-foreground"
+                  aria-hidden
+                />
                 <a
                   href="mailto:rishi.ganesan@lhsc.on.ca"
-                  className="text-sm text-muted-foreground hover:text-brand transition-colors"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                   rishi.ganesan@lhsc.on.ca
                 </a>
               </div>
-              <div className="flex items-center">
-                <Phone className="h-4 w-4 text-brand mr-3" />
+              <div className="flex items-center gap-3">
+                <Phone
+                  className="h-4 w-4 shrink-0 text-muted-foreground"
+                  aria-hidden
+                />
                 <a
                   href="tel:+15196858000"
-                  className="text-sm text-muted-foreground hover:text-brand transition-colors"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                   +1 (519) 685-8500 Ext. 74702
                 </a>
               </div>
             </address>
           </div>
-
-          {/* Newsletter */}
-          <div>
-            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
-              Stay Updated
-            </h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Subscribe to our newsletter for the latest research updates and
-              news.
-            </p>
-            <form className="space-y-2" onSubmit={(e) => e.preventDefault()}>
-              <div>
-                <label htmlFor="email" className="sr-only">
-                  Email address
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Enter your email"
-                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-brand focus:border-transparent"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-brand hover:bg-brand-deep focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand transition-colors"
-              >
-                Subscribe
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </button>
-            </form>
-          </div>
         </div>
 
         {/* Copyright */}
-        <div className="mt-12 pt-8 border-t border-border">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-muted-foreground">
-              &copy; {currentYear} 4C Research Group. All rights reserved.
+        <div className="mt-12 border-t border-border/50 pt-8">
+          <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:items-center">
+            <p className="text-center text-xs text-muted-foreground sm:text-left sm:text-[13px]">
+              © {currentYear} 4C Research Group. All rights reserved.
             </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link
-                href="/privacy-policy"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+            <nav
+              className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 md:justify-end"
+              aria-label="Legal"
+            >
+              <Link href="/privacy-policy" className={linkClass}>
                 Privacy Policy
               </Link>
-              <Link
-                href="/terms-of-service"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <Link href="/terms-of-service" className={linkClass}>
                 Terms of Service
               </Link>
-              <Link
-                href="/accessibility"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <Link href="/accessibility" className={linkClass}>
                 Accessibility
               </Link>
-            </div>
+            </nav>
           </div>
         </div>
       </div>

@@ -26,6 +26,7 @@ import {
   HeroGradientBackdrop,
   HeroLogoGlow,
 } from "@/components/HeroGradientBackdrop";
+import { HeroLabSnapshots } from "@/components/HeroLabSnapshots";
 
 export default function Home() {
   const [featuredProjects, setFeaturedProjects] = useState(() =>
@@ -46,7 +47,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero — light, fast (no remote image), clear hierarchy */}
+      {/* Hero — gradient backdrop, logo, lab snapshots */}
       <section className="relative isolate flex min-h-[calc(100dvh-3.5rem)] flex-col justify-center overflow-hidden border-b border-border/50 bg-linear-to-br from-slate-50 via-background to-brand-light/40">
         <HeroGradientBackdrop />
 
@@ -56,8 +57,20 @@ export default function Home() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="min-w-0 lg:col-span-7"
+              className="relative min-w-0 lg:col-span-7"
             >
+              <div
+                className="pointer-events-none absolute -left-2 top-14 -z-[1] h-32 w-32 text-brand/25 sm:top-16 sm:h-40 sm:w-40 lg:top-20"
+                aria-hidden
+              >
+                <Image
+                  src="/images/brain-pattern.svg"
+                  alt=""
+                  width={160}
+                  height={160}
+                  className="h-full w-full object-contain"
+                />
+              </div>
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-brand sm:text-[13px]">
                 <Sparkles className="h-3.5 w-3.5 text-brand/80" aria-hidden />
                 Pediatric neurocritical care research
@@ -151,8 +164,8 @@ export default function Home() {
                 <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                   Clinical neurocritical care research and collaboration
                 </p>
+                <HeroLabSnapshots />
               </div>
-   
             </motion.div>
           </div>
         </div>

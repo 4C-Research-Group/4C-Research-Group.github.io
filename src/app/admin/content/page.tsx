@@ -135,12 +135,15 @@ export default function AdminContentPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Page content</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Text snippets keyed by page and section. For the landing page, use{" "}
+          Text snippets keyed by page and section.           For the landing page, use{" "}
           <Link href="/admin/homepage/" className="text-brand hover:underline">
             Homepage
-          </Link>{" "}
-          (full layout + images). This table is for smaller keyed snippets when
-          you wire pages to it.
+          </Link>
+          ; for About, use{" "}
+          <Link href="/admin/about/" className="text-brand hover:underline">
+            About page
+          </Link>
+          . This table is for smaller keyed snippets when you wire pages to it.
         </p>
       </div>
 

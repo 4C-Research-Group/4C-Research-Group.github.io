@@ -7,6 +7,7 @@ import {
   FileText,
   FolderKanban,
   House,
+  Info,
   LayoutDashboard,
   Loader2,
   Microscope,
@@ -30,6 +31,12 @@ const QUICK_LINKS = [
     title: "Homepage",
     desc: "Hero, mission, gallery, news, CTAs, and images.",
     icon: House,
+  },
+  {
+    href: "/admin/about/",
+    title: "About page",
+    desc: "Mission cards, PI block, research focus, and images.",
+    icon: Info,
   },
   {
     href: "/admin/team/",

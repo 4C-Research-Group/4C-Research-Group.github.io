@@ -10,6 +10,7 @@ import {
   FileText,
   FolderKanban,
   House,
+  Info,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -33,6 +34,7 @@ type NavItem = {
 const NAV_BASE: NavItem[] = [
   { href: "/admin/", label: "Overview", icon: LayoutDashboard, end: true },
   { href: "/admin/homepage/", label: "Homepage", icon: House },
+  { href: "/admin/about/", label: "About page", icon: Info },
   { href: "/admin/team/", label: "Team", icon: Users },
   { href: "/admin/projects/", label: "Projects", icon: FolderKanban },
   { href: "/admin/blog/", label: "Blog", icon: Newspaper },

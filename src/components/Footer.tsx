@@ -55,10 +55,10 @@ export default function Footer() {
                 className="h-9 w-9 shrink-0 rounded-lg object-cover ring-1 ring-black/5 sm:h-10 sm:w-10"
               />
               <div className="min-w-max shrink-0 text-left">
-                <span className="block whitespace-nowrap text-[15px] font-semibold tracking-tight text-foreground sm:text-base">
+                <span className="block whitespace-nowrap text-[15px] font-semibold uppercase tracking-tight text-foreground sm:text-base">
                   <span className="text-brand">4C</span> Research
                 </span>
-                <span className="mt-0.5 block whitespace-nowrap text-[11px] leading-snug tracking-wide text-muted-foreground sm:text-xs">
+                <span className="mt-0.5 block whitespace-nowrap text-[9px] font-medium uppercase leading-snug tracking-wider text-muted-foreground sm:text-[10px]">
                   Cognition · Consciousness · Critical Care
                 </span>
               </div>
@@ -183,7 +183,9 @@ export default function Footer() {
         <div className="mt-12 border-t border-border/50 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:items-center">
             <p className="text-center text-xs text-muted-foreground sm:text-left sm:text-[13px]">
-              © {currentYear} 4C Research Group. All rights reserved.
+              © {currentYear}{" "}
+              <span className="uppercase tracking-wide">4C Research Group</span>
+              . All rights reserved.
             </p>
             <nav
               className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 md:justify-end"

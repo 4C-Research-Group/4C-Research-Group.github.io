@@ -73,6 +73,136 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
+/* Home hero — animated gradient mesh (respects reduced motion) */
+.hero-orb {
+  will-change: transform;
+}
+
+@keyframes hero-orb-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(10%, -9%) scale(1.07);
+  }
+}
+
+@keyframes hero-orb-float-rev {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1.04);
+  }
+  50% {
+    transform: translate(-12%, 11%) scale(0.96);
+  }
+}
+
+@keyframes hero-orb-float-c {
+  0%,
+  100% {
+    transform: translateX(-50%) translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) translate(6%, 14%) scale(1.08);
+  }
+}
+
+@keyframes hero-orb-float-d {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(18%, -14%) scale(1.06);
+  }
+}
+
+.hero-orb-a {
+  animation: hero-orb-float 23s ease-in-out infinite;
+}
+
+.hero-orb-b {
+  animation: hero-orb-float-rev 29s ease-in-out infinite;
+  animation-delay: -5s;
+}
+
+.hero-orb-c {
+  animation: hero-orb-float-c 20s ease-in-out infinite;
+  animation-delay: -8s;
+}
+
+.hero-orb-d {
+  animation: hero-orb-float-d 26s ease-in-out infinite;
+  animation-delay: -12s;
+}
+
+.hero-conic-layer {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    color-mix(in srgb, var(--brand-default) 32%, transparent) 75deg,
+    transparent 150deg,
+    color-mix(in srgb, var(--consciousness) 28%, transparent) 230deg,
+    transparent 310deg,
+    color-mix(in srgb, var(--care) 24%, transparent) 360deg
+  );
+}
+
+@keyframes hero-conic-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.hero-conic-spin {
+  animation: hero-conic-spin 55s linear infinite;
+}
+
+.hero-sheen {
+  background: linear-gradient(
+    118deg,
+    transparent 0%,
+    color-mix(in srgb, var(--brand-default) 8%, transparent) 28%,
+    transparent 48%,
+    color-mix(in srgb, var(--consciousness) 7%, transparent) 72%,
+    transparent 100%
+  );
+  background-size: 220% 220%;
+  animation: hero-sheen-drift 20s ease-in-out infinite;
+}
+
+@keyframes hero-sheen-drift {
+  0%,
+  100% {
+    background-position: 8% 35%;
+  }
+  50% {
+    background-position: 92% 65%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-orb-a,
+  .hero-orb-b,
+  .hero-orb-c,
+  .hero-orb-d {
+    animation: none;
+  }
+
+  .hero-conic-spin {
+    animation: none;
+  }
+
+  .hero-sheen {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
 /* TipTap admin blog editor */
 .blog-rich-text-editor .tiptap {
   min-height: 280px;

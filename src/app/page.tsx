@@ -22,6 +22,10 @@ import {
 import { fallbackProjects } from "@/data/projectsData";
 import { fetchPublishedProjectsFromSupabase } from "@/lib/projects/supabase-projects";
 import { projectDetailHref } from "@/lib/projects/project-detail-href";
+import {
+  HeroGradientBackdrop,
+  HeroLogoGlow,
+} from "@/components/HeroGradientBackdrop";
 
 export default function Home() {
   const [featuredProjects, setFeaturedProjects] = useState(() =>
@@ -44,26 +48,7 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       {/* Hero — light, fast (no remote image), clear hierarchy */}
       <section className="relative isolate flex min-h-[calc(100dvh-3.5rem)] flex-col justify-center overflow-hidden border-b border-border/50 bg-linear-to-br from-slate-50 via-background to-brand-light/40">
-        <div
-          className="pointer-events-none absolute inset-0 bg-linear-to-tr from-brand/[0.04] via-transparent to-brand/[0.06]"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-0 bg-grid-black/[0.04] mask-[linear-gradient(to_bottom,white_0%,white_55%,transparent_100%)]"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute -left-32 top-1/3 h-[380px] w-[380px] rounded-full bg-brand/10 blur-3xl"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute -right-28 bottom-0 h-[340px] w-[340px] rounded-full bg-consciousness/10 blur-3xl"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute left-1/2 top-0 h-56 w-[min(85%,44rem)] -translate-x-1/2 rounded-full bg-care/8 blur-3xl"
-          aria-hidden
-        />
+        <HeroGradientBackdrop />
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
           <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-10">
@@ -78,10 +63,10 @@ export default function Home() {
                 Pediatric neurocritical care research
               </div>
 
-              <h1 className="text-[2.25rem] font-bold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              <h1 className="text-[2.25rem] font-bold uppercase leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                 <span className="text-brand">4C</span> Research Group
               </h1>
-              <p className="mt-2 text-sm font-medium leading-snug tracking-wide text-muted-foreground sm:text-base">
+              <p className="mt-2 text-sm font-medium uppercase leading-snug tracking-wider text-muted-foreground sm:text-base">
                 Cognition · Consciousness · Critical Care
               </p>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-[17px]">
@@ -150,15 +135,17 @@ export default function Home() {
               className="relative z-[1] flex min-w-0 flex-col items-center justify-center gap-6 lg:col-span-5"
             >
               <div className="flex max-w-[min(100%,28rem)] flex-col items-center text-center sm:max-w-[30rem]">
-                <Image
-                  src="/logo.png"
-                  alt="4C Research Group logo"
-                  width={400}
-                  height={400}
-                  className="h-72 w-72 rounded-2xl object-cover sm:h-80 sm:w-80 lg:h-96 lg:w-96"
-                  priority
-                />
-                <p className="mt-6 text-sm font-semibold text-foreground">
+                <HeroLogoGlow>
+                  <Image
+                    src="/logo.png"
+                    alt="4C Research Group logo"
+                    width={400}
+                    height={400}
+                    className="h-72 w-72 rounded-2xl object-cover shadow-lg ring-1 ring-black/5 sm:h-80 sm:w-80 lg:h-96 lg:w-96"
+                    priority
+                  />
+                </HeroLogoGlow>
+                <p className="mt-6 text-sm font-semibold uppercase tracking-wide text-foreground">
                   4C Research Group
                 </p>
                 <p className="mt-1 text-xs leading-relaxed text-muted-foreground">

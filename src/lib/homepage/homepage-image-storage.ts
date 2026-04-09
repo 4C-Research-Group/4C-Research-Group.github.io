@@ -30,7 +30,14 @@ export function validateHomepageImageFile(file: File): string | null {
   return null;
 }
 
-export async function uploadHomepageImage(file: File): Promise<string> {
+/**
+ * Upload to public `homepage-images` bucket.
+ * @param subfolder Storage path segment (e.g. `assets`, `about`); no slashes or `..`.
+ */
+export async function uploadHomepageImage(
+  file: File,
+  subfolder = "assets",
+): Promise<string> {
   const bad = validateHomepageImageFile(file);
   if (bad) throw new Error(bad);
 
@@ -42,7 +49,14 @@ export async function uploadHomepageImage(file: File): Promise<string> {
     typeof crypto !== "undefined" && crypto.randomUUID
       ? crypto.randomUUID().slice(0, 8)
       : String(Date.now());
-  const path = `assets/${Date.now()}-${rand}.${ext}`;
+  const folder =
+    subfolder
+      .trim()
+      .replace(/^\/+|\/+$/g, "")
+      .replace(/\.\./g, "")
+      .replace(/[^a-zA-Z0-9/_-]/g, "-")
+      .replace(/\/+/g, "/") || "assets";
+  const path = `${folder}/${Date.now()}-${rand}.${ext}`;
 
   const { error } = await supabase.storage
     .from(HOMEPAGE_IMAGES_BUCKET)

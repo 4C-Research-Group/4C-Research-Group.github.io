@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useId, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
-import { Loader2, Plus, Trash2 } from "lucide-react";
+import { ImageUp, Loader2, Plus, Trash2 } from "lucide-react";
 import {
   type AboutPayload,
   type AboutTone,
@@ -15,49 +15,96 @@ import {
   saveAboutPayload,
 } from "@/lib/about/supabase-about";
 import { uploadHomepageImage } from "@/lib/homepage/homepage-image-storage";
+import { siteAsset } from "@/lib/site-path";
 
-function ImgRow({
+function previewUrlForField(url: string): string {
+  const t = url.trim();
+  if (!t) return "";
+  if (/^https?:\/\//i.test(t)) return t;
+  return siteAsset(t.startsWith("/") ? t : `/${t}`);
+}
+
+/** URL field + prominent upload (same bucket as homepage; files under `about/`). */
+function AboutImageField({
   label,
+  description,
   value,
   onChange,
 }: {
   label: string;
+  description?: string;
   value: string;
   onChange: (v: string) => void;
 }) {
+  const fileRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+
   async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
     e.target.value = "";
     if (!f) return;
     setBusy(true);
     try {
-      onChange(await uploadHomepageImage(f));
+      onChange(await uploadHomepageImage(f, "about"));
     } catch (err) {
       alert(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setBusy(false);
     }
   }
+
+  const preview = previewUrlForField(value);
+
   return (
-    <div className="space-y-1">
-      <span className="text-xs font-medium text-muted-foreground">{label}</span>
+    <div className="space-y-2 rounded-xl border border-border/80 bg-muted/15 p-4">
+      <div>
+        <span className="text-xs font-semibold text-foreground">{label}</span>
+        {description ? (
+          <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>
+        ) : null}
+      </div>
+      {preview ? (
+        <div className="relative h-36 w-full max-w-md overflow-hidden rounded-lg border border-border bg-background">
+          {/* eslint-disable-next-line @next/next/no-img-element -- admin preview of arbitrary CMS URLs */}
+          <img
+            src={preview}
+            alt=""
+            className="h-full w-full object-cover"
+          />
+        </div>
+      ) : (
+        <p className="text-xs italic text-muted-foreground">No image URL yet.</p>
+      )}
       <input
         className="w-full rounded-lg border border-input bg-background px-2 py-2 text-sm"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="/images/... or https://..."
+        placeholder="/images/mission.jpg or paste a URL after upload"
       />
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-2">
         <input
+          ref={fileRef}
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+          className="sr-only"
           onChange={(e) => void onFile(e)}
-          className="max-w-full"
         />
-        {busy ? (
-          <Loader2 className="h-4 w-4 shrink-0 animate-spin text-brand" />
-        ) : null}
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => fileRef.current?.click()}
+          className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-4 py-2 text-sm font-semibold text-brand transition-colors hover:bg-brand/15 disabled:opacity-50"
+        >
+          {busy ? (
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+          ) : (
+            <ImageUp className="h-4 w-4" aria-hidden />
+          )}
+          {busy ? "Uploading…" : "Upload image from computer"}
+        </button>
+        <span className="text-xs text-muted-foreground">
+          Stored in Supabase (needs homepage-images bucket + admin role).
+        </span>
       </div>
     </div>
   );
@@ -604,16 +651,19 @@ export default function AboutEditor() {
                 }
               />
             </Field>
-            <ImgRow
-              label="Image"
-              value={d.whoWeAre.imageSrc}
-              onChange={(v) =>
-                setDraft({
-                  ...d,
-                  whoWeAre: { ...d.whoWeAre, imageSrc: v },
-                })
-              }
-            />
+            <div className="sm:col-span-2">
+              <AboutImageField
+                label="Who we are — large photo"
+                description="Shown beside the About Us copy (replaces /images/mission.jpg when you upload)."
+                value={d.whoWeAre.imageSrc}
+                onChange={(v) =>
+                  setDraft({
+                    ...d,
+                    whoWeAre: { ...d.whoWeAre, imageSrc: v },
+                  })
+                }
+              />
+            </div>
             <Field label="Image alt">
               <input
                 className="w-full rounded-lg border border-input bg-background px-2 py-2 text-sm"
@@ -694,16 +744,19 @@ export default function AboutEditor() {
                 }
               />
             </Field>
-            <ImgRow
-              label="PI photo"
-              value={d.leadership.piImageSrc}
-              onChange={(v) =>
-                setDraft({
-                  ...d,
-                  leadership: { ...d.leadership, piImageSrc: v },
-                })
-              }
-            />
+            <div className="sm:col-span-2">
+              <AboutImageField
+                label="Principal Investigator — headshot"
+                description="Portrait in the leadership card (upload or keep a path like /images/team/team-1.jpg)."
+                value={d.leadership.piImageSrc}
+                onChange={(v) =>
+                  setDraft({
+                    ...d,
+                    leadership: { ...d.leadership, piImageSrc: v },
+                  })
+                }
+              />
+            </div>
             <Field label="PI photo alt">
               <input
                 className="w-full rounded-lg border border-input bg-background px-2 py-2 text-sm"

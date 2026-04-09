@@ -1,5 +1,3 @@
-import { kmModules } from "@/data/knowledge-mobilization";
-
 export const KM_CERTIFICATE_NAME_STORAGE_KEY = "4c-km-certificate-name";
 
 /** Landscape certificate (px) at 2× logical size for sharper PNG. */
@@ -45,6 +43,7 @@ function fitFontSize(
  */
 export function createCertificateCanvas(
   recipientName: string,
+  moduleTitles: string[],
   completionDate: Date = new Date(),
 ): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
@@ -52,9 +51,6 @@ export function createCertificateCanvas(
   canvas.height = H;
   const ctx = canvas.getContext("2d");
   if (!ctx) return canvas;
-
-  const ordered = [...kmModules].sort((a, b) => a.order - b.order);
-  const moduleTitles = ordered.map((m) => m.title);
 
   // Background
   ctx.fillStyle = "#fafbfc";
@@ -159,8 +155,11 @@ export function certificateToPngDataUrl(canvas: HTMLCanvasElement): string {
   return canvas.toDataURL("image/png");
 }
 
-export function downloadCertificatePng(recipientName: string): void {
-  const canvas = createCertificateCanvas(recipientName);
+export function downloadCertificatePng(
+  recipientName: string,
+  moduleTitles: string[],
+): void {
+  const canvas = createCertificateCanvas(recipientName, moduleTitles);
   canvas.toBlob((blob) => {
     if (!blob) return;
     const url = URL.createObjectURL(blob);
@@ -174,8 +173,11 @@ export function downloadCertificatePng(recipientName: string): void {
 }
 
 /** Opens a minimal window with the certificate image and triggers print (save as PDF). */
-export function printCertificate(recipientName: string): void {
-  const canvas = createCertificateCanvas(recipientName);
+export function printCertificate(
+  recipientName: string,
+  moduleTitles: string[],
+): void {
+  const canvas = createCertificateCanvas(recipientName, moduleTitles);
   const dataUrl = certificateToPngDataUrl(canvas);
   const w = window.open("", "_blank", "noopener,noreferrer");
   if (!w) return;

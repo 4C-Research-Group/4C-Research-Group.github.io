@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -14,7 +14,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import PageHero from "@/components/PageHero";
-import { kmModules } from "@/data/knowledge-mobilization";
+import type { KMModule } from "@/data/knowledge-mobilization";
 import {
   loadKmProgress,
   isModuleUnlocked,
@@ -23,18 +23,32 @@ import {
   resetKmProgress,
   type KMStoredProgress,
 } from "@/lib/km-progress";
+import {
+  fetchKmCurriculumFromSupabase,
+  orderedKmModulesFromFetch,
+} from "@/lib/km/supabase-km-curriculum";
 
 export default function KnowledgeMobilizationHubPage() {
   const [progress, setProgress] = useState<KMStoredProgress | null>(null);
+  const [ordered, setOrdered] = useState<KMModule[]>([]);
+  const [curriculumReady, setCurriculumReady] = useState(false);
 
   useEffect(() => {
     setProgress(loadKmProgress());
   }, []);
 
-  const ordered = useMemo(
-    () => [...kmModules].sort((a, b) => a.order - b.order),
-    [],
-  );
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      const result = await fetchKmCurriculumFromSupabase();
+      if (!alive) return;
+      setOrdered(orderedKmModulesFromFetch(result));
+      setCurriculumReady(true);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   function refreshProgress() {
     setProgress(loadKmProgress());
@@ -50,6 +64,24 @@ export default function KnowledgeMobilizationHubPage() {
       resetKmProgress();
       refreshProgress();
     }
+  }
+
+  if (!curriculumReady) {
+    return (
+      <div className="min-h-screen bg-background">
+        <PageHero
+          compact
+          title="Knowledge Mobilization"
+          subtitle="Refresher modules for nurses and staff — review topics and videos, then pass each module quiz (80% or higher) to unlock the next."
+        />
+        <div className="flex min-h-[40vh] items-center justify-center border-t border-border/60">
+          <div className="flex flex-col items-center gap-3 text-muted-foreground">
+            <div className="h-11 w-11 animate-spin rounded-full border-2 border-brand border-t-transparent" />
+            <p className="text-sm">Loading curriculum…</p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -117,10 +149,27 @@ export default function KnowledgeMobilizationHubPage() {
             </div>
           </motion.div>
 
+          {ordered.length === 0 ? (
+            <p className="rounded-2xl border border-dashed border-border/80 bg-muted/20 px-6 py-12 text-center text-sm text-muted-foreground">
+              No modules are published yet. Run{" "}
+              <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
+                supabase/knowledge_mobilization.sql
+              </code>{" "}
+              in Supabase, then{" "}
+              <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
+                npm run seed-km
+              </code>{" "}
+              (use{" "}
+              <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
+                -- --force
+              </code>{" "}
+              to replace existing rows).
+            </p>
+          ) : (
           <ol className="space-y-5">
             {ordered.map((mod, index) => {
               const unlocked = progress
-                ? isModuleUnlocked(mod, progress)
+                ? isModuleUnlocked(mod, ordered, progress)
                 : index === 0;
               const passed = progress
                 ? modulePassed(mod.slug, progress)
@@ -225,8 +274,9 @@ export default function KnowledgeMobilizationHubPage() {
               );
             })}
           </ol>
+          )}
 
-          {progress && allModulesPassed(progress) ? (
+          {progress && ordered.length > 0 && allModulesPassed(ordered, progress) ? (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}

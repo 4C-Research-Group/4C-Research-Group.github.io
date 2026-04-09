@@ -1,4 +1,4 @@
-import { KM_PASS_PERCENT, kmModules, type KMModule } from "@/data/knowledge-mobilization";
+import { KM_PASS_PERCENT, type KMModule } from "@/data/knowledge-mobilization";
 import { KM_CERTIFICATE_NAME_STORAGE_KEY } from "@/lib/km-certificate";
 
 const STORAGE_KEY = "4c-km-progress-v1";
@@ -121,9 +121,12 @@ export function modulePassed(
 }
 
 /** Module at index is unlocked if previous module passed, or it is the first module. */
-export function isModuleUnlocked(mod: KMModule, progress?: KMStoredProgress): boolean {
+export function isModuleUnlocked(
+  mod: KMModule,
+  ordered: KMModule[],
+  progress?: KMStoredProgress,
+): boolean {
   const data = progress ?? loadKmProgress();
-  const ordered = [...kmModules].sort((a, b) => a.order - b.order);
   const idx = ordered.findIndex((m) => m.slug === mod.slug);
   if (idx <= 0) return true;
   const prev = ordered[idx - 1];
@@ -140,11 +143,14 @@ export function resetKmProgress(): void {
   }
 }
 
-/** True when every curriculum module has been passed on this device. */
-export function allModulesPassed(progress?: KMStoredProgress): boolean {
+/** True when every module in `ordered` has been passed on this device. */
+export function allModulesPassed(
+  ordered: KMModule[],
+  progress?: KMStoredProgress,
+): boolean {
   const data = progress ?? loadKmProgress();
-  if (kmModules.length === 0) return false;
-  return kmModules.every((m) => modulePassed(m.slug, data));
+  if (ordered.length === 0) return false;
+  return ordered.every((m) => modulePassed(m.slug, data));
 }
 
 export { KM_PASS_PERCENT };

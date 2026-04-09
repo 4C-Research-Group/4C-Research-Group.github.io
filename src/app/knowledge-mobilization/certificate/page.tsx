@@ -13,23 +13,40 @@ import {
   saveCertificateDisplayName,
 } from "@/lib/km-certificate";
 import { allModulesPassed, loadKmProgress } from "@/lib/km-progress";
+import {
+  fetchKmCurriculumFromSupabase,
+  orderedKmModulesFromFetch,
+} from "@/lib/km/supabase-km-curriculum";
 
 export default function CertificatePage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [ready, setReady] = useState(false);
   const [eligible, setEligible] = useState<boolean | null>(null);
+  const [moduleTitles, setModuleTitles] = useState<string[]>([]);
   const [name, setName] = useState("");
   const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
-    const progress = loadKmProgress();
-    setEligible(allModulesPassed(progress));
-    setName(loadCertificateDisplayName());
+    let alive = true;
+    void (async () => {
+      const result = await fetchKmCurriculumFromSupabase();
+      const ordered = orderedKmModulesFromFetch(result);
+      const progress = loadKmProgress();
+      if (!alive) return;
+      setModuleTitles(ordered.map((m) => m.title));
+      setEligible(allModulesPassed(ordered, progress));
+      setName(loadCertificateDisplayName());
+      setReady(true);
+    })();
+    return () => {
+      alive = false;
+    };
   }, []);
 
-  const redrawPreview = useCallback((displayName: string) => {
+  const redrawPreview = useCallback((displayName: string, titles: string[]) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const source = createCertificateCanvas(displayName);
+    const source = createCertificateCanvas(displayName, titles);
     canvas.width = source.width;
     canvas.height = source.height;
     const ctx = canvas.getContext("2d");
@@ -38,13 +55,13 @@ export default function CertificatePage() {
   }, []);
 
   useEffect(() => {
-    if (eligible !== true) return;
-    redrawPreview(name);
-  }, [eligible, name, redrawPreview]);
+    if (eligible !== true || moduleTitles.length === 0) return;
+    redrawPreview(name, moduleTitles);
+  }, [eligible, name, moduleTitles, redrawPreview]);
 
   function handleNameBlur() {
     saveCertificateDisplayName(name);
-    redrawPreview(name);
+    redrawPreview(name, moduleTitles);
   }
 
   function handleDownload() {
@@ -54,7 +71,7 @@ export default function CertificatePage() {
     setDownloading(true);
     requestAnimationFrame(() => {
       try {
-        downloadCertificatePng(trimmed);
+        downloadCertificatePng(trimmed, moduleTitles);
       } finally {
         setDownloading(false);
       }
@@ -65,10 +82,10 @@ export default function CertificatePage() {
     const trimmed = name.trim();
     if (!trimmed) return;
     saveCertificateDisplayName(trimmed);
-    printCertificate(trimmed);
+    printCertificate(trimmed, moduleTitles);
   }
 
-  if (eligible === null) {
+  if (!ready || eligible === null) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-brand" aria-label="Loading" />

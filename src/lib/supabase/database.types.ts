@@ -153,6 +153,92 @@ export interface Database {
           },
         ];
       };
+      km_modules: {
+        Row: {
+          id: string;
+          slug: string;
+          title: string;
+          summary: string;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          title: string;
+          summary?: string;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["km_modules"]["Insert"]>;
+        Relationships: [];
+      };
+      km_topics: {
+        Row: {
+          id: string;
+          module_id: string;
+          topic_key: string;
+          sort_order: number;
+          topic_type: string;
+          title: string;
+          paragraphs: Json;
+          embed_url: string | null;
+          video_caption: string | null;
+        };
+        Insert: {
+          id?: string;
+          module_id: string;
+          topic_key: string;
+          sort_order?: number;
+          topic_type: string;
+          title: string;
+          paragraphs?: Json;
+          embed_url?: string | null;
+          video_caption?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["km_topics"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "km_topics_module_id_fkey";
+            columns: ["module_id"];
+            isOneToOne: false;
+            referencedRelation: "km_modules";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      km_questions: {
+        Row: {
+          id: string;
+          module_id: string;
+          question_key: string;
+          sort_order: number;
+          prompt: string;
+          options: Json;
+          correct_index: number;
+        };
+        Insert: {
+          id?: string;
+          module_id: string;
+          question_key: string;
+          sort_order?: number;
+          prompt: string;
+          options: Json;
+          correct_index: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["km_questions"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "km_questions_module_id_fkey";
+            columns: ["module_id"];
+            isOneToOne: false;
+            referencedRelation: "km_modules";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: {

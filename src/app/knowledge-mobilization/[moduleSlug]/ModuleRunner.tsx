@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import {
   KM_PASS_PERCENT,
-  kmModules,
   type KMModule,
   type KMTopic,
 } from "@/data/knowledge-mobilization";
@@ -27,6 +26,10 @@ import {
   unmarkTopicReviewed,
   modulePassed,
 } from "@/lib/km-progress";
+import {
+  fetchKmCurriculumFromSupabase,
+  orderedKmModulesFromFetch,
+} from "@/lib/km/supabase-km-curriculum";
 
 function TopicBlock({
   topic,
@@ -144,7 +147,10 @@ function TopicBlock({
   );
 }
 
-export default function ModuleRunner({ module }: { module: KMModule }) {
+export default function ModuleRunner({ moduleSlug }: { moduleSlug: string }) {
+  const [curriculumReady, setCurriculumReady] = useState(false);
+  const [module, setModule] = useState<KMModule | null>(null);
+  const [ordered, setOrdered] = useState<KMModule[]>([]);
   const [tick, setTick] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number | null>>({});
   const [submitted, setSubmitted] = useState<{
@@ -154,6 +160,21 @@ export default function ModuleRunner({ module }: { module: KMModule }) {
     total: number;
   } | null>(null);
 
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      const result = await fetchKmCurriculumFromSupabase();
+      const list = orderedKmModulesFromFetch(result);
+      if (!alive) return;
+      setOrdered(list);
+      setModule(list.find((m) => m.slug === moduleSlug) ?? null);
+      setCurriculumReady(true);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [moduleSlug]);
+
   const refresh = useCallback(() => setTick((t) => t + 1), []);
 
   const progressSnapshot = useMemo(() => {
@@ -161,14 +182,14 @@ export default function ModuleRunner({ module }: { module: KMModule }) {
     return loadKmProgress();
   }, [tick]);
 
-  const topicsReady = allTopicsReviewed(module, progressSnapshot);
-  const alreadyPassed = modulePassed(module.slug, progressSnapshot);
+  const topicsReady = module ? allTopicsReviewed(module, progressSnapshot) : false;
+  const alreadyPassed = module
+    ? modulePassed(module.slug, progressSnapshot)
+    : false;
 
-  const ordered = useMemo(
-    () => [...kmModules].sort((a, b) => a.order - b.order),
-    [],
-  );
-  const selfIndex = ordered.findIndex((m) => m.slug === module.slug);
+  const selfIndex = module
+    ? ordered.findIndex((m) => m.slug === module.slug)
+    : -1;
   const nextModule = selfIndex >= 0 ? ordered[selfIndex + 1] : undefined;
 
   function setAnswer(questionId: string, optionIndex: number) {
@@ -177,6 +198,7 @@ export default function ModuleRunner({ module }: { module: KMModule }) {
   }
 
   function handleSubmitQuiz() {
+    if (!module) return;
     let correct = 0;
     const total = module.questions.length;
     for (const q of module.questions) {
@@ -200,10 +222,42 @@ export default function ModuleRunner({ module }: { module: KMModule }) {
   }
 
   const allAnswered =
+    !!module &&
     module.questions.length > 0 &&
     module.questions.every(
       (q) => typeof answers[q.id] === "number" && answers[q.id] !== null,
     );
+
+  if (!curriculumReady) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3 text-muted-foreground">
+          <div className="h-11 w-11 animate-spin rounded-full border-2 border-brand border-t-transparent" />
+          <p className="text-sm">Loading module…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!module) {
+    return (
+      <div className="min-h-[60vh] bg-background px-4 py-20">
+        <div className="mx-auto max-w-lg text-center">
+          <h1 className="text-2xl font-bold text-foreground">Module not found</h1>
+          <p className="mt-2 text-muted-foreground">
+            There is no module with this link, or it has not been published yet.
+          </p>
+          <Link
+            href="/knowledge-mobilization/"
+            className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-brand hover:text-brand-deep"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            All modules
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

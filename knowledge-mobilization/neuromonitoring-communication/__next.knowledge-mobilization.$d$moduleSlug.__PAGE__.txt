@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[64298,["/_next/static/chunks/0upqjmo-s7dwd.js","/_next/static/chunks/00-csyj9a6t-x.js","/_next/static/chunks/0qacn2654yiyb.js","/_next/static/chunks/0dowkie~wubgt.js","/_next/static/chunks/0pu9m77~jtsf~.js","/_next/static/chunks/0cm34wdrtdzba.js"],"default"]
-3:I[97367,["/_next/static/chunks/0upqjmo-s7dwd.js","/_next/static/chunks/00-csyj9a6t-x.js","/_next/static/chunks/0qacn2654yiyb.js","/_next/static/chunks/0dowkie~wubgt.js"],"OutletBoundary"]
+2:I[64298,["/_next/static/chunks/0bihnsqo0l868.js","/_next/static/chunks/00-csyj9a6t-x.js","/_next/static/chunks/0qacn2654yiyb.js","/_next/static/chunks/0dowkie~wubgt.js","/_next/static/chunks/0pu9m77~jtsf~.js","/_next/static/chunks/0cm34wdrtdzba.js"],"default"]
+3:I[97367,["/_next/static/chunks/0bihnsqo0l868.js","/_next/static/chunks/00-csyj9a6t-x.js","/_next/static/chunks/0qacn2654yiyb.js","/_next/static/chunks/0dowkie~wubgt.js"],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[[["$","$L2","neuromonitoring-communication",{"moduleSlug":"neuromonitoring-communication"}]],[["$","script","script-0",{"src":"/_next/static/chunks/0cm34wdrtdzba.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"cHdx1dvXW6SnPRsQOPtH7"}
+0:{"rsc":["$","$1","c",{"children":[[["$","$L2","neuromonitoring-communication",{"moduleSlug":"neuromonitoring-communication"}]],[["$","script","script-0",{"src":"/_next/static/chunks/0cm34wdrtdzba.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"dtenTKC_XnBVY59A2tJU0"}
 5:null

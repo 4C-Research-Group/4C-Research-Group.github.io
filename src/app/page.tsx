@@ -158,12 +158,6 @@ export default function Home() {
                     priority
                   />
                 </HeroLogoGlow>
-                <p className="mt-6 text-sm font-semibold uppercase tracking-wide text-foreground">
-                  4C Research Group
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  Clinical neurocritical care research and collaboration
-                </p>
                 <HeroLabSnapshots />
               </div>
             </motion.div>

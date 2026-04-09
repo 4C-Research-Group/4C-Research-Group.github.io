@@ -8,6 +8,7 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { tagsToJson } from "@/lib/blog/parse-tags";
 import type { BlogPost } from "@/lib/blog/supabase-blog";
 import type { Json } from "@/lib/supabase/database.types";
+import BlogRichTextEditor from "@/components/blog/BlogRichTextEditor";
 
 function slugify(s: string): string {
   const t = s
@@ -16,6 +17,15 @@ function slugify(s: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
   return t || `post-${Date.now()}`;
+}
+
+function blogBodyIsEmpty(html: string): boolean {
+  const text = html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return text.length === 0;
 }
 
 type Props = {
@@ -49,6 +59,10 @@ export default function BlogPostForm({ mode, initial }: Props) {
     const finalSlug = (slug.trim() || slugify(title)).trim();
     if (!finalSlug || !title.trim()) {
       setErr("Slug and title are required.");
+      return;
+    }
+    if (blogBodyIsEmpty(content)) {
+      setErr("Add some body content to the post.");
       return;
     }
     const tags = tagsCsv
@@ -139,19 +153,20 @@ export default function BlogPostForm({ mode, initial }: Props) {
               className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
             />
           </label>
-          <label className="block text-xs font-medium text-muted-foreground">
-            Content (HTML)
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              rows={14}
-              required
-              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-xs"
-            />
-          </label>
+          <div className="block">
+            <span className="text-xs font-medium text-muted-foreground">Content</span>
+            <div className="mt-1">
+              <BlogRichTextEditor
+                key={mode === "edit" && initial?.id ? initial.id : "new"}
+                value={content}
+                onChange={setContent}
+                placeholder="Write your post…"
+              />
+            </div>
+          </div>
           <p className="text-[11px] text-muted-foreground">
-            Use safe HTML only (paragraphs, headings, lists, links). Content is
-            rendered on the public blog page.
+            Formatting is saved as HTML and shown on the public blog. Use the
+            toolbar for headings, lists, links, and images (URL).
           </p>
         </div>
 

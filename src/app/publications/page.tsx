@@ -1,9 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ExternalLink, Loader2, RefreshCw, Search } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  ExternalLink,
+  Loader2,
+  RefreshCw,
+  Search,
+  BookOpen,
+  Users,
+  FileText,
+} from "lucide-react";
 import { FaGoogle, FaOrcid, FaResearchgate } from "react-icons/fa";
-import PageHero from "@/components/PageHero";
 import {
   PublicationCard,
   PublicationCardSkeleton,
@@ -85,43 +93,81 @@ export default function PublicationsPage() {
     return pubs;
   }, [publications, sortBy, searchTerm]);
 
+  const renderHero = () => (
+    <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/30">
+      <div className="absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom_right,white,transparent,white)]" />
+      <div className="container relative mx-auto px-4 py-16 sm:px-6 lg:py-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mx-auto max-w-4xl text-center"
+        >
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
+            <FileText className="h-4 w-4" />
+            Research Output
+          </div>
+          <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            Publications
+            <span className="block text-3xl font-semibold text-muted-foreground sm:text-4xl lg:text-5xl">
+              Our latest research contributions and scholarly work
+            </span>
+          </h1>
+          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+            Explore our peer-reviewed publications, articles, and academic
+            contributions to pediatric critical care and neuroscience research.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4 text-sm">
+            <div className="flex items-center gap-2 rounded-lg bg-cognition/10 px-4 py-2 text-cognition">
+              <BookOpen className="h-4 w-4" />
+              Peer-Reviewed Articles
+            </div>
+            <div className="flex items-center gap-2 rounded-lg bg-consciousness/10 px-4 py-2 text-consciousness">
+              <Users className="h-4 w-4" />
+              Collaborative Research
+            </div>
+            <div className="flex items-center gap-2 rounded-lg bg-care/10 px-4 py-2 text-care">
+              <ExternalLink className="h-4 w-4" />
+              Open Access
+            </div>
+          </div>
+          <div className="mt-8 flex flex-col sm:flex-row flex-wrap justify-center gap-3">
+            <a
+              href={RESEARCHGATE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-4 py-2.5 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm text-foreground"
+            >
+              <FaResearchgate className="text-green-600 mr-2 shrink-0 text-lg" />
+              <span className="truncate">ResearchGate</span>
+            </a>
+            <a
+              href={GOOGLE_SCHOLAR_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-4 py-2.5 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm text-foreground"
+            >
+              <FaGoogle className="text-blue-500 mr-2 shrink-0 text-lg" />
+              <span className="truncate">Google Scholar</span>
+            </a>
+            <a
+              href={ORCID_PROFILE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-4 py-2.5 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm text-foreground"
+            >
+              <FaOrcid className="text-green-700 mr-2 shrink-0 text-lg" />
+              <span className="truncate">ORCID</span>
+            </a>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      <PageHero
-        compact
-        title="Publications"
-        subtitle="Our latest research contributions and scholarly work"
-      >
-        <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-2 sm:gap-3 px-2">
-          <a
-            href={RESEARCHGATE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center px-3 py-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm text-foreground"
-          >
-            <FaResearchgate className="text-green-600 mr-2 shrink-0 text-lg" />
-            <span className="truncate">ResearchGate</span>
-          </a>
-          <a
-            href={GOOGLE_SCHOLAR_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center px-3 py-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm text-foreground"
-          >
-            <FaGoogle className="text-blue-500 mr-2 shrink-0 text-lg" />
-            <span className="truncate">Google Scholar</span>
-          </a>
-          <a
-            href={ORCID_PROFILE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center px-3 py-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm text-foreground"
-          >
-            <FaOrcid className="text-green-700 mr-2 shrink-0 text-lg" />
-            <span className="truncate">ORCID</span>
-          </a>
-        </div>
-      </PageHero>
+      {renderHero()}
 
       <div className="container mx-auto px-4 py-8 sm:py-10 max-w-7xl">
         <div className="max-w-6xl mx-auto w-full">

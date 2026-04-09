@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Mail, GraduationCap, Users, Lightbulb, School } from "lucide-react";
-import PageHero from "@/components/PageHero";
 import {
   joinTestimonials,
   type JoinTestimonial,
@@ -56,22 +55,60 @@ export default function Join4CLabPage() {
     [fromDb],
   );
 
+  const renderHero = () => (
+    <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/30">
+      <div className="absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom_right,white,transparent,white)]" />
+      <div className="container relative mx-auto px-4 py-16 sm:px-6 lg:py-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mx-auto max-w-4xl text-center"
+        >
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
+            <Users className="h-4 w-4" />
+            Join Our Team
+          </div>
+          <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            Join 4C Research Group
+            <span className="block text-3xl font-semibold text-muted-foreground sm:text-4xl lg:text-5xl">
+              We are always looking for passionate students to join our team
+            </span>
+          </h1>
+          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+            If you are interested in joining our team, please send your CV to:
+          </p>
+          <div className="flex flex-wrap justify-center gap-4 text-sm mb-8">
+            <div className="flex items-center gap-2 rounded-lg bg-cognition/10 px-4 py-2 text-cognition">
+              <School className="h-4 w-4" />
+              Research Excellence
+            </div>
+            <div className="flex items-center gap-2 rounded-lg bg-consciousness/10 px-4 py-2 text-consciousness">
+              <Users className="h-4 w-4" />
+              Collaborative Environment
+            </div>
+            <div className="flex items-center gap-2 rounded-lg bg-care/10 px-4 py-2 text-care">
+              <Lightbulb className="h-4 w-4" />
+              Innovation & Growth
+            </div>
+          </div>
+          <div className="flex items-center justify-center gap-2 text-lg md:text-xl font-semibold text-brand">
+            <Mail className="w-6 h-6 shrink-0" aria-hidden />
+            <a
+              href={MAILTO}
+              className="hover:text-brand-deep transition-colors break-all"
+            >
+              {CONTACT_EMAIL}
+            </a>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+
   return (
     <div className="min-h-screen bg-background">
-      <PageHero
-        title={joinContent.hero_title}
-        subtitle={joinContent.hero_description}
-      >
-        <div className="flex items-center justify-center gap-2 text-lg md:text-xl font-semibold text-brand">
-          <Mail className="w-6 h-6 shrink-0" aria-hidden />
-          <a
-            href={MAILTO}
-            className="hover:text-brand-deep transition-colors break-all"
-          >
-            {CONTACT_EMAIL}
-          </a>
-        </div>
-      </PageHero>
+      {renderHero()}
 
       <section className="py-16">
         <div className="container mx-auto px-4">

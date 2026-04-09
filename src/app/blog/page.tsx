@@ -14,7 +14,6 @@ import {
   Sparkles,
   Tag,
 } from "lucide-react";
-import PageHero from "@/components/PageHero";
 import { useAuthProfile } from "@/lib/auth/use-auth-profile";
 import { canAccessAdmin } from "@/lib/auth/roles";
 import {
@@ -91,22 +90,63 @@ export default function BlogPage() {
     return filtered.filter((p) => !ids.has(p.id));
   }, [filtered, featuredVisible]);
 
+  const renderHero = () => (
+    <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/30">
+      <div className="absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom_right,white,transparent,white)]" />
+      <div className="container relative mx-auto px-4 py-16 sm:px-6 lg:py-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mx-auto max-w-4xl text-center"
+        >
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
+            <Newspaper className="h-4 w-4" />
+            Research Updates
+          </div>
+          <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            Blog
+            <span className="block text-3xl font-semibold text-muted-foreground sm:text-4xl lg:text-5xl">
+              Research updates, lab news, and perspectives from the 4C Research
+              Group
+            </span>
+          </h1>
+          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+            Stay informed about our latest research findings, team achievements,
+            and insights into pediatric critical care and neuroscience.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4 text-sm">
+            <div className="flex items-center gap-2 rounded-lg bg-cognition/10 px-4 py-2 text-cognition">
+              <Sparkles className="h-4 w-4" />
+              Featured Articles
+            </div>
+            <div className="flex items-center gap-2 rounded-lg bg-consciousness/10 px-4 py-2 text-consciousness">
+              <Tag className="h-4 w-4" />
+              Categorized Topics
+            </div>
+            <div className="flex items-center gap-2 rounded-lg bg-care/10 px-4 py-2 text-care">
+              <Calendar className="h-4 w-4" />
+              Regular Updates
+            </div>
+          </div>
+          {showAdmin ? (
+            <div className="mt-8">
+              <Link
+                href="/admin/blog/"
+                className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-4 py-2 text-sm font-medium text-brand hover:bg-brand/15"
+              >
+                Manage posts
+              </Link>
+            </div>
+          ) : null}
+        </motion.div>
+      </div>
+    </section>
+  );
+
   return (
     <div className="min-h-screen bg-background">
-      <PageHero
-        compact
-        title="Blog"
-        subtitle="Research updates, lab news, and perspectives from the 4C Research Group"
-      >
-        {showAdmin ? (
-          <Link
-            href="/admin/blog/"
-            className="mt-4 inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-4 py-2 text-sm font-medium text-brand hover:bg-brand/15"
-          >
-            Manage posts
-          </Link>
-        ) : null}
-      </PageHero>
+      {renderHero()}
 
       <div className="container mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
         {loading ? (
@@ -120,7 +160,10 @@ export default function BlogPage() {
               No posts yet
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Run <code className="rounded bg-muted px-1.5 py-0.5 text-xs">npm run seed-blog</code>{" "}
+              Run{" "}
+              <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
+                npm run seed-blog
+              </code>{" "}
               after applying{" "}
               <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
                 supabase/blog_posts.sql
@@ -243,7 +286,10 @@ export default function BlogPage() {
                   transition={{ delay: Math.min(i * 0.04, 0.4) }}
                   className="flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm transition hover:border-brand/20 hover:shadow-md"
                 >
-                  <Link href={blogPostHref(post.slug)} className="flex flex-1 flex-col">
+                  <Link
+                    href={blogPostHref(post.slug)}
+                    className="flex flex-1 flex-col"
+                  >
                     <div className="relative aspect-[16/9] shrink-0 bg-muted">
                       {post.image_url ? (
                         <Image

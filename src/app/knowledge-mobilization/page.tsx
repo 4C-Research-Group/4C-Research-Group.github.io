@@ -13,7 +13,6 @@ import {
   RotateCcw,
   Sparkles,
 } from "lucide-react";
-import PageHero from "@/components/PageHero";
 import { useKmProgress } from "@/contexts/KmProgressContext";
 import type { KMModule } from "@/data/knowledge-mobilization";
 import {
@@ -60,14 +59,53 @@ export default function KnowledgeMobilizationHubPage() {
     }
   }
 
+  const renderHero = () => (
+    <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/30">
+      <div className="absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom_right,white,transparent,white)]" />
+      <div className="container relative mx-auto px-4 py-16 sm:px-6 lg:py-24">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mx-auto max-w-4xl text-center"
+        >
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
+            <GraduationCap className="h-4 w-4" />
+            Professional Development
+          </div>
+          <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            Knowledge Mobilization
+            <span className="block text-3xl font-semibold text-muted-foreground sm:text-4xl lg:text-5xl">
+              Refresher modules for nurses and staff
+            </span>
+          </h1>
+          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+            Review topics and videos, then pass each module quiz (80% or higher)
+            to unlock the next.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4 text-sm">
+            <div className="flex items-center gap-2 rounded-lg bg-cognition/10 px-4 py-2 text-cognition">
+              <BookOpen className="h-4 w-4" />
+              Self-paced Learning
+            </div>
+            <div className="flex items-center gap-2 rounded-lg bg-consciousness/10 px-4 py-2 text-consciousness">
+              <Award className="h-4 w-4" />
+              Certificate Available
+            </div>
+            <div className="flex items-center gap-2 rounded-lg bg-care/10 px-4 py-2 text-care">
+              <CheckCircle2 className="h-4 w-4" />
+              80% Passing Score
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+
   if (!curriculumReady || !kmReady) {
     return (
       <div className="min-h-screen bg-background">
-        <PageHero
-          compact
-          title="Knowledge Mobilization"
-          subtitle="Refresher modules for nurses and staff — review topics and videos, then pass each module quiz (80% or higher) to unlock the next."
-        />
+        {renderHero()}
         <div className="flex min-h-[40vh] items-center justify-center border-t border-border/60">
           <div className="flex flex-col items-center gap-3 text-muted-foreground">
             <div className="h-11 w-11 animate-spin rounded-full border-2 border-brand border-t-transparent" />
@@ -82,11 +120,7 @@ export default function KnowledgeMobilizationHubPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHero
-        compact
-        title="Knowledge Mobilization"
-        subtitle="Refresher modules for nurses and staff — review topics and videos, then pass each module quiz (80% or higher) to unlock the next."
-      />
+      {renderHero()}
 
       <div className="relative border-t border-border/60">
         {syncError ? (
@@ -153,8 +187,7 @@ export default function KnowledgeMobilizationHubPage() {
                       <RotateCcw className="mt-0.5 h-4 w-4 shrink-0 text-consciousness" />
                       If you score below 80%, retake the quiz until you pass —
                       your best score is saved
-                      {syncsToAccount ? " to your account" : " on this device"}
-                      .
+                      {syncsToAccount ? " to your account" : " on this device"}.
                     </li>
                   </ul>
                 </div>
@@ -187,113 +220,119 @@ export default function KnowledgeMobilizationHubPage() {
               to replace existing rows).
             </p>
           ) : (
-          <ol className="space-y-5">
-            {ordered.map((mod, index) => {
-              const unlocked = isModuleUnlocked(mod, ordered, progress);
-              const passed = modulePassed(mod.slug, progress);
-              const mp = progress.modules[mod.slug];
-              const topicTotal = mod.topics.length;
-              const reviewed = mp?.reviewedTopicIds.length ?? 0;
+            <ol className="space-y-5">
+              {ordered.map((mod, index) => {
+                const unlocked = isModuleUnlocked(mod, ordered, progress);
+                const passed = modulePassed(mod.slug, progress);
+                const mp = progress.modules[mod.slug];
+                const topicTotal = mod.topics.length;
+                const reviewed = mp?.reviewedTopicIds.length ?? 0;
 
-              return (
-                <motion.li
-                  key={mod.slug}
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.06 }}
-                  className="list-none"
-                >
-                  <div
-                    className={`relative overflow-hidden rounded-2xl border bg-card shadow-sm transition ${
-                      passed
-                        ? "border-care/30 shadow-care/5"
-                        : unlocked
-                          ? "border-border/80 hover:border-brand/25 hover:shadow-md"
-                          : "border-border/60 opacity-[0.92]"
-                    }`}
+                return (
+                  <motion.li
+                    key={mod.slug}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.06 }}
+                    className="list-none"
                   >
-                    <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-                      <div className="flex min-w-0 flex-1 gap-4">
-                        <span
-                          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-sm font-bold ${
-                            passed
-                              ? "bg-care/15 text-care"
-                              : unlocked
-                                ? "bg-brand/15 text-brand"
-                                : "bg-muted text-muted-foreground"
-                          }`}
-                          aria-hidden
-                        >
-                          {index + 1}
-                        </span>
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h3 className="text-lg font-semibold text-foreground">
-                              {mod.title}
-                            </h3>
-                            {passed ? (
-                              <span className="inline-flex items-center gap-1 rounded-full bg-care/15 px-2.5 py-0.5 text-xs font-semibold text-care">
-                                <CheckCircle2 className="h-3.5 w-3.5" />
-                                Passed
-                              </span>
+                    <div
+                      className={`relative overflow-hidden rounded-2xl border bg-card shadow-sm transition ${
+                        passed
+                          ? "border-care/30 shadow-care/5"
+                          : unlocked
+                            ? "border-border/80 hover:border-brand/25 hover:shadow-md"
+                            : "border-border/60 opacity-[0.92]"
+                      }`}
+                    >
+                      <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+                        <div className="flex min-w-0 flex-1 gap-4">
+                          <span
+                            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-sm font-bold ${
+                              passed
+                                ? "bg-care/15 text-care"
+                                : unlocked
+                                  ? "bg-brand/15 text-brand"
+                                  : "bg-muted text-muted-foreground"
+                            }`}
+                            aria-hidden
+                          >
+                            {index + 1}
+                          </span>
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h3 className="text-lg font-semibold text-foreground">
+                                {mod.title}
+                              </h3>
+                              {passed ? (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-care/15 px-2.5 py-0.5 text-xs font-semibold text-care">
+                                  <CheckCircle2 className="h-3.5 w-3.5" />
+                                  Passed
+                                </span>
+                              ) : null}
+                              {!unlocked ? (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                                  <Lock className="h-3.5 w-3.5" />
+                                  Locked
+                                </span>
+                              ) : null}
+                            </div>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              {mod.summary}
+                            </p>
+                            <p className="mt-3 text-xs text-muted-foreground">
+                              {
+                                mod.topics.filter((t) => t.type === "video")
+                                  .length
+                              }{" "}
+                              video topic(s) ·{" "}
+                              {
+                                mod.topics.filter((t) => t.type === "text")
+                                  .length
+                              }{" "}
+                              text topic(s) · {mod.questions.length} quiz
+                              questions
+                            </p>
+                            {unlocked && !passed && topicTotal > 0 ? (
+                              <p className="mt-2 text-xs font-medium text-brand">
+                                Topics reviewed: {reviewed} / {topicTotal}
+                              </p>
                             ) : null}
-                            {!unlocked ? (
-                              <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
-                                <Lock className="h-3.5 w-3.5" />
-                                Locked
-                              </span>
+                            {mp && mp.attempts > 0 && !passed ? (
+                              <p className="mt-1 text-xs text-muted-foreground">
+                                Best quiz score: {mp.bestScorePercent}% (need
+                                80%)
+                              </p>
                             ) : null}
                           </div>
-                          <p className="mt-1 text-sm text-muted-foreground">
-                            {mod.summary}
-                          </p>
-                          <p className="mt-3 text-xs text-muted-foreground">
-                            {
-                              mod.topics.filter((t) => t.type === "video")
-                                .length
-                            }{" "}
-                            video topic(s) ·{" "}
-                            {mod.topics.filter((t) => t.type === "text").length}{" "}
-                            text topic(s) · {mod.questions.length} quiz
-                            questions
-                          </p>
-                          {unlocked && !passed && topicTotal > 0 ? (
-                            <p className="mt-2 text-xs font-medium text-brand">
-                              Topics reviewed: {reviewed} / {topicTotal}
-                            </p>
-                          ) : null}
-                          {mp && mp.attempts > 0 && !passed ? (
-                            <p className="mt-1 text-xs text-muted-foreground">
-                              Best quiz score: {mp.bestScorePercent}% (need 80%)
-                            </p>
-                          ) : null}
+                        </div>
+                        <div className="shrink-0 sm:pl-2">
+                          {unlocked ? (
+                            <Link
+                              href={`/knowledge-mobilization/${mod.slug}/`}
+                              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-brand-deep sm:w-auto"
+                            >
+                              {passed ? "Review module" : "Open module"}
+                              <ArrowRight className="h-4 w-4" />
+                            </Link>
+                          ) : (
+                            <span className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-dashed border-border px-5 py-2.5 text-sm font-medium text-muted-foreground sm:w-auto">
+                              <Lock className="h-4 w-4" />
+                              Complete previous module
+                            </span>
+                          )}
                         </div>
                       </div>
-                      <div className="shrink-0 sm:pl-2">
-                        {unlocked ? (
-                          <Link
-                            href={`/knowledge-mobilization/${mod.slug}/`}
-                            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-brand-deep sm:w-auto"
-                          >
-                            {passed ? "Review module" : "Open module"}
-                            <ArrowRight className="h-4 w-4" />
-                          </Link>
-                        ) : (
-                          <span className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-dashed border-border px-5 py-2.5 text-sm font-medium text-muted-foreground sm:w-auto">
-                            <Lock className="h-4 w-4" />
-                            Complete previous module
-                          </span>
-                        )}
-                      </div>
                     </div>
-                  </div>
-                </motion.li>
-              );
-            })}
-          </ol>
+                  </motion.li>
+                );
+              })}
+            </ol>
           )}
 
-          {progress && ordered.length > 0 && allModulesPassed(ordered, progress) ? (
+          {progress &&
+          ordered.length > 0 &&
+          allModulesPassed(ordered, progress) ? (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}

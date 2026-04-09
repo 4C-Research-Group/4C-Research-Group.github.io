@@ -153,6 +153,56 @@ export interface Database {
           },
         ];
       };
+      research_projects: {
+        Row: {
+          id: string;
+          slug: string;
+          title: string;
+          description: string;
+          long_description: string;
+          category: string;
+          status: string;
+          start_date: string;
+          end_date: string | null;
+          link: string;
+          funding: string;
+          additional_info: string;
+          tags: string[];
+          objectives: string[];
+          team_members: Json;
+          publications: Json;
+          gallery_urls: string[];
+          published: boolean;
+          sort_order: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          title: string;
+          description?: string;
+          long_description?: string;
+          category?: string;
+          status?: string;
+          start_date: string;
+          end_date?: string | null;
+          link?: string;
+          funding?: string;
+          additional_info?: string;
+          tags?: string[];
+          objectives?: string[];
+          team_members?: Json;
+          publications?: Json;
+          gallery_urls?: string[];
+          published?: boolean;
+          sort_order?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["research_projects"]["Insert"]>;
+        Relationships: [];
+      };
       km_modules: {
         Row: {
           id: string;

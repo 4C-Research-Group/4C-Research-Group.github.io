@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -21,7 +21,8 @@ import {
   Target,
   Zap,
 } from "lucide-react";
-import { projects, type Project } from "@/data/projectsData";
+import { fallbackProjects, type Project } from "@/data/projectsData";
+import { fetchPublishedProjectsFromSupabase } from "@/lib/projects/supabase-projects";
 
 const statusColors = {
   active:
@@ -40,14 +41,27 @@ const categoryIcons = {
 };
 
 export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>(fallbackProjects);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      const remote = await fetchPublishedProjectsFromSupabase();
+      if (!alive || !remote?.length) return;
+      setProjects(remote);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   const categories = useMemo(() => {
     const cats = Array.from(new Set(projects.map((p) => p.category)));
     return ["all", ...cats];
-  }, []);
+  }, [projects]);
 
   const filteredProjects = useMemo(() => {
     return projects.filter((project) => {
@@ -64,7 +78,7 @@ export default function ProjectsPage() {
         );
       return categoryMatch && statusMatch && searchMatch;
     });
-  }, [selectedCategory, selectedStatus, searchQuery]);
+  }, [projects, selectedCategory, selectedStatus, searchQuery]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -220,7 +234,7 @@ export default function ProjectsPage() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="group"
                 >
-                  <Link href={`/projects/${project.id}`}>
+                  <Link href={`/projects/${project.id}/`}>
                     <article className="h-full flex flex-col bg-card rounded-3xl border border-border shadow-sm hover:shadow-2xl hover:border-brand/20 transition-all duration-500 overflow-hidden">
                       {/* Project Image */}
                       <div className="relative h-56 overflow-hidden">

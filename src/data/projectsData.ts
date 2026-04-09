@@ -27,7 +27,8 @@ export interface Project {
   additionalInfo?: string;
 }
 
-export const projects: Project[] = [
+/** Bundled copy used when Supabase is empty or unreachable (build + runtime fallback). */
+export const fallbackProjects: Project[] = [
   {
     id: "nuanced",
     title: "NuANCEd",
@@ -221,3 +222,10 @@ export const projects: Project[] = [
     ],
   },
 ];
+
+/** @deprecated Use `fallbackProjects` or data from Supabase. */
+export const projects = fallbackProjects;
+
+export function fallbackProjectBySlug(slug: string): Project | undefined {
+  return fallbackProjects.find((p) => p.id === slug);
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -18,6 +19,7 @@ import {
   Share2,
 } from "lucide-react";
 import { type Project } from "@/data/projectsData";
+import { fetchProjectBySlugFromSupabase } from "@/lib/projects/supabase-projects";
 
 const categoryIcons = {
   "Implementation Science": Brain,
@@ -33,10 +35,27 @@ const statusColors = {
 };
 
 interface ProjectClientProps {
-  project: Project;
+  initialProject: Project;
 }
 
-export default function ProjectClient({ project }: ProjectClientProps) {
+export default function ProjectClient({ initialProject }: ProjectClientProps) {
+  const [project, setProject] = useState(initialProject);
+
+  useEffect(() => {
+    setProject(initialProject);
+  }, [initialProject]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const live = await fetchProjectBySlugFromSupabase(initialProject.id);
+      if (!cancelled && live) setProject(live);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [initialProject.id]);
+
   const CategoryIcon =
     categoryIcons[project.category as keyof typeof categoryIcons] || Brain;
 
@@ -61,7 +80,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
               className="max-w-4xl"
             >
               <Link
-                href="/projects"
+                href="/projects/"
                 className="inline-flex items-center gap-2 text-white hover:text-white/90 mb-6 transition-colors bg-brand/80 backdrop-blur-sm px-4 py-2 rounded-lg border border-brand/60 z-10 relative hover:bg-brand/90"
               >
                 <ArrowLeft className="w-4 h-4" />

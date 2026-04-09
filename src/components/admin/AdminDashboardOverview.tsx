@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   FileText,
+  FolderKanban,
   LayoutDashboard,
   Loader2,
   ShieldUser,
@@ -26,6 +27,12 @@ const QUICK_LINKS = [
     title: "Team",
     desc: "Roster, alumni, photos, sort order.",
     icon: Users,
+  },
+  {
+    href: "/admin/projects/",
+    title: "Projects",
+    desc: "Research projects, gallery images, tags.",
+    icon: FolderKanban,
   },
   {
     href: "/admin/content/",

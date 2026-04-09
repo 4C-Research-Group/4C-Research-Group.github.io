@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -16,9 +16,26 @@ import {
   Mouse,
   Twitter,
 } from "lucide-react";
-import { projects } from "@/data/projectsData";
+import { fallbackProjects } from "@/data/projectsData";
+import { fetchPublishedProjectsFromSupabase } from "@/lib/projects/supabase-projects";
 
 export default function Home() {
+  const [featuredProjects, setFeaturedProjects] = useState(() =>
+    fallbackProjects.slice(0, 3),
+  );
+
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      const list = await fetchPublishedProjectsFromSupabase();
+      if (!alive || !list?.length) return;
+      setFeaturedProjects(list.slice(0, 3));
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-brand-light">
       {/* Hero Section */}
@@ -542,7 +559,7 @@ export default function Home() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.slice(0, 3).map((project, index) => (
+            {featuredProjects.map((project, index) => (
               <motion.div
                 key={project.id}
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -598,7 +615,7 @@ export default function Home() {
                       <span>{project.teamMembers?.length || 0} members</span>
                     </div>
                     <Link
-                      href={`/projects/${project.id}`}
+                      href={`/projects/${project.id}/`}
                       className="text-brand hover:text-brand-deep font-medium flex items-center space-x-1 group-hover:translate-x-1 transition-transform"
                     >
                       <span>Learn More</span>
@@ -617,7 +634,7 @@ export default function Home() {
             className="text-center mt-12"
           >
             <Link
-              href="/projects"
+              href="/projects/"
               className="inline-flex items-center gap-2 bg-linear-to-r from-brand to-cognition text-white px-8 py-3 rounded-full font-semibold hover:from-brand-deep hover:to-cognition-deep transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               <span>View All Projects</span>

@@ -8,6 +8,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   ExternalLink,
   FileText,
+  FolderKanban,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -29,6 +30,7 @@ type NavItem = {
 const NAV_BASE: NavItem[] = [
   { href: "/admin/", label: "Overview", icon: LayoutDashboard, end: true },
   { href: "/admin/team/", label: "Team", icon: Users },
+  { href: "/admin/projects/", label: "Projects", icon: FolderKanban },
   { href: "/admin/content/", label: "Content", icon: FileText },
 ];
 

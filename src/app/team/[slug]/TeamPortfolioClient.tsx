@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   ExternalLink,
   FileText,
+  GraduationCap,
   Linkedin,
   Mail,
   Sparkles,
@@ -202,8 +203,13 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
                 {member.role}
               </p>
               {member.degree?.trim() ? (
-                <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-                  {member.degree.trim()}
+                <p className="mt-3 flex max-w-xl items-start gap-2 text-sm leading-relaxed text-muted-foreground">
+                  <GraduationCap
+                    className="mt-0.5 h-4 w-4 shrink-0 text-brand"
+                    strokeWidth={2}
+                    aria-hidden
+                  />
+                  <span className="min-w-0">{member.degree.trim()}</span>
                 </p>
               ) : null}
 

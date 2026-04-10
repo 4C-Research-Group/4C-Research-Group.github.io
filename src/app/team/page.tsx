@@ -602,8 +602,15 @@ export default function TeamPage() {
                             {member.role}
                           </p>
                           {member.degree?.trim() ? (
-                            <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-white/80">
-                              {member.degree.trim()}
+                            <p className="mt-1 flex items-start gap-1 text-[11px] leading-snug text-white/80">
+                              <GraduationCap
+                                className="mt-0.5 h-3 w-3 shrink-0 text-white/70"
+                                strokeWidth={2}
+                                aria-hidden
+                              />
+                              <span className="line-clamp-2 min-w-0">
+                                {member.degree.trim()}
+                              </span>
                             </p>
                           ) : null}
                         </div>
@@ -715,8 +722,13 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
               {member.role}
             </p>
             {member.degree?.trim() ? (
-              <p className="mt-2 text-xs leading-snug text-muted-foreground">
-                {member.degree.trim()}
+              <p className="mt-2 flex items-start gap-1.5 text-xs leading-snug text-muted-foreground">
+                <GraduationCap
+                  className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand/80"
+                  strokeWidth={2}
+                  aria-hidden
+                />
+                <span className="min-w-0">{member.degree.trim()}</span>
               </p>
             ) : null}
           </div>

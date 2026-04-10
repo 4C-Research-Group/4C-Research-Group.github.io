@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import {
+  GraduationCap,
   Loader2,
   Plus,
   RotateCcw,
@@ -499,7 +500,14 @@ export default function AdminTeamPage() {
           />
 
           <label className="block text-xs font-medium text-muted-foreground">
-            Degree / qualifications (optional)
+            <span className="flex items-center gap-1.5">
+              <GraduationCap
+                className="h-3.5 w-3.5 shrink-0 text-brand"
+                strokeWidth={2}
+                aria-hidden
+              />
+              Degree / qualifications (optional)
+            </span>
             <textarea
               className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
               value={form.degree}

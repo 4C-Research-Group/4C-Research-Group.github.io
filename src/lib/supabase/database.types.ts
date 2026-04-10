@@ -179,6 +179,22 @@ export interface Database {
         >;
         Relationships: [];
       };
+      join_4c_lab_page_settings: {
+        Row: {
+          id: string;
+          payload: Json;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          payload: Json;
+          updated_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["join_4c_lab_page_settings"]["Insert"]
+        >;
+        Relationships: [];
+      };
       blog_posts: {
         Row: {
           id: string;

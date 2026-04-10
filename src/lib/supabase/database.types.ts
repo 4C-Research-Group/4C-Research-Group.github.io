@@ -50,6 +50,7 @@ export interface Database {
           orcid_url: string;
           google_scholar_url: string;
           researchgate_url: string;
+          awards: Json;
           created_at: string;
           updated_at: string;
         };
@@ -71,6 +72,7 @@ export interface Database {
           orcid_url?: string;
           google_scholar_url?: string;
           researchgate_url?: string;
+          awards?: Json;
           created_at?: string;
           updated_at?: string;
         };

@@ -81,6 +81,7 @@ create table if not exists public.team_members (
   orcid_url text not null default '',
   google_scholar_url text not null default '',
   researchgate_url text not null default '',
+  awards jsonb not null default '[]'::jsonb,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
@@ -92,6 +93,7 @@ alter table public.team_members add column if not exists degree text not null de
 alter table public.team_members add column if not exists orcid_url text not null default '';
 alter table public.team_members add column if not exists google_scholar_url text not null default '';
 alter table public.team_members add column if not exists researchgate_url text not null default '';
+alter table public.team_members add column if not exists awards jsonb not null default '[]'::jsonb;
 
 create or replace function public.touch_team_members_updated_at()
 returns trigger

@@ -2,13 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import {
+  Award,
   GraduationCap,
   Loader2,
   Plus,
-  RotateCcw,
   Save,
   Trash2,
-  Users,
 } from "lucide-react";
 import TeamPhotoField from "@/components/admin/TeamPhotoField";
 import TeamMemberPublicationsEditor from "@/components/admin/TeamMemberPublicationsEditor";
@@ -20,6 +19,14 @@ import {
   uploadTeamMemberPhoto,
   validateTeamPhotoFile,
 } from "@/lib/team/team-photo-storage";
+import type { Json } from "@/lib/supabase/database.types";
+import {
+  awardsPayloadEqual,
+  emptyTeamMemberAward,
+  normalizeAwardsForDb,
+  parseTeamMemberAwards,
+  type TeamMemberAward,
+} from "@/lib/team/member-awards";
 
 type MemberRow = {
   id: string;
@@ -39,6 +46,7 @@ type MemberRow = {
   orcid_url?: string;
   google_scholar_url?: string;
   researchgate_url?: string;
+  awards?: Json | null;
 };
 
 type RowEdit = {
@@ -58,6 +66,7 @@ type RowEdit = {
   orcid_url: string;
   google_scholar_url: string;
   researchgate_url: string;
+  awards: TeamMemberAward[];
 };
 
 function fromServer(r: MemberRow): RowEdit {
@@ -78,6 +87,7 @@ function fromServer(r: MemberRow): RowEdit {
     orcid_url: r.orcid_url ?? "",
     google_scholar_url: r.google_scholar_url ?? "",
     researchgate_url: r.researchgate_url ?? "",
+    awards: parseTeamMemberAwards(r.awards),
   };
 }
 
@@ -98,7 +108,8 @@ function rowEditsDiffer(a: RowEdit, b: RowEdit): boolean {
     a.degree !== b.degree ||
     a.orcid_url !== b.orcid_url ||
     a.google_scholar_url !== b.google_scholar_url ||
-    a.researchgate_url !== b.researchgate_url
+    a.researchgate_url !== b.researchgate_url ||
+    !awardsPayloadEqual(a.awards, b.awards)
   );
 }
 
@@ -124,6 +135,7 @@ export default function AdminTeamPage() {
     orcid_url: "",
     google_scholar_url: "",
     researchgate_url: "",
+    awards: [],
   });
   const [pendingPhoto, setPendingPhoto] = useState<File | null>(null);
 
@@ -172,6 +184,7 @@ export default function AdminTeamPage() {
       orcid_url: "",
       google_scholar_url: "",
       researchgate_url: "",
+      awards: [],
     });
     setPendingPhoto(null);
   }
@@ -220,6 +233,7 @@ export default function AdminTeamPage() {
         orcid_url: form.orcid_url.trim(),
         google_scholar_url: form.google_scholar_url.trim(),
         researchgate_url: form.researchgate_url.trim(),
+        awards: normalizeAwardsForDb(form.awards) as Json,
         updated_at: new Date().toISOString(),
       };
 
@@ -308,12 +322,16 @@ export default function AdminTeamPage() {
           <code className="rounded bg-muted px-1 text-xs">public/images/team/</code>{" "}
           (not <code className="rounded bg-muted px-1 text-xs">public/team/</code>, which clashes with those URLs).
           Run <code className="rounded bg-muted px-1 text-xs">seed_team_members.sql</code>{" "}
-          once to import legacy team members. For degree + ORCID / Scholar / ResearchGate
+          once to import legacy team members.           For degree + ORCID / Scholar / ResearchGate
           fields, run{" "}
           <code className="rounded bg-muted px-1 text-xs">
             team_member_degree_academic_urls.sql
           </code>{" "}
-          in Supabase if those columns are missing.
+          in Supabase if those columns are missing. For optional awards, run{" "}
+          <code className="rounded bg-muted px-1 text-xs">
+            team_member_awards.sql
+          </code>
+          .
         </p>
       </header>
 
@@ -556,6 +574,118 @@ export default function AdminTeamPage() {
               }
               placeholder="https://www.researchgate.net/profile/..."
             />
+          </div>
+
+          <div className="space-y-3 border-t border-border/60 pt-4">
+            <p className="flex items-center gap-2 text-xs font-semibold text-foreground">
+              <Award className="h-3.5 w-3.5 shrink-0 text-brand" aria-hidden />
+              Awards (optional)
+            </p>
+            <p className="text-[11px] text-muted-foreground">
+              Honours, scholarships, or prizes. Shown on{" "}
+              <code className="rounded bg-muted px-1 text-[10px]">/team/slug/</code> when
+              at least one field in a row is filled.
+            </p>
+            {form.awards.length === 0 ? (
+              <p className="text-xs italic text-muted-foreground">
+                No awards yet — use &quot;Add award&quot; below.
+              </p>
+            ) : null}
+            <div className="space-y-3">
+              {form.awards.map((award, idx) => (
+                <div
+                  key={idx}
+                  className="space-y-2 rounded-xl border border-border/70 bg-muted/15 p-3"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-medium text-muted-foreground">
+                      Award {idx + 1}
+                    </span>
+                    <button
+                      type="button"
+                      className="text-[11px] font-medium text-destructive hover:underline"
+                      onClick={() =>
+                        setForm((f) => ({
+                          ...f,
+                          awards: f.awards.filter((_, i) => i !== idx),
+                        }))
+                      }
+                    >
+                      Remove
+                    </button>
+                  </div>
+                  <Field
+                    label="Title"
+                    value={award.title}
+                    onChange={(title) =>
+                      setForm((f) => ({
+                        ...f,
+                        awards: f.awards.map((a, i) =>
+                          i === idx ? { ...a, title } : a,
+                        ),
+                      }))
+                    }
+                    placeholder="e.g. CIHR Doctoral Award"
+                  />
+                  <Field
+                    label="Issuer / organization (optional)"
+                    value={award.issuer}
+                    onChange={(issuer) =>
+                      setForm((f) => ({
+                        ...f,
+                        awards: f.awards.map((a, i) =>
+                          i === idx ? { ...a, issuer } : a,
+                        ),
+                      }))
+                    }
+                    placeholder="e.g. Canadian Institutes of Health Research"
+                  />
+                  <Field
+                    label="Year (optional)"
+                    value={award.year}
+                    onChange={(year) =>
+                      setForm((f) => ({
+                        ...f,
+                        awards: f.awards.map((a, i) =>
+                          i === idx ? { ...a, year } : a,
+                        ),
+                      }))
+                    }
+                    placeholder="2024"
+                  />
+                  <label className="block text-xs font-medium text-muted-foreground">
+                    Details (optional)
+                    <textarea
+                      className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+                      value={award.details}
+                      onChange={(e) =>
+                        setForm((f) => ({
+                          ...f,
+                          awards: f.awards.map((a, i) =>
+                            i === idx ? { ...a, details: e.target.value } : a,
+                          ),
+                        }))
+                      }
+                      rows={2}
+                      placeholder="Brief context, amount, or selection criteria"
+                    />
+                  </label>
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium hover:bg-muted/60"
+              onClick={() =>
+                setForm((f) => ({
+                  ...f,
+                  awards: [...f.awards, emptyTeamMemberAward()],
+                }))
+              }
+            >
+              <Plus className="h-4 w-4" />
+              Add award
+            </button>
           </div>
         </div>
       </div>

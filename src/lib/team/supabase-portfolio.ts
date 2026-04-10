@@ -11,6 +11,12 @@ import {
   normalizePublicationStatus,
   type TeamPublicationStatus,
 } from "@/lib/team/publication-status";
+import {
+  parseTeamMemberAwards,
+  type TeamMemberAward,
+} from "@/lib/team/member-awards";
+
+export type { TeamMemberAward };
 
 export type TeamMemberPortfolio = TeamMember & {
   id: string;
@@ -20,6 +26,8 @@ export type TeamMemberPortfolio = TeamMember & {
   orcidUrl: string;
   googleScholarUrl: string;
   researchgateUrl: string;
+  /** Optional honours / prizes (from CMS). */
+  awards: TeamMemberAward[];
   isAlumni: boolean;
 };
 
@@ -47,6 +55,7 @@ export function staticTeamMemberToPortfolio(m: TeamMember): TeamMemberPortfolio 
     orcidUrl: "",
     googleScholarUrl: "",
     researchgateUrl: "",
+    awards: [],
     isAlumni,
   };
 }
@@ -89,6 +98,7 @@ function rowToMember(r: {
   orcid_url?: string | null;
   google_scholar_url?: string | null;
   researchgate_url?: string | null;
+  awards?: unknown;
 }): TeamMemberPortfolio {
   const cat = r.category === "student" ? "student" : "staff";
   const deg = (r.degree ?? "").trim();
@@ -107,6 +117,7 @@ function rowToMember(r: {
     orcidUrl: (r.orcid_url ?? "").trim(),
     googleScholarUrl: (r.google_scholar_url ?? "").trim(),
     researchgateUrl: (r.researchgate_url ?? "").trim(),
+    awards: parseTeamMemberAwards(r.awards),
     isAlumni: r.is_alumni,
     ...(deg ? { degree: deg } : {}),
   };
@@ -161,13 +172,14 @@ export async function fetchTeamPortfolioBySlug(slug: string): Promise<{
       orcid_url?: string | null;
       google_scholar_url?: string | null;
       researchgate_url?: string | null;
+      awards?: unknown;
     } | null = null;
 
     for (const s of portfolioSlugsToQuery(slug)) {
       const { data, error } = await supabase
         .from("team_members")
         .select(
-          "id,slug,name,initials,role_title,category,superpower,photo_file,is_alumni,bio,email,linkedin_url,degree,orcid_url,google_scholar_url,researchgate_url"
+          "id,slug,name,initials,role_title,category,superpower,photo_file,is_alumni,bio,email,linkedin_url,degree,orcid_url,google_scholar_url,researchgate_url,awards"
         )
         .eq("slug", s)
         .maybeSingle();

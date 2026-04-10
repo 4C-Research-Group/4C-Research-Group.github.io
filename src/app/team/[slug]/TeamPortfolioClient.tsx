@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
+  Award,
   FileText,
   GraduationCap,
   Linkedin,
@@ -23,6 +24,7 @@ import {
   type OrcidPublication,
 } from "@/lib/orcid-works";
 import { resolveTeamMemberDisplayPhotoUrl } from "@/lib/team/photo-url";
+import { normalizeAwardsForDb } from "@/lib/team/member-awards";
 import {
   enrichTeamMemberPhotoFromStatic,
   fetchTeamPortfolioBySlug,
@@ -185,6 +187,7 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
 
   const photo = resolveTeamMemberDisplayPhotoUrl(member.photoFile, member.slug);
   const showBio = member.bio.trim().length > 0;
+  const displayAwards = normalizeAwardsForDb(member.awards);
   const isOwnProfile =
     authReady &&
     !!userId &&
@@ -327,6 +330,49 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
           </div>
         </div>
       </div>
+
+      {displayAwards.length > 0 ? (
+        <section className="border-t border-border/40 bg-background px-4 py-12 sm:px-6">
+          <div className="container mx-auto max-w-5xl">
+            <div className="mb-8 flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-care/15 text-care">
+                <Award className="h-5 w-5" aria-hidden />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight text-foreground">
+                  Awards &amp; honours
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Recognitions and funding highlights for this team member.
+                </p>
+              </div>
+            </div>
+            <ul className="space-y-5">
+              {displayAwards.map((a, i) => {
+                const meta = [a.issuer, a.year].filter(Boolean).join(" · ");
+                return (
+                  <li
+                    key={`${a.title}-${a.year}-${i}`}
+                    className="rounded-2xl border border-border/70 bg-card/60 px-5 py-4 shadow-sm"
+                  >
+                    <h3 className="text-base font-semibold text-foreground">
+                      {a.title}
+                    </h3>
+                    {meta ? (
+                      <p className="mt-1 text-sm text-muted-foreground">{meta}</p>
+                    ) : null}
+                    {a.details ? (
+                      <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                        {a.details}
+                      </p>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </section>
+      ) : null}
 
       {isOwnProfile ? (
         <div className="border-t border-border/40 bg-background px-4 py-10 sm:px-6">

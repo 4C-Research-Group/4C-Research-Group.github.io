@@ -8,6 +8,7 @@ alter table public.team_members add column if not exists degree text not null de
 alter table public.team_members add column if not exists orcid_url text not null default '';
 alter table public.team_members add column if not exists google_scholar_url text not null default '';
 alter table public.team_members add column if not exists researchgate_url text not null default '';
+alter table public.team_members add column if not exists awards jsonb not null default '[]'::jsonb;
 
 create table if not exists public.team_member_publications (
   id uuid primary key default gen_random_uuid(),

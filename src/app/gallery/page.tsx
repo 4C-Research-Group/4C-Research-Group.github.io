@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { CalendarDays, Download, Images, Sparkles, X, ZoomIn } from "lucide-react";
-import PageHero from "@/components/PageHero";
 
 /** Deterministic placeholder URLs (picsum seeds) for static export; swap for real assets later. */
 const FEATURED = {
@@ -101,13 +100,12 @@ export default function GalleryPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHero
-        compact
-        title="Gallery"
-        subtitle="Snapshots from the lab, events, workshops, and everyday science — a visual thread through our work together."
-      />
-
-      <div className="relative border-t border-border/60 bg-linear-to-b from-muted/40 via-background to-background">
+      <div className="relative bg-linear-to-b from-muted/40 via-background to-background">
+        <header className="mx-auto max-w-7xl px-4 pt-6 pb-2 sm:px-6 lg:px-8 lg:pt-8">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+            Gallery
+          </h1>
+        </header>
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.35]"
           style={{
@@ -120,7 +118,7 @@ export default function GalleryPage() {
         />
 
         {/* Featured */}
-        <section className="relative mx-auto max-w-7xl px-4 pb-16 pt-12 sm:px-6 lg:px-8 lg:pb-20 lg:pt-16">
+        <section className="relative mx-auto max-w-7xl px-4 pb-16 pt-6 sm:px-6 lg:px-8 lg:pb-20 lg:pt-8">
           {sectionHeading(
             <Sparkles className="h-4 w-4" aria-hidden />,
             "Spotlight",

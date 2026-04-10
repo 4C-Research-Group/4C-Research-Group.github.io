@@ -77,6 +77,10 @@ create table if not exists public.team_members (
   bio text not null default '',
   email text not null default '',
   linkedin_url text not null default '',
+  degree text not null default '',
+  orcid_url text not null default '',
+  google_scholar_url text not null default '',
+  researchgate_url text not null default '',
   created_at timestamptz default now(),
   updated_at timestamptz default now()
 );
@@ -84,6 +88,10 @@ create table if not exists public.team_members (
 alter table public.team_members add column if not exists bio text not null default '';
 alter table public.team_members add column if not exists email text not null default '';
 alter table public.team_members add column if not exists linkedin_url text not null default '';
+alter table public.team_members add column if not exists degree text not null default '';
+alter table public.team_members add column if not exists orcid_url text not null default '';
+alter table public.team_members add column if not exists google_scholar_url text not null default '';
+alter table public.team_members add column if not exists researchgate_url text not null default '';
 
 create or replace function public.touch_team_members_updated_at()
 returns trigger

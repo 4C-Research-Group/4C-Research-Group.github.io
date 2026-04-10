@@ -34,6 +34,10 @@ type MemberRow = {
   bio: string;
   email: string;
   linkedin_url: string;
+  degree?: string;
+  orcid_url?: string;
+  google_scholar_url?: string;
+  researchgate_url?: string;
 };
 
 type RowEdit = {
@@ -49,6 +53,10 @@ type RowEdit = {
   bio: string;
   email: string;
   linkedin_url: string;
+  degree: string;
+  orcid_url: string;
+  google_scholar_url: string;
+  researchgate_url: string;
 };
 
 function fromServer(r: MemberRow): RowEdit {
@@ -65,6 +73,10 @@ function fromServer(r: MemberRow): RowEdit {
     bio: r.bio ?? "",
     email: r.email ?? "",
     linkedin_url: r.linkedin_url ?? "",
+    degree: r.degree ?? "",
+    orcid_url: r.orcid_url ?? "",
+    google_scholar_url: r.google_scholar_url ?? "",
+    researchgate_url: r.researchgate_url ?? "",
   };
 }
 
@@ -81,7 +93,11 @@ function rowEditsDiffer(a: RowEdit, b: RowEdit): boolean {
     a.sort_order !== b.sort_order ||
     a.bio !== b.bio ||
     a.email !== b.email ||
-    a.linkedin_url !== b.linkedin_url
+    a.linkedin_url !== b.linkedin_url ||
+    a.degree !== b.degree ||
+    a.orcid_url !== b.orcid_url ||
+    a.google_scholar_url !== b.google_scholar_url ||
+    a.researchgate_url !== b.researchgate_url
   );
 }
 
@@ -103,6 +119,10 @@ export default function AdminTeamPage() {
     bio: "",
     email: "",
     linkedin_url: "",
+    degree: "",
+    orcid_url: "",
+    google_scholar_url: "",
+    researchgate_url: "",
   });
   const [pendingPhoto, setPendingPhoto] = useState<File | null>(null);
 
@@ -147,6 +167,10 @@ export default function AdminTeamPage() {
       bio: "",
       email: "",
       linkedin_url: "",
+      degree: "",
+      orcid_url: "",
+      google_scholar_url: "",
+      researchgate_url: "",
     });
     setPendingPhoto(null);
   }
@@ -191,6 +215,10 @@ export default function AdminTeamPage() {
         bio: form.bio.trim(),
         email: form.email.trim(),
         linkedin_url: form.linkedin_url.trim(),
+        degree: form.degree.trim(),
+        orcid_url: form.orcid_url.trim(),
+        google_scholar_url: form.google_scholar_url.trim(),
+        researchgate_url: form.researchgate_url.trim(),
         updated_at: new Date().toISOString(),
       };
 
@@ -279,7 +307,12 @@ export default function AdminTeamPage() {
           <code className="rounded bg-muted px-1 text-xs">public/images/team/</code>{" "}
           (not <code className="rounded bg-muted px-1 text-xs">public/team/</code>, which clashes with those URLs).
           Run <code className="rounded bg-muted px-1 text-xs">seed_team_members.sql</code>{" "}
-          once to import legacy team members.
+          once to import legacy team members. For degree + ORCID / Scholar / ResearchGate
+          fields, run{" "}
+          <code className="rounded bg-muted px-1 text-xs">
+            team_member_degree_academic_urls.sql
+          </code>{" "}
+          in Supabase if those columns are missing.
         </p>
       </header>
 
@@ -464,13 +497,58 @@ export default function AdminTeamPage() {
             onChange={(email) => setForm((f) => ({ ...f, email }))}
             placeholder="name@example.com"
           />
-          
-          <Field
-            label="LinkedIn URL"
-            value={form.linkedin_url}
-            onChange={(linkedin_url) => setForm((f) => ({ ...f, linkedin_url }))}
-            placeholder="https://linkedin.com/in/..."
-          />
+
+          <label className="block text-xs font-medium text-muted-foreground">
+            Degree / qualifications (optional)
+            <textarea
+              className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              value={form.degree}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, degree: e.target.value }))
+              }
+              rows={2}
+              placeholder="e.g. PhD candidate, Neuroscience · MD · BSc (Hons)"
+            />
+            <span className="mt-1 block text-[11px] font-normal text-muted-foreground">
+              Shown on the team grid and profile when filled (useful for students).
+            </span>
+          </label>
+
+          <div className="space-y-3 border-t border-border/60 pt-4">
+            <p className="text-xs font-semibold text-foreground">
+              Professional links (optional)
+            </p>
+            <Field
+              label="LinkedIn"
+              value={form.linkedin_url}
+              onChange={(linkedin_url) =>
+                setForm((f) => ({ ...f, linkedin_url }))
+              }
+              placeholder="https://www.linkedin.com/in/..."
+            />
+            <Field
+              label="ORCID"
+              value={form.orcid_url}
+              onChange={(orcid_url) => setForm((f) => ({ ...f, orcid_url }))}
+              placeholder="https://orcid.org/0000-0000-0000-0000"
+            />
+            <Field
+              label="Google Scholar"
+              value={form.google_scholar_url}
+              onChange={(google_scholar_url) =>
+                setForm((f) => ({ ...f, google_scholar_url }))
+              }
+              placeholder="https://scholar.google.com/citations?user=..."
+            />
+            <Field
+              label="ResearchGate"
+              value={form.researchgate_url}
+              onChange={(researchgate_url) =>
+                setForm((f) => ({ ...f, researchgate_url }))
+              }
+              placeholder="https://www.researchgate.net/profile/..."
+            />
+          </div>
         </div>
       </div>
 

@@ -46,6 +46,10 @@ export interface Database {
           bio: string;
           email: string;
           linkedin_url: string;
+          degree: string;
+          orcid_url: string;
+          google_scholar_url: string;
+          researchgate_url: string;
           created_at: string;
           updated_at: string;
         };
@@ -63,6 +67,10 @@ export interface Database {
           bio?: string;
           email?: string;
           linkedin_url?: string;
+          degree?: string;
+          orcid_url?: string;
+          google_scholar_url?: string;
+          researchgate_url?: string;
           created_at?: string;
           updated_at?: string;
         };

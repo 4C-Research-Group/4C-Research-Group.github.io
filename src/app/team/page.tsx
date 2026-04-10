@@ -601,6 +601,11 @@ export default function TeamPage() {
                           <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-white/90">
                             {member.role}
                           </p>
+                          {member.degree?.trim() ? (
+                            <p className="mt-1 line-clamp-2 text-[11px] leading-snug text-white/80">
+                              {member.degree.trim()}
+                            </p>
+                          ) : null}
                         </div>
                       </div>
                       <div className="flex flex-1 flex-col p-4 pt-3">
@@ -709,6 +714,11 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
             >
               {member.role}
             </p>
+            {member.degree?.trim() ? (
+              <p className="mt-2 text-xs leading-snug text-muted-foreground">
+                {member.degree.trim()}
+              </p>
+            ) : null}
           </div>
 
           <div className="mt-auto flex gap-3 rounded-xl border border-border/50 bg-muted/30 p-3.5 transition-colors group-hover:border-brand/15 group-hover:bg-brand/[0.03]">

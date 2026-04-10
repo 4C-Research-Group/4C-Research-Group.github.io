@@ -12,6 +12,8 @@ export interface TeamMember {
   role: string;
   category: TeamMemberCategory;
   superpower: string;
+  /** Optional (e.g. degrees completed); shown on team grid and profile when set. */
+  degree?: string;
 }
 
 /**

@@ -10,8 +10,10 @@ function rowToMember(r: {
   category: string;
   superpower: string;
   photo_file: string;
+  degree?: string | null;
 }): TeamMember {
   const cat = r.category === "student" ? "student" : "staff";
+  const deg = (r.degree ?? "").trim();
   return {
     slug: r.slug,
     photoFile: r.photo_file,
@@ -20,6 +22,7 @@ function rowToMember(r: {
     role: r.role_title,
     category: cat as TeamMemberCategory,
     superpower: r.superpower,
+    ...(deg ? { degree: deg } : {}),
   };
 }
 
@@ -42,7 +45,7 @@ export async function fetchTeamFromSupabase(): Promise<FetchTeamResult> {
       const { data, error } = await supabase
         .from("team_members")
         .select(
-          "slug,name,initials,role_title,category,superpower,photo_file,is_alumni,sort_order"
+          "slug,name,initials,role_title,category,superpower,photo_file,is_alumni,sort_order,degree"
         )
         .order("sort_order", { ascending: true });
       if (error) {

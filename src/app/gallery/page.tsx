@@ -2,79 +2,102 @@
 
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { CalendarDays, Download, Images, Sparkles, X, ZoomIn } from "lucide-react";
 
 /** Deterministic placeholder URLs (picsum seeds) for static export; swap for real assets later. */
 const FEATURED = {
   src: "https://picsum.photos/seed/4c-gallery-featured/1920/1080",
-  alt: "Featured lab moment (placeholder image)",
+  alt: "Featured image from the 4C Research Group (sample photo)",
   caption: "Featured",
 };
 
 const EVENTS_AND_WORKSHOPS = [
   {
     src: "https://picsum.photos/seed/4c-event-01/900/700",
-    alt: "Workshop or event photo (placeholder)",
+    alt: "Research symposium — sample event photo",
     title: "Research symposium",
+    meta: "Sample image · add date & venue",
   },
   {
     src: "https://picsum.photos/seed/4c-event-02/900/700",
-    alt: "Workshop or event photo (placeholder)",
+    alt: "Team retreat — sample event photo",
     title: "Team retreat",
+    meta: "Sample image · add date & venue",
   },
   {
     src: "https://picsum.photos/seed/4c-event-03/900/700",
-    alt: "Workshop or event photo (placeholder)",
-    title: "Training session",
+    alt: "Knowledge mobilization training — sample photo",
+    title: "KM training",
+    meta: "Sample image · add date & venue",
   },
   {
     src: "https://picsum.photos/seed/4c-event-04/900/700",
-    alt: "Workshop or event photo (placeholder)",
+    alt: "Community talk — sample event photo",
     title: "Community talk",
+    meta: "Sample image · add date & venue",
   },
   {
     src: "https://picsum.photos/seed/4c-event-05/900/700",
-    alt: "Workshop or event photo (placeholder)",
+    alt: "Collaboration day — sample event photo",
     title: "Collaboration day",
+    meta: "Sample image · add date & venue",
   },
   {
     src: "https://picsum.photos/seed/4c-event-06/900/700",
-    alt: "Workshop or event photo (placeholder)",
+    alt: "Annual showcase — sample event photo",
     title: "Annual showcase",
+    meta: "Sample image · add date & venue",
   },
 ] as const;
 
 const OTHER_GALLERY = [
-  { src: "https://picsum.photos/seed/4c-misc-a/700/900", alt: "Gallery image (placeholder)" },
-  { src: "https://picsum.photos/seed/4c-misc-b/800/600", alt: "Gallery image (placeholder)" },
-  { src: "https://picsum.photos/seed/4c-misc-c/700/700", alt: "Gallery image (placeholder)" },
-  { src: "https://picsum.photos/seed/4c-misc-d/900/650", alt: "Gallery image (placeholder)" },
-  { src: "https://picsum.photos/seed/4c-misc-e/750/950", alt: "Gallery image (placeholder)" },
-  { src: "https://picsum.photos/seed/4c-misc-f/820/620", alt: "Gallery image (placeholder)" },
-  { src: "https://picsum.photos/seed/4c-misc-g/760/840", alt: "Gallery image (placeholder)" },
-  { src: "https://picsum.photos/seed/4c-misc-h/880/660", alt: "Gallery image (placeholder)" },
-  { src: "https://picsum.photos/seed/4c-misc-i/720/920", alt: "Gallery image (placeholder)" },
-  { src: "https://picsum.photos/seed/4c-misc-j/800/800", alt: "Gallery image (placeholder)" },
-  { src: "https://picsum.photos/seed/4c-misc-k/840/640", alt: "Gallery image (placeholder)" },
-  { src: "https://picsum.photos/seed/4c-misc-l/780/880", alt: "Gallery image (placeholder)" },
+  { src: "https://picsum.photos/seed/4c-misc-a/700/900", alt: "Lab life — sample gallery photo" },
+  { src: "https://picsum.photos/seed/4c-misc-b/800/600", alt: "Research setting — sample gallery photo" },
+  { src: "https://picsum.photos/seed/4c-misc-c/700/700", alt: "Team moment — sample gallery photo" },
+  { src: "https://picsum.photos/seed/4c-misc-d/900/650", alt: "Clinical collaboration — sample gallery photo" },
+  { src: "https://picsum.photos/seed/4c-misc-e/750/950", alt: "Poster or presentation — sample gallery photo" },
+  { src: "https://picsum.photos/seed/4c-misc-f/820/620", alt: "Workspace detail — sample gallery photo" },
+  { src: "https://picsum.photos/seed/4c-misc-g/760/840", alt: "Group discussion — sample gallery photo" },
+  { src: "https://picsum.photos/seed/4c-misc-h/880/660", alt: "Field or site visit — sample gallery photo" },
+  { src: "https://picsum.photos/seed/4c-misc-i/720/920", alt: "Celebration or milestone — sample gallery photo" },
+  { src: "https://picsum.photos/seed/4c-misc-j/800/800", alt: "Equipment or methods — sample gallery photo" },
+  { src: "https://picsum.photos/seed/4c-misc-k/840/640", alt: "Conference or travel — sample gallery photo" },
+  { src: "https://picsum.photos/seed/4c-misc-l/780/880", alt: "Candid lab moment — sample gallery photo" },
 ] as const;
 
 type LightboxItem = { src: string; alt: string; subtitle?: string };
+
+type SectionAccent = "cognition" | "consciousness" | "care";
+
+const accentBar: Record<SectionAccent, string> = {
+  cognition: "bg-cognition",
+  consciousness: "bg-consciousness",
+  care: "bg-care",
+};
 
 function sectionHeading(
   icon: ReactNode,
   eyebrow: string,
   title: string,
   description: string,
+  accent: SectionAccent,
 ) {
   return (
     <div className="mx-auto mb-10 max-w-3xl text-center md:mb-14">
-      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
-        {icon}
+      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-4 py-2 text-sm font-medium text-foreground/80 shadow-sm ring-1 ring-black/[0.03]">
+        <span
+          className={`h-2 w-2 shrink-0 rounded-full ${accentBar[accent]}`}
+          aria-hidden
+        />
+        <span className="text-brand">{icon}</span>
         {eyebrow}
       </div>
-      <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">{title}</h2>
+      <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+        <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+          {title}
+        </span>
+      </h2>
       <p className="mt-3 text-base leading-relaxed text-muted-foreground md:text-lg">{description}</p>
     </div>
   );
@@ -82,6 +105,7 @@ function sectionHeading(
 
 export default function GalleryPage() {
   const [lightbox, setLightbox] = useState<LightboxItem | null>(null);
+  const reduceMotion = useReducedMotion();
 
   const closeLightbox = useCallback(() => setLightbox(null), []);
 
@@ -102,9 +126,17 @@ export default function GalleryPage() {
     <div className="min-h-screen bg-background">
       <div className="relative bg-linear-to-b from-muted/40 via-background to-background">
         <header className="mx-auto max-w-7xl px-4 pt-6 pb-2 sm:px-6 lg:px-8 lg:pt-8">
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Cognition · Consciousness · Critical Care
+          </p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
             Gallery
           </h1>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
+            Visual stories from our research, knowledge mobilization, and the people
+            who make pediatric critical care science happen. Replace sample images with
+            your own when ready—use clear captions and photo credit in the lightbox.
+          </p>
         </header>
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.35]"
@@ -123,14 +155,15 @@ export default function GalleryPage() {
             <Sparkles className="h-4 w-4" aria-hidden />,
             "Spotlight",
             "Featured photo",
-            "A single frame that captures the energy of the group — replace this placeholder when you have a hero shot.",
+            "One strong image at the top sets tone: lab milestone, keynote moment, or a human story from critical care research.",
+            "cognition",
           )}
 
           <motion.button
             type="button"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
+            {...(reduceMotion
+              ? {}
+              : { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.45 } })}
             onClick={() =>
               setLightbox({
                 src: FEATURED.src,
@@ -138,6 +171,7 @@ export default function GalleryPage() {
                 subtitle: FEATURED.caption,
               })
             }
+            aria-label={`${FEATURED.caption}: open larger preview`}
             className="group relative mx-auto block w-full max-w-5xl overflow-hidden rounded-3xl border border-border/80 bg-card text-left shadow-lg shadow-black/[0.04] ring-1 ring-black/[0.04] transition hover:border-brand/25 hover:shadow-xl hover:shadow-brand/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
           >
             <div className="relative aspect-[21/9] w-full sm:aspect-[2.4/1]">
@@ -159,7 +193,7 @@ export default function GalleryPage() {
                     {FEATURED.caption}
                   </p>
                   <p className="mt-1 max-w-xl text-lg font-semibold text-white sm:text-xl">
-                    Tap to view full size
+                    View larger
                   </p>
                 </div>
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white backdrop-blur-md transition group-hover:bg-white/25">
@@ -177,7 +211,8 @@ export default function GalleryPage() {
               <CalendarDays className="h-4 w-4" aria-hidden />,
               "On the calendar",
               "Events & workshops",
-              "Talks, trainings, and gatherings — placeholder tiles until you plug in real event photography.",
+              "Symposia, KM sessions, and partner-facing gatherings. Pair each photo with date, location, and a one-line takeaway when you go live.",
+              "consciousness",
             )}
 
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -185,9 +220,13 @@ export default function GalleryPage() {
                 <motion.button
                   key={item.src}
                   type="button"
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.05 }}
+                  {...(reduceMotion
+                    ? {}
+                    : {
+                        initial: { opacity: 0, y: 14 },
+                        animate: { opacity: 1, y: 0 },
+                        transition: { duration: 0.4, delay: index * 0.05 },
+                      })}
                   onClick={() =>
                     setLightbox({
                       src: item.src,
@@ -195,6 +234,7 @@ export default function GalleryPage() {
                       subtitle: item.title,
                     })
                   }
+                  aria-label={`${item.title}: open larger preview`}
                   className="group relative overflow-hidden rounded-2xl border border-border/80 bg-card text-left shadow-sm ring-1 ring-black/[0.03] transition hover:-translate-y-0.5 hover:border-brand/20 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
                 >
                   <div className="relative aspect-[4/3] w-full">
@@ -208,7 +248,7 @@ export default function GalleryPage() {
                     <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-90" />
                     <div className="absolute bottom-0 left-0 right-0 p-4">
                       <p className="text-sm font-semibold text-white drop-shadow-sm">{item.title}</p>
-                      <p className="mt-0.5 text-xs text-white/75">Placeholder image</p>
+                      <p className="mt-0.5 text-xs text-white/75">{item.meta}</p>
                     </div>
                     <div className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 text-white opacity-0 backdrop-blur-md transition group-hover:opacity-100">
                       <ZoomIn className="h-4 w-4" aria-hidden />
@@ -225,8 +265,9 @@ export default function GalleryPage() {
           {sectionHeading(
             <Images className="h-4 w-4" aria-hidden />,
             "More moments",
-            "More from the gallery",
-            "A flowing grid of additional shots — ideal for lab life, posters, and candid frames.",
+            "Lab & field",
+            "Everything else: day-to-day lab life, posters, rounds-adjacent collaboration, and candid team moments. Keep alt text specific when you swap in real photos.",
+            "care",
           )}
 
           <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4">
@@ -234,10 +275,15 @@ export default function GalleryPage() {
               <motion.button
                 key={item.src}
                 type="button"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: Math.min(index * 0.04, 0.4) }}
+                {...(reduceMotion
+                  ? {}
+                  : {
+                      initial: { opacity: 0, y: 12 },
+                      animate: { opacity: 1, y: 0 },
+                      transition: { duration: 0.35, delay: Math.min(index * 0.04, 0.4) },
+                    })}
                 onClick={() => setLightbox({ src: item.src, alt: item.alt })}
+                aria-label={`Open gallery image: ${item.alt}`}
                 className="group relative block w-full break-inside-avoid overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.03] transition hover:border-brand/20 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
               >
                 <div className="relative w-full">

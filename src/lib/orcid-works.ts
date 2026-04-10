@@ -202,3 +202,85 @@ export async function fetchOrcidPublications(
 }
 
 export const DEFAULT_ORCID_ID = "0000-0002-2599-9119";
+
+const AUTHOR_MATCH_SKIP = new Set([
+  "dr",
+  "mr",
+  "mrs",
+  "ms",
+  "miss",
+  "prof",
+  "professor",
+  "md",
+  "phd",
+  "msc",
+  "bsc",
+  "mba",
+  "dds",
+  "rn",
+]);
+
+function normalizeAuthorMatchString(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/\./g, " ")
+    .replace(/,/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Whether an ORCID contributor string lists this person (handles
+ * "First Last", "Last, First", initials, and honorifics in the display name).
+ */
+export function orcidAuthorsIncludeMember(
+  authors: string | null,
+  memberDisplayName: string,
+): boolean {
+  if (!authors?.trim() || !memberDisplayName.trim()) return false;
+
+  const hay = normalizeAuthorMatchString(authors);
+  const full = normalizeAuthorMatchString(memberDisplayName);
+  if (hay.includes(full)) return true;
+
+  const tokens = full
+    .split(/\s+/)
+    .filter((t) => t.length > 0 && !AUTHOR_MATCH_SKIP.has(t));
+  if (tokens.length === 0) return false;
+
+  if (tokens.length === 1) {
+    return hay.includes(tokens[0]!);
+  }
+
+  const last = tokens[tokens.length - 1]!;
+  const first = tokens[0]!;
+
+  if (!hay.includes(last)) return false;
+  if (hay.includes(first)) return true;
+
+  const fi = first[0]!;
+  const initialLast = new RegExp(
+    `\\b${escapeRegExp(fi)}\\.?\\s+(?:[a-z]\\.?\\s+)*${escapeRegExp(last)}\\b`,
+    "i",
+  );
+  if (initialLast.test(hay)) return true;
+
+  const lastFirst = normalizeAuthorMatchString(`${last}, ${first}`);
+  if (hay.includes(lastFirst)) return true;
+
+  return false;
+}
+
+/** Same works as `/publications`, limited to rows where the member appears in authors. */
+export function filterOrcidPublicationsForMember(
+  pubs: OrcidPublication[],
+  memberDisplayName: string,
+): OrcidPublication[] {
+  const name = memberDisplayName.trim();
+  if (!name) return [];
+  return pubs.filter((p) => orcidAuthorsIncludeMember(p.authors, name));
+}

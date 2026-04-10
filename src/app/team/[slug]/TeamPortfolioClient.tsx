@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
-  ExternalLink,
   FileText,
   GraduationCap,
   Linkedin,
@@ -12,15 +11,23 @@ import {
   Sparkles,
 } from "lucide-react";
 import { FaGoogle, FaOrcid, FaResearchgate } from "react-icons/fa";
+import {
+  PublicationCard,
+  PublicationCardSkeleton,
+} from "@/components/PublicationCard";
 import { findStaticTeamMemberBySlug } from "@/data/team";
+import {
+  DEFAULT_ORCID_ID,
+  fetchOrcidPublications,
+  filterOrcidPublicationsForMember,
+  type OrcidPublication,
+} from "@/lib/orcid-works";
 import { resolveTeamMemberDisplayPhotoUrl } from "@/lib/team/photo-url";
-import { publicationStatusLabel } from "@/lib/team/publication-status";
 import {
   enrichTeamMemberPhotoFromStatic,
   fetchTeamPortfolioBySlug,
   staticTeamMemberToPortfolio,
   type TeamMemberPortfolio,
-  type TeamMemberPublication,
 } from "@/lib/team/supabase-portfolio";
 import { markTeamListScrollRestorePending } from "@/lib/team/team-list-scroll";
 import { useAuthProfile } from "@/lib/auth/use-auth-profile";
@@ -28,20 +35,6 @@ import MemberTestimonialForm from "@/components/team/MemberTestimonialForm";
 
 const PROFILE_LINK_BTN =
   "inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition hover:border-brand/30 hover:bg-brand/5";
-
-function statusBadgeClass(status: TeamMemberPublication["status"]): string {
-  switch (status) {
-    case "published":
-      return "border-care/30 bg-care/10 text-care";
-    case "accepted":
-      return "border-consciousness/30 bg-consciousness/10 text-consciousness";
-    case "under_review":
-    case "submitted":
-      return "border-brand/35 bg-brand/10 text-brand";
-    default:
-      return "border-border bg-muted/50 text-muted-foreground";
-  }
-}
 
 function MemberHeroPhoto({
   src,
@@ -89,7 +82,9 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
   const { ready: authReady, userId, teamMemberId } = useAuthProfile();
   const [ready, setReady] = useState(false);
   const [member, setMember] = useState<TeamMemberPortfolio | null>(null);
-  const [publications, setPublications] = useState<TeamMemberPublication[]>([]);
+  const [orcidPubs, setOrcidPubs] = useState<OrcidPublication[]>([]);
+  const [pubsLoading, setPubsLoading] = useState(false);
+  const [pubsError, setPubsError] = useState<string | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -98,7 +93,6 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
       if (!alive) return;
       if (res.member) {
         setMember(enrichTeamMemberPhotoFromStatic(res.member, slug));
-        setPublications(res.publications);
       } else if (!res.usedDatabase) {
         const stat = findStaticTeamMemberBySlug(slug);
         setMember(
@@ -109,10 +103,8 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
               )
             : null,
         );
-        setPublications([]);
       } else {
         setMember(null);
-        setPublications([]);
       }
       setReady(true);
     })();
@@ -120,6 +112,44 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
       alive = false;
     };
   }, [slug]);
+
+  useEffect(() => {
+    const name = member?.name?.trim();
+    if (!name) {
+      setOrcidPubs([]);
+      setPubsError(null);
+      setPubsLoading(false);
+      return;
+    }
+    let alive = true;
+    setPubsLoading(true);
+    setPubsError(null);
+    void (async () => {
+      try {
+        const all = await fetchOrcidPublications(DEFAULT_ORCID_ID);
+        if (!alive) return;
+        const filtered = filterOrcidPublicationsForMember(all, name);
+        filtered.sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+        setOrcidPubs(filtered);
+      } catch (e) {
+        if (!alive) return;
+        setOrcidPubs([]);
+        setPubsError(
+          e instanceof Error ? e.message : "Could not load publications",
+        );
+      } finally {
+        if (alive) setPubsLoading(false);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [member?.name]);
+
+  const pubCountLabel = useMemo(() => {
+    const n = orcidPubs.length;
+    return `${n} publication${n === 1 ? "" : "s"}`;
+  }, [orcidPubs.length]);
 
   if (!ready) {
     return (
@@ -317,63 +347,74 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
                 Publications
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Research outputs tracked for this profile (status is managed in
-                admin).
+                Works from our lab ORCID record where{" "}
+                <span className="font-medium text-foreground/90">
+                  {member.name}
+                </span>{" "}
+                appears in the author list (same source as the{" "}
+                <Link
+                  href="/publications/"
+                  className="font-medium text-brand hover:underline"
+                >
+                  Publications
+                </Link>{" "}
+                page).
               </p>
             </div>
           </div>
 
-          {publications.length === 0 ? (
-            <p className="rounded-2xl border border-dashed border-border/80 bg-card/40 px-6 py-12 text-center text-sm text-muted-foreground">
-              No publications listed yet.
-            </p>
-          ) : (
-            <ul className="space-y-4">
-              {publications.map((pub) => (
-                <li key={pub.id}>
-                  <article className="rounded-2xl border border-border/70 bg-card/80 p-5 shadow-sm transition hover:border-brand/20">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                      <div className="min-w-0 flex-1">
-                        <h3 className="text-base font-semibold leading-snug text-foreground">
-                          {pub.title}
-                        </h3>
-                        {(pub.authors || pub.venue || pub.year) && (
-                          <p className="mt-2 text-sm text-muted-foreground">
-                            {[pub.authors, pub.venue, pub.year]
-                              .filter(Boolean)
-                              .join(" · ")}
-                          </p>
-                        )}
-                        {pub.notes.trim() ? (
-                          <p className="mt-2 text-sm text-muted-foreground/90">
-                            {pub.notes}
-                          </p>
-                        ) : null}
-                      </div>
-                      <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
-                        <span
-                          className={`inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${statusBadgeClass(pub.status)}`}
-                        >
-                          {publicationStatusLabel[pub.status]}
-                        </span>
-                        {pub.url.trim() ? (
-                          <a
-                            href={pub.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-sm font-medium text-brand hover:text-brand-deep"
-                          >
-                            Link
-                            <ExternalLink className="h-3.5 w-3.5" />
-                          </a>
-                        ) : null}
-                      </div>
-                    </div>
-                  </article>
-                </li>
+          {pubsLoading ? (
+            <div className="grid gap-5 sm:grid-cols-2">
+              {[0, 1, 2, 3].map((i) => (
+                <PublicationCardSkeleton key={i} />
               ))}
-            </ul>
-          )}
+            </div>
+          ) : null}
+
+          {pubsError && !pubsLoading ? (
+            <div className="rounded-2xl border border-destructive/30 bg-destructive/5 px-6 py-8 text-center text-sm text-destructive">
+              <p>{pubsError}</p>
+              <Link
+                href="/publications/"
+                className="mt-4 inline-block font-medium text-brand hover:underline"
+              >
+                Open Publications page
+              </Link>
+            </div>
+          ) : null}
+
+          {!pubsLoading && !pubsError && orcidPubs.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border/80 bg-card/40 px-6 py-12 text-center text-sm text-muted-foreground">
+              <p>
+                No works on the lab ORCID listing matched this name in the
+                contributor field.
+              </p>
+              <Link
+                href="/publications/"
+                className="mt-4 inline-block font-medium text-brand hover:underline"
+              >
+                Browse all publications
+              </Link>
+            </div>
+          ) : null}
+
+          {!pubsLoading && !pubsError && orcidPubs.length > 0 ? (
+            <>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Showing {pubCountLabel} for this profile
+              </p>
+              <div className="grid gap-5 sm:grid-cols-2">
+                {orcidPubs.map((pub, i) => (
+                  <PublicationCard
+                    key={pub.id}
+                    pub={pub}
+                    accentIndex={i}
+                    showYearBadge
+                  />
+                ))}
+              </div>
+            </>
+          ) : null}
         </div>
       </section>
     </div>

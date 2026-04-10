@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Loader2, Plus, Save, Trash2, Upload } from "lucide-react";
+import { AdminImagePickButton } from "@/components/admin/AdminImagePickButton";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { Project } from "@/data/projectsData";
 import { fallbackProjects } from "@/data/projectsData";
@@ -128,6 +129,7 @@ export default function AdminProjectsPage() {
   const [published, setPublished] = useState(true);
   const [sortOrder, setSortOrder] = useState(0);
   const [form, setForm] = useState(() => projectToForm(fallbackProjects[0]!));
+  const [galleryBusy, setGalleryBusy] = useState(false);
 
   const load = useCallback(async () => {
     setErr(null);
@@ -234,6 +236,7 @@ export default function AdminProjectsPage() {
   async function onGalleryUpload(files: FileList | null) {
     if (!files?.length || !slug.trim()) return;
     setErr(null);
+    setGalleryBusy(true);
     try {
       const urls: string[] = [];
       for (const file of Array.from(files)) {
@@ -248,6 +251,8 @@ export default function AdminProjectsPage() {
       }));
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Upload failed");
+    } finally {
+      setGalleryBusy(false);
     }
   }
 
@@ -546,17 +551,22 @@ export default function AdminProjectsPage() {
               className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-xs"
             />
           </label>
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2 text-sm hover:bg-muted/60">
-            <Upload className="h-4 w-4" />
-            Upload images
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
-              multiple
-              className="hidden"
-              onChange={(e) => void onGalleryUpload(e.target.files)}
-            />
-          </label>
+          <AdminImagePickButton
+            variant="muted"
+            icon={Upload}
+            multiple
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            busy={galleryBusy}
+            disabled={!slug.trim()}
+            onPick={(fl) => void onGalleryUpload(fl)}
+          >
+            {galleryBusy ? "Uploading…" : "Upload images to gallery"}
+          </AdminImagePickButton>
+          {!slug.trim() ? (
+            <p className="text-[11px] text-muted-foreground">
+              Set or save a project slug before uploading gallery files.
+            </p>
+          ) : null}
         </div>
       </div>
     </div>

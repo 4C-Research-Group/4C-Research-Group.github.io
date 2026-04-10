@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import Link from "next/link";
-import { ImageUp, Loader2, Plus, Trash2 } from "lucide-react";
+import { Loader2, Plus, Trash2 } from "lucide-react";
+import { AdminImagePickButton } from "@/components/admin/AdminImagePickButton";
 import {
   type AboutPayload,
   type AboutTone,
@@ -36,12 +37,10 @@ function AboutImageField({
   value: string;
   onChange: (v: string) => void;
 }) {
-  const fileRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
 
-  async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0];
-    e.target.value = "";
+  async function onPicked(files: FileList | null) {
+    const f = files?.[0];
     if (!f) return;
     setBusy(true);
     try {
@@ -82,26 +81,9 @@ function AboutImageField({
         placeholder="/images/mission.jpg or paste a URL after upload"
       />
       <div className="flex flex-wrap items-center gap-2">
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
-          className="sr-only"
-          onChange={(e) => void onFile(e)}
-        />
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => fileRef.current?.click()}
-          className="inline-flex items-center gap-2 rounded-full border border-brand/40 bg-brand/10 px-4 py-2 text-sm font-semibold text-brand transition-colors hover:bg-brand/15 disabled:opacity-50"
-        >
-          {busy ? (
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-          ) : (
-            <ImageUp className="h-4 w-4" aria-hidden />
-          )}
+        <AdminImagePickButton busy={busy} onPick={(fl) => void onPicked(fl)}>
           {busy ? "Uploading…" : "Upload image from computer"}
-        </button>
+        </AdminImagePickButton>
         <span className="text-xs text-muted-foreground">
           Stored in Supabase (needs homepage-images bucket + admin role).
         </span>

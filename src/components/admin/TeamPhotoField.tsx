@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useId, useMemo } from "react";
-import { ImagePlus, X } from "lucide-react";
+import { useEffect, useMemo } from "react";
+import { ImagePlus, Upload, X } from "lucide-react";
+import { AdminImagePickButton } from "@/components/admin/AdminImagePickButton";
 import { resolveTeamMemberPhotoUrl } from "@/lib/team/photo-url";
 
 type TeamPhotoFieldProps = {
@@ -20,7 +21,6 @@ export default function TeamPhotoField({
   onPendingFileChange,
   disabled,
 }: TeamPhotoFieldProps) {
-  const inputId = useId();
   const previewBlobUrl = useMemo(
     () => (pendingFile ? URL.createObjectURL(pendingFile) : null),
     [pendingFile]
@@ -52,24 +52,18 @@ export default function TeamPhotoField({
         <div className="min-w-0 flex-1 space-y-2">
           <p className="text-xs font-medium text-muted-foreground">Photo</p>
           <div className="flex flex-wrap items-center gap-2">
-            <input
-              id={inputId}
-              type="file"
+            <AdminImagePickButton
+              variant="muted"
+              icon={Upload}
               accept="image/jpeg,image/png,image/webp,image/gif"
-              className="sr-only"
               disabled={disabled}
-              onChange={(e) => {
-                const f = e.target.files?.[0] ?? null;
-                onPendingFileChange(f);
-                e.target.value = "";
+              className="!py-1.5 !text-xs"
+              onPick={(files) => {
+                onPendingFileChange(files?.[0] ?? null);
               }}
-            />
-            <label
-              htmlFor={inputId}
-              className={`inline-flex cursor-pointer rounded-lg border border-input bg-background px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted/60 ${disabled ? "pointer-events-none opacity-50" : ""}`}
             >
               {pendingFile ? "Replace image…" : "Upload image…"}
-            </label>
+            </AdminImagePickButton>
             {(pendingFile || storedRaw.trim()) && (
               <button
                 type="button"

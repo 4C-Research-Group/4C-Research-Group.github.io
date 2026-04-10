@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useState } from "react";
 import Link from "next/link";
 import { Loader2, Plus, Trash2 } from "lucide-react";
+import { AdminImagePickButton } from "@/components/admin/AdminImagePickButton";
 import {
   HOMEPAGE_DEFAULTS,
   type HomepagePayload,
@@ -39,9 +40,8 @@ function ImgRow({
   onChange: (v: string) => void;
 }) {
   const [busy, setBusy] = useState(false);
-  async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0];
-    e.target.value = "";
+  async function onPicked(files: FileList | null) {
+    const f = files?.[0];
     if (!f) return;
     setBusy(true);
     try {
@@ -53,7 +53,7 @@ function ImgRow({
     }
   }
   return (
-    <div className="space-y-1">
+    <div className="space-y-2">
       <span className="text-xs font-medium text-muted-foreground">{label}</span>
       <input
         className="w-full rounded-lg border border-input bg-background px-2 py-2 text-sm"
@@ -61,17 +61,9 @@ function ImgRow({
         onChange={(e) => onChange(e.target.value)}
         placeholder="/images/... or https://..."
       />
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => void onFile(e)}
-          className="max-w-full"
-        />
-        {busy ? (
-          <Loader2 className="h-4 w-4 shrink-0 animate-spin text-brand" />
-        ) : null}
-      </div>
+      <AdminImagePickButton busy={busy} onPick={(fl) => void onPicked(fl)}>
+        {busy ? "Uploading…" : "Upload image"}
+      </AdminImagePickButton>
     </div>
   );
 }

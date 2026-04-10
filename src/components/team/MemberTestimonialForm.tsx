@@ -13,8 +13,6 @@ type Props = {
 
 export default function MemberTestimonialForm({ teamMemberId }: Props) {
   const [quote, setQuote] = useState("");
-  const [bio, setBio] = useState("");
-  const [education, setEducation] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -26,12 +24,8 @@ export default function MemberTestimonialForm({ teamMemberId }: Props) {
     const row = await fetchTestimonialByTeamMemberId(teamMemberId);
     if (row) {
       setQuote(row.quote);
-      setBio(row.testimonial_bio);
-      setEducation(row.education);
     } else {
       setQuote("");
-      setBio("");
-      setEducation("");
     }
     setLoading(false);
   }, [teamMemberId]);
@@ -45,11 +39,7 @@ export default function MemberTestimonialForm({ teamMemberId }: Props) {
     setSaving(true);
     setMessage(null);
     setError(null);
-    const res = await upsertMemberTestimonial(teamMemberId, {
-      quote,
-      testimonial_bio: bio,
-      education,
-    });
+    const res = await upsertMemberTestimonial(teamMemberId, { quote });
     setSaving(false);
     if (res.ok) {
       setMessage("Saved. Your testimonial appears on the Join 4C Lab page.");
@@ -70,8 +60,8 @@ export default function MemberTestimonialForm({ teamMemberId }: Props) {
             Student testimonial
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Same format as the Join 4C Lab page: your quote, a short bio, and
-            education line. Your name, role, and photo come from this profile.
+            Your quote appears on the Join 4C Lab page. Your name, role, and
+            photo come from this profile.
           </p>
         </div>
       </div>
@@ -98,40 +88,6 @@ export default function MemberTestimonialForm({ teamMemberId }: Props) {
               onChange={(e) => setQuote(e.target.value)}
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
               placeholder="Your experience in the lab…"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="tm-bio"
-              className="mb-1 block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-            >
-              Bio
-            </label>
-            <textarea
-              id="tm-bio"
-              required
-              rows={5}
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
-              placeholder="Background and path (shown under “Bio” on Join 4C Lab)…"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="tm-education"
-              className="mb-1 block text-xs font-semibold uppercase tracking-wider text-muted-foreground"
-            >
-              Education
-            </label>
-            <textarea
-              id="tm-education"
-              required
-              rows={3}
-              value={education}
-              onChange={(e) => setEducation(e.target.value)}
-              className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
-              placeholder="Degrees and program, comma- or semicolon-separated…"
             />
           </div>
 

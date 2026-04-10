@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Mail, GraduationCap, Users, Lightbulb, School } from "lucide-react";
+import { Mail, Users, Lightbulb, School } from "lucide-react";
 import {
   joinTestimonials,
   type JoinTestimonial,
@@ -290,20 +290,9 @@ export default function Join4CLabPage() {
                         <h3 className="text-base font-bold text-foreground">
                           {testimonial.name}
                         </h3>
-                        <p className="text-sm text-brand font-medium mb-2">
+                        <p className="text-sm text-brand font-medium">
                           {testimonial.role}
                         </p>
-
-                        <h4 className="text-xs font-semibold text-foreground mb-1">
-                          Bio
-                        </h4>
-                        <p className="text-xs sm:text-sm text-muted-foreground mb-2 leading-relaxed">
-                          {testimonial.bio}
-                        </p>
-                        <div className="flex items-start gap-2 text-xs text-muted-foreground">
-                          <GraduationCap className="mt-0.5 shrink-0 w-3.5 h-3.5" />
-                          <span>{testimonial.education}</span>
-                        </div>
                       </div>
                     </div>
                   </motion.div>

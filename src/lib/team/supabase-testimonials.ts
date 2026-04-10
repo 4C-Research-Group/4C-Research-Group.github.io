@@ -4,8 +4,6 @@ import { resolveTeamMemberDisplayPhotoUrl } from "@/lib/team/photo-url";
 
 export type MemberTestimonialDraft = {
   quote: string;
-  testimonial_bio: string;
-  education: string;
 };
 
 type TeamMemberEmbed = {
@@ -18,8 +16,6 @@ type TeamMemberEmbed = {
 type TestimonialJoinRow = {
   id: string;
   quote: string;
-  testimonial_bio: string;
-  education: string;
   team_members: TeamMemberEmbed | TeamMemberEmbed[] | null;
 };
 
@@ -39,8 +35,6 @@ function rowToJoinTestimonial(r: TestimonialJoinRow): JoinTestimonial | null {
     name: m.name,
     role: m.role_title,
     quote: r.quote,
-    bio: r.testimonial_bio,
-    education: r.education,
     ...(photo ? { imageSrc: photo } : {}),
   };
 }
@@ -57,8 +51,6 @@ export async function fetchJoinPageTestimonialsFromSupabase(): Promise<
         `
         id,
         quote,
-        testimonial_bio,
-        education,
         team_members ( slug, name, role_title, photo_file )
       `,
       )
@@ -84,14 +76,12 @@ export async function fetchTestimonialByTeamMemberId(
     const supabase = getSupabaseBrowserClient();
     const { data, error } = await supabase
       .from("team_member_testimonials")
-      .select("quote, testimonial_bio, education")
+      .select("quote")
       .eq("team_member_id", teamMemberId)
       .maybeSingle();
     if (error || !data) return null;
     return {
       quote: data.quote ?? "",
-      testimonial_bio: data.testimonial_bio ?? "",
-      education: data.education ?? "",
     };
   } catch {
     return null;
@@ -105,17 +95,15 @@ export async function upsertMemberTestimonial(
   try {
     const supabase = getSupabaseBrowserClient();
     const quote = draft.quote.trim();
-    const testimonial_bio = draft.testimonial_bio.trim();
-    const education = draft.education.trim();
-    if (!quote || !testimonial_bio || !education) {
-      return { ok: false, message: "Please fill in all fields." };
+    if (!quote) {
+      return { ok: false, message: "Please enter your testimonial quote." };
     }
     const { error } = await supabase.from("team_member_testimonials").upsert(
       {
         team_member_id: teamMemberId,
         quote,
-        testimonial_bio,
-        education,
+        testimonial_bio: "",
+        education: "",
       },
       { onConflict: "team_member_id" },
     );

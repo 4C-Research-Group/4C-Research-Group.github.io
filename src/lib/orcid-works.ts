@@ -89,16 +89,7 @@ export function mapOrcidWorksResponse(data: {
     const yearStr = s["publication-date"]?.year?.value;
     const year = yearStr ? parseInt(yearStr, 10) : null;
 
-    // Additional validation: if year is null but we have publication date, try to extract from other fields
     let finalYear = year;
-    if (!finalYear && s["publication-date"]) {
-      // Try to extract year from month/day if year is missing
-      const month = s["publication-date"]?.month?.value;
-      const day = s["publication-date"]?.day?.value;
-      if (yearStr) {
-        finalYear = parseInt(yearStr, 10);
-      }
-    }
 
     // Special case for known 2026 publications
     if (
@@ -145,8 +136,6 @@ async function fetchWorkAuthorsString(
       Accept: ORCID_ACCEPT,
       "Accept-Encoding": "gzip, deflate, br",
     },
-    cache: "force-cache",
-    next: { revalidate: 300 },
   });
   if (!res.ok) return null;
   const data = (await res.json()) as OrcidWorkDetail;
@@ -161,7 +150,7 @@ async function fetchWorkAuthorsString(
 
 const AUTHOR_ENRICH_BATCH = 8;
 
-/** Fetches each work’s detail so contributor names appear (ORCID list endpoint omits them). */
+/** Fetches each work's detail so contributor names appear (ORCID list endpoint omits them). */
 async function enrichWithAuthors(
   orcidClean: string,
   pubs: OrcidPublication[],
@@ -174,31 +163,115 @@ async function enrichWithAuthors(
       slice.map((p) => fetchWorkAuthorsString(orcidClean, p.id)),
     );
     for (let j = 0; j < slice.length; j++) {
-      out.push({ ...slice[j], authors: authorStrings[j] });
+      out.push({ ...slice[j]!, authors: authorStrings[j]! });
     }
   }
   return out;
 }
 
+// ---------------------------------------------------------------------------
+// Client-side cache — survives React re-renders and same-session page refreshes
+// ---------------------------------------------------------------------------
+
+/** TTL in milliseconds for in-memory and sessionStorage caches. */
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+
+type CacheEntry = {
+  pubs: OrcidPublication[];
+  fetchedAt: number;
+};
+
+/** Module-level memory cache: survives client-side navigation within the tab. */
+const memoryCache = new Map<string, CacheEntry>();
+
+const SESSION_KEY_PREFIX = "orcid_pubs_v1_";
+
+function sessionGet(key: string): CacheEntry | null {
+  try {
+    const raw = sessionStorage.getItem(key);
+    if (!raw) return null;
+    const entry = JSON.parse(raw) as CacheEntry;
+    if (Date.now() - entry.fetchedAt > CACHE_TTL_MS) {
+      sessionStorage.removeItem(key);
+      return null;
+    }
+    return entry;
+  } catch {
+    return null;
+  }
+}
+
+function sessionSet(key: string, entry: CacheEntry): void {
+  try {
+    sessionStorage.setItem(key, JSON.stringify(entry));
+  } catch {
+    // sessionStorage may be unavailable (SSR, private mode quota, etc.)
+  }
+}
+
+/** In-flight promise deduplication — parallel callers share one fetch. */
+const inFlight = new Map<string, Promise<OrcidPublication[]>>();
+
 export async function fetchOrcidPublications(
   orcidId: string,
 ): Promise<OrcidPublication[]> {
   const clean = orcidId.replace(/https?:\/\/orcid\.org\//i, "").trim();
-  const url = `https://pub.orcid.org/v3.0/${clean}/works`;
-  const res = await fetch(url, {
-    headers: {
-      Accept: ORCID_ACCEPT,
-      "Accept-Encoding": "gzip, deflate, br",
-    },
-    cache: "force-cache",
-    next: { revalidate: 300 },
-  });
-  if (!res.ok) {
-    throw new Error(`Could not load works from ORCID (${res.status})`);
+  const cacheKey = SESSION_KEY_PREFIX + clean;
+
+  // 1. Memory cache hit (instant — same tab navigation)
+  const mem = memoryCache.get(cacheKey);
+  if (mem && Date.now() - mem.fetchedAt < CACHE_TTL_MS) {
+    return mem.pubs;
   }
-  const data = await res.json();
-  const list = mapOrcidWorksResponse(data);
-  return enrichWithAuthors(clean, list);
+
+  // 2. sessionStorage hit (survives page refresh in the same session)
+  const stored = sessionGet(cacheKey);
+  if (stored) {
+    memoryCache.set(cacheKey, stored);
+    return stored.pubs;
+  }
+
+  // 3. Deduplicate concurrent callers (e.g. /publications + a team profile open at once)
+  const existing = inFlight.get(cacheKey);
+  if (existing) return existing;
+
+  const promise = (async () => {
+    const url = `https://pub.orcid.org/v3.0/${clean}/works`;
+    const res = await fetch(url, {
+      headers: {
+        Accept: ORCID_ACCEPT,
+        "Accept-Encoding": "gzip, deflate, br",
+      },
+    });
+    if (!res.ok) {
+      throw new Error(`Could not load works from ORCID (${res.status})`);
+    }
+    const data = await res.json();
+    const list = mapOrcidWorksResponse(data);
+    const pubs = await enrichWithAuthors(clean, list);
+
+    const entry: CacheEntry = { pubs, fetchedAt: Date.now() };
+    memoryCache.set(cacheKey, entry);
+    sessionSet(cacheKey, entry);
+    return pubs;
+  })().finally(() => {
+    inFlight.delete(cacheKey);
+  });
+
+  inFlight.set(cacheKey, promise);
+  return promise;
+}
+
+/** Bust the cache for an ORCID ID (e.g. called by a manual refresh button). */
+export function invalidateOrcidCache(orcidId: string): void {
+  const clean = orcidId.replace(/https?:\/\/orcid\.org\//i, "").trim();
+  const cacheKey = SESSION_KEY_PREFIX + clean;
+  memoryCache.delete(cacheKey);
+  try {
+    sessionStorage.removeItem(cacheKey);
+  } catch {
+    // ignore
+  }
 }
 
 export const DEFAULT_ORCID_ID = "0000-0002-2599-9119";

@@ -17,6 +17,7 @@ import {
   Microscope,
   Newspaper,
   ShieldUser,
+  UserCircle,
   Users,
   X,
 } from "lucide-react";
@@ -35,6 +36,7 @@ const NAV_BASE: NavItem[] = [
   { href: "/admin/", label: "Overview", icon: LayoutDashboard, end: true },
   { href: "/admin/homepage/", label: "Homepage", icon: House },
   { href: "/admin/about/", label: "About page", icon: Info },
+  { href: "/admin/about-pi/", label: "About PI", icon: UserCircle },
   { href: "/admin/team/", label: "Team", icon: Users },
   { href: "/admin/projects/", label: "Projects", icon: FolderKanban },
   { href: "/admin/blog/", label: "Blog", icon: Newspaper },

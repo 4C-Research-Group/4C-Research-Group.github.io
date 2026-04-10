@@ -14,6 +14,7 @@ import {
   Newspaper,
   ShieldUser,
   Sparkles,
+  UserCircle,
   Users,
 } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -37,6 +38,12 @@ const QUICK_LINKS = [
     title: "About page",
     desc: "Mission cards, PI block, research focus, and images.",
     icon: Info,
+  },
+  {
+    href: "/admin/about-pi/",
+    title: "About PI",
+    desc: "Full PI profile, CV sections, grants, publications, and headshot.",
+    icon: UserCircle,
   },
   {
     href: "/admin/team/",

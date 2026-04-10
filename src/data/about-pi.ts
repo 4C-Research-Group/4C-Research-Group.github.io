@@ -592,3 +592,6 @@ export const aboutPiData = {
 
   publicationHighlights,
 };
+
+/** Serializable CMS shape for `/about-pi` (matches `aboutPiData`). */
+export type AboutPiPagePayload = typeof aboutPiData;

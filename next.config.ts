@@ -21,15 +21,22 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   images: {
     unoptimized: true,
-    remotePatterns: storageHost
-      ? [
-          {
-            protocol: "https",
-            hostname: storageHost,
-            pathname: "/storage/v1/object/public/**",
-          },
-        ]
-      : [],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        pathname: "/**",
+      },
+      ...(storageHost
+        ? [
+            {
+              protocol: "https" as const,
+              hostname: storageHost,
+              pathname: "/storage/v1/object/public/**",
+            },
+          ]
+        : []),
+    ],
   },
   ...(basePath ? { basePath, assetPrefix: basePath } : {}),
 };

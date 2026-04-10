@@ -1,230 +1,325 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ZoomIn, Download } from "lucide-react";
+import { CalendarDays, Download, Images, Sparkles, X, ZoomIn } from "lucide-react";
+import PageHero from "@/components/PageHero";
 
-const labImages = [
-  "20190209_222837.jpg",
-  "20221123_174846.jpg",
-  "20221124_125920.jpg",
-  "20230103_155143.jpg",
-  "20230214_194648.jpg",
-  "20230215_151430.jpg",
-  "20230428_103744.jpg",
-  "20230613_093841.jpg",
-  "20230630_110220.jpg",
-  "20230920_143235.jpg",
-  "20230920_143242.jpg",
-  "20231003_153807.jpg",
-  "20231110_125703.jpg",
-  "20231110_132456.jpg",
-  "20231110_132517.jpg",
-  "20231117_162032.jpg",
-  "20231130_152318.jpg",
-  "20231201_183456.jpg",
-  "20231213_053036.jpg",
-  "20231213_053149.jpg",
-  "20240111_093804.jpg",
-  "20240229_185533.jpg",
-  "20240301_205509.jpg",
-  "20240320_175807.jpg",
-  "20240408_120719.jpg",
-  "20240410_132550.jpg",
-  "20240423_095235.jpg",
-  "20240423_095244.jpg",
-  "20240423_095306.jpg",
-  "20240503_105805(0).jpg",
-  "20241003_193406.jpg",
-  "20241003_193407.jpg",
-  "20241016_105355.jpg",
-  "20241016_112253.jpg",
-  "20241016_114145.jpg",
-  "20241118_122504.jpg",
-  "20241118_184017.jpg",
-  "20241120_091145.jpg",
-  "20241120_091644.jpg",
-  "20241120_091800.jpg",
-  "20241211_134812.jpg",
-  "20250326_135854.jpg",
-  "20250407_092707.jpg",
-  "20250408_094337.jpg",
-  "20250410_135214.jpg",
-  "20250520_181054.jpg",
-  "20250520_184141.jpg",
-  "20250520_184211.jpg",
-  "20250520_184722.jpg",
-  "20250520_185536.jpg",
-  "20250520_185538.jpg",
-  "20250624_133644.jpg",
-  "20250805_122745.jpg",
-  "20250907_200044.jpg",
-  "20250912_125149.jpg",
-  "20250912_125201.jpg",
-  "20250916_215154.jpg",
-  "20250918_121951 2.jpg",
-  "20250918_121951.jpg",
-  "20250919_161320.jpg",
-  "20250919_162034.jpg",
-  "20250920_132341.jpg",
-  "IMG-20191018-WA0005.jpg",
-  "IMG-20191018-WA0006.jpg",
-  "IMG-20240829-WA0010.jpg",
-  "IMG-20240829-WA0035.jpg",
-  "IMG-20240829-WA0038.jpg",
-  "IMG-20240829-WA0057.jpg",
-  "IMG-20240829-WA0059.jpg",
-  "IMG-20240829-WA0060.jpg",
-  "IMG-20240829-WA0063.jpg",
-  "IMG-20240829-WA0068.jpg",
-  "IMG-20240829-WA0069.jpg",
-  "IMG-20240829-WA0070.jpg",
-  "IMG-20240829-WA0072.jpg",
-  "IMG-20240829-WA0074.jpg",
-  "IMG-20241016-WA0006.jpg",
-  "IMG-20241120-WA0016.jpg",
-  "IMG-20241120-WA0017.jpg",
-  "IMG-20241120-WA0019.jpg",
-  "IMG-20241120-WA0027.jpg",
-  "IMG_59721.jpg",
-  "IMG_59731.jpg",
-  "IMG_59751.jpg",
-  "Screenshot 2025-07-15 001423.png",
-];
+/** Deterministic placeholder URLs (picsum seeds) for static export; swap for real assets later. */
+const FEATURED = {
+  src: "https://picsum.photos/seed/4c-gallery-featured/1920/1080",
+  alt: "Featured lab moment (placeholder image)",
+  caption: "Featured",
+};
 
-export default function LabGalleryPage() {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+const EVENTS_AND_WORKSHOPS = [
+  {
+    src: "https://picsum.photos/seed/4c-event-01/900/700",
+    alt: "Workshop or event photo (placeholder)",
+    title: "Research symposium",
+  },
+  {
+    src: "https://picsum.photos/seed/4c-event-02/900/700",
+    alt: "Workshop or event photo (placeholder)",
+    title: "Team retreat",
+  },
+  {
+    src: "https://picsum.photos/seed/4c-event-03/900/700",
+    alt: "Workshop or event photo (placeholder)",
+    title: "Training session",
+  },
+  {
+    src: "https://picsum.photos/seed/4c-event-04/900/700",
+    alt: "Workshop or event photo (placeholder)",
+    title: "Community talk",
+  },
+  {
+    src: "https://picsum.photos/seed/4c-event-05/900/700",
+    alt: "Workshop or event photo (placeholder)",
+    title: "Collaboration day",
+  },
+  {
+    src: "https://picsum.photos/seed/4c-event-06/900/700",
+    alt: "Workshop or event photo (placeholder)",
+    title: "Annual showcase",
+  },
+] as const;
 
-  const openLightbox = useCallback((img: string, i: number) => {
-    setSelectedImage(img);
-    setSelectedIndex(i);
-  }, []);
+const OTHER_GALLERY = [
+  { src: "https://picsum.photos/seed/4c-misc-a/700/900", alt: "Gallery image (placeholder)" },
+  { src: "https://picsum.photos/seed/4c-misc-b/800/600", alt: "Gallery image (placeholder)" },
+  { src: "https://picsum.photos/seed/4c-misc-c/700/700", alt: "Gallery image (placeholder)" },
+  { src: "https://picsum.photos/seed/4c-misc-d/900/650", alt: "Gallery image (placeholder)" },
+  { src: "https://picsum.photos/seed/4c-misc-e/750/950", alt: "Gallery image (placeholder)" },
+  { src: "https://picsum.photos/seed/4c-misc-f/820/620", alt: "Gallery image (placeholder)" },
+  { src: "https://picsum.photos/seed/4c-misc-g/760/840", alt: "Gallery image (placeholder)" },
+  { src: "https://picsum.photos/seed/4c-misc-h/880/660", alt: "Gallery image (placeholder)" },
+  { src: "https://picsum.photos/seed/4c-misc-i/720/920", alt: "Gallery image (placeholder)" },
+  { src: "https://picsum.photos/seed/4c-misc-j/800/800", alt: "Gallery image (placeholder)" },
+  { src: "https://picsum.photos/seed/4c-misc-k/840/640", alt: "Gallery image (placeholder)" },
+  { src: "https://picsum.photos/seed/4c-misc-l/780/880", alt: "Gallery image (placeholder)" },
+] as const;
 
-  const closeLightbox = () => {
-    setSelectedImage(null);
-    setSelectedIndex(null);
-  };
+type LightboxItem = { src: string; alt: string; subtitle?: string };
 
-  const downloadImage = (imageName: string) => {
-    const link = document.createElement("a");
-    link.href = `/images/lab-images/${imageName}`;
-    link.download = imageName;
-    link.click();
-  };
+function sectionHeading(
+  icon: ReactNode,
+  eyebrow: string,
+  title: string,
+  description: string,
+) {
+  return (
+    <div className="mx-auto mb-10 max-w-3xl text-center md:mb-14">
+      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
+        {icon}
+        {eyebrow}
+      </div>
+      <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">{title}</h2>
+      <p className="mt-3 text-base leading-relaxed text-muted-foreground md:text-lg">{description}</p>
+    </div>
+  );
+}
+
+export default function GalleryPage() {
+  const [lightbox, setLightbox] = useState<LightboxItem | null>(null);
+
+  const closeLightbox = useCallback(() => setLightbox(null), []);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") closeLightbox();
+    }
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [lightbox, closeLightbox]);
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* 🔥 HERO */}
-      <section className="relative h-[60vh] flex items-center justify-center text-center overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage:
-                "url('https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg')",
-            }}
-          />
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-        </div>
+    <div className="min-h-screen bg-background">
+      <PageHero
+        compact
+        title="Gallery"
+        subtitle="Snapshots from the lab, events, workshops, and everyday science — a visual thread through our work together."
+      />
 
-        {/* Glow blobs */}
-        <div className="absolute w-[500px] h-[500px] bg-purple-500/30 blur-[120px] rounded-full top-[-100px] left-[-100px]" />
-        <div className="absolute w-[400px] h-[400px] bg-blue-500/30 blur-[120px] rounded-full bottom-[-100px] right-[-100px]" />
+      <div className="relative border-t border-border/60 bg-linear-to-b from-muted/40 via-background to-background">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.35]"
+          style={{
+            backgroundImage: `radial-gradient(hsl(var(--border)) 1px, transparent 1px)`,
+            backgroundSize: "24px 24px",
+            maskImage:
+              "linear-gradient(to bottom, black 0%, transparent 55%, transparent 100%)",
+          }}
+          aria-hidden
+        />
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative z-10"
-        >
-          <div className="text-sm text-white/70 uppercase mb-2">
-            Research • Innovation • Discovery
-          </div>
+        {/* Featured */}
+        <section className="relative mx-auto max-w-7xl px-4 pb-16 pt-12 sm:px-6 lg:px-8 lg:pb-20 lg:pt-16">
+          {sectionHeading(
+            <Sparkles className="h-4 w-4" aria-hidden />,
+            "Spotlight",
+            "Featured photo",
+            "A single frame that captures the energy of the group — replace this placeholder when you have a hero shot.",
+          )}
 
-          <h1 className="text-5xl md:text-7xl font-extrabold bg-linear-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
-            Lab Gallery
-          </h1>
-
-          <p className="mt-4 text-white/80 max-w-xl mx-auto">
-            A visual journey through our research, experiments, and innovation.
-          </p>
-        </motion.div>
-      </section>
-
-      {/* 🖼️ GALLERY */}
-      <section className="p-6 grid grid-cols-2 md:grid-cols-4 gap-6">
-        {labImages.map((img, i) => (
-          <motion.div
-            key={img}
-            whileHover={{ scale: 1.05 }}
-            onClick={() => openLightbox(img, i)}
-            className="relative group cursor-pointer rounded-2xl overflow-hidden 
-            bg-white/5 backdrop-blur-xl border border-white/10 shadow-lg hover:shadow-2xl transition"
+          <motion.button
+            type="button"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45 }}
+            onClick={() =>
+              setLightbox({
+                src: FEATURED.src,
+                alt: FEATURED.alt,
+                subtitle: FEATURED.caption,
+              })
+            }
+            className="group relative mx-auto block w-full max-w-5xl overflow-hidden rounded-3xl border border-border/80 bg-card text-left shadow-lg shadow-black/[0.04] ring-1 ring-black/[0.04] transition hover:border-brand/25 hover:shadow-xl hover:shadow-brand/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
           >
-            {/* Glow */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-linear-to-r from-purple-500/20 via-blue-500/20 to-cyan-500/20 blur-xl"></div>
-
-            <div className="relative aspect-square">
+            <div className="relative aspect-[21/9] w-full sm:aspect-[2.4/1]">
               <Image
-                src={`/images/lab-images/${img}`}
-                alt=""
+                src={FEATURED.src}
+                alt={FEATURED.alt}
                 fill
-                className="object-cover transition duration-700 group-hover:scale-110"
+                className="object-cover transition duration-700 ease-out group-hover:scale-[1.03]"
+                sizes="(max-width: 1280px) 100vw, 1280px"
+                priority
               />
-            </div>
-
-            {/* Hover Icon */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-              <div className="bg-black/70 p-3 rounded-full">
-                <ZoomIn />
+              <div className="absolute inset-0 bg-linear-to-t from-black/55 via-black/10 to-transparent" />
+              <div className="absolute inset-0 opacity-0 transition group-hover:opacity-100">
+                <div className="absolute inset-0 bg-brand/10 mix-blend-overlay" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-4 p-6 sm:p-8">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-white/80">
+                    {FEATURED.caption}
+                  </p>
+                  <p className="mt-1 max-w-xl text-lg font-semibold text-white sm:text-xl">
+                    Tap to view full size
+                  </p>
+                </div>
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white backdrop-blur-md transition group-hover:bg-white/25">
+                  <ZoomIn className="h-5 w-5" aria-hidden />
+                </span>
               </div>
             </div>
-          </motion.div>
-        ))}
-      </section>
+          </motion.button>
+        </section>
 
-      {/* 🔍 LIGHTBOX */}
+        {/* Events & workshops */}
+        <section className="relative border-t border-border/50 bg-muted/25 py-16 lg:py-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            {sectionHeading(
+              <CalendarDays className="h-4 w-4" aria-hidden />,
+              "On the calendar",
+              "Events & workshops",
+              "Talks, trainings, and gatherings — placeholder tiles until you plug in real event photography.",
+            )}
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {EVENTS_AND_WORKSHOPS.map((item, index) => (
+                <motion.button
+                  key={item.src}
+                  type="button"
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.05 }}
+                  onClick={() =>
+                    setLightbox({
+                      src: item.src,
+                      alt: item.alt,
+                      subtitle: item.title,
+                    })
+                  }
+                  className="group relative overflow-hidden rounded-2xl border border-border/80 bg-card text-left shadow-sm ring-1 ring-black/[0.03] transition hover:-translate-y-0.5 hover:border-brand/20 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+                >
+                  <div className="relative aspect-[4/3] w-full">
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      fill
+                      className="object-cover transition duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-90" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <p className="text-sm font-semibold text-white drop-shadow-sm">{item.title}</p>
+                      <p className="mt-0.5 text-xs text-white/75">Placeholder image</p>
+                    </div>
+                    <div className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 text-white opacity-0 backdrop-blur-md transition group-hover:opacity-100">
+                      <ZoomIn className="h-4 w-4" aria-hidden />
+                    </div>
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Other images — masonry-style columns */}
+        <section className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+          {sectionHeading(
+            <Images className="h-4 w-4" aria-hidden />,
+            "More moments",
+            "More from the gallery",
+            "A flowing grid of additional shots — ideal for lab life, posters, and candid frames.",
+          )}
+
+          <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4">
+            {OTHER_GALLERY.map((item, index) => (
+              <motion.button
+                key={item.src}
+                type="button"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: Math.min(index * 0.04, 0.4) }}
+                onClick={() => setLightbox({ src: item.src, alt: item.alt })}
+                className="group relative block w-full break-inside-avoid overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.03] transition hover:border-brand/20 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+              >
+                <div className="relative w-full">
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    width={900}
+                    height={1200}
+                    className="h-auto w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-black/0 transition group-hover:bg-black/15" />
+                  <div className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-lg bg-background/90 text-foreground opacity-0 shadow-sm backdrop-blur-sm transition group-hover:opacity-100">
+                    <ZoomIn className="h-3.5 w-3.5" aria-hidden />
+                  </div>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+        </section>
+      </div>
+
       <AnimatePresence>
-        {selectedImage && (
+        {lightbox && (
           <motion.div
-            className="fixed inset-0 bg-black/95 backdrop-blur-2xl flex items-center justify-center z-50"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Image preview"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeLightbox}
           >
             <motion.div
-              className="relative max-w-4xl w-full p-4"
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
+              initial={{ scale: 0.96, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.96, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="relative max-h-[90vh] w-full max-w-5xl"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Close */}
               <button
+                type="button"
                 onClick={closeLightbox}
-                className="absolute top-0 right-0 m-4 bg-white/10 p-2 rounded-full"
+                className="absolute -top-1 right-0 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 md:-right-2 md:-top-12"
+                aria-label="Close"
               >
-                <X />
+                <X className="h-5 w-5" />
               </button>
-
-              {/* Download */}
-              <button
-                onClick={() => downloadImage(selectedImage)}
-                className="absolute top-0 left-0 m-4 bg-white/10 p-2 rounded-full"
+              <a
+                href={lightbox.src}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute -top-1 left-0 z-10 flex h-10 items-center gap-2 rounded-full bg-white/10 px-3 text-sm font-medium text-white transition hover:bg-white/20 md:-top-12"
+                aria-label="Open image in new tab"
               >
-                <Download />
-              </button>
-
-              <Image
-                src={`/images/lab-images/${selectedImage}`}
-                alt=""
-                width={1200}
-                height={800}
-                className="rounded-xl object-contain max-h-[80vh]"
-              />
+                <Download className="h-4 w-4" aria-hidden />
+                Open
+              </a>
+              <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-2xl">
+                <div className="relative max-h-[80vh] w-full">
+                  <Image
+                    src={lightbox.src}
+                    alt={lightbox.alt}
+                    width={1600}
+                    height={1000}
+                    className="max-h-[80vh] w-full object-contain"
+                    sizes="100vw"
+                  />
+                </div>
+                {(lightbox.subtitle || lightbox.alt) && (
+                  <div className="border-t border-white/10 bg-black/50 px-4 py-3 text-sm text-white/90">
+                    {lightbox.subtitle && (
+                      <p className="font-semibold text-white">{lightbox.subtitle}</p>
+                    )}
+                    <p className={lightbox.subtitle ? "mt-0.5 text-white/70" : ""}>{lightbox.alt}</p>
+                  </div>
+                )}
+              </div>
             </motion.div>
           </motion.div>
         )}

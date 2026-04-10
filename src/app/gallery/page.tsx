@@ -5,65 +5,59 @@ import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { CalendarDays, Download, Images, Sparkles, X, ZoomIn } from "lucide-react";
 
-/** Deterministic placeholder URLs (picsum seeds) for static export; swap for real assets later. */
+/** Seeded picsum URLs for stable static export; replace with site images when available. */
 const FEATURED = {
   src: "https://picsum.photos/seed/4c-gallery-featured/1920/1080",
-  alt: "Featured image from the 4C Research Group (sample photo)",
+  alt: "Featured image from the 4C Research Group",
   caption: "Featured",
 };
 
 const EVENTS_AND_WORKSHOPS = [
   {
     src: "https://picsum.photos/seed/4c-event-01/900/700",
-    alt: "Research symposium — sample event photo",
+    alt: "Research symposium",
     title: "Research symposium",
-    meta: "Sample image · add date & venue",
   },
   {
     src: "https://picsum.photos/seed/4c-event-02/900/700",
-    alt: "Team retreat — sample event photo",
+    alt: "Team retreat",
     title: "Team retreat",
-    meta: "Sample image · add date & venue",
   },
   {
     src: "https://picsum.photos/seed/4c-event-03/900/700",
-    alt: "Knowledge mobilization training — sample photo",
+    alt: "Knowledge mobilization training",
     title: "KM training",
-    meta: "Sample image · add date & venue",
   },
   {
     src: "https://picsum.photos/seed/4c-event-04/900/700",
-    alt: "Community talk — sample event photo",
+    alt: "Community talk",
     title: "Community talk",
-    meta: "Sample image · add date & venue",
   },
   {
     src: "https://picsum.photos/seed/4c-event-05/900/700",
-    alt: "Collaboration day — sample event photo",
+    alt: "Collaboration day",
     title: "Collaboration day",
-    meta: "Sample image · add date & venue",
   },
   {
     src: "https://picsum.photos/seed/4c-event-06/900/700",
-    alt: "Annual showcase — sample event photo",
+    alt: "Annual showcase",
     title: "Annual showcase",
-    meta: "Sample image · add date & venue",
   },
 ] as const;
 
 const OTHER_GALLERY = [
-  { src: "https://picsum.photos/seed/4c-misc-a/700/900", alt: "Lab life — sample gallery photo" },
-  { src: "https://picsum.photos/seed/4c-misc-b/800/600", alt: "Research setting — sample gallery photo" },
-  { src: "https://picsum.photos/seed/4c-misc-c/700/700", alt: "Team moment — sample gallery photo" },
-  { src: "https://picsum.photos/seed/4c-misc-d/900/650", alt: "Clinical collaboration — sample gallery photo" },
-  { src: "https://picsum.photos/seed/4c-misc-e/750/950", alt: "Poster or presentation — sample gallery photo" },
-  { src: "https://picsum.photos/seed/4c-misc-f/820/620", alt: "Workspace detail — sample gallery photo" },
-  { src: "https://picsum.photos/seed/4c-misc-g/760/840", alt: "Group discussion — sample gallery photo" },
-  { src: "https://picsum.photos/seed/4c-misc-h/880/660", alt: "Field or site visit — sample gallery photo" },
-  { src: "https://picsum.photos/seed/4c-misc-i/720/920", alt: "Celebration or milestone — sample gallery photo" },
-  { src: "https://picsum.photos/seed/4c-misc-j/800/800", alt: "Equipment or methods — sample gallery photo" },
-  { src: "https://picsum.photos/seed/4c-misc-k/840/640", alt: "Conference or travel — sample gallery photo" },
-  { src: "https://picsum.photos/seed/4c-misc-l/780/880", alt: "Candid lab moment — sample gallery photo" },
+  { src: "https://picsum.photos/seed/4c-misc-a/700/900", alt: "Lab life" },
+  { src: "https://picsum.photos/seed/4c-misc-b/800/600", alt: "Research setting" },
+  { src: "https://picsum.photos/seed/4c-misc-c/700/700", alt: "Team moment" },
+  { src: "https://picsum.photos/seed/4c-misc-d/900/650", alt: "Clinical collaboration" },
+  { src: "https://picsum.photos/seed/4c-misc-e/750/950", alt: "Poster or presentation" },
+  { src: "https://picsum.photos/seed/4c-misc-f/820/620", alt: "Workspace detail" },
+  { src: "https://picsum.photos/seed/4c-misc-g/760/840", alt: "Group discussion" },
+  { src: "https://picsum.photos/seed/4c-misc-h/880/660", alt: "Field or site visit" },
+  { src: "https://picsum.photos/seed/4c-misc-i/720/920", alt: "Celebration or milestone" },
+  { src: "https://picsum.photos/seed/4c-misc-j/800/800", alt: "Equipment or methods" },
+  { src: "https://picsum.photos/seed/4c-misc-k/840/640", alt: "Conference or travel" },
+  { src: "https://picsum.photos/seed/4c-misc-l/780/880", alt: "Candid lab moment" },
 ] as const;
 
 type LightboxItem = { src: string; alt: string; subtitle?: string };
@@ -133,9 +127,8 @@ export default function GalleryPage() {
             Gallery
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
-            Visual stories from our research, knowledge mobilization, and the people
-            who make pediatric critical care science happen. Replace sample images with
-            your own when ready—use clear captions and photo credit in the lightbox.
+            Visual stories from our research, knowledge mobilization, and the people who
+            make pediatric critical care science happen.
           </p>
         </header>
         <div
@@ -211,7 +204,7 @@ export default function GalleryPage() {
               <CalendarDays className="h-4 w-4" aria-hidden />,
               "On the calendar",
               "Events & workshops",
-              "Symposia, KM sessions, and partner-facing gatherings. Pair each photo with date, location, and a one-line takeaway when you go live.",
+              "Symposia, KM sessions, and partner-facing gatherings.",
               "consciousness",
             )}
 
@@ -248,7 +241,6 @@ export default function GalleryPage() {
                     <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-90" />
                     <div className="absolute bottom-0 left-0 right-0 p-4">
                       <p className="text-sm font-semibold text-white drop-shadow-sm">{item.title}</p>
-                      <p className="mt-0.5 text-xs text-white/75">{item.meta}</p>
                     </div>
                     <div className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 text-white opacity-0 backdrop-blur-md transition group-hover:opacity-100">
                       <ZoomIn className="h-4 w-4" aria-hidden />
@@ -266,7 +258,7 @@ export default function GalleryPage() {
             <Images className="h-4 w-4" aria-hidden />,
             "More moments",
             "Lab & field",
-            "Everything else: day-to-day lab life, posters, rounds-adjacent collaboration, and candid team moments. Keep alt text specific when you swap in real photos.",
+            "Day-to-day lab life, posters, collaboration, and candid team moments.",
             "care",
           )}
 

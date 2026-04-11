@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { CalendarDays, Download, Images, Sparkles, X, ZoomIn } from "lucide-react";
 
 /** Seeded picsum URLs for stable static export; replace with site images when available. */
@@ -126,8 +126,13 @@ function sectionHeading(
 
 export default function GalleryPage() {
   const [lightbox, setLightbox] = useState<LightboxItem | null>(null);
+  const reduceMotion = useReducedMotion();
 
   const closeLightbox = useCallback(() => setLightbox(null), []);
+
+  const lightboxEase = reduceMotion
+    ? { duration: 0.12 }
+    : { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] as const };
 
   useEffect(() => {
     if (!lightbox) return;
@@ -349,13 +354,14 @@ export default function GalleryPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={lightboxEase}
             onClick={closeLightbox}
           >
             <motion.div
-              initial={{ scale: 0.96, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.96, opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 6 }}
+              transition={lightboxEase}
               className="relative max-h-[90vh] w-full max-w-5xl"
               onClick={(e) => e.stopPropagation()}
             >

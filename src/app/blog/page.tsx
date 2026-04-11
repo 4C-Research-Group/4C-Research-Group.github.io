@@ -150,8 +150,8 @@ export default function BlogPage() {
 
       <div className="container mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
         {loading ? (
-          <div className="flex justify-center py-20 text-muted-foreground">
-            <Loader2 className="h-10 w-10 animate-spin text-brand" />
+          <div className="flex min-h-[min(60dvh,28rem)] items-center justify-center py-16 text-muted-foreground">
+            <Loader2 className="h-10 w-10 animate-spin text-brand" aria-hidden />
           </div>
         ) : posts.length === 0 ? (
           <div className="mx-auto max-w-lg rounded-2xl border border-border/80 bg-card p-8 text-center shadow-sm">

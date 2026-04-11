@@ -2,13 +2,17 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, ChevronUp, Loader2, Save } from "lucide-react";
+import { ChevronDown, ChevronUp, Loader2, Plus, Save, Trash2 } from "lucide-react";
 import GalleryPhotosPanel from "@/components/admin/GalleryPhotosPanel";
 import {
+  defaultGalleryCustomSection,
   GALLERY_SECTION_IDS,
   GALLERY_SECTION_ORDER_LABELS,
+  galleryCustomOrderKey,
+  isGallerySectionId,
+  parseGalleryCustomOrderKey,
+  type GalleryCustomSection,
   type GalleryPagePayload,
-  type GallerySectionId,
   type GallerySectionLabels,
 } from "@/data/gallery-page";
 import { mergeGalleryPagePayload } from "@/data/gallery-defaults";
@@ -19,10 +23,10 @@ import {
 } from "@/lib/gallery/supabase-gallery-page";
 
 function moveSectionOrder(
-  order: GallerySectionId[],
+  order: string[],
   from: number,
   to: number,
-): GallerySectionId[] {
+): string[] {
   if (to < 0 || to >= order.length || from === to) {
     return order;
   }
@@ -30,6 +34,34 @@ function moveSectionOrder(
   const [item] = next.splice(from, 1);
   next.splice(to, 0, item!);
   return next;
+}
+
+function defaultSectionOrderWithCustoms(
+  customSections: GalleryCustomSection[],
+): string[] {
+  return [
+    ...GALLERY_SECTION_IDS,
+    ...customSections.map((s) => galleryCustomOrderKey(s.id)),
+  ];
+}
+
+function galleryOrderEntryLabel(
+  key: string,
+  customs: GalleryCustomSection[],
+): string {
+  if (isGallerySectionId(key)) {
+    return GALLERY_SECTION_ORDER_LABELS[key];
+  }
+  const cid = parseGalleryCustomOrderKey(key);
+  if (cid) {
+    const c = customs.find((x) => x.id === cid);
+    if (c) {
+      const label = c.title.trim() || c.eyebrow.trim();
+      return label ? `Custom: ${label}` : `Custom section (${cid.slice(0, 8)}…)`;
+    }
+    return "Custom (removed — save to clean order)";
+  }
+  return key;
 }
 
 function Field({
@@ -111,6 +143,13 @@ function normalizeDraft(d: GalleryPagePayload): GalleryPagePayload {
     intro: t(d.intro),
     featuredCaption: t(d.featuredCaption),
     sectionOrder: d.sectionOrder,
+    customSections: d.customSections.map((s) => ({
+      ...s,
+      eyebrow: t(s.eyebrow),
+      title: t(s.title),
+      description: t(s.description),
+      body: t(s.body),
+    })),
     sectionVisibility: d.sectionVisibility,
     spotlight: sec(d.spotlight),
     eventsSection: sec(d.eventsSection),
@@ -189,6 +228,41 @@ export default function GalleryPageEditor() {
     } finally {
       setSaving(false);
     }
+  }
+
+  function addCustomSection() {
+    if (!draft) return;
+    const id =
+      typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `cs-${Date.now()}`;
+    const row = defaultGalleryCustomSection(id);
+    const key = galleryCustomOrderKey(id);
+    setDraft({
+      ...draft,
+      customSections: [...draft.customSections, row],
+      sectionOrder: [...draft.sectionOrder, key],
+    });
+  }
+
+  function removeCustomSection(id: string) {
+    if (!draft) return;
+    const key = galleryCustomOrderKey(id);
+    setDraft({
+      ...draft,
+      customSections: draft.customSections.filter((s) => s.id !== id),
+      sectionOrder: draft.sectionOrder.filter((e) => e !== key),
+    });
+  }
+
+  function updateCustomSection(id: string, patch: Partial<GalleryCustomSection>) {
+    if (!draft) return;
+    setDraft({
+      ...draft,
+      customSections: draft.customSections.map((s) =>
+        s.id === id ? { ...s, ...patch } : s,
+      ),
+    });
   }
 
   if (loading || !draft) {
@@ -287,9 +361,8 @@ export default function GalleryPageEditor() {
       <section className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
         <h2 className="text-sm font-semibold text-foreground">Visible sections</h2>
         <p className="text-xs text-muted-foreground">
-          Hide blocks on the public page without removing photos or copy. Photo order (slots) is
-          unchanged—reorder in the photo list when you are ready. Use{" "}
-          <span className="font-medium text-foreground">Section order</span> below to change top-to-bottom
+          Hide photo blocks without removing images. Custom sections use their own “Show on site”
+          toggle below. Use <span className="font-medium text-foreground">Section order</span> for
           placement.
         </p>
         <div className="grid gap-2 sm:grid-cols-2">
@@ -342,11 +415,99 @@ export default function GalleryPageEditor() {
 
       <section className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-sm font-semibold text-foreground">Custom sections</h2>
+          <button
+            type="button"
+            onClick={addCustomSection}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium hover:bg-muted/60"
+          >
+            <Plus className="h-3.5 w-3.5" aria-hidden />
+            Add section
+          </button>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Copy-only blocks (no photos). Plain text body; blank lines start a new paragraph. Each
+          appears on the public page when enabled and has content—position them in{" "}
+          <span className="font-medium text-foreground">Section order</span>.
+        </p>
+        {draft.customSections.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No extra sections yet.</p>
+        ) : (
+          <div className="space-y-6">
+            {draft.customSections.map((s) => (
+              <fieldset
+                key={s.id}
+                className="space-y-3 rounded-xl border border-border/80 bg-muted/10 p-4"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <legend className="text-sm font-semibold text-foreground">
+                    Custom · <span className="font-mono text-xs opacity-80">{s.id.slice(0, 8)}…</span>
+                  </legend>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="flex cursor-pointer items-center gap-2 text-xs font-medium text-muted-foreground">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-border"
+                        checked={s.enabled}
+                        onChange={(e) =>
+                          updateCustomSection(s.id, { enabled: e.target.checked })
+                        }
+                      />
+                      Show on site
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => removeCustomSection(s.id)}
+                      className="inline-flex items-center gap-1 rounded-md border border-destructive/40 px-2 py-1 text-xs font-medium text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" aria-hidden />
+                      Remove
+                    </button>
+                  </div>
+                </div>
+                <div className="grid gap-3 md:grid-cols-2">
+                  <Field
+                    label="Eyebrow"
+                    value={s.eyebrow}
+                    onChange={(eyebrow) => updateCustomSection(s.id, { eyebrow })}
+                  />
+                  <Field
+                    label="Title"
+                    value={s.title}
+                    onChange={(title) => updateCustomSection(s.id, { title })}
+                  />
+                </div>
+                <Field
+                  label="Description"
+                  value={s.description}
+                  onChange={(description) => updateCustomSection(s.id, { description })}
+                  multiline
+                  rows={2}
+                />
+                <Field
+                  label="Body (optional)"
+                  value={s.body}
+                  onChange={(body) => updateCustomSection(s.id, { body })}
+                  multiline
+                  rows={5}
+                  placeholder={"Paragraph one\n\nParagraph two"}
+                />
+              </fieldset>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-sm font-semibold text-foreground">Section order</h2>
           <button
             type="button"
             onClick={() =>
-              setDraft({ ...draft, sectionOrder: [...GALLERY_SECTION_IDS] })
+              setDraft({
+                ...draft,
+                sectionOrder: defaultSectionOrderWithCustoms(draft.customSections),
+              })
             }
             className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted/60"
           >
@@ -354,20 +515,20 @@ export default function GalleryPageEditor() {
           </button>
         </div>
         <p className="text-xs text-muted-foreground">
-          Public page order (top → bottom). Sections that are hidden or have no images are skipped;
-          they still keep their place in this list for when you show them again.
+          Public page order (top → bottom). Built-in photo blocks are skipped when hidden or empty;
+          custom sections are skipped when off or empty.
         </p>
         <ol className="space-y-2">
-          {draft.sectionOrder.map((id, index) => (
+          {draft.sectionOrder.map((entry, index) => (
             <li
-              key={id}
+              key={`${entry}-${index}`}
               className="flex flex-wrap items-center gap-2 rounded-lg border border-border/70 bg-muted/10 px-3 py-2.5"
             >
               <span className="w-7 shrink-0 text-xs font-semibold tabular-nums text-muted-foreground">
                 {index + 1}
               </span>
               <span className="min-w-0 flex-1 text-sm font-medium text-foreground">
-                {GALLERY_SECTION_ORDER_LABELS[id]}
+                {galleryOrderEntryLabel(entry, draft.customSections)}
               </span>
               <div className="flex shrink-0 gap-1">
                 <button

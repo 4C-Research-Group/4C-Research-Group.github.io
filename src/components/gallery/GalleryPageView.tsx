@@ -10,10 +10,15 @@ import {
   Download,
   Images,
   Sparkles,
+  TextQuote,
   X,
   ZoomIn,
 } from "lucide-react";
-import type { GalleryPagePayload, GallerySectionId } from "@/data/gallery-page";
+import {
+  parseGalleryCustomOrderKey,
+  type GalleryCustomSection,
+  type GalleryPagePayload,
+} from "@/data/gallery-page";
 import {
   GALLERY_ARCHIVE_PAGE_SIZE,
   GALLERY_CURATED_COUNT,
@@ -79,6 +84,15 @@ function sectionHeading(
   );
 }
 
+function customSectionHasContent(s: GalleryCustomSection): boolean {
+  return (
+    s.eyebrow.trim() !== "" ||
+    s.title.trim() !== "" ||
+    s.description.trim() !== "" ||
+    s.body.trim() !== ""
+  );
+}
+
 export default function GalleryPageView({
   payload,
   photos,
@@ -130,23 +144,70 @@ export default function GalleryPageView({
   const v = payload.sectionVisibility;
 
   const noPhotos = photos.length === 0;
-  const hasAnyGalleryContent =
-    !noPhotos &&
-    ((v.spotlight && !!hero) ||
-      (v.events && events.length > 0) ||
-      (v.lab && labGrid.length > 0) ||
-      (v.archive && archive.length > 0));
+  const wantsPhotoGrids =
+    v.spotlight || v.events || v.lab || v.archive;
 
   const orderedBlocks = useMemo(() => {
-    if (noPhotos) {
-      return [] as { id: GallerySectionId; node: ReactNode }[];
-    }
-    const out: { id: GallerySectionId; node: ReactNode }[] = [];
+    const customById = new Map(
+      payload.customSections.map((s) => [s.id, s] as const),
+    );
+    const out: { key: string; node: ReactNode }[] = [];
 
-    for (const id of payload.sectionOrder) {
-      if (id === "spotlight" && v.spotlight && hero) {
+    for (const entry of payload.sectionOrder) {
+      const cid = parseGalleryCustomOrderKey(entry);
+      if (cid) {
+        const cs = customById.get(cid);
+        if (
+          cs &&
+          cs.enabled &&
+          customSectionHasContent(cs)
+        ) {
+          const accent: SectionAccent =
+            out.length % 3 === 0
+              ? "cognition"
+              : out.length % 3 === 1
+                ? "consciousness"
+                : "care";
+          const hasHead =
+            cs.eyebrow.trim() !== "" ||
+            cs.title.trim() !== "" ||
+            cs.description.trim() !== "";
+          out.push({
+            key: entry,
+            node: (
+              <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 lg:py-16">
+                {hasHead &&
+                  sectionHeading(
+                    <TextQuote className="h-4 w-4" aria-hidden />,
+                    cs.eyebrow.trim() || "\u00a0",
+                    cs.title.trim() || cs.eyebrow.trim() || "Gallery note",
+                    cs.description.trim(),
+                    accent,
+                  )}
+                {cs.body.trim() !== "" && (
+                  <div
+                    className={`mx-auto max-w-3xl space-y-4 text-base leading-relaxed text-muted-foreground ${hasHead ? "mt-2" : ""}`}
+                  >
+                    {cs.body
+                      .trim()
+                      .split(/\n\n+/)
+                      .map((para, i) => (
+                        <p key={i} className="whitespace-pre-wrap">
+                          {para.trim()}
+                        </p>
+                      ))}
+                  </div>
+                )}
+              </section>
+            ),
+          });
+        }
+        continue;
+      }
+
+      if (entry === "spotlight" && !noPhotos && v.spotlight && hero) {
         out.push({
-          id,
+          key: entry,
           node: (
             <section
               className="relative mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8 lg:pb-20"
@@ -243,9 +304,9 @@ export default function GalleryPageView({
         continue;
       }
 
-      if (id === "events" && v.events && events.length > 0) {
+      if (entry === "events" && !noPhotos && v.events && events.length > 0) {
         out.push({
-          id,
+          key: entry,
           node: (
             <section className="relative bg-muted/25 py-16 lg:py-20">
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -305,9 +366,9 @@ export default function GalleryPageView({
         continue;
       }
 
-      if (id === "lab" && v.lab && labGrid.length > 0) {
+      if (entry === "lab" && !noPhotos && v.lab && labGrid.length > 0) {
         out.push({
-          id,
+          key: entry,
           node: (
             <section className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
               {sectionHeading(
@@ -355,9 +416,9 @@ export default function GalleryPageView({
         continue;
       }
 
-      if (id === "archive" && v.archive && archive.length > 0) {
+      if (entry === "archive" && !noPhotos && v.archive && archive.length > 0) {
         out.push({
-          id,
+          key: entry,
           node: (
             <section className="relative bg-muted/20 py-16 lg:py-20">
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -440,6 +501,7 @@ export default function GalleryPageView({
   }, [
     noPhotos,
     payload.sectionOrder,
+    payload.customSections,
     payload.spotlight,
     payload.eventsSection,
     payload.labSection,
@@ -460,6 +522,8 @@ export default function GalleryPageView({
     setLightbox,
     setArchivePage,
   ]);
+
+  const hasAnyGalleryContent = orderedBlocks.length > 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -483,32 +547,34 @@ export default function GalleryPageView({
           aria-hidden
         />
 
-        {noPhotos && (
-          <section className="mx-auto max-w-7xl px-4 py-12 text-center text-muted-foreground sm:px-6 lg:px-8">
-            <p className="text-sm">No photos yet. Add images from the admin gallery.</p>
+        {noPhotos && wantsPhotoGrids && (
+          <section className="mx-auto max-w-7xl px-4 py-8 text-center text-muted-foreground sm:px-6 lg:px-8">
+            <p className="text-sm">
+              No photos yet. Add images from the admin gallery to fill the photo blocks.
+            </p>
           </section>
         )}
 
-        {!noPhotos &&
-          orderedBlocks.map((block, i) => (
-            <div
-              key={block.id}
-              className={
-                i === 0
-                  ? "pt-6 lg:pt-8"
-                  : "border-t border-border/50 pt-10 lg:pt-12"
-              }
-            >
-              {block.node}
-            </div>
-          ))}
+        {orderedBlocks.map((block, i) => (
+          <div
+            key={block.key}
+            className={
+              i === 0
+                ? "pt-6 lg:pt-8"
+                : "border-t border-border/50 pt-10 lg:pt-12"
+            }
+          >
+            {block.node}
+          </div>
+        ))}
 
         {!noPhotos && !hasAnyGalleryContent && (
           <section className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
             <p className="text-sm text-muted-foreground">
-              Nothing is visible: every section is turned off, or no photos fill the slots for the
-              sections that are on. Adjust{" "}
-              <span className="font-medium text-foreground">Visible sections</span> and{" "}
+              Nothing is visible: built-in photo blocks are off or empty, and there are no enabled
+              custom sections with content. Adjust{" "}
+              <span className="font-medium text-foreground">Visible sections</span>,{" "}
+              <span className="font-medium text-foreground">Custom sections</span>, and{" "}
               <span className="font-medium text-foreground">Section order</span> under{" "}
               <span className="font-medium text-foreground">Admin → Gallery</span>.
             </p>

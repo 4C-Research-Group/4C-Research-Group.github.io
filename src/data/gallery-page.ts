@@ -16,12 +16,51 @@ export const GALLERY_SECTION_IDS: readonly GallerySectionId[] = [
   "archive",
 ];
 
+export function isGallerySectionId(x: string): x is GallerySectionId {
+  return (GALLERY_SECTION_IDS as readonly string[]).includes(x);
+}
+
 export const GALLERY_SECTION_ORDER_LABELS: Record<GallerySectionId, string> = {
   spotlight: "Spotlight & hero layout",
   events: "Events & workshops",
   lab: "Lab & field",
   archive: "Archive / all photos",
 };
+
+/** Prefix for entries in `sectionOrder` that point at `customSections` by id. */
+export const GALLERY_CUSTOM_ORDER_PREFIX = "custom:";
+
+export function galleryCustomOrderKey(sectionId: string): string {
+  return `${GALLERY_CUSTOM_ORDER_PREFIX}${sectionId}`;
+}
+
+export function parseGalleryCustomOrderKey(key: string): string | null {
+  if (!key.startsWith(GALLERY_CUSTOM_ORDER_PREFIX)) return null;
+  const id = key.slice(GALLERY_CUSTOM_ORDER_PREFIX.length).trim();
+  return id || null;
+}
+
+/** Extra copy-only sections (no photos). Toggle with `enabled`; place via `sectionOrder`. */
+export type GalleryCustomSection = {
+  id: string;
+  enabled: boolean;
+  eyebrow: string;
+  title: string;
+  description: string;
+  /** Plain text; blank lines become paragraphs. */
+  body: string;
+};
+
+export function defaultGalleryCustomSection(id: string): GalleryCustomSection {
+  return {
+    id,
+    enabled: true,
+    eyebrow: "",
+    title: "",
+    description: "",
+    body: "",
+  };
+}
 
 /** Toggle each layout block on the public gallery (photos still use fixed sort slots). */
 export type GallerySectionVisibility = {
@@ -50,8 +89,13 @@ export type GalleryPagePayload = {
   intro: string;
   /** Label on the hero image (first photo in sort order). */
   featuredCaption: string;
-  /** Top-to-bottom order of the four blocks (visibility still applies per block). */
-  sectionOrder: GallerySectionId[];
+  /**
+   * Top-to-bottom order. Each item is a built-in id (`spotlight` | `events` | `lab` | `archive`)
+   * or `custom:<uuid>` matching `customSections[].id`.
+   */
+  sectionOrder: string[];
+  /** Optional copy-only sections; add as many as needed. */
+  customSections: GalleryCustomSection[];
   sectionVisibility: GallerySectionVisibility;
   spotlight: GallerySectionLabels;
   eventsSection: GallerySectionLabels;
@@ -91,7 +135,7 @@ const sectionVisibility: GallerySectionVisibility = {
   archive: true,
 };
 
-const sectionOrder: GallerySectionId[] = [...GALLERY_SECTION_IDS];
+const sectionOrder: string[] = [...GALLERY_SECTION_IDS];
 
 export const galleryPageDefaults: GalleryPagePayload = {
   pageTitle: "Gallery",
@@ -99,6 +143,7 @@ export const galleryPageDefaults: GalleryPagePayload = {
     "Visual stories from our research, knowledge mobilization, and the people who make pediatric critical care science happen.",
   featuredCaption: "Featured",
   sectionOrder,
+  customSections: [],
   sectionVisibility,
   spotlight,
   eventsSection,

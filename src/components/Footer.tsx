@@ -43,7 +43,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative overflow-hidden bg-white text-slate-800">
+    <footer className="relative overflow-hidden border-t border-slate-200/90 bg-white text-slate-800">
       <div
         className="pointer-events-none absolute inset-0 bg-linear-to-b from-slate-50 via-white to-slate-50"
         aria-hidden

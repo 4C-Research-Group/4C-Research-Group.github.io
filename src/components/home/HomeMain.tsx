@@ -190,9 +190,11 @@ export default function HomeMain({
                 {home.hero.badge}
               </div>
 
-              <h1 className="text-[2.25rem] font-bold uppercase leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                <span className="text-brand">{home.hero.titleHighlight}</span>
-                {home.hero.titleRest}
+              <h1 className="text-[2.25rem] font-bold uppercase leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+                <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+                  {home.hero.titleHighlight}
+                  {home.hero.titleRest}
+                </span>
               </h1>
               <p className="mt-2 text-sm font-medium uppercase leading-snug tracking-wider text-muted-foreground sm:text-base">
                 {home.hero.tagline}

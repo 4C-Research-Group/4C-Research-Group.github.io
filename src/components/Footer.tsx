@@ -43,7 +43,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative overflow-hidden border-t border-slate-200/90 bg-white text-slate-800">
+    <footer className="relative overflow-hidden bg-white text-slate-800">
       <div
         className="pointer-events-none absolute inset-0 bg-linear-to-b from-slate-50 via-white to-slate-50"
         aria-hidden
@@ -55,10 +55,6 @@ export default function Footer() {
       />
       <div
         className="pointer-events-none absolute inset-0 bg-linear-to-b from-white/40 via-transparent to-slate-100/30"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-cognition via-consciousness to-care opacity-80"
         aria-hidden
       />
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">

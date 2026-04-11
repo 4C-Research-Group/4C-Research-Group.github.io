@@ -271,6 +271,22 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["blog_posts"]["Insert"]>;
         Relationships: [];
       };
+      collaborate_page_settings: {
+        Row: {
+          id: string;
+          payload: Json;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          payload: Json;
+          updated_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["collaborate_page_settings"]["Insert"]
+        >;
+        Relationships: [];
+      };
       team_member_testimonials: {
         Row: {
           id: string;

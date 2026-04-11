@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   FolderKanban,
+  Handshake,
   House,
   Images,
   Info,
@@ -51,6 +52,12 @@ const QUICK_LINKS = [
     title: "Join 4C Lab",
     desc: "Recruitment hero, apply section, testimonials copy, and CTA.",
     icon: UserPlus,
+  },
+  {
+    href: "/admin/collaborate/",
+    title: "Collaborate",
+    desc: "Partnerships, partners, funders, and contact block copy.",
+    icon: Handshake,
   },
   {
     href: "/admin/team/",

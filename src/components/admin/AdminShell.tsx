@@ -8,6 +8,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   ExternalLink,
   FolderKanban,
+  Handshake,
   House,
   Images,
   Info,
@@ -39,6 +40,7 @@ const NAV_BASE: NavItem[] = [
   { href: "/admin/about/", label: "About page", icon: Info },
   { href: "/admin/about-pi/", label: "About PI", icon: UserCircle },
   { href: "/admin/join-4c-lab/", label: "Join 4C Lab", icon: UserPlus },
+  { href: "/admin/collaborate/", label: "Collaborate", icon: Handshake },
   { href: "/admin/team/", label: "Team", icon: Users },
   { href: "/admin/projects/", label: "Projects", icon: FolderKanban },
   { href: "/admin/blog/", label: "Blog", icon: Newspaper },

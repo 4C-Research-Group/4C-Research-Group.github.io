@@ -60,6 +60,33 @@ const OTHER_GALLERY = [
   { src: "https://picsum.photos/seed/4c-misc-l/780/880", alt: "Candid lab moment" },
 ] as const;
 
+/** Side rails next to featured (same items omitted from main lab grid below). */
+const FEATURED_SIDESTRIP = OTHER_GALLERY.slice(0, 2);
+const LAB_GRID_ITEMS = OTHER_GALLERY.slice(2);
+
+/** Bento cell classes for lab grid (4-column md+). */
+const LAB_BENTO_CLASS: readonly string[] = [
+  "md:col-span-2 md:row-span-2 min-h-[220px] md:min-h-[280px]",
+  "md:col-span-2 md:col-start-3 md:row-start-1 min-h-[180px]",
+  "md:col-span-2 md:col-start-3 md:row-start-2 min-h-[180px]",
+  "md:col-span-1 min-h-[140px]",
+  "md:col-span-1 min-h-[140px]",
+  "md:col-span-1 min-h-[140px]",
+  "md:col-span-1 min-h-[140px]",
+  "md:col-span-2 min-h-[160px]",
+  "md:col-span-2 min-h-[160px]",
+  "md:col-span-4 min-h-[170px]",
+];
+
+const EVENT_BENTO_CLASS: readonly string[] = [
+  "md:col-span-4 md:row-span-2 md:row-start-1 md:col-start-1 min-h-[240px] md:min-h-0",
+  "md:col-span-2 md:row-start-1 md:col-start-5 min-h-[200px]",
+  "md:col-span-2 md:row-start-2 md:col-start-5 min-h-[200px]",
+  "md:col-span-2 md:row-start-3 md:col-start-1 min-h-[180px]",
+  "md:col-span-2 md:row-start-3 md:col-start-3 min-h-[180px]",
+  "md:col-span-2 md:row-start-3 md:col-start-5 min-h-[180px]",
+];
+
 type LightboxItem = { src: string; alt: string; subtitle?: string };
 
 type SectionAccent = "cognition" | "consciousness" | "care";
@@ -148,46 +175,78 @@ export default function GalleryPage() {
             "cognition",
           )}
 
-          <button
-            type="button"
-            onClick={() =>
-              setLightbox({
-                src: FEATURED.src,
-                alt: FEATURED.alt,
-                subtitle: FEATURED.caption,
-              })
-            }
-            aria-label={`${FEATURED.caption}: open larger preview`}
-            className="group relative mx-auto block w-full max-w-5xl overflow-hidden rounded-3xl border border-border/80 bg-card text-left shadow-lg shadow-black/[0.04] ring-1 ring-black/[0.04] transition hover:border-brand/25 hover:shadow-xl hover:shadow-brand/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
-          >
-            <div className="relative aspect-[21/9] w-full sm:aspect-[2.4/1]">
-              <Image
-                src={FEATURED.src}
-                alt={FEATURED.alt}
-                fill
-                className="object-cover transition duration-300 ease-out group-hover:scale-[1.02]"
-                sizes="(max-width: 1280px) 100vw, 1280px"
-                priority
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-black/55 via-black/10 to-transparent" />
-              <div className="absolute inset-0 opacity-0 transition group-hover:opacity-100">
-                <div className="absolute inset-0 bg-brand/10 mix-blend-overlay" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-4 p-6 sm:p-8">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-white/80">
-                    {FEATURED.caption}
-                  </p>
-                  <p className="mt-1 max-w-xl text-lg font-semibold text-white sm:text-xl">
-                    View larger
-                  </p>
+          <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-12 lg:gap-6">
+            <div className="lg:col-span-8">
+              <button
+                type="button"
+                onClick={() =>
+                  setLightbox({
+                    src: FEATURED.src,
+                    alt: FEATURED.alt,
+                    subtitle: FEATURED.caption,
+                  })
+                }
+                aria-label={`${FEATURED.caption}: open larger preview`}
+                className="group relative block h-full w-full overflow-hidden rounded-3xl border border-border/80 bg-card text-left shadow-lg shadow-black/[0.04] ring-1 ring-black/[0.04] transition hover:border-brand/25 hover:shadow-xl hover:shadow-brand/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+              >
+                <div className="relative aspect-[16/10] w-full lg:aspect-[4/3] lg:min-h-[min(72vh,520px)]">
+                  <Image
+                    src={FEATURED.src}
+                    alt={FEATURED.alt}
+                    fill
+                    className="object-cover transition duration-300 ease-out group-hover:scale-[1.02]"
+                    sizes="(max-width: 1024px) 100vw, 66vw"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/55 via-black/10 to-transparent" />
+                  <div className="absolute inset-0 opacity-0 transition group-hover:opacity-100">
+                    <div className="absolute inset-0 bg-brand/10 mix-blend-overlay" />
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 flex items-end justify-between gap-4 p-5 sm:p-7">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-white/80">
+                        {FEATURED.caption}
+                      </p>
+                      <p className="mt-1 max-w-xl text-lg font-semibold text-white sm:text-xl">
+                        View larger
+                      </p>
+                    </div>
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white backdrop-blur-md transition group-hover:bg-white/25 sm:h-12 sm:w-12">
+                      <ZoomIn className="h-5 w-5" aria-hidden />
+                    </span>
+                  </div>
                 </div>
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white backdrop-blur-md transition group-hover:bg-white/25">
-                  <ZoomIn className="h-5 w-5" aria-hidden />
-                </span>
-              </div>
+              </button>
             </div>
-          </button>
+            <div className="flex flex-col gap-4 lg:col-span-4">
+              {FEATURED_SIDESTRIP.map((item) => (
+                <button
+                  key={item.src}
+                  type="button"
+                  onClick={() => setLightbox({ src: item.src, alt: item.alt })}
+                  aria-label={`Open gallery image: ${item.alt}`}
+                  className="group relative min-h-[160px] flex-1 overflow-hidden rounded-2xl border border-border/80 bg-card text-left shadow-sm ring-1 ring-black/[0.03] transition hover:border-brand/25 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 lg:min-h-0"
+                >
+                  <div className="relative aspect-[16/10] h-full min-h-[160px] w-full lg:aspect-auto lg:min-h-[200px]">
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      fill
+                      className="object-cover transition duration-300 group-hover:scale-[1.02]"
+                      sizes="(max-width: 1024px) 100vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/45 via-transparent to-transparent" />
+                    <p className="absolute bottom-3 left-3 right-3 text-left text-sm font-semibold text-white drop-shadow-sm">
+                      {item.alt}
+                    </p>
+                    <div className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 text-white opacity-0 backdrop-blur-sm transition group-hover:opacity-100">
+                      <ZoomIn className="h-3.5 w-3.5" aria-hidden />
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
         </section>
 
         {/* Events & workshops */}
@@ -201,8 +260,8 @@ export default function GalleryPage() {
               "consciousness",
             )}
 
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {EVENTS_AND_WORKSHOPS.map((item) => (
+            <div className="grid grid-cols-1 gap-4 md:auto-rows-[minmax(200px,auto)] md:grid-cols-6 md:gap-4">
+              {EVENTS_AND_WORKSHOPS.map((item, index) => (
                 <button
                   key={item.src}
                   type="button"
@@ -214,19 +273,23 @@ export default function GalleryPage() {
                     })
                   }
                   aria-label={`${item.title}: open larger preview`}
-                  className="group relative overflow-hidden rounded-2xl border border-border/80 bg-card text-left shadow-sm ring-1 ring-black/[0.03] transition hover:-translate-y-0.5 hover:border-brand/20 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+                  className={`group relative min-h-[220px] overflow-hidden rounded-2xl border border-border/80 bg-card text-left shadow-sm ring-1 ring-black/[0.03] transition hover:border-brand/20 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 md:min-h-0 md:h-full ${EVENT_BENTO_CLASS[index] ?? ""}`}
                 >
-                  <div className="relative aspect-[4/3] w-full">
+                  <div className="relative aspect-[4/3] w-full md:absolute md:inset-0 md:aspect-auto md:h-full md:min-h-[200px]">
                     <Image
                       src={item.src}
                       alt={item.alt}
                       fill
                       className="object-cover transition duration-300 group-hover:scale-[1.03]"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw"
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-90" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <p className="text-sm font-semibold text-white drop-shadow-sm">{item.title}</p>
+                    <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5">
+                      <p
+                        className={`font-semibold text-white drop-shadow-sm ${index === 0 ? "text-base md:text-lg" : "text-sm"}`}
+                      >
+                        {item.title}
+                      </p>
                     </div>
                     <div className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 text-white opacity-0 backdrop-blur-md transition group-hover:opacity-100">
                       <ZoomIn className="h-4 w-4" aria-hidden />
@@ -238,7 +301,7 @@ export default function GalleryPage() {
           </div>
         </section>
 
-        {/* Other images — masonry-style columns */}
+        {/* Lab & field — bento grid (excludes side-rail images above) */}
         <section className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
           {sectionHeading(
             <Images className="h-4 w-4" aria-hidden />,
@@ -248,23 +311,22 @@ export default function GalleryPage() {
             "care",
           )}
 
-          <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4">
-            {OTHER_GALLERY.map((item) => (
+          <div className="grid grid-cols-2 gap-3 md:auto-rows-[minmax(150px,auto)] md:grid-cols-4 md:gap-4">
+            {LAB_GRID_ITEMS.map((item, index) => (
               <button
                 key={item.src}
                 type="button"
                 onClick={() => setLightbox({ src: item.src, alt: item.alt })}
                 aria-label={`Open gallery image: ${item.alt}`}
-                className="group relative block w-full break-inside-avoid overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.03] transition hover:border-brand/20 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
+                className={`group relative min-h-[140px] overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.03] transition hover:border-brand/20 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40 md:min-h-0 md:h-full ${LAB_BENTO_CLASS[index] ?? ""}`}
               >
-                <div className="relative w-full">
+                <div className="relative aspect-square w-full md:absolute md:inset-0 md:aspect-auto md:h-full md:min-h-[140px]">
                   <Image
                     src={item.src}
                     alt={item.alt}
-                    width={900}
-                    height={1200}
-                    className="h-auto w-full object-cover transition duration-300 group-hover:scale-[1.02]"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    fill
+                    className="object-cover transition duration-300 group-hover:scale-[1.02]"
+                    sizes="(max-width: 768px) 50vw, 25vw"
                   />
                   <div className="pointer-events-none absolute inset-0 bg-black/0 transition group-hover:bg-black/15" />
                   <div className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-lg bg-background/90 text-foreground opacity-0 shadow-sm backdrop-blur-sm transition group-hover:opacity-100">

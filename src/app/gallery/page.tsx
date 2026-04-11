@@ -5,6 +5,7 @@ import { Loader2 } from "lucide-react";
 import GalleryPageView from "@/components/gallery/GalleryPageView";
 import { mergeGalleryPagePayload } from "@/data/gallery-defaults";
 import type { GalleryPagePayload } from "@/data/gallery-page";
+import { withLabPlaceholdersIfEmpty } from "@/data/gallery-lab-placeholders";
 import { fetchGalleryPhotos, type GalleryPhoto } from "@/lib/gallery/supabase-gallery-photos";
 import { fetchGalleryPageContent } from "@/lib/gallery/supabase-gallery-page";
 
@@ -21,7 +22,7 @@ export default function GalleryPage() {
       const [p, ph] = await Promise.all([fetchGalleryPageContent(), fetchGalleryPhotos()]);
       if (!alive) return;
       setPayload(p);
-      setPhotos(ph);
+      setPhotos(withLabPlaceholdersIfEmpty(ph));
       setReady(true);
     })();
     return () => {

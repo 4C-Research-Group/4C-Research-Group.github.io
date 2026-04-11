@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2, Plus, Save, Trash2 } from "lucide-react";
+import { BookOpen, Loader2, Plus, Save, Trash2 } from "lucide-react";
 import type { KmPagePayload, KmProgramGroup } from "@/data/km-page";
 import { mergeKmPagePayload } from "@/data/km-page-defaults";
 import {
@@ -253,7 +253,14 @@ export default function KmPageEditor() {
             </p>
           ) : null}
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/admin/knowledge-mobilization/curriculum/"
+            className="inline-flex items-center gap-2 rounded-lg border border-brand/35 bg-brand/10 px-4 py-2 text-sm font-semibold text-brand transition hover:bg-brand/15"
+          >
+            <BookOpen className="h-4 w-4 shrink-0" aria-hidden />
+            Curriculum &amp; quizzes
+          </Link>
           <button
             type="button"
             disabled={saving}

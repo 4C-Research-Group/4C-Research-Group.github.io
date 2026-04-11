@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import {
+  BookOpen,
   ExternalLink,
   FolderKanban,
   GraduationCap,
@@ -33,6 +34,8 @@ type NavItem = {
   label: string;
   icon: LucideIcon;
   end?: boolean;
+  /** Match this path only (no child routes). Use for KM hub vs curriculum. */
+  exact?: boolean;
 };
 
 const NAV_BASE: NavItem[] = [
@@ -51,13 +54,25 @@ const NAV_BASE: NavItem[] = [
     href: "/admin/knowledge-mobilization/",
     label: "Knowledge Mobilization",
     icon: GraduationCap,
+    exact: true,
+  },
+  {
+    href: "/admin/knowledge-mobilization/curriculum/",
+    label: "Curriculum & quizzes",
+    icon: BookOpen,
   },
 ];
 
-function navActive(pathname: string, href: string, end?: boolean) {
+function navActive(
+  pathname: string,
+  href: string,
+  end?: boolean,
+  exact?: boolean,
+) {
   const p = (pathname.replace(/\/+$/, "") || "/") as string;
   if (end) return p === "/admin";
   const h = href.replace(/\/+$/, "") || "/";
+  if (exact) return p === h;
   return p === h || p.startsWith(`${h}/`);
 }
 
@@ -79,8 +94,8 @@ export default function AdminShell({
     router.refresh();
   }
 
-  function linkClass(href: string, end?: boolean) {
-    const active = navActive(pathname, href, end);
+  function linkClass(href: string, end?: boolean, exact?: boolean) {
+    const active = navActive(pathname, href, end, exact);
     return [
       "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
       active
@@ -115,11 +130,11 @@ export default function AdminShell({
       </div>
       {mobileOpen ? (
         <nav className="space-y-0.5 border-b border-border/60 bg-background px-3 py-3 lg:hidden">
-          {NAV_BASE.map(({ href, label, icon: Icon, end }) => (
+          {NAV_BASE.map(({ href, label, icon: Icon, end, exact }) => (
             <Link
               key={href}
               href={href}
-              className={linkClass(href, end)}
+              className={linkClass(href, end, exact)}
               onClick={() => setMobileOpen(false)}
             >
               <Icon className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
@@ -158,8 +173,12 @@ export default function AdminShell({
             </p>
           </div>
           <nav className="flex flex-1 flex-col gap-0.5 p-2">
-            {NAV_BASE.map(({ href, label, icon: Icon, end }) => (
-              <Link key={href} href={href} className={linkClass(href, end)}>
+            {NAV_BASE.map(({ href, label, icon: Icon, end, exact }) => (
+              <Link
+                key={href}
+                href={href}
+                className={linkClass(href, end, exact)}
+              >
                 <Icon className="h-4 w-4 shrink-0 opacity-80" aria-hidden />
                 {label}
               </Link>

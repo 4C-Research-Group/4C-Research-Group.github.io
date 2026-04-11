@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   ChevronDown,
   ChevronUp,
+  GraduationCap,
   Loader2,
   Plus,
   Save,
@@ -232,14 +233,23 @@ export default function KmCurriculumEditor() {
             </Link>
           </p>
         </div>
-        <button
-          type="button"
-          onClick={handleAddModule}
-          className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium"
-        >
-          <Plus className="h-4 w-4" aria-hidden />
-          New module
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/admin/knowledge-mobilization/"
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-muted/60"
+          >
+            <GraduationCap className="h-4 w-4 shrink-0" aria-hidden />
+            Hub &amp; registration copy
+          </Link>
+          <button
+            type="button"
+            onClick={handleAddModule}
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium"
+          >
+            <Plus className="h-4 w-4" aria-hidden />
+            New module
+          </button>
+        </div>
       </header>
 
       {err ? (

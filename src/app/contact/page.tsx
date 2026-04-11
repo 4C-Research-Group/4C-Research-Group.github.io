@@ -1,203 +1,128 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
 import {
   MapPin,
   Phone,
-  Mail,
   Clock,
   User,
-  Building2,
-  ArrowRight,
-  Sparkles,
+  ExternalLink,
 } from "lucide-react";
+import PageHero from "@/components/PageHero";
 import { contactPageContent } from "@/data/contact-page";
-
-function InfoRow({
-  icon: Icon,
-  iconClass,
-  title,
-  children,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  iconClass: string;
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex gap-4 rounded-xl border border-border/80 bg-card/80 p-4 shadow-sm ring-1 ring-black/[0.03]">
-      <div
-        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${iconClass}`}
-      >
-        <Icon className="h-5 w-5" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-        <div className="mt-1 text-sm leading-relaxed text-muted-foreground">
-          {children}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function ContactPage() {
   const contact = contactPageContent;
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/25">
-        <div className="absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom_right,white,transparent,white)]" />
-        <div className="container relative mx-auto px-4 py-14 sm:px-6 md:py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mx-auto max-w-3xl text-center"
-          >
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
-              <Sparkles className="h-4 w-4" />
-              Contact
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
-                {contact.hero_title}
-              </span>
-            </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              {contact.hero_description}
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        compact
+        title={contact.hero_title}
+        subtitle={contact.hero_description}
+      />
 
-      <div className="container mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45 }}
-          className="mb-10 overflow-hidden rounded-2xl border border-brand/20 bg-linear-to-br from-brand/12 via-brand/5 to-care/10 p-8 shadow-lg sm:p-10 md:text-center"
-        >
-          <h2 className="text-xl font-bold text-foreground sm:text-2xl">
-            Email the research group
-          </h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-            For collaborations, media, or general questions, send a message to
-            our lab inbox.
-          </p>
-          <div className="mt-6 flex flex-col items-stretch gap-3 sm:mx-auto sm:inline-flex sm:flex-row sm:items-center sm:justify-center">
-            <a
-              href={`mailto:${contact.email}`}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-md transition-colors hover:bg-brand-deep"
-            >
-              <Mail className="h-4 w-4 shrink-0" />
-              {contact.email}
-            </a>
-          </div>
-          <p className="mt-4 text-xs text-muted-foreground md:text-center">
-            We aim to reply within a few business days.
-          </p>
-        </motion.div>
-
-        <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
-          <div className="space-y-4 lg:col-span-5">
-            <motion.h2
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="text-lg font-bold tracking-tight text-foreground"
-            >
-              Lab details
-            </motion.h2>
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4 }}
-              className="space-y-3"
-            >
-              <InfoRow
-                icon={MapPin}
-                iconClass="bg-cognition/15 text-cognition"
-                title="Location"
-              >
-                {contact.address}
-              </InfoRow>
-              <InfoRow
-                icon={Phone}
-                iconClass="bg-consciousness/15 text-consciousness"
-                title="Phone"
-              >
+      <div className="border-t border-border/60 bg-muted/20">
+        <div className="container mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-14">
+            <div className="space-y-10 lg:col-span-5">
+              <section>
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Email
+                </h2>
                 <a
-                  href="tel:+15196858500"
-                  className="text-brand transition-colors hover:text-brand-deep"
+                  href={`mailto:${contact.email}`}
+                  className="mt-2 block text-lg font-medium text-brand underline-offset-4 hover:underline"
                 >
-                  {contact.phone}
+                  {contact.email}
                 </a>
-              </InfoRow>
-              <InfoRow
-                icon={Clock}
-                iconClass="bg-care/15 text-care"
-                title="Hours"
-              >
-                {contact.hours}
-              </InfoRow>
-              <InfoRow
-                icon={User}
-                iconClass="bg-brand/12 text-brand"
-                title="Research coordinator"
-              >
-                <p className="text-foreground">{contact.research_coordinator_name}</p>
-                <a
-                  href={`mailto:${contact.research_coordinator_email}`}
-                  className="mt-1 inline-block font-medium text-brand transition-colors hover:text-brand-deep"
-                >
-                  {contact.research_coordinator_email}
-                </a>
-              </InfoRow>
-            </motion.div>
+                <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                  For questions about our research, partnerships, or the lab.
+                </p>
+              </section>
 
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.05 }}
-              className="rounded-2xl border border-border bg-linear-to-br from-muted/40 to-card p-5 shadow-sm"
-            >
-              <h3 className="text-base font-semibold text-foreground">
-                Students
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Interested in research opportunities? Learn how to apply and
-                hear from past trainees.
+              <div className="h-px bg-border" />
+
+              <section className="space-y-6 text-sm">
+                <div className="flex gap-3">
+                  <MapPin
+                    className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground"
+                    aria-hidden
+                  />
+                  <div>
+                    <p className="font-medium text-foreground">Address</p>
+                    <p className="mt-1 leading-relaxed text-muted-foreground">
+                      {contact.address}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <Phone
+                    className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground"
+                    aria-hidden
+                  />
+                  <div>
+                    <p className="font-medium text-foreground">Phone</p>
+                    <a
+                      href="tel:+15196858500"
+                      className="mt-1 block text-muted-foreground transition-colors hover:text-brand"
+                    >
+                      {contact.phone}
+                    </a>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <Clock
+                    className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground"
+                    aria-hidden
+                  />
+                  <div>
+                    <p className="font-medium text-foreground">Hours</p>
+                    <p className="mt-1 text-muted-foreground">{contact.hours}</p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <User
+                    className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground"
+                    aria-hidden
+                  />
+                  <div>
+                    <p className="font-medium text-foreground">
+                      Research coordinator
+                    </p>
+                    <p className="mt-1 text-muted-foreground">
+                      {contact.research_coordinator_name}
+                    </p>
+                    <a
+                      href={`mailto:${contact.research_coordinator_email}`}
+                      className="mt-1 inline-block text-brand underline-offset-4 hover:underline"
+                    >
+                      {contact.research_coordinator_email}
+                    </a>
+                  </div>
+                </div>
+              </section>
+
+              <div className="h-px bg-border" />
+
+              <p className="text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">Students:</span>{" "}
+                Interested in joining the team?{" "}
+                <Link
+                  href="/join-4c-lab"
+                  className="font-medium text-brand underline-offset-4 hover:underline"
+                >
+                  Join 4C Lab
+                </Link>
+                .
               </p>
-              <Link
-                href="/join-4c-lab"
-                className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-brand hover:text-brand-deep"
-              >
-                Join 4C Lab
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </motion.div>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45 }}
-            className="flex flex-col lg:col-span-7"
-          >
-            <div className="flex items-center gap-3 pb-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cognition/15">
-                <Building2 className="h-5 w-5 text-cognition" />
-              </div>
-              <h2 className="text-lg font-bold text-foreground">Visit us</h2>
             </div>
-            <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
-              <div className="min-h-[280px] w-full flex-1 sm:min-h-[320px] lg:min-h-[360px]">
+
+            <div className="lg:col-span-7">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Map
+              </h2>
+              <div className="mt-3 overflow-hidden rounded-xl border border-border bg-card shadow-sm">
                 <iframe
                   src={contact.map_embed_url}
                   width="100%"
@@ -207,20 +132,20 @@ export default function ContactPage() {
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   title="Victoria Hospital & Children's Hospital"
-                  className="h-full min-h-[280px] w-full sm:min-h-[320px] lg:min-h-[360px]"
+                  className="aspect-[4/3] min-h-[260px] w-full sm:min-h-[320px] lg:aspect-auto lg:min-h-[380px]"
                 />
               </div>
+              <a
+                href="https://maps.app.goo.gl/NHAV4ZiR9p3aeGGW6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-brand underline-offset-4 hover:underline"
+              >
+                Open in Google Maps
+                <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+              </a>
             </div>
-            <a
-              href="https://maps.app.goo.gl/NHAV4ZiR9p3aeGGW6"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 text-sm font-semibold text-background transition-opacity hover:opacity-90 sm:w-auto sm:self-start"
-            >
-              Open in Google Maps
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

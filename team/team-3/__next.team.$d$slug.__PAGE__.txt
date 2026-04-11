@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-3:I[97367,["/_next/static/chunks/0nxipsl3b_2.l.js","/_next/static/chunks/00-csyj9a6t-x.js","/_next/static/chunks/0qacn2654yiyb.js","/_next/static/chunks/0laewqmn0h4.~.js"],"OutletBoundary"]
+3:I[97367,["/_next/static/chunks/0~3w_5tbf77az.js","/_next/static/chunks/00-csyj9a6t-x.js","/_next/static/chunks/0qacn2654yiyb.js","/_next/static/chunks/0pq7l8.3hy3x4.js","/_next/static/chunks/0laewqmn0h4.~.js"],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":["$L2",[["$","script","script-0",{"src":"/_next/static/chunks/0m7n1o184d62p.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/0pq7l8.3hy3x4.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"XxX7oniJqm9HedOxL8Zi5"}
+0:{"rsc":["$","$1","c",{"children":["$L2",[["$","script","script-0",{"src":"/_next/static/chunks/10hy~d50efmbq.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"Qqa-km8M4JsJNVKqTQb_z"}
 5:null
 2:E{"digest":"NEXT_REDIRECT;replace;/team/karen-wong/;308;"}

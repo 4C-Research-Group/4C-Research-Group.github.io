@@ -10,6 +10,7 @@ import {
   FileText,
   FolderKanban,
   House,
+  Images,
   Info,
   LayoutDashboard,
   LogOut,
@@ -43,6 +44,7 @@ const NAV_BASE: NavItem[] = [
   { href: "/admin/projects/", label: "Projects", icon: FolderKanban },
   { href: "/admin/blog/", label: "Blog", icon: Newspaper },
   { href: "/admin/research/", label: "Research page", icon: Microscope },
+  { href: "/admin/gallery/", label: "Gallery", icon: Images },
   { href: "/admin/content/", label: "Content", icon: FileText },
 ];
 

@@ -195,6 +195,22 @@ export interface Database {
         >;
         Relationships: [];
       };
+      gallery_page_settings: {
+        Row: {
+          id: string;
+          payload: Json;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          payload: Json;
+          updated_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["gallery_page_settings"]["Insert"]
+        >;
+        Relationships: [];
+      };
       blog_posts: {
         Row: {
           id: string;

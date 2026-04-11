@@ -7,6 +7,7 @@ import {
   FileText,
   FolderKanban,
   House,
+  Images,
   Info,
   LayoutDashboard,
   Loader2,
@@ -75,6 +76,12 @@ const QUICK_LINKS = [
     title: "Research page",
     desc: "Themes, projects, collaborations, CTA.",
     icon: Microscope,
+  },
+  {
+    href: "/admin/gallery/",
+    title: "Gallery",
+    desc: "Featured image, events bento, mosaic tiles, and copy.",
+    icon: Images,
   },
   {
     href: "/admin/content/",

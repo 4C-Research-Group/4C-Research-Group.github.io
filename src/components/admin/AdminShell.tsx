@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
 import {
   ExternalLink,
-  FileText,
   FolderKanban,
   House,
   Images,
@@ -45,7 +44,6 @@ const NAV_BASE: NavItem[] = [
   { href: "/admin/blog/", label: "Blog", icon: Newspaper },
   { href: "/admin/research/", label: "Research page", icon: Microscope },
   { href: "/admin/gallery/", label: "Gallery", icon: Images },
-  { href: "/admin/content/", label: "Content", icon: FileText },
 ];
 
 function navActive(pathname: string, href: string, end?: boolean) {

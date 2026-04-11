@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  FileText,
   FolderKanban,
   House,
   Images,
@@ -80,14 +79,8 @@ const QUICK_LINKS = [
   {
     href: "/admin/gallery/",
     title: "Gallery",
-    desc: "Featured image, events bento, mosaic tiles, and copy.",
+    desc: "Photos, layout sections, copy, and custom blocks.",
     icon: Images,
-  },
-  {
-    href: "/admin/content/",
-    title: "Page content",
-    desc: "Hero text and snippets per page.",
-    icon: FileText,
   },
 ] as const;
 

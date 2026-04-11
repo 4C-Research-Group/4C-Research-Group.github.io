@@ -25,27 +25,27 @@ export default function Footer() {
     { name: "Knowledge Mobilization", href: "/knowledge-mobilization" },
   ];
 
-  /** Always dark footer with site brand colors (cognition / consciousness / care) in the gradient. */
+  /** Light footer: soft slate base with brand-tinted mesh (always reads as light). */
   const linkClass =
-    "text-[13px] font-medium tracking-tight text-zinc-400 transition-colors hover:text-brand";
+    "text-[13px] font-medium tracking-tight text-slate-600 transition-colors hover:text-brand";
 
   const sectionTitleClass =
-    "mb-4 text-sm font-semibold tracking-tight text-zinc-100";
+    "mb-4 text-sm font-semibold tracking-tight text-slate-900";
 
   const brandMeshStyle: CSSProperties = {
     backgroundImage: [
-      "radial-gradient(ellipse 110% 90% at 0% 100%, color-mix(in srgb, var(--cognition) 58%, transparent), transparent 55%)",
-      "radial-gradient(ellipse 100% 80% at 100% 0%, color-mix(in srgb, var(--consciousness) 52%, transparent), transparent 52%)",
-      "radial-gradient(ellipse 85% 65% at 50% 100%, color-mix(in srgb, var(--care) 48%, transparent), transparent 50%)",
-      "radial-gradient(ellipse 60% 50% at 40% 20%, color-mix(in srgb, var(--brand-default) 22%, transparent), transparent 60%)",
+      "radial-gradient(ellipse 110% 90% at 0% 100%, color-mix(in srgb, var(--cognition) 20%, transparent), transparent 55%)",
+      "radial-gradient(ellipse 100% 80% at 100% 0%, color-mix(in srgb, var(--consciousness) 18%, transparent), transparent 52%)",
+      "radial-gradient(ellipse 85% 65% at 50% 100%, color-mix(in srgb, var(--care) 16%, transparent), transparent 50%)",
+      "radial-gradient(ellipse 60% 50% at 40% 20%, color-mix(in srgb, var(--brand-default) 12%, transparent), transparent 60%)",
     ].join(", "),
-    opacity: 0.92,
+    opacity: 1,
   };
 
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-slate-900 text-zinc-100">
+    <footer className="relative overflow-hidden border-t border-slate-200/90 bg-white text-slate-800">
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-800/90 via-slate-900 to-[rgb(15,23,42)]"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-slate-50 via-white to-slate-50"
         aria-hidden
       />
       <div
@@ -54,11 +54,11 @@ export default function Footer() {
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-900/20 via-slate-900/35 to-slate-900/50"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-white/40 via-transparent to-slate-100/30"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-cognition via-consciousness to-care opacity-90"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-cognition via-consciousness to-care opacity-80"
         aria-hidden
       />
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
@@ -75,7 +75,7 @@ export default function Footer() {
                 loading="eager"
                 width={40}
                 height={40}
-                className="h-9 w-9 shrink-0 rounded-lg object-cover ring-1 ring-white/10 sm:h-10 sm:w-10"
+                className="h-9 w-9 shrink-0 rounded-lg object-cover ring-1 ring-slate-200/90 sm:h-10 sm:w-10"
               />
               <div className="min-w-max shrink-0 text-left">
                 <span className="block whitespace-nowrap text-[15px] font-semibold uppercase tracking-tight sm:text-base">
@@ -90,7 +90,7 @@ export default function Footer() {
                 </span>
               </div>
             </Link>
-            <p className="max-w-sm text-sm leading-relaxed text-zinc-400">
+            <p className="max-w-sm text-sm leading-relaxed text-slate-600">
               Advancing research in cognition, consciousness, and critical care
               through innovative science and collaboration.
             </p>
@@ -99,7 +99,7 @@ export default function Footer() {
                 href="https://x.com/Mission_FourC"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-brand"
+                className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-200/70 hover:text-brand"
                 aria-label="Twitter"
               >
                 <Twitter className="h-4 w-4" />
@@ -108,7 +108,7 @@ export default function Footer() {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-brand"
+                className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-200/70 hover:text-brand"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="h-4 w-4" />
@@ -117,7 +117,7 @@ export default function Footer() {
                 href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-brand"
+                className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-200/70 hover:text-brand"
                 aria-label="GitHub"
               >
                 <Github className="h-4 w-4" />
@@ -126,7 +126,7 @@ export default function Footer() {
                 href="https://www.researchgate.net/lab/4C-Foresee-Research-Group-Cognition-Consciousness-Critical-Care-Saptharishi-Lalgudi-Ganesan"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-brand"
+                className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-200/70 hover:text-brand"
                 aria-label="ResearchGate"
               >
                 <FaResearchgate className="h-4 w-4" aria-hidden />
@@ -167,10 +167,10 @@ export default function Footer() {
             <address className="not-italic space-y-3">
               <div className="flex gap-3">
                 <MapPin
-                  className="mt-0.5 h-4 w-4 shrink-0 text-cognition/80"
+                  className="mt-0.5 h-4 w-4 shrink-0 text-cognition"
                   aria-hidden
                 />
-                <span className="text-sm leading-relaxed text-zinc-400">
+                <span className="text-sm leading-relaxed text-slate-600">
                   800 Commissioners Rd E
                   <br />
                   London, ON N6A 5W9
@@ -180,24 +180,24 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-3">
                 <Mail
-                  className="h-4 w-4 shrink-0 text-consciousness/80"
+                  className="h-4 w-4 shrink-0 text-consciousness"
                   aria-hidden
                 />
                 <a
                   href="mailto:rishi.ganesan@lhsc.on.ca"
-                  className="text-sm text-zinc-400 transition-colors hover:text-brand"
+                  className="text-sm text-slate-600 transition-colors hover:text-brand"
                 >
                   rishi.ganesan@lhsc.on.ca
                 </a>
               </div>
               <div className="flex items-center gap-3">
                 <Phone
-                  className="h-4 w-4 shrink-0 text-care/80"
+                  className="h-4 w-4 shrink-0 text-care"
                   aria-hidden
                 />
                 <a
                   href="tel:+15196858000"
-                  className="text-sm text-zinc-400 transition-colors hover:text-brand"
+                  className="text-sm text-slate-600 transition-colors hover:text-brand"
                 >
                   +1 (519) 685-8500 Ext. 74702
                 </a>
@@ -207,9 +207,9 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="mt-12 border-t border-white/10 pt-8">
+        <div className="mt-12 border-t border-slate-200/90 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:items-center">
-            <p className="text-center text-xs text-zinc-500 sm:text-left sm:text-[13px]">
+            <p className="text-center text-xs text-slate-500 sm:text-left sm:text-[13px]">
               © {currentYear}{" "}
               <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text font-medium uppercase tracking-wide text-transparent">
                 4C Research Group

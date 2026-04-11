@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+  BookOpen,
   FolderKanban,
   GraduationCap,
   Handshake,
@@ -93,8 +94,14 @@ const QUICK_LINKS = [
   {
     href: "/admin/knowledge-mobilization/",
     title: "Knowledge Mobilization",
-    desc: "Hub copy, registration gate text, programs/tracks, certificate blurb.",
+    desc: "Hub copy, registration gate, programs/tracks, certificate blurb.",
     icon: GraduationCap,
+  },
+  {
+    href: "/admin/knowledge-mobilization/curriculum/",
+    title: "KM curriculum",
+    desc: "Modules, lesson topics, video URLs, and quiz questions.",
+    icon: BookOpen,
   },
 ] as const;
 

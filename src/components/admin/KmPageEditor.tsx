@@ -226,13 +226,15 @@ export default function KmPageEditor() {
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Hub hero, how-it-works copy, registration screen text, certificate
-            blurb, and program groupings (micro-credentials / tracks). Module
-            content and quizzes still come from curriculum data (Supabase seed
-            or{" "}
-            <code className="rounded bg-muted px-1 text-xs">
-              knowledge-mobilization.ts
-            </code>
-            ). Public hub:{" "}
+            blurb, and program groupings (micro-credentials / tracks). For
+            modules, topics, and quiz questions use{" "}
+            <Link
+              href="/admin/knowledge-mobilization/curriculum/"
+              className="font-medium text-brand hover:underline"
+            >
+              Curriculum editor
+            </Link>
+            . Public hub:{" "}
             <Link
               href="/knowledge-mobilization/"
               className="font-medium text-brand hover:underline"

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { CalendarDays, Download, Images, Sparkles, X, ZoomIn } from "lucide-react";
 
 /** Seeded picsum URLs for stable static export; replace with site images when available. */
@@ -99,7 +99,6 @@ function sectionHeading(
 
 export default function GalleryPage() {
   const [lightbox, setLightbox] = useState<LightboxItem | null>(null);
-  const reduceMotion = useReducedMotion();
 
   const closeLightbox = useCallback(() => setLightbox(null), []);
 
@@ -149,11 +148,8 @@ export default function GalleryPage() {
             "cognition",
           )}
 
-          <motion.button
+          <button
             type="button"
-            {...(reduceMotion
-              ? {}
-              : { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.45 } })}
             onClick={() =>
               setLightbox({
                 src: FEATURED.src,
@@ -169,7 +165,7 @@ export default function GalleryPage() {
                 src={FEATURED.src}
                 alt={FEATURED.alt}
                 fill
-                className="object-cover transition duration-700 ease-out group-hover:scale-[1.03]"
+                className="object-cover transition duration-300 ease-out group-hover:scale-[1.02]"
                 sizes="(max-width: 1280px) 100vw, 1280px"
                 priority
               />
@@ -191,7 +187,7 @@ export default function GalleryPage() {
                 </span>
               </div>
             </div>
-          </motion.button>
+          </button>
         </section>
 
         {/* Events & workshops */}
@@ -206,17 +202,10 @@ export default function GalleryPage() {
             )}
 
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {EVENTS_AND_WORKSHOPS.map((item, index) => (
-                <motion.button
+              {EVENTS_AND_WORKSHOPS.map((item) => (
+                <button
                   key={item.src}
                   type="button"
-                  {...(reduceMotion
-                    ? {}
-                    : {
-                        initial: { opacity: 0, y: 14 },
-                        animate: { opacity: 1, y: 0 },
-                        transition: { duration: 0.4, delay: index * 0.05 },
-                      })}
                   onClick={() =>
                     setLightbox({
                       src: item.src,
@@ -232,7 +221,7 @@ export default function GalleryPage() {
                       src={item.src}
                       alt={item.alt}
                       fill
-                      className="object-cover transition duration-500 group-hover:scale-105"
+                      className="object-cover transition duration-300 group-hover:scale-[1.03]"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-90" />
@@ -243,7 +232,7 @@ export default function GalleryPage() {
                       <ZoomIn className="h-4 w-4" aria-hidden />
                     </div>
                   </div>
-                </motion.button>
+                </button>
               ))}
             </div>
           </div>
@@ -260,17 +249,10 @@ export default function GalleryPage() {
           )}
 
           <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4">
-            {OTHER_GALLERY.map((item, index) => (
-              <motion.button
+            {OTHER_GALLERY.map((item) => (
+              <button
                 key={item.src}
                 type="button"
-                {...(reduceMotion
-                  ? {}
-                  : {
-                      initial: { opacity: 0, y: 12 },
-                      animate: { opacity: 1, y: 0 },
-                      transition: { duration: 0.35, delay: Math.min(index * 0.04, 0.4) },
-                    })}
                 onClick={() => setLightbox({ src: item.src, alt: item.alt })}
                 aria-label={`Open gallery image: ${item.alt}`}
                 className="group relative block w-full break-inside-avoid overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm ring-1 ring-black/[0.03] transition hover:border-brand/20 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
@@ -281,7 +263,7 @@ export default function GalleryPage() {
                     alt={item.alt}
                     width={900}
                     height={1200}
-                    className="h-auto w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+                    className="h-auto w-full object-cover transition duration-300 group-hover:scale-[1.02]"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                   <div className="pointer-events-none absolute inset-0 bg-black/0 transition group-hover:bg-black/15" />
@@ -289,7 +271,7 @@ export default function GalleryPage() {
                     <ZoomIn className="h-3.5 w-3.5" aria-hidden />
                   </div>
                 </div>
-              </motion.button>
+              </button>
             ))}
           </div>
         </section>

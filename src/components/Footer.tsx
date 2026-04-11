@@ -3,15 +3,8 @@
 import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Twitter,
-  Linkedin,
-  Github,
-  ExternalLink,
-} from "lucide-react";
+import { Mail, Phone, MapPin, Twitter, Linkedin, Github } from "lucide-react";
+import { FaResearchgate } from "react-icons/fa";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -136,7 +129,7 @@ export default function Footer() {
                 className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-brand"
                 aria-label="ResearchGate"
               >
-                <ExternalLink className="h-4 w-4" />
+                <FaResearchgate className="h-4 w-4" aria-hidden />
               </a>
             </div>
           </div>

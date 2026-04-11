@@ -1,55 +1,33 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 /**
- * Decorative gradient mesh for the home hero: floating color orbs, rotating conic wash,
- * and soft diagonal sheen. All pointer-events-none; motion is gated via `prefers-reduced-motion` in CSS.
+ * Soft color-only backdrop for the home hero (no grid, shapes, or motion graphics).
  */
 export function HeroGradientBackdrop() {
+  const washStyle: CSSProperties = {
+    backgroundImage: [
+      "radial-gradient(ellipse 100% 85% at 15% 45%, color-mix(in srgb, var(--cognition) 14%, transparent), transparent 58%)",
+      "radial-gradient(ellipse 90% 75% at 92% 35%, color-mix(in srgb, var(--consciousness) 12%, transparent), transparent 52%)",
+      "radial-gradient(ellipse 80% 55% at 45% 100%, color-mix(in srgb, var(--care) 11%, transparent), transparent 50%)",
+    ].join(", "),
+  };
+
   return (
     <>
       <div
-        className="pointer-events-none absolute inset-0 bg-linear-to-tr from-brand/[0.04] via-transparent to-brand/[0.06]"
+        className="pointer-events-none absolute inset-0 bg-linear-to-tr from-brand/[0.06] via-transparent to-brand/[0.05]"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-grid-black/[0.04] mask-[linear-gradient(to_bottom,white_0%,white_55%,transparent_100%)]"
-        aria-hidden
-      />
-
-      {/* Floating orbs — brand / consciousness / care */}
-      <div
-        className="hero-orb hero-orb-a pointer-events-none absolute -left-32 top-1/3 h-[420px] w-[420px] rounded-full bg-brand/12 blur-3xl"
+        className="pointer-events-none absolute inset-0 opacity-[0.95]"
+        style={washStyle}
         aria-hidden
       />
       <div
-        className="hero-orb hero-orb-b pointer-events-none absolute -right-28 bottom-0 h-[380px] w-[380px] rounded-full bg-consciousness/12 blur-3xl"
-        aria-hidden
-      />
-      <div
-        className="hero-orb hero-orb-c pointer-events-none absolute left-1/2 top-0 h-56 w-[min(85%,44rem)] rounded-full bg-care/10 blur-3xl"
-        aria-hidden
-      />
-
-      {/* Extra depth: smaller accent blob */}
-      <div
-        className="hero-orb hero-orb-d pointer-events-none absolute bottom-1/4 left-1/4 h-64 w-64 rounded-full bg-cognition/8 blur-3xl"
-        aria-hidden
-      />
-
-      {/* Slow rotating conic wash (right side, behind column content) */}
-      <div
-        className="pointer-events-none absolute right-[-18%] top-[22%] h-[min(92vw,680px)] w-[min(92vw,680px)] -translate-y-1/2"
-        aria-hidden
-      >
-        <div className="hero-conic-layer hero-conic-spin h-full w-full rounded-full opacity-40 mix-blend-multiply blur-2xl" />
-      </div>
-
-      {/* Moving diagonal sheen */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.35] hero-sheen"
+        className="pointer-events-none absolute inset-0 bg-linear-to-br from-transparent via-care/[0.04] to-transparent"
         aria-hidden
       />
     </>

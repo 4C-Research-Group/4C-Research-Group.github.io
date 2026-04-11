@@ -173,18 +173,6 @@ export default function HomeMain({
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="relative min-w-0 lg:col-span-7"
             >
-              <div
-                className="pointer-events-none absolute -left-2 top-14 -z-[1] h-32 w-32 text-brand/25 sm:top-16 sm:h-40 sm:w-40 lg:top-20"
-                aria-hidden
-              >
-                <Image
-                  src={publicImageSrc(home.hero.brainPatternSrc)}
-                  alt=""
-                  width={160}
-                  height={160}
-                  className="h-full w-full object-contain"
-                />
-              </div>
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-brand sm:text-[13px]">
                 <Sparkles className="h-3.5 w-3.5 text-brand/80" aria-hidden />
                 {home.hero.badge}

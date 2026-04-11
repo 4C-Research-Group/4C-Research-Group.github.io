@@ -120,10 +120,7 @@ export default function GalleryPage() {
     <div className="min-h-screen bg-background">
       <div className="relative bg-linear-to-b from-muted/40 via-background to-background">
         <header className="mx-auto max-w-7xl px-4 pt-6 pb-2 sm:px-6 lg:px-8 lg:pt-8">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Cognition · Consciousness · Critical Care
-          </p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
             Gallery
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">

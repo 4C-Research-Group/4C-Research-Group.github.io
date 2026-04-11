@@ -3,16 +3,68 @@
  */
 
 import {
+  GALLERY_SECTION_IDS,
   galleryPageDefaults,
   type GalleryPagePayload,
+  type GallerySectionId,
   type GallerySectionLabels,
+  type GallerySectionVisibility,
 } from "./gallery-page";
+
+function isGallerySectionId(x: unknown): x is GallerySectionId {
+  return (
+    x === "spotlight" ||
+    x === "events" ||
+    x === "lab" ||
+    x === "archive"
+  );
+}
+
+function mergeSectionOrder(
+  def: GallerySectionId[],
+  raw: unknown,
+): GallerySectionId[] {
+  if (!Array.isArray(raw)) {
+    return [...def];
+  }
+  const seen = new Set<GallerySectionId>();
+  const out: GallerySectionId[] = [];
+  for (const x of raw) {
+    if (isGallerySectionId(x) && !seen.has(x)) {
+      seen.add(x);
+      out.push(x);
+    }
+  }
+  for (const id of GALLERY_SECTION_IDS) {
+    if (!seen.has(id)) {
+      out.push(id);
+    }
+  }
+  return out;
+}
 
 function clone<T>(v: T): T {
   return structuredClone(v);
 }
 
 export const GALLERY_DEFAULTS: GalleryPagePayload = clone(galleryPageDefaults);
+
+function mergeVisibility(
+  def: GallerySectionVisibility,
+  raw: unknown,
+): GallerySectionVisibility {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    return { ...def };
+  }
+  const r = raw as Record<string, unknown>;
+  return {
+    spotlight:
+      typeof r.spotlight === "boolean" ? r.spotlight : def.spotlight,
+    events: typeof r.events === "boolean" ? r.events : def.events,
+    lab: typeof r.lab === "boolean" ? r.lab : def.lab,
+    archive: typeof r.archive === "boolean" ? r.archive : def.archive,
+  };
+}
 
 function mergeSection(
   def: GallerySectionLabels,
@@ -48,6 +100,8 @@ export function mergeGalleryPagePayload(raw: unknown): GalleryPagePayload {
             "string"
           ? String((r.featured as Record<string, unknown>).caption)
           : d.featuredCaption,
+    sectionOrder: mergeSectionOrder(d.sectionOrder, r.sectionOrder),
+    sectionVisibility: mergeVisibility(d.sectionVisibility, r.sectionVisibility),
     spotlight: mergeSection(d.spotlight, r.spotlight),
     eventsSection: mergeSection(d.eventsSection, r.eventsSection),
     labSection: mergeSection(d.labSection, r.labSection),

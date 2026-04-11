@@ -6,6 +6,35 @@ export type GallerySectionLabels = {
   description: string;
 };
 
+/** Fixed set of gallery blocks; `sectionOrder` permutes their vertical order on the page. */
+export type GallerySectionId = "spotlight" | "events" | "lab" | "archive";
+
+export const GALLERY_SECTION_IDS: readonly GallerySectionId[] = [
+  "spotlight",
+  "events",
+  "lab",
+  "archive",
+];
+
+export const GALLERY_SECTION_ORDER_LABELS: Record<GallerySectionId, string> = {
+  spotlight: "Spotlight & hero layout",
+  events: "Events & workshops",
+  lab: "Lab & field",
+  archive: "Archive / all photos",
+};
+
+/** Toggle each layout block on the public gallery (photos still use fixed sort slots). */
+export type GallerySectionVisibility = {
+  /** Hero + two side images + spotlight heading. */
+  spotlight: boolean;
+  /** Six event tiles + section heading. */
+  events: boolean;
+  /** Lab bento grid + section heading. */
+  lab: boolean;
+  /** Paginated archive + section heading. */
+  archive: boolean;
+};
+
 /**
  * All images live in `gallery_photos`, ordered by `sort_order`.
  * Positions 0–18 are the curated “bento” area; 19+ appear in the paginated archive.
@@ -21,6 +50,9 @@ export type GalleryPagePayload = {
   intro: string;
   /** Label on the hero image (first photo in sort order). */
   featuredCaption: string;
+  /** Top-to-bottom order of the four blocks (visibility still applies per block). */
+  sectionOrder: GallerySectionId[];
+  sectionVisibility: GallerySectionVisibility;
   spotlight: GallerySectionLabels;
   eventsSection: GallerySectionLabels;
   labSection: GallerySectionLabels;
@@ -52,11 +84,22 @@ const archiveSection: GallerySectionLabels = {
   description: "Browse the full gallery—new images can be added anytime from the admin.",
 };
 
+const sectionVisibility: GallerySectionVisibility = {
+  spotlight: true,
+  events: true,
+  lab: true,
+  archive: true,
+};
+
+const sectionOrder: GallerySectionId[] = [...GALLERY_SECTION_IDS];
+
 export const galleryPageDefaults: GalleryPagePayload = {
   pageTitle: "Gallery",
   intro:
     "Visual stories from our research, knowledge mobilization, and the people who make pediatric critical care science happen.",
   featuredCaption: "Featured",
+  sectionOrder,
+  sectionVisibility,
   spotlight,
   eventsSection,
   labSection,

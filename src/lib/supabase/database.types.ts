@@ -211,6 +211,26 @@ export interface Database {
         >;
         Relationships: [];
       };
+      gallery_photos: {
+        Row: {
+          id: string;
+          src: string;
+          alt: string;
+          title: string;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          src: string;
+          alt?: string;
+          title?: string;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["gallery_photos"]["Insert"]>;
+        Relationships: [];
+      };
       blog_posts: {
         Row: {
           id: string;

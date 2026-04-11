@@ -104,11 +104,15 @@ export default function Navbar() {
             className="h-9 w-9 rounded-lg object-cover ring-1 ring-black/5 sm:h-10 sm:w-10"
           />
           <div className="min-w-0 text-left">
-            <span className="block text-[15px] font-semibold uppercase tracking-tight text-foreground sm:text-base">
-              4C Research
+            <span className="block text-[15px] font-semibold uppercase tracking-tight sm:text-base">
+              <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+                4C Research
+              </span>
             </span>
-            <span className="hidden text-[11px] font-medium uppercase leading-snug tracking-wider text-muted-foreground/90 sm:block">
-              Cognition · Consciousness · Critical Care
+            <span className="mt-0.5 hidden text-[11px] font-medium uppercase leading-snug tracking-wider sm:block">
+              <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+                Cognition · Consciousness · Critical Care
+              </span>
             </span>
           </div>
         </Link>

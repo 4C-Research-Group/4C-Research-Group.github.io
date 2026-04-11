@@ -9,11 +9,16 @@ import {
   BookOpen,
   CheckCircle2,
   GraduationCap,
+  Layers,
   Lock,
   RotateCcw,
   Sparkles,
 } from "lucide-react";
+import { useAuthProfile } from "@/lib/auth/use-auth-profile";
 import { useKmProgress } from "@/contexts/KmProgressContext";
+import type { KmProgramGroup } from "@/data/km-page";
+import { mergeKmPagePayload } from "@/data/km-page-defaults";
+import type { KmPagePayload } from "@/data/km-page";
 import type { KMModule } from "@/data/knowledge-mobilization";
 import {
   isModuleUnlocked,
@@ -24,8 +29,18 @@ import {
   fetchKmCurriculumFromSupabase,
   orderedKmModulesFromFetch,
 } from "@/lib/km/supabase-km-curriculum";
+import { fetchKmPageContent } from "@/lib/km/supabase-km-page";
+
+function modulesForProgramSlugs(
+  slugs: string[],
+  ordered: KMModule[],
+): KMModule[] {
+  const map = new Map(ordered.map((m) => [m.slug, m]));
+  return slugs.map((s) => map.get(s)).filter((m): m is KMModule => m != null);
+}
 
 export default function KnowledgeMobilizationHubPage() {
+  const { email: authEmail } = useAuthProfile();
   const {
     ready: kmReady,
     progress,
@@ -33,15 +48,20 @@ export default function KnowledgeMobilizationHubPage() {
     syncsToAccount,
     syncError,
   } = useKmProgress();
+  const [page, setPage] = useState<KmPagePayload>(() => mergeKmPagePayload(null));
   const [ordered, setOrdered] = useState<KMModule[]>([]);
   const [curriculumReady, setCurriculumReady] = useState(false);
 
   useEffect(() => {
     let alive = true;
     void (async () => {
-      const result = await fetchKmCurriculumFromSupabase();
+      const [result, copy] = await Promise.all([
+        fetchKmCurriculumFromSupabase(),
+        fetchKmPageContent(),
+      ]);
       if (!alive) return;
       setOrdered(orderedKmModulesFromFetch(result));
+      setPage(copy);
       setCurriculumReady(true);
     })();
     return () => {
@@ -70,31 +90,32 @@ export default function KnowledgeMobilizationHubPage() {
           className="mx-auto max-w-4xl text-center"
         >
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
-            <GraduationCap className="h-4 w-4" />
-            Professional Development
+            <GraduationCap className="h-4 w-4" aria-hidden />
+            {page.heroBadge}
           </div>
           <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            Knowledge Mobilization
-            <span className="block text-3xl font-semibold text-muted-foreground sm:text-4xl lg:text-5xl">
-              Refresher modules for nurses and staff
+            <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+              {page.heroTitle}
+            </span>
+            <span className="mt-2 block text-3xl font-semibold text-muted-foreground sm:text-4xl lg:text-5xl">
+              {page.heroSubtitle}
             </span>
           </h1>
           <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-            Review topics and videos, then pass each module quiz (80% or higher)
-            to unlock the next.
+            {page.heroIntro}
           </p>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
             <div className="flex items-center gap-2 rounded-lg bg-cognition/10 px-4 py-2 text-cognition">
-              <BookOpen className="h-4 w-4" />
-              Self-paced Learning
+              <BookOpen className="h-4 w-4" aria-hidden />
+              {page.heroPill1}
             </div>
             <div className="flex items-center gap-2 rounded-lg bg-consciousness/10 px-4 py-2 text-consciousness">
-              <Award className="h-4 w-4" />
-              Certificate Available
+              <Award className="h-4 w-4" aria-hidden />
+              {page.heroPill2}
             </div>
             <div className="flex items-center gap-2 rounded-lg bg-care/10 px-4 py-2 text-care">
-              <CheckCircle2 className="h-4 w-4" />
-              80% Passing Score
+              <CheckCircle2 className="h-4 w-4" aria-hidden />
+              {page.heroPill3}
             </div>
           </div>
         </motion.div>
@@ -112,6 +133,45 @@ export default function KnowledgeMobilizationHubPage() {
             <p className="text-sm">
               {!curriculumReady ? "Loading curriculum…" : "Loading progress…"}
             </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const programsVisible =
+    page.programs.length > 0 &&
+    page.programs.some((p) => modulesForProgramSlugs(p.moduleSlugs, ordered).length > 0);
+
+  function renderProgramCard(prog: KmProgramGroup) {
+    const mods = modulesForProgramSlugs(prog.moduleSlugs, ordered);
+    if (mods.length === 0) return null;
+    return (
+      <div
+        key={prog.id}
+        className="rounded-2xl border border-border/80 bg-card/80 p-5 shadow-sm ring-1 ring-black/[0.03]"
+      >
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-consciousness/12 text-consciousness">
+            <Layers className="h-5 w-5" aria-hidden />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h3 className="font-semibold text-foreground">{prog.title}</h3>
+            {prog.summary.trim() ? (
+              <p className="mt-1 text-sm text-muted-foreground">{prog.summary}</p>
+            ) : null}
+            <ul className="mt-3 space-y-2">
+              {mods.map((m) => (
+                <li key={m.slug}>
+                  <Link
+                    href={`/knowledge-mobilization/${m.slug}/`}
+                    className="text-sm font-medium text-brand hover:underline"
+                  >
+                    {m.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
@@ -152,42 +212,47 @@ export default function KnowledgeMobilizationHubPage() {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-foreground">
-                    How it works
+                    {page.howItWorksTitle}
                   </h2>
                   {syncsToAccount ? (
-                    <p className="mt-1 text-xs text-care font-medium">
-                      Signed in — your progress syncs to your account so you can
-                      continue on another device after logging in again.
-                    </p>
+                    authEmail ? (
+                      <p className="mt-1 text-xs font-medium text-care">
+                        {page.howItWorksSyncSignedIn}
+                      </p>
+                    ) : (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {page.howItWorksSyncAnonymous}
+                      </p>
+                    )
                   ) : (
                     <p className="mt-1 text-xs text-muted-foreground">
+                      {page.howItWorksSyncGuest}{" "}
                       <Link
                         href="/login/"
                         className="font-medium text-brand hover:underline"
                       >
-                        Sign in
+                        {page.howItWorksGuestSignInLinkText}
                       </Link>{" "}
-                      to save progress to your account (otherwise it stays in
-                      this browser only).
+                      {page.howItWorksGuestAfterLink}
                     </p>
                   )}
                   <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
                     <li className="flex gap-2">
                       <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-care" />
-                      Open a module and mark each topic as reviewed when you
-                      have read or watched it.
+                      {page.howItWorksBullet1}
                     </li>
                     <li className="flex gap-2">
                       <BookOpen className="mt-0.5 h-4 w-4 shrink-0 text-cognition" />
-                      Take the end-of-module quiz. You need{" "}
-                      <strong className="text-foreground">80% or more</strong>{" "}
-                      to pass and unlock the next module.
+                      {page.howItWorksBullet2}
                     </li>
                     <li className="flex gap-2">
                       <RotateCcw className="mt-0.5 h-4 w-4 shrink-0 text-consciousness" />
-                      If you score below 80%, retake the quiz until you pass —
-                      your best score is saved
-                      {syncsToAccount ? " to your account" : " on this device"}.
+                      {page.howItWorksBullet3}
+                      {syncsToAccount
+                        ? authEmail
+                          ? " (synced to your account)."
+                          : " (synced for this learner session)."
+                        : " (on this device)."}
                     </li>
                   </ul>
                 </div>
@@ -203,6 +268,20 @@ export default function KnowledgeMobilizationHubPage() {
             </div>
           </motion.div>
 
+          {programsVisible ? (
+            <section className="mb-12">
+              <h2 className="text-lg font-bold tracking-tight text-foreground">
+                {page.programsSectionTitle}
+              </h2>
+              <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
+                {page.programsSectionIntro}
+              </p>
+              <div className="mt-6 grid gap-4 md:grid-cols-2">
+                {page.programs.map((prog) => renderProgramCard(prog))}
+              </div>
+            </section>
+          ) : null}
+
           {ordered.length === 0 ? (
             <p className="rounded-2xl border border-dashed border-border/80 bg-muted/20 px-6 py-12 text-center text-sm text-muted-foreground">
               No modules are published yet. Run{" "}
@@ -217,7 +296,13 @@ export default function KnowledgeMobilizationHubPage() {
               <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
                 -- --force
               </code>{" "}
-              to replace existing rows).
+              to replace existing rows). Hub copy is editable under{" "}
+              <span className="font-medium text-foreground">Admin → Knowledge Mobilization</span>
+              after running{" "}
+              <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
+                supabase/km_page_settings.sql
+              </code>
+              .
             </p>
           ) : (
             <ol className="space-y-5">
@@ -349,10 +434,7 @@ export default function KnowledgeMobilizationHubPage() {
                   {syncsToAccount ? "" : " on this device"}
                 </p>
                 <p className="mt-2 max-w-md text-sm text-muted-foreground">
-                  Download a certificate with your name, or print / save as PDF.
-                  Use <em>Reset progress</em> only if you need to redo the track
-                  — that also clears your saved certificate name
-                  {syncsToAccount ? " and account progress" : ""}.
+                  {page.certificateBlurb}
                 </p>
               </div>
               <Link

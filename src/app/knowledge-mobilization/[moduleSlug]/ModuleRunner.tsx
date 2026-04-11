@@ -33,6 +33,12 @@ import {
   saveKmQuizDraft,
 } from "@/lib/km/km-quiz-draft";
 
+function isNativeVideoEmbedUrl(url: string): boolean {
+  const u = url.trim().toLowerCase();
+  if (!u || u.startsWith("javascript:") || u.startsWith("data:")) return false;
+  return /\.(mp4|m4v|webm|ogg|ogv)(\?|#|$)/i.test(u);
+}
+
 function TopicBlock({
   topic,
   reviewed,
@@ -92,15 +98,27 @@ function TopicBlock({
           >
             <div className="space-y-4 px-5 py-5">
               {topic.type === "video" && topic.embedUrl ? (
-                <div className="aspect-video w-full overflow-hidden rounded-xl border border-border bg-muted">
-                  <iframe
-                    src={topic.embedUrl}
-                    title={topic.videoCaption ?? topic.title}
-                    className="h-full w-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    loading="lazy"
-                  />
+                <div className="aspect-video w-full overflow-hidden rounded-xl border border-border bg-black">
+                  {isNativeVideoEmbedUrl(topic.embedUrl) ? (
+                    <video
+                      className="h-full w-full object-contain"
+                      controls
+                      playsInline
+                      preload="metadata"
+                      title={topic.videoCaption ?? topic.title}
+                    >
+                      <source src={topic.embedUrl} />
+                    </video>
+                  ) : (
+                    <iframe
+                      src={topic.embedUrl}
+                      title={topic.videoCaption ?? topic.title}
+                      className="h-full w-full bg-muted"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      loading="lazy"
+                    />
+                  )}
                 </div>
               ) : topic.type === "video" ? (
                 <div className="flex aspect-video w-full items-center justify-center rounded-xl border border-dashed border-border bg-muted/50 p-6 text-center text-sm text-muted-foreground">

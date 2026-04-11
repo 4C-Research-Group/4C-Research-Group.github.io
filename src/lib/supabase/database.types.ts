@@ -455,6 +455,20 @@ export interface Database {
           },
         ];
       };
+      km_page_settings: {
+        Row: {
+          id: string;
+          payload: Json;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          payload: Json;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["km_page_settings"]["Insert"]>;
+        Relationships: [];
+      };
       km_user_progress: {
         Row: {
           user_id: string;

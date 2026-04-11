@@ -41,6 +41,9 @@ export async function upsertKmUserProgress(
         ...(payload.certificateDisplayName?.trim()
           ? { certificateDisplayName: payload.certificateDisplayName.trim() }
           : {}),
+        ...(payload.learnerProfile?.email
+          ? { learnerProfile: payload.learnerProfile }
+          : {}),
       } as unknown as Json,
     };
     const { error } = await supabase.from("km_user_progress").upsert(row, {

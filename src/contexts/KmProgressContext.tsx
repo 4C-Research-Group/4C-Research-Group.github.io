@@ -35,16 +35,29 @@ import {
   saveKmProgressToLocal,
   type KMStoredProgress,
 } from "@/lib/km-progress";
+import {
+  loadKmLearnerRegistration,
+  saveKmLearnerRegistration,
+} from "@/lib/km/km-learner-registration";
 
 const SYNC_DEBOUNCE_MS = 450;
 
 function buildPayloadFromLocalStorage(): KmProgressPayload {
   const stored = loadKmProgressFromLocal();
   const cert = loadCertificateDisplayName().trim();
+  const reg = loadKmLearnerRegistration();
+  const learnerProfile = reg
+    ? {
+        firstName: reg.firstName,
+        lastName: reg.lastName,
+        email: reg.email,
+      }
+    : undefined;
   return {
     version: 1,
     modules: stored.modules,
     ...(cert ? { certificateDisplayName: cert } : {}),
+    ...(learnerProfile ? { learnerProfile } : {}),
   };
 }
 
@@ -117,6 +130,9 @@ export function KmProgressProvider({
       const local = buildPayloadFromLocalStorage();
       const remotePayload = remote ?? emptyKmProgressPayload();
       const merged = mergeKmProgressPayload(local, remotePayload);
+      if (merged.learnerProfile?.email) {
+        saveKmLearnerRegistration(merged.learnerProfile);
+      }
 
       if (!cancelled) {
         setPayload(merged);

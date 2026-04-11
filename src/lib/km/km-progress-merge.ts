@@ -1,9 +1,16 @@
 import { KM_PASS_PERCENT } from "@/data/knowledge-mobilization";
 import type { KMModuleProgress, KMStoredProgress } from "@/lib/km-progress";
 
-/** Stored row shape: quiz progress + optional certificate name (synced when signed in). */
+export type KmLearnerProfile = {
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
+/** Stored row shape: quiz progress + optional certificate name + learner identity (synced when session exists). */
 export type KmProgressPayload = KMStoredProgress & {
   certificateDisplayName?: string;
+  learnerProfile?: KmLearnerProfile;
 };
 
 function emptyModule(): KMModuleProgress {
@@ -33,6 +40,17 @@ export function emptyKmProgressPayload(): KmProgressPayload {
   return { version: 1, modules: {} };
 }
 
+function parseLearnerProfile(raw: unknown): KmLearnerProfile | undefined {
+  if (!raw || typeof raw !== "object") return undefined;
+  const p = raw as Record<string, unknown>;
+  const firstName =
+    typeof p.firstName === "string" ? p.firstName.trim() : "";
+  const lastName = typeof p.lastName === "string" ? p.lastName.trim() : "";
+  const email = typeof p.email === "string" ? p.email.trim().toLowerCase() : "";
+  if (!firstName || !email) return undefined;
+  return { firstName, lastName, email };
+}
+
 export function parseKmProgressPayload(raw: unknown): KmProgressPayload {
   if (!raw || typeof raw !== "object") return emptyKmProgressPayload();
   const o = raw as Record<string, unknown>;
@@ -48,10 +66,12 @@ export function parseKmProgressPayload(raw: unknown): KmProgressPayload {
     typeof o.certificateDisplayName === "string"
       ? o.certificateDisplayName.trim()
       : "";
+  const learnerProfile = parseLearnerProfile(o.learnerProfile);
   return {
     version: 1,
     modules,
     ...(cert ? { certificateDisplayName: cert } : {}),
+    ...(learnerProfile ? { learnerProfile } : {}),
   };
 }
 
@@ -99,10 +119,17 @@ export function mergeKmProgressPayload(
     remote.certificateDisplayName?.trim() ||
     local.certificateDisplayName?.trim() ||
     undefined;
+  const lp =
+    local.learnerProfile?.email && local.learnerProfile?.firstName
+      ? local.learnerProfile
+      : remote.learnerProfile?.email && remote.learnerProfile?.firstName
+        ? remote.learnerProfile
+        : local.learnerProfile ?? remote.learnerProfile;
   return {
     version: 1,
     modules,
     ...(name ? { certificateDisplayName: name } : {}),
+    ...(lp ? { learnerProfile: lp } : {}),
   };
 }
 

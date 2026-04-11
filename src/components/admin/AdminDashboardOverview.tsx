@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   FolderKanban,
+  GraduationCap,
   Handshake,
   House,
   Images,
@@ -88,6 +89,12 @@ const QUICK_LINKS = [
     title: "Gallery",
     desc: "Photos, layout sections, copy, and custom blocks.",
     icon: Images,
+  },
+  {
+    href: "/admin/knowledge-mobilization/",
+    title: "Knowledge Mobilization",
+    desc: "Hub copy, registration gate text, programs/tracks, certificate blurb.",
+    icon: GraduationCap,
   },
 ] as const;
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { KmProgressProvider } from "@/contexts/KmProgressContext";
+import KmRouteGuard from "@/components/knowledge-mobilization/KmRouteGuard";
 
 export const metadata: Metadata = {
   title: "Knowledge Mobilization | 4C Research Group",
@@ -12,5 +13,9 @@ export default function KnowledgeMobilizationLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <KmProgressProvider>{children}</KmProgressProvider>;
+  return (
+    <KmProgressProvider>
+      <KmRouteGuard>{children}</KmRouteGuard>
+    </KmProgressProvider>
+  );
 }

@@ -527,26 +527,32 @@ export default function GalleryPageView({
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="relative bg-linear-to-b from-muted/40 via-background to-background">
-        <header className="mx-auto max-w-7xl px-4 pt-6 pb-2 sm:px-6 lg:px-8 lg:pt-8">
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-            {payload.pageTitle}
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
-            {payload.intro}
-          </p>
-        </header>
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.35]"
-          style={{
-            backgroundImage: `radial-gradient(hsl(var(--border)) 1px, transparent 1px)`,
-            backgroundSize: "24px 24px",
-            maskImage:
-              "linear-gradient(to bottom, black 0%, transparent 55%, transparent 100%)",
-          }}
-          aria-hidden
-        />
+      <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/30">
+        <div className="absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom_right,white,transparent,white)]" />
+        <div className="container relative mx-auto px-4 py-16 sm:px-6 lg:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mx-auto max-w-4xl text-center"
+          >
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
+              <Images className="h-4 w-4" aria-hidden />
+              Photo gallery
+            </div>
+            <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+                {payload.pageTitle}
+              </span>
+            </h1>
+            <p className="mx-auto max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+              {payload.intro}
+            </p>
+          </motion.div>
+        </div>
+      </section>
 
+      <div className="relative bg-background">
         {noPhotos && wantsPhotoGrids && (
           <section className="mx-auto max-w-7xl px-4 py-8 text-center text-muted-foreground sm:px-6 lg:px-8">
             <p className="text-sm">
@@ -560,7 +566,7 @@ export default function GalleryPageView({
             key={block.key}
             className={
               i === 0
-                ? "pt-6 lg:pt-8"
+                ? "pt-8 lg:pt-10"
                 : "border-t border-border/50 pt-10 lg:pt-12"
             }
           >

@@ -1,5 +1,5 @@
 :HL["/_next/static/chunks/0neevhl_o1ozu.css","style"]
-:HL["/_next/static/chunks/0xzrf34lidx8c.css","style"]
+:HL["/_next/static/chunks/0o.xr3tw6r5on.css","style"]
 :HL["/_next/static/media/797e433ab948586e-s.p.0.q-h669a_dqa.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/_next/static/media/caa3a2e1cccd8315-s.p.16t1db8_9y2o~.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"team","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"tallulah-nyland","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"eIHJEJxxQ770KlWPyF2K3"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"team","param":null,"prefetchHints":0,"slots":{"children":{"name":"slug","param":{"type":"d","key":"tallulah-nyland","siblings":null},"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}}}},"staleTime":300,"buildId":"-Ky6cekKBl0GH3H1-dSQX"}

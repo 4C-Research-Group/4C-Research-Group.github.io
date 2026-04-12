@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Fraunces } from "next/font/google";
 import { motion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -36,6 +37,11 @@ import {
 } from "@/components/HeroGradientBackdrop";
 import { HeroLabSnapshots } from "@/components/HeroLabSnapshots";
 import { siteAsset } from "@/lib/site-path";
+
+const heroTitleFont = Fraunces({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 const BLUR =
   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A8A";
@@ -179,8 +185,10 @@ export default function HomeMain({
                 {home.hero.badge}
               </div>
 
-              <h1 className="text-[2.25rem] font-bold uppercase leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
-                <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+              <h1
+                className={`text-[2.35rem] font-semibold leading-[1.18] tracking-[-0.02em] sm:text-5xl sm:leading-[1.14] lg:text-6xl lg:leading-[1.1] ${heroTitleFont.className}`}
+              >
+                <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text pb-[0.12em] text-transparent">
                   {home.hero.titleHighlight}
                   {home.hero.titleRest}
                 </span>

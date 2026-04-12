@@ -103,14 +103,14 @@ export default function KnowledgeMobilizationHubPage() {
       <div className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-brand/10 blur-3xl" aria-hidden />
       <div className="pointer-events-none absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-consciousness/8 blur-3xl" aria-hidden />
 
-      <div className="container relative mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:py-24">
+      <div className="container relative mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           className="mx-auto max-w-3xl text-center lg:mx-0 lg:max-w-2xl lg:text-left"
         >
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand sm:text-[13px]">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-brand sm:text-[13px]">
             <GraduationCap className="h-3.5 w-3.5" aria-hidden />
             {page.heroBadge}
           </div>
@@ -122,19 +122,19 @@ export default function KnowledgeMobilizationHubPage() {
               {page.heroSubtitle}
             </span>
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
+          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-[17px] lg:mx-0">
             {page.heroIntro}
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
-            <div className="inline-flex items-center gap-2 rounded-xl border border-cognition/20 bg-cognition/5 px-4 py-2.5 text-sm font-medium text-cognition">
+          <div className="mt-6 flex flex-wrap justify-center gap-2 lg:justify-start">
+            <div className="inline-flex items-center gap-2 rounded-lg border border-cognition/20 bg-cognition/5 px-3 py-2 text-xs font-medium text-cognition sm:text-sm">
               <BookOpen className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
               {page.heroPill1}
             </div>
-            <div className="inline-flex items-center gap-2 rounded-xl border border-consciousness/20 bg-consciousness/5 px-4 py-2.5 text-sm font-medium text-consciousness">
+            <div className="inline-flex items-center gap-2 rounded-lg border border-consciousness/20 bg-consciousness/5 px-3 py-2 text-xs font-medium text-consciousness sm:text-sm">
               <Award className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
               {page.heroPill2}
             </div>
-            <div className="inline-flex items-center gap-2 rounded-xl border border-care/20 bg-care/5 px-4 py-2.5 text-sm font-medium text-care">
+            <div className="inline-flex items-center gap-2 rounded-lg border border-care/20 bg-care/5 px-3 py-2 text-xs font-medium text-care sm:text-sm">
               <CheckCircle2 className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
               {page.heroPill3}
             </div>
@@ -172,7 +172,7 @@ export default function KnowledgeMobilizationHubPage() {
     return (
       <div
         key={prog.id}
-        className="group flex flex-col rounded-2xl border border-border/70 bg-card p-6 shadow-sm ring-1 ring-black/[0.02] transition duration-200 hover:border-brand/25 hover:shadow-md"
+        className="group flex flex-col rounded-2xl border border-border/70 bg-card p-5 shadow-sm ring-1 ring-black/[0.02] transition duration-200 hover:border-brand/25 hover:shadow-md"
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 flex-1 gap-3">
@@ -202,7 +202,7 @@ export default function KnowledgeMobilizationHubPage() {
             </div>
           </div>
         </div>
-        <ul className="mt-4 space-y-2 border-t border-border/50 pt-4">
+        <ul className="mt-3 space-y-1.5 border-t border-border/50 pt-3">
           {mods.map((m) => (
             <li key={m.slug}>
               <Link
@@ -260,14 +260,14 @@ export default function KnowledgeMobilizationHubPage() {
 
         <main
           id="km-learning-hub"
-          className="container relative mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14"
+          className="container relative mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10"
         >
           {ordered.length > 0 ? (
             <section
-              className="mb-10 rounded-2xl border border-border/70 bg-card/60 p-5 shadow-sm ring-1 ring-black/[0.02] backdrop-blur-sm sm:p-6"
+              className="mb-8 rounded-2xl border border-border/70 bg-card/60 p-4 shadow-sm ring-1 ring-black/[0.02] backdrop-blur-sm sm:p-5"
               aria-labelledby="km-progress-heading"
             >
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h2
                     id="km-progress-heading"
@@ -275,9 +275,8 @@ export default function KnowledgeMobilizationHubPage() {
                   >
                     Your progress
                   </h2>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Complete modules in order. Best quiz score is saved (80% to
-                    pass).
+                  <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground sm:text-xs">
+                    In order · 80% to pass · best score saved
                   </p>
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col gap-2 sm:max-w-md sm:flex-none">
@@ -313,18 +312,18 @@ export default function KnowledgeMobilizationHubPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="mb-10 rounded-2xl border border-border/80 bg-linear-to-br from-muted/40 via-card to-card p-6 sm:p-8"
+            className="mb-8 rounded-2xl border border-border/80 bg-linear-to-br from-muted/40 via-card to-card p-4 sm:p-5"
             aria-labelledby="km-how-heading"
           >
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-              <div className="flex min-w-0 flex-1 gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand/12 text-brand ring-1 ring-brand/10">
-                  <GraduationCap className="h-6 w-6" strokeWidth={2} aria-hidden />
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="flex min-w-0 flex-1 gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/12 text-brand ring-1 ring-brand/10">
+                  <GraduationCap className="h-5 w-5" strokeWidth={2} aria-hidden />
                 </div>
                 <div className="min-w-0">
                   <h2
                     id="km-how-heading"
-                    className="text-lg font-semibold tracking-tight text-foreground"
+                    className="text-base font-semibold tracking-tight text-foreground sm:text-lg"
                   >
                     {page.howItWorksTitle}
                   </h2>
@@ -350,17 +349,17 @@ export default function KnowledgeMobilizationHubPage() {
                       {page.howItWorksGuestAfterLink}
                     </p>
                   )}
-                  <ul className="mt-4 grid gap-3 text-sm text-muted-foreground sm:grid-cols-1">
-                    <li className="flex gap-3 rounded-xl bg-background/50 p-3 ring-1 ring-border/40">
-                      <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-care" aria-hidden />
+                  <ul className="mt-3 space-y-2 border-l-2 border-border/70 pl-3 text-xs leading-snug text-muted-foreground sm:text-sm">
+                    <li className="flex gap-2">
+                      <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-care" aria-hidden />
                       <span>{page.howItWorksBullet1}</span>
                     </li>
-                    <li className="flex gap-3 rounded-xl bg-background/50 p-3 ring-1 ring-border/40">
-                      <BookOpen className="mt-0.5 h-4 w-4 shrink-0 text-cognition" aria-hidden />
+                    <li className="flex gap-2">
+                      <BookOpen className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cognition" aria-hidden />
                       <span>{page.howItWorksBullet2}</span>
                     </li>
-                    <li className="flex gap-3 rounded-xl bg-background/50 p-3 ring-1 ring-border/40">
-                      <RotateCcw className="mt-0.5 h-4 w-4 shrink-0 text-consciousness" aria-hidden />
+                    <li className="flex gap-2">
+                      <RotateCcw className="mt-0.5 h-3.5 w-3.5 shrink-0 text-consciousness" aria-hidden />
                       <span>
                         {page.howItWorksBullet3}
                         {syncsToAccount
@@ -376,7 +375,7 @@ export default function KnowledgeMobilizationHubPage() {
               <button
                 type="button"
                 onClick={handleReset}
-                className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl border border-border bg-background px-4 py-2.5 text-xs font-semibold text-muted-foreground transition hover:border-destructive/40 hover:bg-destructive/5 hover:text-destructive"
+                className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-lg border border-border bg-background px-3 py-2 text-[11px] font-semibold text-muted-foreground transition hover:border-destructive/40 hover:bg-destructive/5 hover:text-destructive sm:text-xs"
               >
                 <RotateCcw className="h-3.5 w-3.5" aria-hidden />
                 Reset progress
@@ -385,26 +384,26 @@ export default function KnowledgeMobilizationHubPage() {
           </motion.section>
 
           {programsVisible ? (
-            <section className="mb-12" aria-labelledby="km-programs-heading">
-              <div className="mb-6 max-w-2xl">
+            <section className="mb-10" aria-labelledby="km-programs-heading">
+              <div className="mb-4 max-w-2xl">
                 <h2
                   id="km-programs-heading"
                   className="text-xl font-bold tracking-tight text-foreground"
                 >
                   {page.programsSectionTitle}
                 </h2>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                <p className="mt-1.5 text-sm leading-snug text-muted-foreground">
                   {page.programsSectionIntro}
                 </p>
               </div>
-              <div className="grid gap-5 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-2">
                 {page.programs.map((prog) => renderProgramCard(prog))}
               </div>
             </section>
           ) : null}
 
-          <section className="mb-12" aria-labelledby="km-modules-heading">
-            <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <section className="mb-10" aria-labelledby="km-modules-heading">
+            <div className="mb-4 flex flex-col gap-1.5 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <h2
                   id="km-modules-heading"
@@ -412,9 +411,8 @@ export default function KnowledgeMobilizationHubPage() {
                 >
                   Learning path
                 </h2>
-                <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-                  Open each module in sequence. Topics must be marked reviewed before
-                  the quiz.
+                <p className="mt-0.5 max-w-xl text-xs text-muted-foreground sm:text-sm">
+                  Sequential modules · mark topics reviewed before the quiz
                 </p>
               </div>
             </div>
@@ -471,16 +469,16 @@ export default function KnowledgeMobilizationHubPage() {
                           </div>
                           {!isLast ? (
                             <div
-                              className="mt-0 w-px flex-1 min-h-[2rem] bg-border sm:min-h-[2.5rem]"
+                              className="mt-0 w-px flex-1 min-h-[1.25rem] bg-border sm:min-h-[1.75rem]"
                               aria-hidden
                             />
                           ) : (
-                            <div className="h-4" aria-hidden />
+                            <div className="h-2" aria-hidden />
                           )}
                         </div>
 
                         <div
-                          className={`min-w-0 flex-1 ${isLast ? "pb-2" : "pb-10"}`}
+                          className={`min-w-0 flex-1 ${isLast ? "pb-1" : "pb-6 sm:pb-7"}`}
                         >
                           <div
                             className={`overflow-hidden rounded-2xl border bg-card shadow-sm transition duration-200 ${
@@ -491,7 +489,7 @@ export default function KnowledgeMobilizationHubPage() {
                                   : "border-border/70 opacity-[0.92]"
                             }`}
                           >
-                            <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:p-6">
+                            <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:p-5">
                               <div className="min-w-0 flex-1">
                                 <div className="flex flex-wrap items-center gap-2">
                                   <h3 className="text-base font-semibold tracking-tight text-foreground sm:text-lg">
@@ -510,10 +508,10 @@ export default function KnowledgeMobilizationHubPage() {
                                     </span>
                                   ) : null}
                                 </div>
-                                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                                <p className="mt-1.5 text-sm leading-snug text-muted-foreground line-clamp-3 sm:line-clamp-none">
                                   {mod.summary}
                                 </p>
-                                <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+                                <p className="mt-2 flex flex-wrap gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground">
                                   <span>
                                     {mod.topics.filter((t) => t.type === "video").length}{" "}
                                     video
@@ -545,13 +543,13 @@ export default function KnowledgeMobilizationHubPage() {
                                 {unlocked ? (
                                   <Link
                                     href={`/knowledge-mobilization/${mod.slug}/`}
-                                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-brand-deep sm:w-auto"
+                                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-brand-deep sm:w-auto"
                                   >
                                     {passed ? "Review" : "Continue"}
                                     <ArrowRight className="h-4 w-4" aria-hidden />
                                   </Link>
                                 ) : (
-                                  <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-muted/30 px-5 py-3 text-sm font-medium text-muted-foreground sm:w-auto">
+                                  <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-muted/30 px-4 py-2.5 text-sm font-medium text-muted-foreground sm:w-auto">
                                     <Lock className="h-4 w-4" aria-hidden />
                                     Complete previous
                                   </span>
@@ -581,11 +579,11 @@ export default function KnowledgeMobilizationHubPage() {
             <motion.aside
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-4 flex flex-col items-center gap-5 rounded-3xl border border-care/35 bg-linear-to-br from-care/12 via-background to-brand/5 px-6 py-10 text-center shadow-sm sm:px-10"
+              className="mt-2 flex flex-col items-center gap-4 rounded-2xl border border-care/35 bg-linear-to-br from-care/12 via-background to-brand/5 px-5 py-7 text-center shadow-sm sm:px-8 sm:py-8"
               aria-labelledby="km-full-cert-heading"
             >
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-care/20 text-care">
-                <CheckCircle2 className="h-7 w-7" strokeWidth={2} aria-hidden />
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-care/20 text-care sm:h-12 sm:w-12">
+                <CheckCircle2 className="h-6 w-6" strokeWidth={2} aria-hidden />
               </div>
               <div>
                 <h2

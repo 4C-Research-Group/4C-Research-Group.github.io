@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Award } from "lucide-react";
+import { Award, ChevronDown } from "lucide-react";
 import { createCertificateCanvas } from "@/lib/km-certificate";
 import type { KMModule } from "@/data/knowledge-mobilization";
 
@@ -53,65 +53,72 @@ export default function KmCertificateHubPreview({
   }, [programSample]);
 
   return (
-    <section
-      className="mb-10 rounded-2xl border border-border/80 bg-card/90 p-6 shadow-sm ring-1 ring-black/[0.03] sm:p-8"
+    <details
+      className="group mb-8 rounded-2xl border border-border/80 bg-card/90 shadow-sm ring-1 ring-black/[0.03] open:pb-5 sm:open:pb-6"
       aria-labelledby="km-cert-preview-heading"
     >
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-care/15 text-care">
-            <Award className="h-5 w-5" aria-hidden />
-          </div>
-          <div>
-            <h2
-              id="km-cert-preview-heading"
-              className="text-lg font-bold tracking-tight text-foreground"
-            >
-              Certificate layout
-            </h2>
-            <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-              Samples only — your real certificate uses your name and the modules
-              you finish (full track or a micro-credential). Download or print from
-              the certificate page when you qualify.
-            </p>
-          </div>
+      <summary className="flex cursor-pointer list-none items-center gap-3 rounded-2xl p-4 pr-3 marker:hidden sm:p-5 [&::-webkit-details-marker]:hidden">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-care/15 text-care sm:h-10 sm:w-10">
+          <Award className="h-4 w-4 sm:h-[1.125rem] sm:w-[1.125rem]" aria-hidden />
         </div>
-      </div>
-
-      <div
-        className={
-          programSample
-            ? "grid gap-8 lg:grid-cols-2"
-            : "mx-auto max-w-4xl"
-        }
-      >
-        <div>
-          <p className="mb-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Full learning track
+        <div className="min-w-0 flex-1">
+          <h2
+            id="km-cert-preview-heading"
+            className="text-base font-bold tracking-tight text-foreground sm:text-lg"
+          >
+            Certificate samples
+          </h2>
+          <p className="mt-0.5 text-xs leading-snug text-muted-foreground sm:text-[13px]">
+            Optional preview — expand to see layout. Yours uses your name and
+            completed modules.
           </p>
-          <div className="overflow-hidden rounded-xl border border-border bg-muted/25 p-2 shadow-inner">
-            <canvas
-              ref={fullTrackRef}
-              className="mx-auto block h-auto w-full max-w-full rounded-lg shadow-md"
-              aria-label="Sample certificate for the full module track"
-            />
-          </div>
         </div>
-        {programSample ? (
+        <ChevronDown
+          className="h-5 w-5 shrink-0 text-muted-foreground transition group-open:rotate-180"
+          aria-hidden
+        />
+      </summary>
+
+      <div className="border-t border-border/60 px-4 pb-1 pt-4 sm:px-5">
+        <p className="mb-4 max-w-2xl text-xs leading-relaxed text-muted-foreground">
+          Download or print from the certificate page when you qualify (full track
+          or a micro-credential).
+        </p>
+        <div
+          className={
+            programSample
+              ? "grid gap-5 lg:grid-cols-2 lg:gap-6"
+              : "mx-auto max-w-3xl"
+          }
+        >
           <div>
-            <p className="mb-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Micro-credential (example program)
+            <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Full learning track
             </p>
-            <div className="overflow-hidden rounded-xl border border-border bg-muted/25 p-2 shadow-inner">
+            <div className="overflow-hidden rounded-lg border border-border bg-muted/25 p-1.5 shadow-inner">
               <canvas
-                ref={programRef}
-                className="mx-auto block h-auto w-full max-w-full rounded-lg shadow-md"
-                aria-label="Sample micro-credential certificate"
+                ref={fullTrackRef}
+                className="mx-auto block h-auto max-h-[min(42vh,280px)] w-auto max-w-full rounded-md shadow-md"
+                aria-label="Sample certificate for the full module track"
               />
             </div>
           </div>
-        ) : null}
+          {programSample ? (
+            <div>
+              <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Micro-credential (example)
+              </p>
+              <div className="overflow-hidden rounded-lg border border-border bg-muted/25 p-1.5 shadow-inner">
+                <canvas
+                  ref={programRef}
+                  className="mx-auto block h-auto max-h-[min(42vh,280px)] w-auto max-w-full rounded-md shadow-md"
+                  aria-label="Sample micro-credential certificate"
+                />
+              </div>
+            </div>
+          ) : null}
+        </div>
       </div>
-    </section>
+    </details>
   );
 }

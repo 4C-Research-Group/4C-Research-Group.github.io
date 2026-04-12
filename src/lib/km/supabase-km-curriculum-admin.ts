@@ -348,11 +348,19 @@ export function emptyKmAdminModule(sortOrder: number): KmAdminModuleDraft {
   };
 }
 
+let _kmTopicKeyFallback = 0;
+
 export function newTopicDraft(sortOrder: number): KmAdminTopicDraft {
-  const key =
-    typeof globalThis.crypto?.randomUUID === "function"
-      ? `t-${globalThis.crypto.randomUUID().slice(0, 8)}`
-      : `t-${Date.now()}`;
+  let key: string;
+  try {
+    if (typeof globalThis.crypto?.randomUUID === "function") {
+      key = `t-${globalThis.crypto.randomUUID().replace(/-/g, "").slice(0, 12)}`;
+    } else {
+      key = `t-${Date.now()}-${++_kmTopicKeyFallback}`;
+    }
+  } catch {
+    key = `t-${Date.now()}-${++_kmTopicKeyFallback}`;
+  }
   return {
     topicKey: key,
     sortOrder,
@@ -364,11 +372,19 @@ export function newTopicDraft(sortOrder: number): KmAdminTopicDraft {
   };
 }
 
+let _kmQuestionKeyFallback = 0;
+
 export function newQuestionDraft(sortOrder: number): KmAdminQuestionDraft {
-  const key =
-    typeof globalThis.crypto?.randomUUID === "function"
-      ? `q-${globalThis.crypto.randomUUID().slice(0, 8)}`
-      : `q-${Date.now()}`;
+  let key: string;
+  try {
+    if (typeof globalThis.crypto?.randomUUID === "function") {
+      key = `q-${globalThis.crypto.randomUUID().replace(/-/g, "").slice(0, 12)}`;
+    } else {
+      key = `q-${Date.now()}-${++_kmQuestionKeyFallback}`;
+    }
+  } catch {
+    key = `q-${Date.now()}-${++_kmQuestionKeyFallback}`;
+  }
   return {
     questionKey: key,
     sortOrder,

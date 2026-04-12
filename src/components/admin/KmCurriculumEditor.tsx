@@ -92,6 +92,9 @@ export default function KmCurriculumEditor() {
   const [err, setErr] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
 
+  const selectedIndexRef = useRef(0);
+  selectedIndexRef.current = selectedIndex;
+
   const load = useCallback(async (opts?: { selectModuleId?: string | null; selectSlug?: string }) => {
     setLoading(true);
     setErr(null);
@@ -138,6 +141,49 @@ export default function KmCurriculumEditor() {
 
   function replaceDraftAt(index: number, next: KmAdminModuleDraft) {
     setModules((prev) => prev.map((m, i) => (i === index ? next : m)));
+  }
+
+  function addTopicToSelectedModule() {
+    setErr(null);
+    setOk(null);
+    setModules((prev) => {
+      const i = Math.min(
+        Math.max(0, selectedIndexRef.current),
+        Math.max(0, prev.length - 1),
+      );
+      const d = prev[i];
+      if (!d) return prev;
+      const nextOrder =
+        d.topics.reduce((max, t) => Math.max(max, t.sortOrder), -1) + 1;
+      return prev.map((m, j) =>
+        j === i
+          ? { ...d, topics: [...d.topics, newTopicDraft(nextOrder)] }
+          : m,
+      );
+    });
+  }
+
+  function addQuestionToSelectedModule() {
+    setErr(null);
+    setOk(null);
+    setModules((prev) => {
+      const i = Math.min(
+        Math.max(0, selectedIndexRef.current),
+        Math.max(0, prev.length - 1),
+      );
+      const d = prev[i];
+      if (!d) return prev;
+      const nextOrder =
+        d.questions.reduce((max, q) => Math.max(max, q.sortOrder), -1) + 1;
+      return prev.map((m, j) =>
+        j === i
+          ? {
+              ...d,
+              questions: [...d.questions, newQuestionDraft(nextOrder)],
+            }
+          : m,
+      );
+    });
   }
 
   async function handleSave() {
@@ -317,6 +363,8 @@ export default function KmCurriculumEditor() {
           draft={draft}
           disabled={saving}
           onChange={(next) => replaceDraftAt(selectedIndex, next)}
+          onAddTopic={addTopicToSelectedModule}
+          onAddQuestion={addQuestionToSelectedModule}
           onSave={() => void handleSave()}
           onDelete={draft.dbId ? () => void handleDelete() : undefined}
           saving={saving}
@@ -330,6 +378,8 @@ function ModuleForm({
   draft,
   disabled,
   onChange,
+  onAddTopic,
+  onAddQuestion,
   onSave,
   onDelete,
   saving,
@@ -337,6 +387,8 @@ function ModuleForm({
   draft: KmAdminModuleDraft;
   disabled: boolean;
   onChange: (next: KmAdminModuleDraft) => void;
+  onAddTopic: () => void;
+  onAddQuestion: () => void;
   onSave: () => void;
   onDelete?: () => void;
   saving: boolean;
@@ -409,13 +461,9 @@ function ModuleForm({
           <button
             type="button"
             disabled={disabled}
-            onClick={() =>
-              onChange({
-                ...draft,
-                topics: [...draft.topics, newTopicDraft(draft.topics.length)],
-              })
-            }
-            className="inline-flex items-center gap-1 rounded-lg border border-border px-2 py-1 text-xs font-medium"
+            onClick={onAddTopic}
+            title={disabled ? "Wait for save to finish" : undefined}
+            className="inline-flex items-center gap-1 rounded-lg border border-border px-2 py-1 text-xs font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-45"
           >
             <Plus className="h-3.5 w-3.5" aria-hidden />
             Add topic
@@ -483,16 +531,9 @@ function ModuleForm({
           <button
             type="button"
             disabled={disabled}
-            onClick={() =>
-              onChange({
-                ...draft,
-                questions: [
-                  ...draft.questions,
-                  newQuestionDraft(draft.questions.length),
-                ],
-              })
-            }
-            className="inline-flex items-center gap-1 rounded-lg border border-border px-2 py-1 text-xs font-medium"
+            onClick={onAddQuestion}
+            title={disabled ? "Wait for save to finish" : undefined}
+            className="inline-flex items-center gap-1 rounded-lg border border-border px-2 py-1 text-xs font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-45"
           >
             <Plus className="h-3.5 w-3.5" aria-hidden />
             Add question

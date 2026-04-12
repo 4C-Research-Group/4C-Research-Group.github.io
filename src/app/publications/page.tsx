@@ -271,7 +271,7 @@ export default function PublicationsPage() {
                       Loading...
                     </span>
                   </div>
-                  <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-5">
                     <PublicationCardSkeleton />
                     <PublicationCardSkeleton />
                   </div>
@@ -286,7 +286,7 @@ export default function PublicationsPage() {
                       Loading...
                     </span>
                   </div>
-                  <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-5">
                     <PublicationCardSkeleton />
                     <PublicationCardSkeleton />
                   </div>
@@ -341,7 +341,7 @@ export default function PublicationsPage() {
                               {yearPubs.length === 1 ? "" : "s"}
                             </span>
                           </div>
-                          <div className="grid gap-5 sm:grid-cols-2">
+                          <div className="grid grid-cols-1 gap-5">
                             {yearPubs.map((pub, i) => {
                               const currentIndex = globalIndex++;
                               return (
@@ -359,7 +359,7 @@ export default function PublicationsPage() {
                   })()}
                 </div>
               ) : (
-                <div className="grid gap-5 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-5">
                   {sortedAndFiltered.map((pub, i) => (
                     <PublicationCard
                       key={pub.id}

@@ -410,7 +410,7 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
           </div>
 
           {pubsLoading ? (
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-5">
               {[0, 1, 2, 3].map((i) => (
                 <PublicationCardSkeleton key={i} />
               ))}
@@ -449,7 +449,7 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
               <p className="mb-4 text-sm text-muted-foreground">
                 Showing {pubCountLabel} for this profile
               </p>
-              <div className="grid gap-5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-5">
                 {orcidPubs.map((pub, i) => (
                   <PublicationCard
                     key={pub.id}

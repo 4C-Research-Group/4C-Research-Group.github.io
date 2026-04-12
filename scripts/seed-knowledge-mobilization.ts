@@ -1,6 +1,10 @@
 /**
- * Replaces all Knowledge Mobilization rows with the bundled curriculum from
- * `src/data/knowledge-mobilization.ts`.
+ * Replaces all Knowledge Mobilization curriculum rows with the bundled modules
+ * from `src/data/knowledge-mobilization.ts`.
+ *
+ * If `km_page_settings` has no `default` row yet, inserts one with merged hub
+ * copy including **demo micro-credential programs** (see `src/data/km-page.ts`).
+ * An existing row is left unchanged so admin edits are not overwritten.
  *
  * Requires in `.env.local` (project root) or env:
  *   NEXT_PUBLIC_SUPABASE_URL
@@ -14,8 +18,11 @@
 import path from "node:path";
 import { config as loadEnv } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
+import { mergeKmPagePayload } from "../src/data/km-page-defaults";
 import { kmModules } from "../src/data/knowledge-mobilization";
-import type { Database } from "../src/lib/supabase/database.types";
+import type { Database, Json } from "../src/lib/supabase/database.types";
+
+const KM_PAGE_ROW_ID = "default";
 
 loadEnv({ path: path.resolve(process.cwd(), ".env") });
 loadEnv({ path: path.resolve(process.cwd(), ".env.local"), override: true });
@@ -157,6 +164,35 @@ async function main() {
   }
 
   console.log(`Seeded ${sorted.length} module(s) into Supabase.`);
+
+  const { data: existingPage, error: pageSelErr } = await supabase
+    .from("km_page_settings")
+    .select("id")
+    .eq("id", KM_PAGE_ROW_ID)
+    .maybeSingle();
+  if (pageSelErr) {
+    console.warn("km_page_settings select:", pageSelErr.message);
+    return;
+  }
+  if (existingPage) {
+    console.log(
+      "km_page_settings row already exists; skipped (edit programs under Admin → Knowledge Mobilization).",
+    );
+    return;
+  }
+  const pagePayload = mergeKmPagePayload(null);
+  const { error: pageIns } = await supabase.from("km_page_settings").insert({
+    id: KM_PAGE_ROW_ID,
+    payload: JSON.parse(JSON.stringify(pagePayload)) as Json,
+    updated_at: new Date().toISOString(),
+  });
+  if (pageIns) {
+    console.error("Insert km_page_settings:", pageIns.message);
+    process.exit(1);
+  }
+  console.log(
+    "Inserted km_page_settings with demo hub copy and micro-credential programs.",
+  );
 }
 
 void main();

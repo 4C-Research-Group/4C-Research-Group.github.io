@@ -66,7 +66,29 @@ export const kmPageDefaults: KmPagePayload = {
   programsSectionTitle: "Programs & micro-credentials",
   programsSectionIntro:
     "Group modules into a named track (micro-credential). Learners who pass every module in a track get a certificate that lists only those modules. Empty list hides this section.",
-  programs: [],
+  /** Demo micro-credentials (module slugs must match `km_modules` / bundled curriculum). */
+  programs: [
+    {
+      id: "demo-micro-neuro-communication",
+      title: "Neuro bedside & communication",
+      summary:
+        "Demo track: complete PICU neuro basics and Neuromonitoring & communication (80%+ on each quiz). Then use “Certificate for this micro-credential” on the hub.",
+      moduleSlugs: [
+        "picu-neuro-basics",
+        "neuromonitoring-communication",
+      ],
+    },
+    {
+      id: "demo-micro-communication-qi",
+      title: "Communication & quality",
+      summary:
+        "Second demo track: neuromonitoring plus QI & knowledge sharing — shows overlapping modules across credentials.",
+      moduleSlugs: [
+        "neuromonitoring-communication",
+        "quality-knowledge-sharing",
+      ],
+    },
+  ],
   startPageTitle: "Before you begin",
   startPageIntro:
     "Enter your name and email so we can track your module progress and certificate. You do not need a separate password or account.",

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Playfair_Display } from "next/font/google";
@@ -43,6 +44,36 @@ const heroTitleFont = Playfair_Display({
   weight: ["600", "700"],
   display: "swap",
 });
+
+/** Enlarges the first letter of each phrase separated by "·" (hero tagline). */
+function heroTaglineWithRaisedInitials(text: string): ReactNode {
+  const trimmed = text.trim();
+  if (!trimmed.includes("·")) return trimmed;
+  const segments = trimmed
+    .split(/\s*·\s*/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (segments.length === 0) return trimmed;
+
+  return segments.map((seg, i) => (
+    <span key={`${i}-${seg.slice(0, 8)}`} className="inline">
+      {i > 0 ? (
+        <span
+          className="mx-1 inline text-[0.7em] font-semibold opacity-80 sm:mx-1.5"
+          aria-hidden
+        >
+          ·
+        </span>
+      ) : null}
+      <span className="inline whitespace-nowrap">
+        <span className="inline-block align-baseline text-[1.38em] font-bold leading-[0.85] tracking-tight">
+          {seg.charAt(0)}
+        </span>
+        <span className="align-baseline">{seg.slice(1)}</span>
+      </span>
+    </span>
+  ));
+}
 
 const BLUR =
   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A8A";
@@ -198,7 +229,7 @@ export default function HomeMain({
                 className={`mt-3 text-base font-semibold uppercase leading-snug tracking-[0.12em] sm:mt-3.5 sm:text-lg ${heroTitleFont.className}`}
               >
                 <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
-                  {home.hero.tagline}
+                  {heroTaglineWithRaisedInitials(home.hero.tagline)}
                 </span>
               </p>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-[17px]">

@@ -155,19 +155,24 @@ const AUTHOR_ENRICH_BATCH = 16;
 async function enrichWithAuthors(
   orcidClean: string,
   pubs: OrcidPublication[],
+  onProgress?: (pubs: OrcidPublication[]) => void,
 ): Promise<OrcidPublication[]> {
   if (pubs.length === 0) return pubs;
-  const out: OrcidPublication[] = [];
-  for (let i = 0; i < pubs.length; i += AUTHOR_ENRICH_BATCH) {
-    const slice = pubs.slice(i, i + AUTHOR_ENRICH_BATCH);
+  const working = pubs.map((p) => ({ ...p }));
+  for (let i = 0; i < working.length; i += AUTHOR_ENRICH_BATCH) {
+    const slice = working.slice(i, i + AUTHOR_ENRICH_BATCH);
     const authorStrings = await Promise.all(
       slice.map((p) => fetchWorkAuthorsString(orcidClean, p.id)),
     );
     for (let j = 0; j < slice.length; j++) {
-      out.push({ ...slice[j]!, authors: authorStrings[j]! });
+      working[i + j] = {
+        ...working[i + j]!,
+        authors: authorStrings[j] ?? null,
+      };
     }
+    onProgress?.(working);
   }
-  return out;
+  return working;
 }
 
 // ---------------------------------------------------------------------------
@@ -217,6 +222,11 @@ export type FetchOrcidPublicationsOptions = {
    * when the returned promise resolves.
    */
   onListLoaded?: (pubs: OrcidPublication[]) => void;
+  /**
+   * Called after each batch of per-work author fetches. Useful for name-filtered
+   * UIs (e.g. team profiles) so matching publications can appear before all works finish.
+   */
+  onEnrichmentProgress?: (pubs: OrcidPublication[]) => void;
 };
 
 type InFlightEntry = {
@@ -239,6 +249,7 @@ export async function fetchOrcidPublications(
   const mem = memoryCache.get(cacheKey);
   if (mem && Date.now() - mem.fetchedAt < CACHE_TTL_MS) {
     options?.onListLoaded?.(mem.pubs);
+    options?.onEnrichmentProgress?.(mem.pubs);
     return mem.pubs;
   }
 
@@ -247,6 +258,7 @@ export async function fetchOrcidPublications(
   if (stored) {
     memoryCache.set(cacheKey, stored);
     options?.onListLoaded?.(stored.pubs);
+    options?.onEnrichmentProgress?.(stored.pubs);
     return stored.pubs;
   }
 
@@ -284,7 +296,11 @@ export async function fetchOrcidPublications(
     const list = mapOrcidWorksResponse(data);
     entry.list = list;
     for (const fn of entry.listListeners) fn(list);
-    const pubs = await enrichWithAuthors(clean, list);
+    const pubs = await enrichWithAuthors(
+      clean,
+      list,
+      options?.onEnrichmentProgress,
+    );
 
     const cacheEntry: CacheEntry = { pubs, fetchedAt: Date.now() };
     memoryCache.set(cacheKey, cacheEntry);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -87,48 +87,60 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
   const [orcidPubs, setOrcidPubs] = useState<OrcidPublication[]>([]);
   const [pubsLoading, setPubsLoading] = useState(false);
   const [pubsError, setPubsError] = useState<string | null>(null);
+  /** Set when profile resolves so ORCID enrichment can filter by author name mid-flight. */
+  const filterMemberNameRef = useRef("");
 
   useEffect(() => {
     let alive = true;
+    setReady(false);
+    setMember(null);
+    setOrcidPubs([]);
+    setPubsError(null);
+    setPubsLoading(true);
+    filterMemberNameRef.current = "";
+
+    const orcidPromise = fetchOrcidPublications(DEFAULT_ORCID_ID, {
+      onEnrichmentProgress: (partial) => {
+        if (!alive) return;
+        const name = filterMemberNameRef.current.trim();
+        if (!name) return;
+        const filtered = filterOrcidPublicationsForMember(partial, name);
+        filtered.sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+        setOrcidPubs(filtered);
+        if (filtered.length > 0) setPubsLoading(false);
+      },
+    });
+
     void (async () => {
-      const res = await fetchTeamPortfolioBySlug(slug);
-      if (!alive) return;
-      if (res.member) {
-        setMember(enrichTeamMemberPhotoFromStatic(res.member, slug));
-      } else if (!res.usedDatabase) {
-        const stat = findStaticTeamMemberBySlug(slug);
-        setMember(
-          stat
+      try {
+        const res = await fetchTeamPortfolioBySlug(slug);
+        if (!alive) return;
+
+        let mem: TeamMemberPortfolio | null = null;
+        if (res.member) {
+          mem = enrichTeamMemberPhotoFromStatic(res.member, slug);
+        } else if (!res.usedDatabase) {
+          const stat = findStaticTeamMemberBySlug(slug);
+          mem = stat
             ? enrichTeamMemberPhotoFromStatic(
                 staticTeamMemberToPortfolio(stat),
                 slug,
               )
-            : null,
-        );
-      } else {
-        setMember(null);
-      }
-      setReady(true);
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [slug]);
+            : null;
+        }
+        setMember(mem);
+        filterMemberNameRef.current = mem?.name ?? "";
+        setReady(true);
 
-  useEffect(() => {
-    const name = member?.name?.trim();
-    if (!name) {
-      setOrcidPubs([]);
-      setPubsError(null);
-      setPubsLoading(false);
-      return;
-    }
-    let alive = true;
-    setPubsLoading(true);
-    setPubsError(null);
-    void (async () => {
-      try {
-        const all = await fetchOrcidPublications(DEFAULT_ORCID_ID);
+        const name = filterMemberNameRef.current.trim();
+        if (!name) {
+          await orcidPromise.catch(() => {});
+          if (!alive) return;
+          setOrcidPubs([]);
+          return;
+        }
+
+        const all = await orcidPromise;
         if (!alive) return;
         const filtered = filterOrcidPublicationsForMember(all, name);
         filtered.sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
@@ -143,10 +155,11 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
         if (alive) setPubsLoading(false);
       }
     })();
+
     return () => {
       alive = false;
     };
-  }, [member?.name]);
+  }, [slug]);
 
   const pubCountLabel = useMemo(() => {
     const n = orcidPubs.length;

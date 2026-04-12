@@ -194,8 +194,12 @@ export default function HomeMain({
                   {home.hero.titleRest}
                 </span>
               </h1>
-              <p className="mt-2 text-sm font-medium uppercase leading-snug tracking-wider text-muted-foreground sm:text-base">
-                {home.hero.tagline}
+              <p
+                className={`mt-3 text-base font-semibold uppercase leading-snug tracking-[0.12em] sm:mt-3.5 sm:text-lg ${heroTitleFont.className}`}
+              >
+                <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+                  {home.hero.tagline}
+                </span>
               </p>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-[17px]">
                 {home.hero.lead}

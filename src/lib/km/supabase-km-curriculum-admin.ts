@@ -4,10 +4,11 @@ import type { Json } from "@/lib/supabase/database.types";
 export type KmAdminTopicDraft = {
   topicKey: string;
   sortOrder: number;
-  topicType: "text" | "video";
+  topicType: "text" | "video" | "audio";
   title: string;
   paragraphs: string[];
   embedUrl: string;
+  /** Used for video caption and podcast / audio episode caption (same DB column). */
   videoCaption: string;
 };
 
@@ -134,7 +135,12 @@ type ModuleRow = {
 };
 
 function mapTopicRow(r: TopicRow): KmAdminTopicDraft {
-  const tt = r.topic_type === "video" ? "video" : "text";
+  const tt =
+    r.topic_type === "video"
+      ? "video"
+      : r.topic_type === "audio"
+        ? "audio"
+        : "text";
   return {
     topicKey: r.topic_key,
     sortOrder: r.sort_order,
@@ -290,9 +296,14 @@ export async function saveKmAdminModule(
     topic_type: t.topicType,
     title: t.title.trim(),
     paragraphs: t.paragraphs.map((p) => p.trim()).filter(Boolean) as Json,
-    embed_url: t.topicType === "video" ? t.embedUrl.trim() || null : null,
+    embed_url:
+      t.topicType === "video" || t.topicType === "audio"
+        ? t.embedUrl.trim() || null
+        : null,
     video_caption:
-      t.topicType === "video" ? t.videoCaption.trim() || null : null,
+      t.topicType === "video" || t.topicType === "audio"
+        ? t.videoCaption.trim() || null
+        : null,
   }));
 
   if (topicInserts.length) {

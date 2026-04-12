@@ -24,6 +24,7 @@ import {
   type KmAdminQuestionDraft,
   type KmAdminTopicDraft,
 } from "@/lib/km/supabase-km-curriculum-admin";
+import { uploadKmCurriculumAudio } from "@/lib/km/km-audio-storage";
 import { uploadKmCurriculumVideo } from "@/lib/km/km-video-storage";
 
 function paragraphsToText(p: string[]): string {
@@ -213,13 +214,21 @@ export default function KmCurriculumEditor() {
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
             Admins and superusers can edit modules, topics, and quiz questions
             in Supabase. Public learners see changes immediately in the app.
-            Video topics support{" "}
-            <strong className="text-foreground">file upload</strong> (Supabase
-            bucket <code className="rounded bg-muted px-1">km-videos</code> — run{" "}
-            <code className="rounded bg-muted px-1 text-xs">
-              supabase/storage_km_videos.sql
+            Topics can be <strong className="text-foreground">text</strong>,{" "}
+            <strong className="text-foreground">video</strong> (URL or upload to{" "}
+            <code className="rounded bg-muted px-1">km-videos</code> —{" "}
+            <code className="rounded bg-muted px-0.5 text-xs">
+              storage_km_videos.sql
             </code>
-            ) or paste embed / .mp4 URLs.
+            ), or <strong className="text-foreground">audio</strong> / podcast-style
+            (URL or upload to{" "}
+            <code className="rounded bg-muted px-1">km-audio</code> —{" "}
+            <code className="rounded bg-muted px-0.5 text-xs">
+              storage_km_audio.sql
+            </code>
+            ). New installs: <code className="text-xs">knowledge_mobilization.sql</code>{" "}
+            includes <code className="text-xs">audio</code>; existing DBs: run{" "}
+            <code className="text-xs">km_topics_add_audio_type.sql</code>.
             <span className="mt-2 block font-medium text-amber-800 dark:text-amber-200">
               Static hosting (e.g. GitHub Pages): adding a{" "}
               <em>new</em> module slug requires a new site build and deploy so
@@ -561,9 +570,12 @@ function TopicEditor({
   onMoveDown?: () => void;
   onRemove: () => void;
 }) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoFileInputRef = useRef<HTMLInputElement>(null);
+  const audioFileInputRef = useRef<HTMLInputElement>(null);
   const [videoUploadBusy, setVideoUploadBusy] = useState(false);
   const [videoUploadErr, setVideoUploadErr] = useState<string | null>(null);
+  const [audioUploadBusy, setAudioUploadBusy] = useState(false);
+  const [audioUploadErr, setAudioUploadErr] = useState<string | null>(null);
   const paraText = paragraphsToText(topic.paragraphs);
   return (
     <div className="space-y-3">
@@ -608,15 +620,16 @@ function TopicEditor({
             className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
             value={topic.topicType}
             disabled={disabled}
-            onChange={(e) =>
-              onChange({
-                ...topic,
-                topicType: e.target.value === "video" ? "video" : "text",
-              })
-            }
+            onChange={(e) => {
+              const v = e.target.value;
+              const topicType =
+                v === "video" ? "video" : v === "audio" ? "audio" : "text";
+              onChange({ ...topic, topicType });
+            }}
           >
             <option value="text">Text</option>
             <option value="video">Video</option>
+            <option value="audio">Audio (podcast-style)</option>
           </select>
         </label>
       </div>
@@ -640,7 +653,7 @@ function TopicEditor({
                 Or upload
               </span>
               <input
-                ref={fileInputRef}
+                ref={videoFileInputRef}
                 type="file"
                 accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov"
                 className="sr-only"
@@ -669,7 +682,7 @@ function TopicEditor({
               <button
                 type="button"
                 disabled={disabled || videoUploadBusy}
-                onClick={() => fileInputRef.current?.click()}
+                onClick={() => videoFileInputRef.current?.click()}
                 className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition hover:bg-muted/60 disabled:opacity-50"
               >
                 {videoUploadBusy ? (
@@ -691,6 +704,77 @@ function TopicEditor({
           </p>
           <Field
             label="Video caption (optional)"
+            value={topic.videoCaption}
+            onChange={(videoCaption) => onChange({ ...topic, videoCaption })}
+          />
+        </>
+      ) : null}
+      {topic.topicType === "audio" ? (
+        <>
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end">
+            <div className="min-w-0 flex-1">
+              <Field
+                label="Audio URL (MP3/M4A public link, Supabase URL, or embed iframe src)"
+                value={topic.embedUrl}
+                onChange={(embedUrl) => onChange({ ...topic, embedUrl })}
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-muted-foreground">
+                Or upload
+              </span>
+              <input
+                ref={audioFileInputRef}
+                type="file"
+                accept="audio/mpeg,audio/mp4,audio/wav,audio/webm,audio/ogg,.mp3,.m4a,.wav,.webm,.ogg"
+                className="sr-only"
+                disabled={disabled || audioUploadBusy}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  e.target.value = "";
+                  if (!file) return;
+                  setAudioUploadErr(null);
+                  setAudioUploadBusy(true);
+                  try {
+                    const { publicUrl } = await uploadKmCurriculumAudio(
+                      file,
+                      moduleSlug,
+                    );
+                    onChange({ ...topic, embedUrl: publicUrl });
+                  } catch (err) {
+                    setAudioUploadErr(
+                      err instanceof Error ? err.message : "Upload failed",
+                    );
+                  } finally {
+                    setAudioUploadBusy(false);
+                  }
+                }}
+              />
+              <button
+                type="button"
+                disabled={disabled || audioUploadBusy}
+                onClick={() => audioFileInputRef.current?.click()}
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition hover:bg-muted/60 disabled:opacity-50"
+              >
+                {audioUploadBusy ? (
+                  <Loader2 className="h-4 w-4 animate-spin shrink-0" aria-hidden />
+                ) : (
+                  <Upload className="h-4 w-4 shrink-0" aria-hidden />
+                )}
+                {audioUploadBusy ? "Uploading…" : "Upload MP3 / M4A / WAV"}
+              </button>
+            </div>
+          </div>
+          {audioUploadErr ? (
+            <p className="text-xs text-destructive">{audioUploadErr}</p>
+          ) : null}
+          <p className="text-[11px] text-muted-foreground">
+            Uploads use public <code className="rounded bg-muted px-1">km-audio</code>{" "}
+            (max 100MB). Run <code className="rounded bg-muted px-0.5">storage_km_audio.sql</code>{" "}
+            in Supabase.
+          </p>
+          <Field
+            label="Episode intro or source line (optional, shown under player)"
             value={topic.videoCaption}
             onChange={(videoCaption) => onChange({ ...topic, videoCaption })}
           />

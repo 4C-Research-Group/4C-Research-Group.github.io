@@ -11,6 +11,7 @@ import {
   ChevronDown,
   CirclePlay,
   FileText,
+  Headphones,
   Lock,
 } from "lucide-react";
 import {
@@ -39,6 +40,13 @@ function isNativeVideoEmbedUrl(url: string): boolean {
   return /\.(mp4|m4v|webm|ogg|ogv|mov)(\?|#|$)/i.test(u);
 }
 
+/** Direct file URLs for podcast-style audio topics (not embed pages). */
+function isNativeAudioEmbedUrl(url: string): boolean {
+  const u = url.trim().toLowerCase();
+  if (!u || u.startsWith("javascript:") || u.startsWith("data:")) return false;
+  return /\.(mp3|m4a|wav|aac|ogg|oga|opus|flac)(\?|#|$)/i.test(u);
+}
+
 function TopicBlock({
   topic,
   reviewed,
@@ -65,11 +73,15 @@ function TopicBlock({
             className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
               topic.type === "video"
                 ? "bg-consciousness/12 text-consciousness"
-                : "bg-cognition/12 text-cognition"
+                : topic.type === "audio"
+                  ? "bg-care/12 text-care"
+                  : "bg-cognition/12 text-cognition"
             }`}
           >
             {topic.type === "video" ? (
               <CirclePlay className="h-5 w-5" strokeWidth={2} />
+            ) : topic.type === "audio" ? (
+              <Headphones className="h-5 w-5" strokeWidth={2} />
             ) : (
               <FileText className="h-5 w-5" strokeWidth={2} />
             )}
@@ -79,7 +91,11 @@ function TopicBlock({
               {topic.title}
             </span>
             <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              {topic.type === "video" ? "Video + text" : "Text"}
+              {topic.type === "video"
+                ? "Video + text"
+                : topic.type === "audio"
+                  ? "Audio + show notes"
+                  : "Text"}
             </span>
           </span>
         </span>
@@ -124,6 +140,43 @@ function TopicBlock({
                 <div className="flex aspect-video w-full items-center justify-center rounded-xl border border-dashed border-border bg-muted/50 p-6 text-center text-sm text-muted-foreground">
                   {topic.videoCaption ??
                     "Video embed will appear here once your team adds an approved URL in the curriculum file."}
+                </div>
+              ) : null}
+
+              {topic.type === "audio" && topic.embedUrl ? (
+                <div className="w-full overflow-hidden rounded-xl border border-border bg-muted/30 p-4">
+                  {isNativeAudioEmbedUrl(topic.embedUrl) ? (
+                    <audio
+                      className="w-full"
+                      controls
+                      preload="metadata"
+                      title={topic.audioCaption ?? topic.title}
+                    >
+                      <source src={topic.embedUrl} />
+                    </audio>
+                  ) : (
+                    <iframe
+                      src={topic.embedUrl}
+                      title={topic.audioCaption ?? topic.title}
+                      className="h-32 w-full rounded-lg bg-muted sm:h-40"
+                      allow="autoplay; clipboard-write; encrypted-media"
+                      loading="lazy"
+                    />
+                  )}
+                  {topic.audioCaption ? (
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {topic.audioCaption}
+                    </p>
+                  ) : null}
+                </div>
+              ) : topic.type === "audio" ? (
+                <div className="flex w-full flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/50 p-6 text-center text-sm text-muted-foreground">
+                  <Headphones
+                    className="mb-2 h-8 w-8 text-muted-foreground/70"
+                    aria-hidden
+                  />
+                  {topic.audioCaption ??
+                    "Add an MP3/M4A link or upload audio in Admin → Knowledge Mobilization → Curriculum."}
                 </div>
               ) : null}
 

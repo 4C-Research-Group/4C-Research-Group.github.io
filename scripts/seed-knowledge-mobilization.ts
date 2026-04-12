@@ -122,8 +122,16 @@ async function main() {
         topic_type: t.type,
         title: t.title,
         paragraphs: t.paragraphs,
-        embed_url: t.type === "video" ? (t.embedUrl ?? null) : null,
-        video_caption: t.type === "video" ? (t.videoCaption ?? null) : null,
+        embed_url:
+          t.type === "video" || t.type === "audio"
+            ? ("embedUrl" in t ? t.embedUrl : null) ?? null
+            : null,
+        video_caption:
+          t.type === "video"
+            ? ("videoCaption" in t ? t.videoCaption : null) ?? null
+            : t.type === "audio"
+              ? ("audioCaption" in t ? t.audioCaption : null) ?? null
+              : null,
       });
       if (it) {
         console.error("Insert topic", t.id, it.message);

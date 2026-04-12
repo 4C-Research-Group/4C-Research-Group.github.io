@@ -370,7 +370,12 @@ export default function KnowledgeMobilizationHubPage() {
                                 mod.topics.filter((t) => t.type === "video")
                                   .length
                               }{" "}
-                              video topic(s) ·{" "}
+                              video ·{" "}
+                              {
+                                mod.topics.filter((t) => t.type === "audio")
+                                  .length
+                              }{" "}
+                              audio ·{" "}
                               {
                                 mod.topics.filter((t) => t.type === "text")
                                   .length

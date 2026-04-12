@@ -20,6 +20,16 @@ export type KMTopic =
       /** Optional — if omitted, UI shows a placeholder for staff to add a link */
       embedUrl?: string;
       videoCaption?: string;
+    }
+  | {
+      id: string;
+      title: string;
+      type: "audio";
+      /** Shown as show notes under the player */
+      paragraphs: string[];
+      /** MP3/M4A public URL, embed URL, or Supabase Storage link */
+      embedUrl?: string;
+      audioCaption?: string;
     };
 
 export interface KMQuestion {
@@ -82,6 +92,16 @@ export const kmModules: KMModule[] = [
         embedUrl: "https://www.youtube.com/embed/ZbZSehyN1Bs",
         videoCaption:
           "Placeholder video for layout testing — replace with your unit’s approved embed.",
+      },
+      {
+        id: "podcast-style-audio-example",
+        title: "Audio: podcast-style episode (optional)",
+        type: "audio" as const,
+        paragraphs: [
+          "Some teams add a short spoken refresher learners can play with earbuds. In Admin → Knowledge Mobilization → Curriculum, set this topic’s audio URL or upload an MP3/M4A file to Supabase Storage.",
+        ],
+        audioCaption:
+          "Placeholder — add audio URL or upload (see storage_km_audio.sql).",
       },
     ],
     questions: [

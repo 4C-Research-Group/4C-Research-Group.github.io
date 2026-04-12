@@ -19,7 +19,7 @@ create table if not exists public.km_topics (
   module_id uuid not null references public.km_modules (id) on delete cascade,
   topic_key text not null,
   sort_order int not null default 0,
-  topic_type text not null check (topic_type in ('text', 'video')),
+  topic_type text not null check (topic_type in ('text', 'video', 'audio')),
   title text not null,
   paragraphs jsonb not null default '[]'::jsonb,
   embed_url text,

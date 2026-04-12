@@ -53,6 +53,19 @@ function mapTopic(r: TopicRow): KMTopic | null {
         : {}),
     };
   }
+  if (r.topic_type === "audio") {
+    const embed = (r.embed_url ?? "").trim();
+    return {
+      id: r.topic_key,
+      title: r.title,
+      type: "audio",
+      paragraphs,
+      ...(embed ? { embedUrl: embed } : {}),
+      ...(r.video_caption?.trim()
+        ? { audioCaption: r.video_caption.trim() }
+        : {}),
+    };
+  }
   if (r.topic_type === "text") {
     return {
       id: r.topic_key,

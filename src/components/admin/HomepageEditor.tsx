@@ -290,6 +290,68 @@ export default function HomepageEditor() {
                 }
               />
             </Field>
+            <p className="col-span-full text-xs font-semibold text-foreground">
+              Knowledge Mobilization (hero callout, left column)
+            </p>
+            <p className="col-span-full text-xs text-muted-foreground">
+              Shown under the lead paragraph. Clear both message and link label to
+              hide this block.
+            </p>
+            <Field label="KM callout message">
+              <textarea
+                className="min-h-[72px] w-full rounded-lg border border-input bg-background px-2 py-2 text-sm"
+                value={d.hero.knowledgeMobilization.message}
+                onChange={(e) =>
+                  setDraft({
+                    ...d,
+                    hero: {
+                      ...d.hero,
+                      knowledgeMobilization: {
+                        ...d.hero.knowledgeMobilization,
+                        message: e.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </Field>
+            <Field label="KM link label">
+              <input
+                className="w-full rounded-lg border border-input bg-background px-2 py-2 text-sm"
+                value={d.hero.knowledgeMobilization.linkLabel}
+                onChange={(e) =>
+                  setDraft({
+                    ...d,
+                    hero: {
+                      ...d.hero,
+                      knowledgeMobilization: {
+                        ...d.hero.knowledgeMobilization,
+                        linkLabel: e.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </Field>
+            <Field label="KM link URL">
+              <input
+                className="w-full rounded-lg border border-input bg-background px-2 py-2 text-sm"
+                value={d.hero.knowledgeMobilization.linkHref}
+                onChange={(e) =>
+                  setDraft({
+                    ...d,
+                    hero: {
+                      ...d.hero,
+                      knowledgeMobilization: {
+                        ...d.hero.knowledgeMobilization,
+                        linkHref: e.target.value,
+                      },
+                    },
+                  })
+                }
+                placeholder="/knowledge-mobilization/"
+              />
+            </Field>
             <ImgRow
               label="Hero logo"
               value={d.hero.heroLogoSrc}

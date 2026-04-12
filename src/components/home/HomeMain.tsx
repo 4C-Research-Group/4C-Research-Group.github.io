@@ -18,6 +18,7 @@ import {
   Zap,
   ChevronDown,
   Sparkles,
+  GraduationCap,
 } from "lucide-react";
 import type { Project } from "@/data/projectsData";
 import type {
@@ -190,6 +191,30 @@ export default function HomeMain({
               <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-[17px]">
                 {home.hero.lead}
               </p>
+
+              {(home.hero.knowledgeMobilization.message.trim() ||
+                home.hero.knowledgeMobilization.linkLabel.trim()) && (
+                <div className="mt-6 max-w-xl rounded-xl border border-care/30 bg-care/[0.07] px-4 py-3.5 dark:border-care/25 dark:bg-care/[0.09]">
+                  {home.hero.knowledgeMobilization.message.trim() ? (
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      {home.hero.knowledgeMobilization.message.trim()}
+                    </p>
+                  ) : null}
+                  {home.hero.knowledgeMobilization.linkLabel.trim() ? (
+                    <SmartLink
+                      href={
+                        home.hero.knowledgeMobilization.linkHref.trim() ||
+                        "/knowledge-mobilization/"
+                      }
+                      className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-care underline-offset-2 transition hover:text-care/90 hover:underline"
+                    >
+                      <GraduationCap className="h-4 w-4 shrink-0" aria-hidden />
+                      {home.hero.knowledgeMobilization.linkLabel.trim()}
+                      <ArrowRight className="h-3.5 w-3.5 opacity-70" aria-hidden />
+                    </SmartLink>
+                  ) : null}
+                </div>
+              )}
 
               <div className="mt-8 flex flex-wrap gap-2 sm:gap-3">
                 {home.hero.pills.map((pill) => {

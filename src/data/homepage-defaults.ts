@@ -17,6 +17,12 @@ export type HomepagePayload = {
     titleRest: string;
     tagline: string;
     lead: string;
+    /** Short callout under the lead; leave message and link label empty to hide. */
+    knowledgeMobilization: {
+      message: string;
+      linkLabel: string;
+      linkHref: string;
+    };
     partnerBlurb: string;
     heroLogoSrc: string;
     brainPatternSrc: string;
@@ -102,6 +108,12 @@ export const HOMEPAGE_DEFAULTS: HomepagePayload = {
     titleRest: " Research Group",
     tagline: "Cognition · Consciousness · Critical Care",
     lead: "We study brain health in critically ill children—combining neuroimaging, bedside monitoring, and multicenter collaboration to improve outcomes.",
+    knowledgeMobilization: {
+      message:
+        "Self-paced learning modules and quizzes on PICU neuro topics—open to everyone, with optional sign-in to save your progress.",
+      linkLabel: "Knowledge Mobilization",
+      linkHref: "/knowledge-mobilization/",
+    },
     partnerBlurb:
       "Interested in partnering? We work with clinicians, hospitals, and industry on studies from neuroprognostication to ICU delirium and quantitative EEG.",
     heroLogoSrc: "/logo.png",
@@ -334,6 +346,10 @@ export function mergeHomepagePayload(raw: unknown): HomepagePayload {
     hero: {
       ...d.hero,
       ...r.hero,
+      knowledgeMobilization: {
+        ...d.hero.knowledgeMobilization,
+        ...(r.hero?.knowledgeMobilization ?? {}),
+      },
       pills: pickArr(d.hero.pills, r.hero?.pills),
       ctas: pickArr(d.hero.ctas, r.hero?.ctas),
     },

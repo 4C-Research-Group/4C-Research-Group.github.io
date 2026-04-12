@@ -1,5 +1,13 @@
 export const KM_CERTIFICATE_NAME_STORAGE_KEY = "4c-km-certificate-name";
 
+export type KmCertificateKind = "full_track" | "program";
+
+export type KmCertificateRenderOptions = {
+  kind?: KmCertificateKind;
+  /** When `kind` is `program`, shown as the micro-credential / program name on the certificate. */
+  programTitle?: string;
+};
+
 /** Landscape certificate (px) at 2× logical size for sharper PNG. */
 const W = 2200;
 const H = 1556;
@@ -40,11 +48,13 @@ function fitFontSize(
 
 /**
  * Draws the certificate into a new canvas (device pixels = W×H).
+ * For a program / micro-credential, pass `options.kind === "program"` and `programTitle`.
  */
 export function createCertificateCanvas(
   recipientName: string,
   moduleTitles: string[],
   completionDate: Date = new Date(),
+  options?: KmCertificateRenderOptions,
 ): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = W;
@@ -74,12 +84,19 @@ export function createCertificateCanvas(
   ctx.lineWidth = 2;
   ctx.strokeRect(pad + 20, pad + 20, W - (pad + 20) * 2, H - (pad + 20) * 2);
 
+  const programTitleTrimmed = options?.programTitle?.trim();
+  const isProgram = options?.kind === "program" && programTitleTrimmed;
+
   // Title
   ctx.fillStyle = "#0f172a";
   ctx.font = '600 56px ui-sans-serif, system-ui, sans-serif';
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText("Certificate of completion", W / 2, pad + 120);
+  ctx.fillText(
+    isProgram ? "Micro-credential certificate" : "Certificate of completion",
+    W / 2,
+    pad + 120,
+  );
 
   ctx.fillStyle = "#64748b";
   ctx.font = '400 28px ui-sans-serif, system-ui, sans-serif';
@@ -87,7 +104,15 @@ export function createCertificateCanvas(
 
   ctx.fillStyle = "#475569";
   ctx.font = '400 24px ui-sans-serif, system-ui, sans-serif';
-  ctx.fillText("Cognition · Consciousness · Critical Care", W / 2, pad + 232);
+  if (isProgram) {
+    const progLine = `Program: ${programTitleTrimmed}`;
+    const progSize = fitFontSize(ctx, progLine, W - pad * 4, 24, 18);
+    ctx.font = `500 ${progSize}px ui-sans-serif, system-ui, sans-serif`;
+    ctx.fillStyle = "#0369a1";
+    ctx.fillText(progLine, W / 2, pad + 232);
+  } else {
+    ctx.fillText("Cognition · Consciousness · Critical Care", W / 2, pad + 232);
+  }
 
   // Award line
   ctx.fillStyle = "#64748b";
@@ -104,8 +129,9 @@ export function createCertificateCanvas(
   // Body
   ctx.fillStyle = "#334155";
   ctx.font = '400 26px ui-sans-serif, system-ui, sans-serif';
-  const body =
-    "has successfully completed all refresher modules in this learning track.";
+  const body = isProgram
+    ? "has successfully completed the following modules for the micro-credential program named above."
+    : "has successfully completed all refresher modules in this learning track.";
   ctx.fillText(body, W / 2, H * 0.54);
 
   // Date
@@ -123,13 +149,17 @@ export function createCertificateCanvas(
   ctx.fillStyle = "#0f172a";
   ctx.font = '600 22px ui-sans-serif, system-ui, sans-serif';
   const listTop = H * 0.68;
-  ctx.fillText("Modules completed:", pad + 80, listTop);
+  ctx.fillText(
+    isProgram ? "Modules completed for this micro-credential:" : "Modules completed:",
+    pad + 80,
+    listTop,
+  );
 
   ctx.fillStyle = "#475569";
   ctx.font = '400 20px ui-sans-serif, system-ui, sans-serif';
   let y = listTop + 44;
   const lineH = 34;
-  const maxLines = 8;
+  const maxLines = 14;
   for (let i = 0; i < Math.min(moduleTitles.length, maxLines); i++) {
     ctx.fillText(`· ${moduleTitles[i]}`, pad + 100, y);
     y += lineH;
@@ -158,8 +188,14 @@ export function certificateToPngDataUrl(canvas: HTMLCanvasElement): string {
 export function downloadCertificatePng(
   recipientName: string,
   moduleTitles: string[],
+  options?: KmCertificateRenderOptions,
 ): void {
-  const canvas = createCertificateCanvas(recipientName, moduleTitles);
+  const canvas = createCertificateCanvas(
+    recipientName,
+    moduleTitles,
+    new Date(),
+    options,
+  );
   canvas.toBlob((blob) => {
     if (!blob) return;
     const url = URL.createObjectURL(blob);
@@ -176,8 +212,14 @@ export function downloadCertificatePng(
 export function printCertificate(
   recipientName: string,
   moduleTitles: string[],
+  options?: KmCertificateRenderOptions,
 ): void {
-  const canvas = createCertificateCanvas(recipientName, moduleTitles);
+  const canvas = createCertificateCanvas(
+    recipientName,
+    moduleTitles,
+    new Date(),
+    options,
+  );
   const dataUrl = certificateToPngDataUrl(canvas);
   const w = window.open("", "_blank", "noopener,noreferrer");
   if (!w) return;

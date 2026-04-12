@@ -211,4 +211,14 @@ export function allModulesPassed(
   return ordered.every((m) => modulePassed(m.slug, data));
 }
 
+/** True when every module in the list has passed the quiz (e.g. a program / micro-credential subset). */
+export function listedModulesPassed(
+  modules: KMModule[],
+  progress?: KMStoredProgress,
+): boolean {
+  const data = progress ?? loadKmProgressFromLocal();
+  if (modules.length === 0) return false;
+  return modules.every((m) => modulePassed(m.slug, data));
+}
+
 export { KM_PASS_PERCENT };

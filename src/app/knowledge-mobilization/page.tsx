@@ -24,20 +24,14 @@ import {
   isModuleUnlocked,
   modulePassed,
   allModulesPassed,
+  listedModulesPassed,
 } from "@/lib/km-progress";
+import { modulesForProgramSlugs } from "@/lib/km/km-modules-for-slugs";
 import {
   fetchKmCurriculumFromSupabase,
   orderedKmModulesFromFetch,
 } from "@/lib/km/supabase-km-curriculum";
 import { fetchKmPageContent } from "@/lib/km/supabase-km-page";
-
-function modulesForProgramSlugs(
-  slugs: string[],
-  ordered: KMModule[],
-): KMModule[] {
-  const map = new Map(ordered.map((m) => [m.slug, m]));
-  return slugs.map((s) => map.get(s)).filter((m): m is KMModule => m != null);
-}
 
 export default function KnowledgeMobilizationHubPage() {
   const { email: authEmail } = useAuthProfile();
@@ -146,6 +140,7 @@ export default function KnowledgeMobilizationHubPage() {
   function renderProgramCard(prog: KmProgramGroup) {
     const mods = modulesForProgramSlugs(prog.moduleSlugs, ordered);
     if (mods.length === 0) return null;
+    const programDone = listedModulesPassed(mods, progress);
     return (
       <div
         key={prog.id}
@@ -156,7 +151,15 @@ export default function KnowledgeMobilizationHubPage() {
             <Layers className="h-5 w-5" aria-hidden />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="font-semibold text-foreground">{prog.title}</h3>
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="font-semibold text-foreground">{prog.title}</h3>
+              {programDone ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-care/15 px-2 py-0.5 text-xs font-semibold text-care">
+                  <CheckCircle2 className="h-3 w-3" aria-hidden />
+                  Micro-credential complete
+                </span>
+              ) : null}
+            </div>
             {prog.summary.trim() ? (
               <p className="mt-1 text-sm text-muted-foreground">{prog.summary}</p>
             ) : null}
@@ -172,6 +175,20 @@ export default function KnowledgeMobilizationHubPage() {
                 </li>
               ))}
             </ul>
+            {programDone ? (
+              <Link
+                href={`/knowledge-mobilization/certificate/?program=${encodeURIComponent(prog.id)}`}
+                className="mt-4 inline-flex items-center gap-2 rounded-full border border-care/40 bg-care/10 px-4 py-2 text-sm font-semibold text-care transition hover:bg-care/15"
+              >
+                <Award className="h-4 w-4" aria-hidden />
+                Certificate for this micro-credential
+              </Link>
+            ) : (
+              <p className="mt-3 text-xs text-muted-foreground">
+                Pass every module above (80%+ on each quiz) to unlock this
+                micro-credential certificate.
+              </p>
+            )}
           </div>
         </div>
       </div>

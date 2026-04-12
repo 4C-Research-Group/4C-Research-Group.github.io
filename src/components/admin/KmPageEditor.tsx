@@ -415,8 +415,10 @@ export default function KmPageEditor() {
               Programs &amp; tracks
             </h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              Each program lists module slugs (one per line). Slugs must match
-              published modules. Empty list hides the section on the hub.
+              Each program is a micro-credential track: list 2+ module slugs (one
+              per line). When a learner passes every listed module, the hub offers a
+              certificate that names the program and lists only those modules. Slugs
+              must match published modules. Empty list hides the section on the hub.
             </p>
           </div>
           <button

@@ -1,25 +1,42 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Award, Download, Loader2, Printer, ArrowLeft } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import { useKmProgress } from "@/contexts/KmProgressContext";
+import { mergeKmPagePayload } from "@/data/km-page-defaults";
+import type { KmPagePayload } from "@/data/km-page";
 import {
   createCertificateCanvas,
   downloadCertificatePng,
   printCertificate,
+  type KmCertificateRenderOptions,
 } from "@/lib/km-certificate";
-import { allModulesPassed } from "@/lib/km-progress";
+import { allModulesPassed, listedModulesPassed } from "@/lib/km-progress";
+import { modulesForProgramSlugs } from "@/lib/km/km-modules-for-slugs";
 import {
   fetchKmCurriculumFromSupabase,
   orderedKmModulesFromFetch,
 } from "@/lib/km/supabase-km-curriculum";
+import { fetchKmPageContent } from "@/lib/km/supabase-km-page";
 import type { KMModule } from "@/data/knowledge-mobilization";
 
-export default function CertificatePage() {
+function CertificateLoading() {
+  return (
+    <div className="flex min-h-[50vh] items-center justify-center bg-background">
+      <Loader2 className="h-8 w-8 animate-spin text-brand" aria-label="Loading" />
+    </div>
+  );
+}
+
+function CertificatePageInner() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const searchParams = useSearchParams();
+  const programId = (searchParams.get("program") ?? "").trim();
+
   const {
     ready: kmReady,
     progress,
@@ -27,19 +44,26 @@ export default function CertificatePage() {
     setCertificateDisplayName,
     syncsToAccount,
   } = useKmProgress();
+
   const [curriculumReady, setCurriculumReady] = useState(false);
+  const [pageReady, setPageReady] = useState(false);
   const [ordered, setOrdered] = useState<KMModule[]>([]);
+  const [page, setPage] = useState<KmPagePayload>(() => mergeKmPagePayload(null));
   const [name, setName] = useState("");
   const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     let alive = true;
     void (async () => {
-      const result = await fetchKmCurriculumFromSupabase();
-      const list = orderedKmModulesFromFetch(result);
+      const [result, copy] = await Promise.all([
+        fetchKmCurriculumFromSupabase(),
+        fetchKmPageContent(),
+      ]);
       if (!alive) return;
-      setOrdered(list);
+      setOrdered(orderedKmModulesFromFetch(result));
+      setPage(copy);
       setCurriculumReady(true);
+      setPageReady(true);
     })();
     return () => {
       alive = false;
@@ -51,29 +75,85 @@ export default function CertificatePage() {
     setName(certificateDisplayName);
   }, [kmReady, certificateDisplayName]);
 
-  const moduleTitles = ordered.map((m) => m.title);
-  const eligible =
-    curriculumReady && ordered.length > 0 && allModulesPassed(ordered, progress);
+  const activeProgram = useMemo(() => {
+    if (!programId) return null;
+    return page.programs.find((p) => p.id === programId) ?? null;
+  }, [programId, page.programs]);
 
-  const redrawPreview = useCallback((displayName: string, titles: string[]) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const source = createCertificateCanvas(displayName, titles);
-    canvas.width = source.width;
-    canvas.height = source.height;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    ctx.drawImage(source, 0, 0);
-  }, []);
+  const programModules = useMemo(() => {
+    if (!activeProgram) return [];
+    return modulesForProgramSlugs(activeProgram.moduleSlugs, ordered);
+  }, [activeProgram, ordered]);
+
+  const moduleTitles = useMemo(() => {
+    if (programId && programModules.length > 0) {
+      return programModules.map((m) => m.title);
+    }
+    return ordered.map((m) => m.title);
+  }, [programId, programModules, ordered]);
+
+  const certOptions: KmCertificateRenderOptions | undefined = useMemo(() => {
+    if (!programId || !activeProgram) return undefined;
+    return { kind: "program", programTitle: activeProgram.title };
+  }, [programId, activeProgram]);
+
+  const eligible = useMemo(() => {
+    if (!curriculumReady || !kmReady || ordered.length === 0) return false;
+    if (programId) {
+      if (!activeProgram || programModules.length === 0) return false;
+      return listedModulesPassed(programModules, progress);
+    }
+    return allModulesPassed(ordered, progress);
+  }, [
+    curriculumReady,
+    kmReady,
+    ordered,
+    programId,
+    activeProgram,
+    programModules,
+    progress,
+  ]);
+
+  const programConfigError =
+    pageReady &&
+    programId &&
+    (!activeProgram || programModules.length === 0);
+
+  const redrawPreview = useCallback(
+    (
+      displayName: string,
+      titles: string[],
+      opts?: KmCertificateRenderOptions,
+    ) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const source = createCertificateCanvas(displayName, titles, new Date(), opts);
+      canvas.width = source.width;
+      canvas.height = source.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.drawImage(source, 0, 0);
+    },
+    [],
+  );
 
   useEffect(() => {
-    if (!eligible || moduleTitles.length === 0) return;
-    redrawPreview(name, moduleTitles);
-  }, [eligible, name, moduleTitles, redrawPreview]);
+    if (!eligible || moduleTitles.length === 0 || programConfigError) return;
+    redrawPreview(name, moduleTitles, certOptions);
+  }, [
+    eligible,
+    name,
+    moduleTitles,
+    certOptions,
+    redrawPreview,
+    programConfigError,
+  ]);
 
   function handleNameBlur() {
     setCertificateDisplayName(name);
-    redrawPreview(name, moduleTitles);
+    if (eligible && !programConfigError) {
+      redrawPreview(name, moduleTitles, certOptions);
+    }
   }
 
   function handleDownload() {
@@ -83,7 +163,7 @@ export default function CertificatePage() {
     setDownloading(true);
     requestAnimationFrame(() => {
       try {
-        downloadCertificatePng(trimmed, moduleTitles);
+        downloadCertificatePng(trimmed, moduleTitles, certOptions);
       } finally {
         setDownloading(false);
       }
@@ -94,13 +174,35 @@ export default function CertificatePage() {
     const trimmed = name.trim();
     if (!trimmed) return;
     setCertificateDisplayName(trimmed);
-    printCertificate(trimmed, moduleTitles);
+    printCertificate(trimmed, moduleTitles, certOptions);
   }
 
-  if (!curriculumReady || !kmReady) {
+  if (!curriculumReady || !pageReady || !kmReady) {
+    return <CertificateLoading />;
+  }
+
+  if (programConfigError) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-brand" aria-label="Loading" />
+      <div className="min-h-screen bg-background">
+        <PageHero
+          compact
+          title="Certificate"
+          subtitle="That micro-credential or program link is not valid, or its modules are not on the site."
+        />
+        <div className="container mx-auto max-w-lg px-4 py-16 text-center">
+          <p className="text-muted-foreground">
+            Check the link from the Knowledge Mobilization hub, or ask an admin to
+            confirm the program id and module slugs in{" "}
+            <span className="font-medium text-foreground">Admin → Knowledge Mobilization</span>.
+          </p>
+          <Link
+            href="/knowledge-mobilization/"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-brand px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-brand-deep"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to modules
+          </Link>
+        </div>
       </div>
     );
   }
@@ -111,14 +213,18 @@ export default function CertificatePage() {
         <PageHero
           compact
           title="Certificate"
-          subtitle="Complete and pass every Knowledge Mobilization module to unlock your certificate."
+          subtitle={
+            programId
+              ? "Pass every module in this micro-credential (80% or higher on each quiz) to unlock its certificate."
+              : "Complete and pass every Knowledge Mobilization module to unlock your certificate."
+          }
         />
         <div className="container mx-auto max-w-lg px-4 py-16 text-center">
           <p className="text-muted-foreground">
             {syncsToAccount
-              ? "Your saved progress does not show all modules passed yet. "
-              : "Your progress on this browser does not show all modules passed yet. "}
-            Finish each module quiz with a score of at least 80%, then return
+              ? "Your saved progress does not show the required modules passed yet. "
+              : "Your progress on this browser does not show the required modules passed yet. "}
+            Finish each relevant module quiz with a score of at least 80%, then return
             here.
           </p>
           <Link
@@ -134,14 +240,13 @@ export default function CertificatePage() {
   }
 
   const canIssue = name.trim().length > 0;
+  const heroSubtitle = programId
+    ? `Micro-credential: ${activeProgram?.title ?? "Program"}. Enter your name, preview, then download or print.`
+    : "Enter your name as it should appear, preview below, then download a PNG or print / save as PDF.";
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHero
-        compact
-        title="Your certificate"
-        subtitle="Enter your name as it should appear, preview below, then download a PNG or print / save as PDF."
-      />
+      <PageHero compact title="Your certificate" subtitle={heroSubtitle} />
 
       <div className="container mx-auto max-w-3xl px-4 pb-20 sm:px-6">
         <motion.div
@@ -153,16 +258,23 @@ export default function CertificatePage() {
           <div className="flex items-start gap-3 rounded-xl border border-care/25 bg-care/5 p-4 text-sm text-muted-foreground">
             <Award className="mt-0.5 h-5 w-5 shrink-0 text-care" />
             <p>
-              This certificate is generated in your browser for completing all
-              modules
+              This certificate is generated in your browser for completing{" "}
+              {programId ? (
+                <>
+                  the <strong className="text-foreground">listed modules</strong> in
+                  this micro-credential
+                </>
+              ) : (
+                <>
+                  all modules
+                </>
+              )}{" "}
               {syncsToAccount ? (
                 <>
-                  {" "}
                   tied to <strong className="text-foreground">your account</strong>
                 </>
               ) : (
                 <>
-                  {" "}
                   on <strong className="text-foreground">this device</strong>
                 </>
               )}
@@ -241,5 +353,13 @@ export default function CertificatePage() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function CertificatePage() {
+  return (
+    <Suspense fallback={<CertificateLoading />}>
+      <CertificatePageInner />
+    </Suspense>
   );
 }

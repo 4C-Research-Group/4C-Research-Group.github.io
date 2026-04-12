@@ -65,7 +65,7 @@ export const kmPageDefaults: KmPagePayload = {
     "If you score below 80%, retake the quiz until you pass — your best score is saved.",
   programsSectionTitle: "Programs & micro-credentials",
   programsSectionIntro:
-    "Some offerings group several modules — useful for badges, micro-credentials, or certificate tracks. Empty list hides this section.",
+    "Group modules into a named track (micro-credential). Learners who pass every module in a track get a certificate that lists only those modules. Empty list hides this section.",
   programs: [],
   startPageTitle: "Before you begin",
   startPageIntro:

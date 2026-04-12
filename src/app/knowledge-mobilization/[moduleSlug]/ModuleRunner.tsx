@@ -33,6 +33,7 @@ import {
   loadKmQuizDraft,
   saveKmQuizDraft,
 } from "@/lib/km/km-quiz-draft";
+import { normalizeVideoIframeSrc } from "@/lib/km/embed-iframe-url";
 
 function isNativeVideoEmbedUrl(url: string): boolean {
   const u = url.trim().toLowerCase();
@@ -127,7 +128,7 @@ function TopicBlock({
                     </video>
                   ) : (
                     <iframe
-                      src={topic.embedUrl}
+                      src={normalizeVideoIframeSrc(topic.embedUrl)}
                       title={topic.videoCaption ?? topic.title}
                       className="h-full w-full bg-muted"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

@@ -1,5 +1,6 @@
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { Json } from "@/lib/supabase/database.types";
+import { normalizeVideoIframeSrc } from "@/lib/km/embed-iframe-url";
 
 export type KmAdminTopicDraft = {
   topicKey: string;
@@ -296,10 +297,12 @@ export async function saveKmAdminModule(
     topic_type: t.topicType,
     title: t.title.trim(),
     paragraphs: t.paragraphs.map((p) => p.trim()).filter(Boolean) as Json,
-    embed_url:
-      t.topicType === "video" || t.topicType === "audio"
-        ? t.embedUrl.trim() || null
-        : null,
+    embed_url: (() => {
+      if (t.topicType !== "video" && t.topicType !== "audio") return null;
+      const e = t.embedUrl.trim();
+      if (!e) return null;
+      return t.topicType === "video" ? normalizeVideoIframeSrc(e) : e;
+    })(),
     video_caption:
       t.topicType === "video" || t.topicType === "audio"
         ? t.videoCaption.trim() || null

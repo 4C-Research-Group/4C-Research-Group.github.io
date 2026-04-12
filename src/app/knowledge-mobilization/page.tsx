@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -32,6 +32,7 @@ import {
   orderedKmModulesFromFetch,
 } from "@/lib/km/supabase-km-curriculum";
 import { fetchKmPageContent } from "@/lib/km/supabase-km-page";
+import KmCertificateHubPreview from "@/components/km/KmCertificateHubPreview";
 
 export default function KnowledgeMobilizationHubPage() {
   const { email: authEmail } = useAuthProfile();
@@ -72,6 +73,15 @@ export default function KnowledgeMobilizationHubPage() {
       resetAll();
     }
   }
+
+  const programCertificateSample = useMemo(() => {
+    const first = page.programs.find(
+      (p) => modulesForProgramSlugs(p.moduleSlugs, ordered).length > 0,
+    );
+    if (!first) return null;
+    const mods = modulesForProgramSlugs(first.moduleSlugs, ordered);
+    return { title: first.title, moduleTitles: mods.map((m) => m.title) };
+  }, [page.programs, ordered]);
 
   const renderHero = () => (
     <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/30">
@@ -216,6 +226,13 @@ export default function KnowledgeMobilizationHubPage() {
         />
 
         <div className="container relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          {curriculumReady && kmReady ? (
+            <KmCertificateHubPreview
+              modules={ordered}
+              programSample={programCertificateSample}
+            />
+          ) : null}
+
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}

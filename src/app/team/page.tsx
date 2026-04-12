@@ -8,7 +8,6 @@ import {
   ArrowRight,
   Linkedin,
   Mail,
-  Sparkles,
   Users,
   GraduationCap,
   Briefcase,
@@ -16,7 +15,6 @@ import {
   Brain,
   Heart,
   Target,
-  Star,
   UserPlus,
 } from "lucide-react";
 import {
@@ -615,24 +613,6 @@ export default function TeamPage() {
                           ) : null}
                         </div>
                       </div>
-                      <div className="flex flex-1 flex-col p-4 pt-3">
-                        <div className="mt-auto flex gap-2 rounded-xl border border-border/40 bg-muted/20 p-3 transition-colors group-hover:border-brand/10 group-hover:bg-muted/30">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-background shadow-sm">
-                            <Star
-                              className="h-3.5 w-3.5 text-muted-foreground"
-                              strokeWidth={2}
-                            />
-                          </div>
-                          <div>
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                              Superpower
-                            </p>
-                            <p className="mt-1 text-xs leading-snug text-muted-foreground/90">
-                              {member.superpower}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
                     </article>
                     </Link>
                   </motion.li>
@@ -731,22 +711,6 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
                 <span className="min-w-0">{member.degree.trim()}</span>
               </p>
             ) : null}
-          </div>
-
-          <div className="mt-auto flex gap-3 rounded-xl border border-border/50 bg-muted/30 p-3.5 transition-colors group-hover:border-brand/15 group-hover:bg-brand/[0.03]">
-            <div
-              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-background shadow-sm ${accent}`}
-            >
-              <Sparkles className="h-4 w-4" strokeWidth={2} />
-            </div>
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                Superpower
-              </p>
-              <p className="mt-1 text-sm leading-snug text-foreground/90">
-                {member.superpower}
-              </p>
-            </div>
           </div>
         </div>
       </article>

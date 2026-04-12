@@ -76,7 +76,7 @@ export default function Footer() {
               <div className="min-w-max shrink-0 text-left">
                 <span className="block whitespace-nowrap text-[15px] font-semibold uppercase tracking-tight sm:text-base">
                   <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
-                    4C Research
+                    4C Research Group
                   </span>
                 </span>
                 <span className="mt-0.5 block whitespace-nowrap text-[9px] font-medium uppercase leading-snug tracking-wider sm:text-[10px]">

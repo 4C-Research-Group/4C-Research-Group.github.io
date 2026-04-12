@@ -106,7 +106,7 @@ export default function Navbar() {
           <div className="min-w-0 text-left">
             <span className="block text-[15px] font-semibold uppercase tracking-tight sm:text-base">
               <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
-                4C Research
+                4C Research Group
               </span>
             </span>
             <span className="mt-0.5 hidden text-[11px] font-medium uppercase leading-snug tracking-wider sm:block">

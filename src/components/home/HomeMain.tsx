@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Fraunces } from "next/font/google";
+import { Playfair_Display } from "next/font/google";
 import { motion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -38,8 +38,9 @@ import {
 import { HeroLabSnapshots } from "@/components/HeroLabSnapshots";
 import { siteAsset } from "@/lib/site-path";
 
-const heroTitleFont = Fraunces({
+const heroTitleFont = Playfair_Display({
   subsets: ["latin"],
+  weight: ["600", "700"],
   display: "swap",
 });
 
@@ -186,7 +187,7 @@ export default function HomeMain({
               </div>
 
               <h1
-                className={`text-[2.35rem] font-semibold leading-[1.18] tracking-[-0.02em] sm:text-5xl sm:leading-[1.14] lg:text-6xl lg:leading-[1.1] ${heroTitleFont.className}`}
+                className={`text-[2.35rem] font-bold uppercase leading-[1.15] tracking-tight sm:text-5xl sm:leading-[1.12] lg:text-6xl lg:leading-[1.1] ${heroTitleFont.className}`}
               >
                 <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text pb-[0.12em] text-transparent">
                   {home.hero.titleHighlight}

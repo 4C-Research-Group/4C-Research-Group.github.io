@@ -189,25 +189,12 @@ export default function Navbar() {
         {/* min-w reserves space so primary nav does not shift when auth resolves */}
         <div className="hidden min-w-0 shrink-0 items-center justify-end gap-2 lg:flex xl:min-w-[18rem]">
           {!authReady ? (
-            <div
-              className="flex w-full min-w-0 items-center justify-end gap-2"
+            <span
+              className="inline-flex h-9 min-w-[5.25rem] shrink-0 animate-pulse select-none items-center justify-center rounded-full bg-muted/80 px-3.5 py-2 text-[13px] font-semibold text-transparent"
               aria-hidden
             >
-              <span
-                className="inline-flex animate-pulse select-none items-center gap-1.5 rounded-full border border-border/80 bg-muted/80 px-3 py-1.5 text-[13px] font-medium text-transparent"
-              >
-                <LayoutDashboard
-                  className="h-3.5 w-3.5 shrink-0 opacity-0"
-                  aria-hidden
-                />
-                Admin dashboard
-              </span>
-              <span
-                className="inline-flex animate-pulse select-none items-center justify-center rounded-full border-2 border-brand bg-muted/80 px-3.5 py-2 text-[13px] font-semibold text-transparent"
-              >
-                Sign out
-              </span>
-            </div>
+              Sign in
+            </span>
           ) : signedIn ? (
             <>
               {showAdmin ? (

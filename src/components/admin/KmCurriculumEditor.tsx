@@ -99,6 +99,7 @@ export default function KmCurriculumEditor() {
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
 
   const selectedIndexRef = useRef(0);
   selectedIndexRef.current = selectedIndex;
@@ -122,10 +123,12 @@ export default function KmCurriculumEditor() {
         if (prev >= 0 && prev < list.length) return prev;
         return Math.min(prev, list.length - 1);
       });
+      setUnsavedChanges(false);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Failed to load curriculum");
       setModules([]);
       setSelectedIndex(0);
+      setUnsavedChanges(false);
     } finally {
       setLoading(false);
     }
@@ -148,12 +151,14 @@ export default function KmCurriculumEditor() {
   }, [modules, selectedIndex]);
 
   function replaceDraftAt(index: number, next: KmAdminModuleDraft) {
+    setUnsavedChanges(true);
     setModules((prev) => prev.map((m, i) => (i === index ? next : m)));
   }
 
   function addTopicToSelectedModule() {
     setErr(null);
     setOk(null);
+    setUnsavedChanges(true);
     setModules((prev) => {
       const i = Math.min(
         Math.max(0, selectedIndexRef.current),
@@ -174,6 +179,7 @@ export default function KmCurriculumEditor() {
   function addQuestionToSelectedModule() {
     setErr(null);
     setOk(null);
+    setUnsavedChanges(true);
     setModules((prev) => {
       const i = Math.min(
         Math.max(0, selectedIndexRef.current),
@@ -243,6 +249,7 @@ export default function KmCurriculumEditor() {
     const maxOrder = modules.reduce((a, m) => Math.max(a, m.sortOrder), -1);
     const m = emptyKmAdminModule(maxOrder + 1);
     const next = [...modules, m];
+    setUnsavedChanges(true);
     setModules(next);
     setSelectedIndex(next.length - 1);
     setOk(null);
@@ -267,7 +274,10 @@ export default function KmCurriculumEditor() {
           </h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
             Admins and superusers can edit modules, topics, and quiz questions
-            in Supabase. Public learners see changes immediately in the app.
+            here. Nothing is written to the database until you click{" "}
+            <strong className="text-foreground">Save module</strong> (including
+            adding or removing topics and questions). After a successful save,
+            public learners see updates on the next load.
             Topics can be <strong className="text-foreground">text</strong>,{" "}
             <strong className="text-foreground">video</strong> (URL or upload to{" "}
             <code className="rounded bg-muted px-1">km-videos</code> —{" "}
@@ -332,6 +342,14 @@ export default function KmCurriculumEditor() {
       {ok ? (
         <p className="rounded-lg border border-care/30 bg-care/10 px-3 py-2 text-sm text-foreground">
           {ok}
+        </p>
+      ) : null}
+      {unsavedChanges && !saving ? (
+        <p className="rounded-lg border border-amber-400/50 bg-amber-500/10 px-3 py-2 text-sm text-amber-950 dark:border-amber-400/35 dark:bg-amber-400/10 dark:text-amber-50">
+          <strong className="font-semibold">Unsaved changes.</strong> Use{" "}
+          <strong>Save module</strong> so removals and edits are stored in
+          Supabase. Refreshing the page before saving will bring topics and
+          questions back as they were last saved.
         </p>
       ) : null}
 
@@ -887,6 +905,7 @@ function TopicEditor({
           type="button"
           disabled={disabled}
           onClick={onRemove}
+          title="Removes this topic from the draft only—click Save module to update the database"
           className="ml-auto inline-flex items-center gap-1 text-xs font-medium text-destructive"
         >
           <Trash2 className="h-3.5 w-3.5" />
@@ -1116,6 +1135,7 @@ function QuestionEditor({
           type="button"
           disabled={disabled}
           onClick={onRemove}
+          title="Removes this question from the draft only—click Save module to update the database"
           className="ml-auto inline-flex items-center gap-1 text-xs font-medium text-destructive"
         >
           <Trash2 className="h-3.5 w-3.5" />

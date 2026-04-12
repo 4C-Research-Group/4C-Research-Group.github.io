@@ -1,9 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Link from "next/link";
 import {
   ChevronDown,
+  ChevronRight,
   ChevronUp,
   GraduationCap,
   Loader2,
@@ -393,6 +401,48 @@ function ModuleForm({
   onDelete?: () => void;
   saving: boolean;
 }) {
+  const topicPanelUid = useId().replace(/:/g, "");
+  const moduleKey = draft.dbId ?? `new:${draft.slug}:${draft.sortOrder}`;
+  const [openTopicRows, setOpenTopicRows] = useState<Set<number>>(() => new Set());
+  const prevModuleKeyRef = useRef(moduleKey);
+  const prevTopicLenRef = useRef(draft.topics.length);
+
+  useEffect(() => {
+    if (prevModuleKeyRef.current !== moduleKey) {
+      prevModuleKeyRef.current = moduleKey;
+      prevTopicLenRef.current = draft.topics.length;
+      setOpenTopicRows(new Set());
+      return;
+    }
+    const n = draft.topics.length;
+    const prev = prevTopicLenRef.current;
+    if (n > prev) {
+      setOpenTopicRows((s) => {
+        const next = new Set(s);
+        for (let j = prev; j < n; j++) next.add(j);
+        return next;
+      });
+    } else if (n < prev) {
+      setOpenTopicRows((s) => {
+        const next = new Set<number>();
+        for (const i of s) {
+          if (i < n) next.add(i);
+        }
+        return next;
+      });
+    }
+    prevTopicLenRef.current = n;
+  }, [moduleKey, draft.topics.length]);
+
+  function toggleTopicRow(index: number) {
+    setOpenTopicRows((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  }
+
   return (
     <div className="space-y-8 rounded-2xl border border-border/80 bg-card/40 p-5 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -456,69 +506,147 @@ function ModuleForm({
       />
 
       <section className="space-y-4 border-t border-border/60 pt-6">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-sm font-semibold text-foreground">Topics</h3>
-          <button
-            type="button"
-            disabled={disabled}
-            onClick={onAddTopic}
-            title={disabled ? "Wait for save to finish" : undefined}
-            className="inline-flex items-center gap-1 rounded-lg border border-border px-2 py-1 text-xs font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-45"
-          >
-            <Plus className="h-3.5 w-3.5" aria-hidden />
-            Add topic
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            {draft.topics.length > 0 ? (
+              <>
+                <button
+                  type="button"
+                  disabled={disabled}
+                  onClick={() =>
+                    setOpenTopicRows(
+                      new Set(
+                        Array.from(
+                          { length: draft.topics.length },
+                          (_, idx) => idx,
+                        ),
+                      ),
+                    )
+                  }
+                  className="text-xs font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline disabled:opacity-45"
+                >
+                  Expand all
+                </button>
+                <span className="text-xs text-muted-foreground/60" aria-hidden>
+                  ·
+                </span>
+                <button
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => setOpenTopicRows(new Set())}
+                  className="text-xs font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline disabled:opacity-45"
+                >
+                  Collapse all
+                </button>
+              </>
+            ) : null}
+            <button
+              type="button"
+              disabled={disabled}
+              onClick={onAddTopic}
+              title={disabled ? "Wait for save to finish" : undefined}
+              className="inline-flex items-center gap-1 rounded-lg border border-border px-2 py-1 text-xs font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              <Plus className="h-3.5 w-3.5" aria-hidden />
+              Add topic
+            </button>
+          </div>
         </div>
         <p className="text-xs text-muted-foreground">
           Stable <strong>topic key</strong> ties to saved learner progress; change
-          keys only if you accept resetting related progress.
+          keys only if you accept resetting related progress. Use the row headers
+          to show or hide each topic&apos;s fields.
         </p>
         {draft.topics.length === 0 ? (
           <p className="text-sm text-muted-foreground">No topics yet.</p>
         ) : (
-          <ul className="space-y-6">
-            {draft.topics.map((topic, i) => (
-              <li
-                key={`${topic.topicKey}-${i}`}
-                className="rounded-xl border border-border/70 bg-background/50 p-4"
-              >
-                <TopicEditor
-                  topic={topic}
-                  moduleSlug={draft.slug}
-                  disabled={disabled}
-                  onChange={(t) =>
-                    onChange({
-                      ...draft,
-                      topics: draft.topics.map((x, j) => (j === i ? t : x)),
-                    })
-                  }
-                  onMoveUp={
-                    i > 0
-                      ? () =>
+          <ul className="space-y-2">
+            {draft.topics.map((topic, i) => {
+              const isOpen = openTopicRows.has(i);
+              const panelId = `${topicPanelUid}-panel-${i}`;
+              const triggerId = `${topicPanelUid}-trigger-${i}`;
+              const label =
+                topic.title.trim() ||
+                topic.topicKey.trim() ||
+                `Topic ${i + 1}`;
+              return (
+                <li
+                  key={`${topic.topicKey}-${i}`}
+                  className="overflow-hidden rounded-xl border border-border/70 bg-background/50"
+                >
+                  <button
+                    type="button"
+                    disabled={disabled}
+                    id={triggerId}
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
+                    onClick={() => toggleTopicRow(i)}
+                    className="flex w-full min-w-0 items-center gap-2 px-3 py-2.5 text-left text-sm transition hover:bg-muted/50 disabled:pointer-events-none disabled:opacity-45"
+                  >
+                    <ChevronRight
+                      className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${isOpen ? "rotate-90" : ""}`}
+                      aria-hidden
+                    />
+                    <span className="min-w-0 flex-1 truncate font-medium text-foreground">
+                      {label}
+                    </span>
+                    <span className="hidden shrink-0 rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground sm:inline">
+                      {topic.topicType}
+                    </span>
+                    <code className="hidden max-w-[9rem] shrink-0 truncate text-[11px] text-muted-foreground md:inline">
+                      {topic.topicKey || "—"}
+                    </code>
+                  </button>
+                  {isOpen ? (
+                    <div
+                      id={panelId}
+                      role="region"
+                      aria-labelledby={triggerId}
+                      className="border-t border-border/60 px-4 pb-4 pt-3"
+                    >
+                      <TopicEditor
+                        topic={topic}
+                        moduleSlug={draft.slug}
+                        disabled={disabled}
+                        onChange={(t) =>
                           onChange({
                             ...draft,
-                            topics: moveItem(draft.topics, i, -1),
+                            topics: draft.topics.map((x, j) =>
+                              j === i ? t : x,
+                            ),
                           })
-                      : undefined
-                  }
-                  onMoveDown={
-                    i < draft.topics.length - 1
-                      ? () =>
+                        }
+                        onMoveUp={
+                          i > 0
+                            ? () =>
+                                onChange({
+                                  ...draft,
+                                  topics: moveItem(draft.topics, i, -1),
+                                })
+                            : undefined
+                        }
+                        onMoveDown={
+                          i < draft.topics.length - 1
+                            ? () =>
+                                onChange({
+                                  ...draft,
+                                  topics: moveItem(draft.topics, i, 1),
+                                })
+                            : undefined
+                        }
+                        onRemove={() =>
                           onChange({
                             ...draft,
-                            topics: moveItem(draft.topics, i, 1),
+                            topics: draft.topics.filter((_, j) => j !== i),
                           })
-                      : undefined
-                  }
-                  onRemove={() =>
-                    onChange({
-                      ...draft,
-                      topics: draft.topics.filter((_, j) => j !== i),
-                    })
-                  }
-                />
-              </li>
-            ))}
+                        }
+                      />
+                    </div>
+                  ) : null}
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>

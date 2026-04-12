@@ -190,7 +190,7 @@ export default function Navbar() {
         <div className="hidden min-w-0 shrink-0 items-center justify-end gap-2 lg:flex xl:min-w-[18rem]">
           {!authReady ? (
             <span
-              className="inline-flex h-9 min-w-[5.25rem] shrink-0 animate-pulse select-none items-center justify-center rounded-full bg-muted/80 px-3.5 py-2 text-[13px] font-semibold text-transparent"
+              className="inline-flex shrink-0 animate-pulse select-none items-center justify-center rounded-full bg-muted/80 px-3.5 py-2 text-[13px] font-semibold text-transparent shadow-sm"
               aria-hidden
             >
               Sign in
@@ -235,9 +235,11 @@ export default function Navbar() {
         <div className="flex shrink-0 items-center gap-2 lg:hidden">
           {!authReady ? (
             <span
-              className="h-9 w-[4.5rem] shrink-0 animate-pulse rounded-full bg-muted/80"
+              className="inline-flex shrink-0 animate-pulse select-none items-center justify-center rounded-full bg-muted/80 px-3 py-2 text-xs font-semibold text-transparent shadow-sm sm:px-3.5 sm:text-[13px]"
               aria-hidden
-            />
+            >
+              Sign in
+            </span>
           ) : signedIn ? (
             <>
               <Link

@@ -607,9 +607,14 @@ function ModuleForm({
           </div>
         </div>
         <p className="text-xs text-muted-foreground">
-          Stable <strong>topic key</strong> ties to saved learner progress; change
-          keys only if you accept resetting related progress. Use the row headers
-          to show or hide each topic&apos;s fields.
+          Stable{" "}
+          <strong className="font-semibold text-foreground mr-0.5">
+            topic key
+          </strong>
+          {" "}
+          ties to saved learner progress; change keys only if you accept
+          resetting related progress. Use the row headers to show or hide each
+          topic&apos;s fields.
         </p>
         {draft.topics.length === 0 ? (
           <p className="text-sm text-muted-foreground">No topics yet.</p>
@@ -755,8 +760,13 @@ function ModuleForm({
           </div>
         </div>
         <p className="text-xs text-muted-foreground">
-          Stable <strong>question key</strong> ties to saved learner progress. Use
-          the row headers to show or hide each question&apos;s fields.
+          Stable{" "}
+          <strong className="font-semibold text-foreground mr-0.5">
+            question key
+          </strong>
+          {" "}
+          ties to saved learner progress. Use the row headers to show or hide
+          each question&apos;s fields.
         </p>
         {draft.questions.length === 0 ? (
           <p className="text-sm text-muted-foreground">No questions yet.</p>

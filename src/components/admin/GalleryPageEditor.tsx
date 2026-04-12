@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { ChevronDown, ChevronUp, Loader2, Plus, Save, Trash2 } from "lucide-react";
-import GalleryCuratedSlotsPanel from "@/components/admin/GalleryCuratedSlotsPanel";
 import GalleryPhotosPanel from "@/components/admin/GalleryPhotosPanel";
 import {
+  defaultGalleryCuratedPhotoAssignments,
   defaultGalleryCustomSection,
   GALLERY_SECTION_IDS,
   GALLERY_SECTION_ORDER_LABELS,
@@ -16,19 +16,14 @@ import {
   type GalleryPagePayload,
   type GallerySectionLabels,
 } from "@/data/gallery-page";
-import {
-  mergeGalleryPagePayload,
-  normalizeCuratedSlotPhotoIds,
-} from "@/data/gallery-defaults";
+import { mergeGalleryPagePayload } from "@/data/gallery-defaults";
 import {
   fetchGalleryPageRowForAdmin,
   getGalleryPageDefaultsForAdmin,
   saveGalleryPagePayload,
 } from "@/lib/gallery/supabase-gallery-page";
-import {
-  fetchGalleryPhotosForAdmin,
-  type GalleryPhoto,
-} from "@/lib/gallery/supabase-gallery-photos";
+import { fetchGalleryPhotosForAdmin } from "@/lib/gallery/supabase-gallery-photos";
+import type { GalleryPhoto } from "@/lib/gallery/supabase-gallery-photos";
 
 function moveSectionOrder(
   order: string[],
@@ -146,11 +141,12 @@ function normalizeDraft(d: GalleryPagePayload): GalleryPagePayload {
     title: t(s.title),
     description: t(s.description),
   });
+  const slot = (id: string | null | undefined) =>
+    typeof id === "string" && id.trim() ? id.trim() : null;
   return mergeGalleryPagePayload({
     pageTitle: t(d.pageTitle),
     intro: t(d.intro),
     featuredCaption: t(d.featuredCaption),
-    curatedSlotPhotoIds: normalizeCuratedSlotPhotoIds(d.curatedSlotPhotoIds),
     sectionOrder: d.sectionOrder,
     customSections: d.customSections.map((s) => ({
       ...s,
@@ -164,7 +160,62 @@ function normalizeDraft(d: GalleryPagePayload): GalleryPagePayload {
     eventsSection: sec(d.eventsSection),
     labSection: sec(d.labSection),
     archiveSection: sec(d.archiveSection),
+    curatedPhotoAssignments: {
+      featuredPhotoId: slot(d.curatedPhotoAssignments.featuredPhotoId),
+      eventsPhotoIds: d.curatedPhotoAssignments.eventsPhotoIds.map((x) =>
+        slot(x),
+      ),
+      labPhotoIds: d.curatedPhotoAssignments.labPhotoIds.map((x) => slot(x)),
+    },
   });
+}
+
+function photoMenuLabel(p: GalleryPhoto, index: number): string {
+  const name = p.title.trim() || p.alt.trim() || "Untitled photo";
+  return `#${index + 1} — ${name.length > 52 ? `${name.slice(0, 50)}…` : name}`;
+}
+
+function PhotoPickSelect({
+  label,
+  hint,
+  value,
+  onChange,
+  photos,
+  disabled,
+}: {
+  label: string;
+  hint?: string;
+  value: string | null;
+  onChange: (next: string | null) => void;
+  photos: GalleryPhoto[];
+  disabled?: boolean;
+}) {
+  return (
+    <label className="block space-y-1.5">
+      <span className="text-xs font-medium text-foreground">{label}</span>
+      {hint ? (
+        <span className="block text-[11px] leading-snug text-muted-foreground">
+          {hint}
+        </span>
+      ) : null}
+      <select
+        disabled={disabled}
+        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm disabled:opacity-50"
+        value={value ?? ""}
+        onChange={(e) => {
+          const v = e.target.value;
+          onChange(v === "" ? null : v);
+        }}
+      >
+        <option value="">Automatic (use order in Photos above)</option>
+        {photos.map((p, idx) => (
+          <option key={p.id} value={p.id}>
+            {photoMenuLabel(p, idx)}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
 }
 
 function VisibilityToggle({
@@ -196,39 +247,43 @@ function VisibilityToggle({
 
 export default function GalleryPageEditor() {
   const [draft, setDraft] = useState<GalleryPagePayload | null>(null);
-  const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhoto[]>([]);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
+  const [pickerPhotos, setPickerPhotos] = useState<GalleryPhoto[]>([]);
+  const [pickerLoading, setPickerLoading] = useState(false);
 
-  const refreshGalleryPhotos = useCallback(async () => {
+  const refreshPickerPhotos = useCallback(async () => {
+    setPickerLoading(true);
     try {
-      setGalleryPhotos(await fetchGalleryPhotosForAdmin());
+      setPickerPhotos(await fetchGalleryPhotosForAdmin());
     } catch {
-      setGalleryPhotos([]);
+      setPickerPhotos([]);
+    } finally {
+      setPickerLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    void refreshPickerPhotos();
+  }, [refreshPickerPhotos]);
 
   const load = useCallback(async () => {
     setLoading(true);
     setErr(null);
     try {
-      const [row] = await Promise.all([
-        fetchGalleryPageRowForAdmin(),
-        refreshGalleryPhotos(),
-      ]);
-      setDraft(row.payload);
-      setUpdatedAt(row.updatedAt);
+      const { payload, updatedAt: u } = await fetchGalleryPageRowForAdmin();
+      setDraft(payload);
+      setUpdatedAt(u);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Load failed");
       setDraft(getGalleryPageDefaultsForAdmin());
-      await refreshGalleryPhotos();
     } finally {
       setLoading(false);
     }
-  }, [refreshGalleryPhotos]);
+  }, []);
 
   useEffect(() => {
     void load();
@@ -245,6 +300,7 @@ export default function GalleryPageEditor() {
       setDraft(merged);
       setOk("Saved.");
       await load();
+      await refreshPickerPhotos();
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Save failed");
     } finally {
@@ -356,16 +412,131 @@ export default function GalleryPageEditor() {
 
       <GalleryPhotosPanel />
 
-      {draft ? (
-        <GalleryCuratedSlotsPanel
-          photos={galleryPhotos}
-          slotPhotoIds={draft.curatedSlotPhotoIds}
-          onChange={(curatedSlotPhotoIds) =>
-            setDraft((d) => (d ? { ...d, curatedSlotPhotoIds } : d))
+      <section className="space-y-5 rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0 space-y-2">
+            <h2 className="text-sm font-semibold text-foreground">
+              Featured photo, Events &amp; workshops, and Lab &amp; field
+            </h2>
+            <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
+              Here you can <strong className="text-foreground">choose exact photos</strong> for
+              the large hero, the six event tiles, and the ten lab tiles. Leave each menu on{" "}
+              <strong className="text-foreground">Automatic</strong> to use the order from the
+              Photos list (first photo = hero, next six = events, next ten = lab).{" "}
+              <strong className="text-foreground">Save copy</strong> at the top saves these picks
+              together with your text.
+            </p>
+            {pickerPhotos.length === 0 ? (
+              <p className="text-xs font-medium text-amber-800 dark:text-amber-200">
+                Add at least one photo in the Photos section above before you can pick images
+                here.
+              </p>
+            ) : null}
+          </div>
+          <button
+            type="button"
+            disabled={pickerLoading}
+            onClick={() => void refreshPickerPhotos()}
+            className="shrink-0 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium hover:bg-muted/60 disabled:opacity-50"
+          >
+            {pickerLoading ? "Refreshing…" : "Refresh photo list"}
+          </button>
+        </div>
+
+        <div className="rounded-xl border border-border/70 bg-muted/10 p-4">
+          <PhotoPickSelect
+            label="Large photo at the top (Featured)"
+            hint="Usually the first photo in your list. Pick a different one here if you like."
+            value={draft.curatedPhotoAssignments.featuredPhotoId}
+            onChange={(featuredPhotoId) =>
+              setDraft({
+                ...draft,
+                curatedPhotoAssignments: {
+                  ...draft.curatedPhotoAssignments,
+                  featuredPhotoId,
+                },
+              })
+            }
+            photos={pickerPhotos}
+            disabled={pickerPhotos.length === 0}
+          />
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold text-foreground">Events &amp; workshops — six tiles</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            Tile 1 is the large left tile on desktop. Automatic uses positions 4–9 in your Photos
+            order (after the hero and two side images).
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {draft.curatedPhotoAssignments.eventsPhotoIds.map((val, i) => (
+              <PhotoPickSelect
+                key={`ev-${i}`}
+                label={`Event tile ${i + 1}`}
+                value={val}
+                onChange={(next) => {
+                  const eventsPhotoIds = [
+                    ...draft.curatedPhotoAssignments.eventsPhotoIds,
+                  ];
+                  eventsPhotoIds[i] = next;
+                  setDraft({
+                    ...draft,
+                    curatedPhotoAssignments: {
+                      ...draft.curatedPhotoAssignments,
+                      eventsPhotoIds,
+                    },
+                  });
+                }}
+                photos={pickerPhotos}
+                disabled={pickerPhotos.length === 0}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold text-foreground">Lab &amp; field — ten tiles</p>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            Automatic uses positions 10–19 in your Photos order (after the event block).
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {draft.curatedPhotoAssignments.labPhotoIds.map((val, i) => (
+              <PhotoPickSelect
+                key={`lab-${i}`}
+                label={`Lab tile ${i + 1}`}
+                value={val}
+                onChange={(next) => {
+                  const labPhotoIds = [...draft.curatedPhotoAssignments.labPhotoIds];
+                  labPhotoIds[i] = next;
+                  setDraft({
+                    ...draft,
+                    curatedPhotoAssignments: {
+                      ...draft.curatedPhotoAssignments,
+                      labPhotoIds,
+                    },
+                  });
+                }}
+                photos={pickerPhotos}
+                disabled={pickerPhotos.length === 0}
+              />
+            ))}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          disabled={saving}
+          onClick={() =>
+            setDraft({
+              ...draft,
+              curatedPhotoAssignments: defaultGalleryCuratedPhotoAssignments(),
+            })
           }
-          onReloadPhotos={refreshGalleryPhotos}
-        />
-      ) : null}
+          className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted/60 hover:text-foreground disabled:opacity-50"
+        >
+          Clear all manual photo picks (everything back to Automatic)
+        </button>
+      </section>
 
       <section className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
         <h2 className="text-sm font-semibold text-foreground">Page header</h2>
@@ -376,7 +547,7 @@ export default function GalleryPageEditor() {
             onChange={(pageTitle) => setDraft({ ...draft, pageTitle })}
           />
           <Field
-            label="Hero label (caption on the large featured image)"
+            label="Hero label (first photo in list)"
             value={draft.featuredCaption}
             onChange={(featuredCaption) => setDraft({ ...draft, featuredCaption })}
             placeholder="e.g. Featured"

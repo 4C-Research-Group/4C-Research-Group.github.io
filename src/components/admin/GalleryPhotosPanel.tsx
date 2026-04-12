@@ -129,11 +129,13 @@ export default function GalleryPhotosPanel() {
       <div>
         <h2 className="text-sm font-semibold text-foreground">Photos</h2>
         <p className="mt-1 text-xs text-muted-foreground">
-          Order matters: positions 1–{GALLERY_CURATED_COUNT} fill the curated layout (hero, side
-          strips, six event tiles, then lab bento). Everything after that appears in the paginated
-          archive ({GALLERY_ARCHIVE_PAGE_SIZE} per page on the public site). Run{" "}
-          <code className="rounded bg-muted px-1">supabase/gallery_photos.sql</code> in Supabase if
-          this list is empty or saves fail.
+          Order matters: positions 1–{GALLERY_CURATED_COUNT} fill the curated layout (hero, two
+          side images, six event tiles, then ten lab tiles). Everything after that appears in the
+          paginated archive ({GALLERY_ARCHIVE_PAGE_SIZE} per page). You can still{" "}
+          <strong className="text-foreground/90">hand-pick</strong> which photo goes in the hero,
+          events, and lab spots—use the section below titled &quot;Featured photo, Events…&quot;.
+          Run <code className="rounded bg-muted px-1">supabase/gallery_photos.sql</code> in Supabase
+          if this list is empty or saves fail.
         </p>
         <p className="mt-2 text-xs font-medium text-foreground">
           {photos.length} photo{photos.length === 1 ? "" : "s"}

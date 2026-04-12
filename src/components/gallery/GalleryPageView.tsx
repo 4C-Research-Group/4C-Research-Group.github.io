@@ -19,11 +19,8 @@ import {
   type GalleryCustomSection,
   type GalleryPagePayload,
 } from "@/data/gallery-page";
-import {
-  GALLERY_ARCHIVE_PAGE_SIZE,
-  GALLERY_CURATED_COUNT,
-} from "@/data/gallery-page";
-import { orderGalleryPhotosForView } from "@/lib/gallery/gallery-curated-slots";
+import { GALLERY_ARCHIVE_PAGE_SIZE } from "@/data/gallery-page";
+import { resolveGalleryCuratedPhotos } from "@/lib/gallery/gallery-curated-layout";
 import type { GalleryPhoto } from "@/lib/gallery/supabase-gallery-photos";
 
 const LAB_BENTO_CLASS: readonly string[] = [
@@ -111,16 +108,10 @@ export default function GalleryPageView({
     ? { duration: 0.12 }
     : { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] as const };
 
-  const orderedPhotos = useMemo(
-    () => orderGalleryPhotosForView(photos, payload.curatedSlotPhotoIds),
-    [photos, payload.curatedSlotPhotoIds],
+  const { hero, sideStrip, events, labGrid, archive } = useMemo(
+    () => resolveGalleryCuratedPhotos(photos, payload),
+    [photos, payload],
   );
-
-  const hero = orderedPhotos[0];
-  const sideStrip = orderedPhotos.slice(1, 3);
-  const events = orderedPhotos.slice(3, 9);
-  const labGrid = orderedPhotos.slice(9, GALLERY_CURATED_COUNT);
-  const archive = orderedPhotos.slice(GALLERY_CURATED_COUNT);
 
   const archivePages = Math.max(1, Math.ceil(archive.length / GALLERY_ARCHIVE_PAGE_SIZE));
   const archivePageClamped = Math.min(archivePage, archivePages - 1);
@@ -149,7 +140,7 @@ export default function GalleryPageView({
   const caption = payload.featuredCaption;
   const v = payload.sectionVisibility;
 
-  const noPhotos = orderedPhotos.length === 0;
+  const noPhotos = photos.length === 0;
   const wantsPhotoGrids =
     v.spotlight || v.events || v.lab || v.archive;
 
@@ -329,7 +320,7 @@ export default function GalleryPageView({
                     const label = (item.title ?? "").trim() || item.alt;
                     return (
                       <button
-                        key={item.id}
+                        key={`${item.id}-ev-${index}`}
                         type="button"
                         onClick={() =>
                           setLightbox({
@@ -388,7 +379,7 @@ export default function GalleryPageView({
               <div className="grid grid-cols-2 gap-3 md:auto-rows-[minmax(150px,auto)] md:grid-cols-4 md:gap-4">
                 {labGrid.map((item, index) => (
                   <button
-                    key={item.id}
+                    key={`${item.id}-lab-${index}`}
                     type="button"
                     onClick={() =>
                       setLightbox({

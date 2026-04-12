@@ -78,24 +78,43 @@ export type GallerySectionVisibility = {
  * All images live in `gallery_photos`, ordered by `sort_order`.
  * Positions 0–18 are the curated “bento” area; 19+ appear in the paginated archive.
  *
- * 0: featured (large) · 1–2: side rail · 3–8: events bento (6) · 9–18: lab bento (10)
+ * 0: featured (large) · 1–2: side rail · 3–8: events bento (6) · 9–18: lab bento (10).
+ * `GalleryPagePayload.curatedPhotoAssignments` can override hero / events / lab picks (admin).
  */
 export const GALLERY_CURATED_COUNT = 19;
 
 export const GALLERY_ARCHIVE_PAGE_SIZE = 36;
+
+/** How many tiles use the Events layout vs Lab layout (see `GALLERY_CURATED_COUNT`). */
+export const GALLERY_EVENTS_TILE_COUNT = 6;
+export const GALLERY_LAB_TILE_COUNT = 10;
+
+/**
+ * Pick exact photos for the hero and bento grids. `null` = use gallery sort order
+ * for that slot (same as before these fields existed).
+ */
+export type GalleryCuratedPhotoAssignments = {
+  featuredPhotoId: string | null;
+  eventsPhotoIds: (string | null)[];
+  labPhotoIds: (string | null)[];
+};
+
+export function defaultGalleryCuratedPhotoAssignments(): GalleryCuratedPhotoAssignments {
+  return {
+    featuredPhotoId: null,
+    eventsPhotoIds: Array.from(
+      { length: GALLERY_EVENTS_TILE_COUNT },
+      () => null,
+    ),
+    labPhotoIds: Array.from({ length: GALLERY_LAB_TILE_COUNT }, () => null),
+  };
+}
 
 export type GalleryPagePayload = {
   pageTitle: string;
   intro: string;
   /** Label on the hero image (first photo in sort order). */
   featuredCaption: string;
-  /**
-   * Optional manual placement for the first 19 layout slots (`GALLERY_CURATED_COUNT`).
-   * Each entry is a `gallery_photos.id`, or "" to fill that slot from the global sort order
-   * (skipping photos already placed in earlier slots).
-   * Indices: 0 hero · 1–2 side strip · 3–8 events · 9–18 lab bento.
-   */
-  curatedSlotPhotoIds: string[];
   /**
    * Top-to-bottom order. Each item is a built-in id (`spotlight` | `events` | `lab` | `archive`)
    * or `custom:<uuid>` matching `customSections[].id`.
@@ -108,6 +127,7 @@ export type GalleryPagePayload = {
   eventsSection: GallerySectionLabels;
   labSection: GallerySectionLabels;
   archiveSection: GallerySectionLabels;
+  curatedPhotoAssignments: GalleryCuratedPhotoAssignments;
 };
 
 const spotlight: GallerySectionLabels = {
@@ -149,7 +169,6 @@ export const galleryPageDefaults: GalleryPagePayload = {
   intro:
     "Visual stories from our research, knowledge mobilization, and the people who make pediatric critical care science happen.",
   featuredCaption: "Featured",
-  curatedSlotPhotoIds: Array.from({ length: GALLERY_CURATED_COUNT }, () => ""),
   sectionOrder,
   customSections: [],
   sectionVisibility,
@@ -157,4 +176,5 @@ export const galleryPageDefaults: GalleryPagePayload = {
   eventsSection,
   labSection,
   archiveSection,
+  curatedPhotoAssignments: defaultGalleryCuratedPhotoAssignments(),
 };

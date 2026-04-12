@@ -3,13 +3,15 @@
  */
 
 import {
-  GALLERY_CURATED_COUNT,
+  GALLERY_EVENTS_TILE_COUNT,
+  GALLERY_LAB_TILE_COUNT,
   GALLERY_SECTION_IDS,
   galleryPageDefaults,
   defaultGalleryCustomSection,
   galleryCustomOrderKey,
   isGallerySectionId,
   parseGalleryCustomOrderKey,
+  type GalleryCuratedPhotoAssignments,
   type GalleryCustomSection,
   type GalleryPagePayload,
   type GallerySectionLabels,
@@ -74,6 +76,42 @@ function mergeVisibility(
     events: typeof r.events === "boolean" ? r.events : def.events,
     lab: typeof r.lab === "boolean" ? r.lab : def.lab,
     archive: typeof r.archive === "boolean" ? r.archive : def.archive,
+  };
+}
+
+function mergeSlotPhotoIds(
+  defLen: number,
+  raw: unknown,
+): (string | null)[] {
+  const base = Array.from({ length: defLen }, () => null as string | null);
+  if (!Array.isArray(raw)) return base;
+  for (let i = 0; i < defLen; i++) {
+    const v = raw[i];
+    base[i] =
+      typeof v === "string" && v.trim() ? v.trim() : null;
+  }
+  return base;
+}
+
+function mergeCuratedPhotoAssignments(
+  def: GalleryCuratedPhotoAssignments,
+  raw: unknown,
+): GalleryCuratedPhotoAssignments {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+    return { ...def };
+  }
+  const r = raw as Record<string, unknown>;
+  const featured =
+    typeof r.featuredPhotoId === "string" && r.featuredPhotoId.trim()
+      ? r.featuredPhotoId.trim()
+      : null;
+  return {
+    featuredPhotoId: featured,
+    eventsPhotoIds: mergeSlotPhotoIds(
+      GALLERY_EVENTS_TILE_COUNT,
+      r.eventsPhotoIds,
+    ),
+    labPhotoIds: mergeSlotPhotoIds(GALLERY_LAB_TILE_COUNT, r.labPhotoIds),
   };
 }
 
@@ -160,16 +198,6 @@ function stripOrphanCustomKeys(
   });
 }
 
-export function normalizeCuratedSlotPhotoIds(raw: unknown): string[] {
-  const n = GALLERY_CURATED_COUNT;
-  if (!Array.isArray(raw)) {
-    return Array.from({ length: n }, () => "");
-  }
-  const out = raw.map((x) => (typeof x === "string" ? x.trim() : ""));
-  while (out.length < n) out.push("");
-  return out.slice(0, n);
-}
-
 export function mergeGalleryPagePayload(raw: unknown): GalleryPagePayload {
   const d = clone(GALLERY_DEFAULTS);
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
@@ -192,9 +220,6 @@ export function mergeGalleryPagePayload(raw: unknown): GalleryPagePayload {
     pageTitle:
       typeof r.pageTitle === "string" ? r.pageTitle : d.pageTitle,
     intro: typeof r.intro === "string" ? r.intro : d.intro,
-    curatedSlotPhotoIds: normalizeCuratedSlotPhotoIds(
-      r.curatedSlotPhotoIds ?? d.curatedSlotPhotoIds,
-    ),
     featuredCaption:
       typeof r.featuredCaption === "string"
         ? r.featuredCaption
@@ -209,5 +234,9 @@ export function mergeGalleryPagePayload(raw: unknown): GalleryPagePayload {
     eventsSection: mergeSection(d.eventsSection, r.eventsSection),
     labSection: mergeSection(d.labSection, r.labSection),
     archiveSection: mergeSection(d.archiveSection, r.archiveSection),
+    curatedPhotoAssignments: mergeCuratedPhotoAssignments(
+      d.curatedPhotoAssignments,
+      r.curatedPhotoAssignments,
+    ),
   };
 }

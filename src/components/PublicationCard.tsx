@@ -1,18 +1,20 @@
 import { ExternalLink, Users } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import type { OrcidPublication } from "@/lib/orcid-works";
 
 const ACCENTS = ["bg-cognition", "bg-consciousness", "bg-care"] as const;
 
-/** Cap list stagger so long bibliographies stay responsive. */
-const LIST_STAGGER_MS = 17;
-const LIST_STAGGER_CAP = 48;
+const EASE: [number, number, number, number] = [0.2, 0.82, 0.28, 1];
 
-const EASE_OUT = [0.2, 0.82, 0.28, 1] as const;
-
-function listDelayForIndex(index: number): number {
-  return Math.min(index, LIST_STAGGER_CAP) * (LIST_STAGGER_MS / 1000);
-}
+/** Standalone entrance when no stagger parent wraps the card */
+const standaloneItem: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.36, ease: EASE },
+  },
+};
 
 function PublicationCardSkeleton() {
   return (
@@ -38,43 +40,35 @@ export function PublicationCard({
   pub,
   accentIndex,
   showYearBadge = false,
+  /** Pass `usePublicationListMotion().item` when the card sits inside a stagger `motion` container */
+  listItemVariants,
 }: {
   pub: OrcidPublication;
   accentIndex: number;
   showYearBadge?: boolean;
+  listItemVariants?: Variants;
 }) {
   const accent = ACCENTS[accentIndex % ACCENTS.length];
   const link = pub.doi ? `https://doi.org/${pub.doi}` : pub.url;
   const linkLabel = pub.doi ? "DOI" : "Open";
-  const listDelay = listDelayForIndex(accentIndex);
 
-  const enter = {
-    delay: listDelay,
-    duration: 0.32,
-    ease: EASE_OUT,
-  };
+  const item = listItemVariants ?? standaloneItem;
+  const drivenByParent = Boolean(listItemVariants);
 
   return (
     <motion.article
+      variants={item}
+      initial="hidden"
+      {...(drivenByParent ? {} : { animate: "show" })}
       className="group relative h-full rounded-2xl border border-border/90 bg-card/90 backdrop-blur-[2px] shadow-sm transition-shadow duration-200 hover:border-brand/20 hover:shadow-lg"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={enter}
       whileHover={{
         y: -2,
-        transition: { duration: 0.18, ease: EASE_OUT },
+        transition: { duration: 0.18, ease: EASE },
       }}
     >
-      <motion.div
+      <div
         className={`absolute left-0 top-2.5 bottom-2.5 w-1 rounded-full ${accent} opacity-90 sm:top-3 sm:bottom-3`}
         aria-hidden
-        initial={{ scaleY: 0 }}
-        animate={{ scaleY: 1 }}
-        transition={{
-          ...enter,
-          duration: 0.36,
-        }}
-        style={{ transformOrigin: "top" }}
       />
       <div className="flex flex-col gap-3 pl-5 pr-4 py-3 sm:flex-row sm:items-start sm:gap-5 sm:pl-6 sm:pr-5 sm:py-4">
         <div className="min-w-0 flex-1 space-y-1.5 sm:space-y-2">

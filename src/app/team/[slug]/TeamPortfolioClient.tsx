@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -33,6 +34,7 @@ import {
 } from "@/lib/team/supabase-portfolio";
 import { markTeamListScrollRestorePending } from "@/lib/team/team-list-scroll";
 import { useAuthProfile } from "@/lib/auth/use-auth-profile";
+import { usePublicationListMotion } from "@/hooks/use-publication-list-motion";
 import MemberTestimonialForm from "@/components/team/MemberTestimonialForm";
 
 const PROFILE_LINK_BTN =
@@ -81,6 +83,7 @@ function MemberHeroPhoto({
 }
 
 export default function TeamPortfolioClient({ slug }: { slug: string }) {
+  const pubListMotion = usePublicationListMotion();
   const { ready: authReady, userId, teamMemberId } = useAuthProfile();
   const [ready, setReady] = useState(false);
   const [member, setMember] = useState<TeamMemberPortfolio | null>(null);
@@ -382,17 +385,17 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
         </div>
       ) : null}
 
-      <section className="border-t border-border/40 bg-muted/15 px-4 py-10 sm:px-6 sm:py-12">
+      <section className="border-t border-border/40 bg-muted/15 px-4 py-14 sm:px-6 sm:py-20">
         <div className="container mx-auto max-w-5xl">
-          <div className="mb-6 flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/10 text-brand">
-              <FileText className="h-4 w-4" />
+          <div className="mb-10 flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand/10 text-brand">
+              <FileText className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-foreground">
+              <h2 className="text-2xl font-bold tracking-tight text-foreground">
                 Publications
               </h2>
-              <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Works from our lab ORCID record where{" "}
                 <span className="font-medium text-foreground/90">
                   {member.name}
@@ -410,7 +413,7 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
           </div>
 
           {pubsLoading ? (
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 gap-5">
               {[0, 1, 2, 3].map((i) => (
                 <PublicationCardSkeleton key={i} />
               ))}
@@ -446,19 +449,26 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
 
           {!pubsLoading && !pubsError && orcidPubs.length > 0 ? (
             <>
-              <p className="mb-3 text-sm text-muted-foreground">
+              <p className="mb-4 text-sm text-muted-foreground">
                 Showing {pubCountLabel} for this profile
               </p>
-              <div className="grid grid-cols-1 gap-3">
+              <motion.div
+                key={`orcid-pubs-${slug}-${orcidPubs.length}`}
+                variants={pubListMotion.container}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-1 gap-5"
+              >
                 {orcidPubs.map((pub, i) => (
                   <PublicationCard
                     key={pub.id}
                     pub={pub}
                     accentIndex={i}
                     showYearBadge
+                    listItemVariants={pubListMotion.item}
                   />
                 ))}
-              </div>
+              </motion.div>
             </>
           ) : null}
         </div>

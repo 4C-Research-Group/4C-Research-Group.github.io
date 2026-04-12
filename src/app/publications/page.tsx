@@ -21,6 +21,7 @@ import {
   fetchOrcidPublications,
   type OrcidPublication,
 } from "@/lib/orcid-works";
+import { usePublicationListMotion } from "@/hooks/use-publication-list-motion";
 
 function groupByYear(pubs: OrcidPublication[]): [string, OrcidPublication[]][] {
   const map = new Map<string, OrcidPublication[]>();
@@ -45,6 +46,7 @@ const GOOGLE_SCHOLAR_URL =
   "https://scholar.google.com/citations?user=iuxSVQwAAAAJ&hl=en";
 
 export default function PublicationsPage() {
+  const pubListMotion = usePublicationListMotion();
   const [publications, setPublications] = useState<OrcidPublication[]>([]);
   const [sortBy, setSortBy] = useState<"year" | "title">("year");
   const [loading, setLoading] = useState(true);
@@ -101,7 +103,7 @@ export default function PublicationsPage() {
   const renderHero = () => (
     <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/30">
       <div className="absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom_right,white,transparent,white)]" />
-      <div className="container relative mx-auto px-4 py-12 sm:px-6 lg:py-16">
+      <div className="container relative mx-auto px-4 py-16 sm:px-6 lg:py-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -112,13 +114,13 @@ export default function PublicationsPage() {
             <FileText className="h-4 w-4" />
             Research Output
           </div>
-          <h1 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+          <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             Publications
-            <span className="block text-xl font-semibold text-muted-foreground sm:text-2xl lg:text-3xl">
+            <span className="block text-3xl font-semibold text-muted-foreground sm:text-4xl lg:text-5xl">
               Our latest research contributions and scholarly work
             </span>
           </h1>
-          <p className="mx-auto mb-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
             Explore our peer-reviewed publications, articles, and academic
             contributions to pediatric critical care and neuroscience research.
           </p>
@@ -174,7 +176,7 @@ export default function PublicationsPage() {
     <div className="min-h-screen bg-background overflow-x-hidden">
       {renderHero()}
 
-      <div className="container mx-auto px-4 py-6 sm:py-8 max-w-7xl">
+      <div className="container mx-auto px-4 py-8 sm:py-10 max-w-7xl">
         <div className="max-w-6xl mx-auto w-full">
           <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-muted-foreground">
             <p className="flex items-center gap-2">
@@ -203,13 +205,13 @@ export default function PublicationsPage() {
             )}
           </div>
 
-          <div className="mb-4 flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-center">
+          <div className="mb-6 flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
             <div className="relative flex-1 min-w-0">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               <input
                 type="search"
                 placeholder="Search by title, journal, DOI, or type…"
-                className="w-full pl-10 pr-3 py-2 rounded-lg border border-border bg-card text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand"
+                className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-border bg-card text-foreground text-sm sm:text-base placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand/40 focus:border-brand"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 aria-label="Search publications"
@@ -218,7 +220,7 @@ export default function PublicationsPage() {
             <div className="flex flex-wrap gap-2 shrink-0">
               <button
                 type="button"
-                className={`px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                className={`px-4 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
                   sortBy === "year"
                     ? "bg-brand text-primary-foreground border-brand"
                     : "bg-card text-foreground border-border hover:border-brand/40"
@@ -229,7 +231,7 @@ export default function PublicationsPage() {
               </button>
               <button
                 type="button"
-                className={`px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                className={`px-4 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
                   sortBy === "title"
                     ? "bg-brand text-primary-foreground border-brand"
                     : "bg-card text-foreground border-border hover:border-brand/40"
@@ -242,7 +244,7 @@ export default function PublicationsPage() {
                 type="button"
                 onClick={() => load()}
                 disabled={loading}
-                className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-border bg-card hover:bg-muted/80 text-sm font-medium transition-colors disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-border bg-card hover:bg-muted/80 text-sm font-medium transition-colors disabled:opacity-50"
                 aria-label="Refresh from ORCID"
               >
                 <RefreshCw
@@ -254,39 +256,39 @@ export default function PublicationsPage() {
           </div>
 
           {loading && (
-            <div className="space-y-8">
+            <div className="space-y-14">
               {/* Show skeleton cards in year-grouped layout */}
               <div className="relative">
                 <div
-                  className="pointer-events-none absolute left-[5.75rem] top-0 bottom-0 hidden lg:block w-px bg-linear-to-b from-cognition/50 via-consciousness/40 to-care/50 opacity-30"
+                  className="pointer-events-none absolute left-[7.25rem] top-0 bottom-0 hidden lg:block w-px bg-linear-to-b from-cognition/50 via-consciousness/40 to-care/50 opacity-30"
                   aria-hidden
                 />
                 {/* Skeleton for 2026 */}
-                <section className="relative mb-8 last:mb-0 lg:pl-24">
-                  <div className="mb-3 flex items-baseline gap-2 lg:absolute lg:left-0 lg:top-0.5 lg:mb-0 lg:w-20 lg:flex-col lg:items-end lg:text-right">
-                    <span className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground tabular-nums">
+                <section className="relative mb-14 last:mb-0 lg:pl-32">
+                  <div className="mb-6 flex items-baseline gap-3 lg:absolute lg:left-0 lg:top-1 lg:mb-0 lg:w-24 lg:flex-col lg:items-end lg:text-right">
+                    <span className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground tabular-nums">
                       2026
                     </span>
                     <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground lg:mt-1">
                       Loading...
                     </span>
                   </div>
-                  <div className="grid grid-cols-1 gap-3">
+                  <div className="grid grid-cols-1 gap-5">
                     <PublicationCardSkeleton />
                     <PublicationCardSkeleton />
                   </div>
                 </section>
                 {/* Skeleton for 2025 */}
-                <section className="relative mb-8 last:mb-0 lg:pl-24">
-                  <div className="mb-3 flex items-baseline gap-2 lg:absolute lg:left-0 lg:top-0.5 lg:mb-0 lg:w-20 lg:flex-col lg:items-end lg:text-right">
-                    <span className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground tabular-nums">
+                <section className="relative mb-14 last:mb-0 lg:pl-32">
+                  <div className="mb-6 flex items-baseline gap-3 lg:absolute lg:left-0 lg:top-1 lg:mb-0 lg:w-24 lg:flex-col lg:items-end lg:text-right">
+                    <span className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground tabular-nums">
                       2025
                     </span>
                     <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground lg:mt-1">
                       Loading...
                     </span>
                   </div>
-                  <div className="grid grid-cols-1 gap-3">
+                  <div className="grid grid-cols-1 gap-5">
                     <PublicationCardSkeleton />
                     <PublicationCardSkeleton />
                   </div>
@@ -309,7 +311,7 @@ export default function PublicationsPage() {
           )}
 
           {!loading && !error && sortedAndFiltered.length > 0 && (
-            <p className="text-sm text-muted-foreground mb-3">
+            <p className="text-sm text-muted-foreground mb-4">
               Showing {sortedAndFiltered.length} of {publications.length}{" "}
               publication{publications.length === 1 ? "" : "s"}
               {searchTerm.trim() ? " (filtered)" : ""}
@@ -321,7 +323,7 @@ export default function PublicationsPage() {
               {sortBy === "year" ? (
                 <div className="relative">
                   <div
-                    className="pointer-events-none absolute left-[5.75rem] top-0 bottom-0 hidden lg:block w-px bg-linear-to-b from-cognition/50 via-consciousness/40 to-care/50"
+                    className="pointer-events-none absolute left-[7.25rem] top-0 bottom-0 hidden lg:block w-px bg-linear-to-b from-cognition/50 via-consciousness/40 to-care/50"
                     aria-hidden
                   />
                   {(() => {
@@ -330,10 +332,10 @@ export default function PublicationsPage() {
                       ([yearLabel, yearPubs], sectionIdx) => (
                         <section
                           key={yearLabel}
-                          className="relative mb-8 last:mb-0 lg:pl-24"
+                          className="relative mb-14 last:mb-0 lg:pl-32"
                         >
-                          <div className="mb-3 flex items-baseline gap-2 lg:absolute lg:left-0 lg:top-0.5 lg:mb-0 lg:w-20 lg:flex-col lg:items-end lg:text-right">
-                            <span className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground tabular-nums">
+                          <div className="mb-6 flex items-baseline gap-3 lg:absolute lg:left-0 lg:top-1 lg:mb-0 lg:w-24 lg:flex-col lg:items-end lg:text-right">
+                            <span className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground tabular-nums">
                               {yearLabel === "Other" ? "Other" : yearLabel}
                             </span>
                             <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground lg:mt-1">
@@ -341,34 +343,52 @@ export default function PublicationsPage() {
                               {yearPubs.length === 1 ? "" : "s"}
                             </span>
                           </div>
-                          <div className="grid grid-cols-1 gap-3">
-                            {yearPubs.map((pub, i) => {
+                          <motion.div
+                            variants={pubListMotion.container}
+                            initial="hidden"
+                            whileInView="show"
+                            viewport={{
+                              once: true,
+                              amount: 0.08,
+                              margin: "0px 0px -10% 0px",
+                            }}
+                            className="grid grid-cols-1 gap-5"
+                          >
+                            {yearPubs.map((pub) => {
                               const currentIndex = globalIndex++;
                               return (
                                 <PublicationCard
                                   key={pub.id}
                                   pub={pub}
                                   accentIndex={currentIndex}
+                                  listItemVariants={pubListMotion.item}
                                 />
                               );
                             })}
-                          </div>
+                          </motion.div>
                         </section>
                       ),
                     );
                   })()}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 gap-3">
+                <motion.div
+                  key={`pubs-${sortBy}-${searchTerm.trim()}`}
+                  variants={pubListMotion.container}
+                  initial="hidden"
+                  animate="show"
+                  className="grid grid-cols-1 gap-5"
+                >
                   {sortedAndFiltered.map((pub, i) => (
                     <PublicationCard
                       key={pub.id}
                       pub={pub}
                       accentIndex={i}
                       showYearBadge
+                      listItemVariants={pubListMotion.item}
                     />
                   ))}
-                </div>
+                </motion.div>
               )}
             </>
           )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -41,6 +41,60 @@ const moreNav = [
 
 const NAV_H = "h-14";
 
+/** Shown while `useAuthProfile` is still loading; mirrors Account + Sign out metrics. */
+function DesktopSignedInAuthSkeleton() {
+  return (
+    <div
+      className="flex w-full min-w-0 items-center justify-end gap-2"
+      aria-hidden
+    >
+      <span className="inline-flex shrink-0 animate-pulse select-none items-center gap-1.5 rounded-full bg-muted/60 px-3 py-1.5 text-[13px] font-medium text-transparent">
+        <LayoutDashboard className="h-3.5 w-3.5 shrink-0 opacity-0" aria-hidden />
+        Account
+      </span>
+      <span className="inline-flex shrink-0 animate-pulse select-none rounded-full border-2 border-brand bg-background px-3.5 py-2 text-[13px] font-semibold text-transparent">
+        Sign out
+      </span>
+    </div>
+  );
+}
+
+function DesktopSignInAuthSkeleton() {
+  return (
+    <span
+      className="inline-flex shrink-0 animate-pulse select-none items-center justify-center rounded-full bg-muted/80 px-3.5 py-2 text-[13px] font-semibold text-transparent shadow-sm"
+      aria-hidden
+    >
+      Sign in
+    </span>
+  );
+}
+
+function MobileSignedInAuthSkeleton() {
+  return (
+    <div className="flex shrink-0 items-center gap-2" aria-hidden>
+      <span className="inline-flex max-w-[9rem] shrink-0 animate-pulse select-none items-center gap-1 truncate rounded-full border border-border/80 bg-muted/60 px-2.5 py-2 text-xs font-medium text-transparent sm:max-w-none sm:gap-1.5 sm:px-3 sm:text-[13px]">
+        <LayoutDashboard className="h-3.5 w-3.5 shrink-0 opacity-0" aria-hidden />
+        <span className="hidden min-[380px]:inline">Account</span>
+      </span>
+      <span className="shrink-0 animate-pulse select-none whitespace-nowrap rounded-full border-2 border-brand bg-background px-2 py-2 text-[11px] font-semibold text-transparent sm:px-3 sm:text-[13px]">
+        Sign out
+      </span>
+    </div>
+  );
+}
+
+function MobileSignInAuthSkeleton() {
+  return (
+    <span
+      className="inline-flex shrink-0 animate-pulse select-none items-center justify-center rounded-full bg-muted/80 px-3 py-2 text-xs font-semibold text-transparent shadow-sm sm:px-3.5 sm:text-[13px]"
+      aria-hidden
+    >
+      Sign in
+    </span>
+  );
+}
+
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname() ?? "";
@@ -48,10 +102,27 @@ export default function Navbar() {
   const signedIn = !!userId;
   const showAdmin = canAccessAdmin(role);
 
+  const [likelySession, setLikelySession] = useState<boolean | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const supabase = getSupabaseBrowserClient();
+        const { data } = await supabase.auth.getSession();
+        if (!cancelled) setLikelySession(!!data.session?.user);
+      } catch {
+        if (!cancelled) setLikelySession(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
@@ -189,12 +260,11 @@ export default function Navbar() {
         {/* min-w reserves space so primary nav does not shift when auth resolves */}
         <div className="hidden min-w-0 shrink-0 items-center justify-end gap-2 lg:flex xl:min-w-[18rem]">
           {!authReady ? (
-            <span
-              className="inline-flex shrink-0 animate-pulse select-none items-center justify-center rounded-full bg-muted/80 px-3.5 py-2 text-[13px] font-semibold text-transparent shadow-sm"
-              aria-hidden
-            >
-              Sign in
-            </span>
+            likelySession ? (
+              <DesktopSignedInAuthSkeleton />
+            ) : (
+              <DesktopSignInAuthSkeleton />
+            )
           ) : signedIn ? (
             <>
               {showAdmin ? (
@@ -234,12 +304,11 @@ export default function Navbar() {
 
         <div className="flex shrink-0 items-center gap-2 lg:hidden">
           {!authReady ? (
-            <span
-              className="inline-flex shrink-0 animate-pulse select-none items-center justify-center rounded-full bg-muted/80 px-3 py-2 text-xs font-semibold text-transparent shadow-sm sm:px-3.5 sm:text-[13px]"
-              aria-hidden
-            >
-              Sign in
-            </span>
+            likelySession ? (
+              <MobileSignedInAuthSkeleton />
+            ) : (
+              <MobileSignInAuthSkeleton />
+            )
           ) : signedIn ? (
             <>
               <Link

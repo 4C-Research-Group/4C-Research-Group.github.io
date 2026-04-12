@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import Image from "next/image";
+import { Cormorant_Garamond, Fraunces } from "next/font/google";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   CalendarDays,
@@ -22,6 +23,18 @@ import {
 import { GALLERY_ARCHIVE_PAGE_SIZE } from "@/data/gallery-page";
 import { resolveGalleryCuratedPhotos } from "@/lib/gallery/gallery-curated-layout";
 import type { GalleryPhoto } from "@/lib/gallery/supabase-gallery-photos";
+
+const galleryTitleFont = Fraunces({
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const galleryIntroFont = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  style: ["italic"],
+  display: "swap",
+});
 
 const LAB_BENTO_CLASS: readonly string[] = [
   "md:col-span-2 md:row-span-2 min-h-[220px] md:min-h-[280px]",
@@ -88,6 +101,52 @@ function customSectionHasContent(s: GalleryCustomSection): boolean {
     s.title.trim() !== "" ||
     s.description.trim() !== "" ||
     s.body.trim() !== ""
+  );
+}
+
+/** Same layered halos + motion rhythm as the home hero `HeroLogoGlow` behind the logo. */
+function GalleryTitleLogoGlow({
+  reduceMotion,
+  children,
+}: {
+  reduceMotion: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <div className="relative isolate max-w-4xl pb-[0.2em]">
+      {!reduceMotion ? (
+        <>
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-[-1.75rem] inset-y-[-0.85rem] rounded-[2rem] bg-linear-to-br from-brand/25 via-consciousness/20 to-care/20 blur-3xl"
+            animate={{
+              scale: [1, 1.12, 1],
+              opacity: [0.45, 0.62, 0.45],
+            }}
+            transition={{
+              duration: 14,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-[-1rem] inset-y-[-0.45rem] rounded-[1.75rem] bg-linear-to-tr from-care/20 via-transparent to-consciousness/15 blur-2xl"
+            animate={{
+              scale: [1, 1.18, 1],
+              opacity: [0.35, 0.55, 0.35],
+            }}
+            transition={{
+              duration: 11,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1.5,
+            }}
+          />
+        </>
+      ) : null}
+      <div className="relative">{children}</div>
+    </div>
   );
 }
 
@@ -522,32 +581,109 @@ export default function GalleryPageView({
 
   const hasAnyGalleryContent = orderedBlocks.length > 0;
 
+  const titleGradientShift = reduceMotion
+    ? null
+    : {
+        style: { backgroundSize: "210% auto" as const },
+        animate: { backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] },
+        transition: {
+          duration: 16,
+          repeat: Infinity,
+          ease: "easeInOut" as const,
+        },
+      };
+
+  const introGradientShift = reduceMotion
+    ? null
+    : {
+        style: { backgroundSize: "200% auto" as const },
+        animate: { backgroundPosition: ["0% 45%", "100% 55%", "0% 45%"] },
+        transition: {
+          duration: 22,
+          repeat: Infinity,
+          ease: "easeInOut" as const,
+        },
+      };
+
   return (
     <div className="min-h-screen bg-background">
-      <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/30">
-        <div className="absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom_right,white,transparent,white)]" />
-        <div className="container relative mx-auto px-4 py-16 sm:px-6 lg:py-24">
+      <header className="relative overflow-hidden border-b border-border/60">
+        <div
+          className="absolute inset-0 bg-linear-to-br from-slate-50/95 via-background to-brand-light/40"
+          aria-hidden
+        />
+        {!reduceMotion ? (
+          <>
+            <motion.div
+              aria-hidden
+              className="pointer-events-none absolute -left-[22%] -top-[45%] h-[90%] w-[68%] rounded-full bg-cognition/28 blur-[88px]"
+              animate={{
+                x: [0, 32, -14, 0],
+                y: [0, 22, -26, 0],
+                scale: [1, 1.07, 1.03, 1],
+              }}
+              transition={{ duration: 17, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              aria-hidden
+              className="pointer-events-none absolute -right-[12%] top-[5%] h-[75%] w-[58%] rounded-full bg-consciousness/22 blur-[76px]"
+              animate={{
+                x: [0, -28, 16, 0],
+                y: [0, -24, 18, 0],
+                scale: [1, 1.06, 1.02, 1],
+              }}
+              transition={{ duration: 21, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              aria-hidden
+              className="pointer-events-none absolute bottom-[-25%] left-[20%] h-[55%] w-[55%] rounded-full bg-care/20 blur-[70px]"
+              animate={{
+                x: [0, -20, 12, 0],
+                y: [0, 16, -12, 0],
+                opacity: [0.75, 1, 0.82, 0.75],
+              }}
+              transition={{ duration: 24, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </>
+        ) : (
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-linear-to-br from-brand-light/50 via-background to-consciousness/12"
+          />
+        )}
+        <div
+          className="pointer-events-none absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom,white,transparent_88%)]"
+          aria-hidden
+        />
+        <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mx-auto max-w-4xl text-center"
+            transition={
+              reduceMotion
+                ? { duration: 0 }
+                : { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }
+            }
           >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
-              <Images className="h-4 w-4" aria-hidden />
-              Photo gallery
-            </div>
-            <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+            <GalleryTitleLogoGlow reduceMotion={!!reduceMotion}>
+              <motion.h1
+                {...(titleGradientShift ?? {})}
+                className={`text-4xl font-medium leading-[1.22] tracking-tight md:text-5xl md:leading-[1.2] lg:text-6xl lg:leading-[1.18] bg-linear-to-br from-brand via-consciousness to-care bg-clip-text text-transparent ${galleryTitleFont.className}`}
+              >
                 {payload.pageTitle}
-              </span>
-            </h1>
-            <p className="mx-auto max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-              {payload.intro}
-            </p>
+              </motion.h1>
+            </GalleryTitleLogoGlow>
+            {payload.intro.trim() ? (
+              <motion.p
+                {...(introGradientShift ?? {})}
+                className={`mt-5 max-w-2xl text-lg font-semibold leading-snug tracking-[0.01em] md:text-xl md:leading-snug bg-linear-to-br from-foreground via-consciousness to-brand-deep bg-clip-text text-transparent ${galleryIntroFont.className}`}
+              >
+                {payload.intro}
+              </motion.p>
+            ) : null}
           </motion.div>
         </div>
-      </section>
+      </header>
 
       <div className="relative bg-background">
         {noPhotos && wantsPhotoGrids && (

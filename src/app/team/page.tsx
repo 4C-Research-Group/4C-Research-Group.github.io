@@ -38,12 +38,6 @@ import {
 import { readTeamSessionCache } from "@/lib/team/team-session-cache";
 import { fetchTeamFromSupabase } from "@/lib/team/supabase-team";
 
-const ACCENT_ROTATION = [
-  "text-cognition",
-  "text-consciousness",
-  "text-care",
-] as const;
-
 function TeamPhoto({
   src,
   alt,
@@ -88,6 +82,49 @@ function TeamPhoto({
       style={{ objectPosition: "center 30%" }}
       onError={() => setFailed(true)}
     />
+  );
+}
+
+/** Shared portrait card for team directory + Lab Alumni (photo + bottom overlay). */
+function TeamPortraitCardFace({ member }: { member: TeamMember }) {
+  return (
+    <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/50 bg-muted/30 shadow-sm ring-1 ring-transparent transition duration-300 hover:-translate-y-1 hover:border-brand/15 hover:shadow-md hover:shadow-brand/[0.05] hover:ring-brand/5">
+      <div className="relative aspect-[3/4] overflow-hidden bg-muted/50">
+        <TeamPhoto
+          src={resolveTeamMemberDisplayPhotoUrl(
+            member.photoFile,
+            member.slug,
+          )}
+          alt={member.name}
+          initials={member.initials}
+          className="object-cover transition duration-700 ease-out group-hover:scale-[1.02]"
+        />
+        <div
+          className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/40 via-black/10 to-transparent opacity-60"
+          aria-hidden
+        />
+        <div className="absolute bottom-0 left-0 right-0 p-4 pt-8">
+          <h3 className="text-lg font-bold tracking-tight text-white drop-shadow-lg">
+            {member.name}
+          </h3>
+          <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-white/90">
+            {member.role}
+          </p>
+          {member.degree?.trim() ? (
+            <p className="mt-1 flex items-start gap-1 text-[11px] leading-snug text-white/80">
+              <GraduationCap
+                className="mt-0.5 h-3 w-3 shrink-0 text-white/70"
+                strokeWidth={2}
+                aria-hidden
+              />
+              <span className="line-clamp-2 min-w-0">
+                {member.degree.trim()}
+              </span>
+            </p>
+          ) : null}
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -577,43 +614,7 @@ export default function TeamPage() {
                       onClick={() => rememberTeamListScroll()}
                       className="block h-full rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     >
-                    <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/50 bg-muted/30 shadow-sm ring-1 ring-transparent transition duration-300 hover:-translate-y-1 hover:border-brand/15 hover:shadow-md hover:shadow-brand/[0.05] hover:ring-brand/5">
-                      <div className="relative aspect-[3/4] overflow-hidden bg-muted/50">
-                        <TeamPhoto
-                          src={resolveTeamMemberDisplayPhotoUrl(
-                            member.photoFile,
-                            member.slug,
-                          )}
-                          alt={member.name}
-                          initials={member.initials}
-                          className="object-cover transition duration-700 ease-out group-hover:scale-[1.02]"
-                        />
-                        <div
-                          className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/40 via-black/10 to-transparent opacity-60"
-                          aria-hidden
-                        />
-                        <div className="absolute bottom-0 left-0 right-0 p-4 pt-8">
-                          <h3 className="text-lg font-bold tracking-tight text-white drop-shadow-lg">
-                            {member.name}
-                          </h3>
-                          <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-white/90">
-                            {member.role}
-                          </p>
-                          {member.degree?.trim() ? (
-                            <p className="mt-1 flex items-start gap-1 text-[11px] leading-snug text-white/80">
-                              <GraduationCap
-                                className="mt-0.5 h-3 w-3 shrink-0 text-white/70"
-                                strokeWidth={2}
-                                aria-hidden
-                              />
-                              <span className="line-clamp-2 min-w-0">
-                                {member.degree.trim()}
-                              </span>
-                            </p>
-                          ) : null}
-                        </div>
-                      </div>
-                    </article>
+                      <TeamPortraitCardFace member={member} />
                     </Link>
                   </motion.li>
                 ))}
@@ -644,8 +645,6 @@ export default function TeamPage() {
 }
 
 function MemberCard({ member, index }: { member: TeamMember; index: number }) {
-  const accent = ACCENT_ROTATION[index % 3];
-
   return (
     <motion.li
       layout
@@ -654,7 +653,7 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
       exit={{ opacity: 0, y: -8 }}
       transition={{
         duration: 0.4,
-        delay: Math.min(index * 0.05, 0.25),
+        delay: Math.min(index * 0.03, 0.2),
         layout: { duration: 0.35 },
       }}
       className="group relative list-none"
@@ -664,56 +663,7 @@ function MemberCard({ member, index }: { member: TeamMember; index: number }) {
         onClick={() => rememberTeamListScroll()}
         className="block h-full rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-      <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-sm ring-1 ring-transparent transition duration-300 hover:-translate-y-1 hover:border-brand/20 hover:shadow-xl hover:shadow-brand/[0.07] hover:ring-brand/10">
-        <div className="relative aspect-[3/4] overflow-hidden bg-muted">
-          <TeamPhoto
-            src={resolveTeamMemberDisplayPhotoUrl(
-              member.photoFile,
-              member.slug,
-            )}
-            alt={member.name}
-            initials={member.initials}
-            className="object-cover transition duration-700 ease-out group-hover:scale-[1.04]"
-          />
-          <div
-            className="pointer-events-none absolute inset-0 bg-linear-to-t from-card via-card/30 to-transparent opacity-90"
-            aria-hidden
-          />
-          <div
-            className={`pointer-events-none absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-xl bg-card/85 text-sm font-bold shadow-sm backdrop-blur ${accent}`}
-            aria-hidden
-          >
-            {member.initials}
-          </div>
-        </div>
-
-        <div className="flex flex-1 flex-col gap-4 p-5 pt-4">
-          <div>
-            <h3 className="text-lg font-bold tracking-tight text-foreground">
-              {member.name}
-            </h3>
-            <p
-              className={`mt-2 inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider ${
-                member.category === "student"
-                  ? "bg-consciousness/10 text-consciousness"
-                  : "bg-care/10 text-care"
-              }`}
-            >
-              {member.role}
-            </p>
-            {member.degree?.trim() ? (
-              <p className="mt-2 flex items-start gap-1.5 text-xs leading-snug text-muted-foreground">
-                <GraduationCap
-                  className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand/80"
-                  strokeWidth={2}
-                  aria-hidden
-                />
-                <span className="min-w-0">{member.degree.trim()}</span>
-              </p>
-            ) : null}
-          </div>
-        </div>
-      </article>
+        <TeamPortraitCardFace member={member} />
       </Link>
     </motion.li>
   );

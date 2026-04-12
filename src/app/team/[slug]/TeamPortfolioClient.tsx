@@ -382,17 +382,17 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
         </div>
       ) : null}
 
-      <section className="border-t border-border/40 bg-muted/15 px-4 py-14 sm:px-6 sm:py-20">
+      <section className="border-t border-border/40 bg-muted/15 px-4 py-10 sm:px-6 sm:py-12">
         <div className="container mx-auto max-w-5xl">
-          <div className="mb-10 flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand/10 text-brand">
-              <FileText className="h-5 w-5" />
+          <div className="mb-6 flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/10 text-brand">
+              <FileText className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold tracking-tight text-foreground">
+              <h2 className="text-xl font-bold tracking-tight text-foreground">
                 Publications
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-0.5 text-xs sm:text-sm text-muted-foreground">
                 Works from our lab ORCID record where{" "}
                 <span className="font-medium text-foreground/90">
                   {member.name}
@@ -410,7 +410,7 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
           </div>
 
           {pubsLoading ? (
-            <div className="grid grid-cols-1 gap-5">
+            <div className="grid grid-cols-1 gap-3">
               {[0, 1, 2, 3].map((i) => (
                 <PublicationCardSkeleton key={i} />
               ))}
@@ -446,10 +446,10 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
 
           {!pubsLoading && !pubsError && orcidPubs.length > 0 ? (
             <>
-              <p className="mb-4 text-sm text-muted-foreground">
+              <p className="mb-3 text-sm text-muted-foreground">
                 Showing {pubCountLabel} for this profile
               </p>
-              <div className="grid grid-cols-1 gap-5">
+              <div className="grid grid-cols-1 gap-3">
                 {orcidPubs.map((pub, i) => (
                   <PublicationCard
                     key={pub.id}

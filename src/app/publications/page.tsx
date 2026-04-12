@@ -21,7 +21,6 @@ import {
   fetchOrcidPublications,
   type OrcidPublication,
 } from "@/lib/orcid-works";
-import { usePublicationListMotion } from "@/hooks/use-publication-list-motion";
 
 function groupByYear(pubs: OrcidPublication[]): [string, OrcidPublication[]][] {
   const map = new Map<string, OrcidPublication[]>();
@@ -46,7 +45,6 @@ const GOOGLE_SCHOLAR_URL =
   "https://scholar.google.com/citations?user=iuxSVQwAAAAJ&hl=en";
 
 export default function PublicationsPage() {
-  const pubListMotion = usePublicationListMotion();
   const [publications, setPublications] = useState<OrcidPublication[]>([]);
   const [sortBy, setSortBy] = useState<"year" | "title">("year");
   const [loading, setLoading] = useState(true);
@@ -329,7 +327,7 @@ export default function PublicationsPage() {
                   {(() => {
                     let globalIndex = 0;
                     return groupByYear(sortedAndFiltered).map(
-                      ([yearLabel, yearPubs], sectionIdx) => (
+                      ([yearLabel, yearPubs]) => (
                         <section
                           key={yearLabel}
                           className="relative mb-14 last:mb-0 lg:pl-32"
@@ -343,17 +341,7 @@ export default function PublicationsPage() {
                               {yearPubs.length === 1 ? "" : "s"}
                             </span>
                           </div>
-                          <motion.div
-                            variants={pubListMotion.container}
-                            initial="hidden"
-                            whileInView="show"
-                            viewport={{
-                              once: true,
-                              amount: 0.08,
-                              margin: "0px 0px -10% 0px",
-                            }}
-                            className="grid grid-cols-1 gap-5"
-                          >
+                          <div className="grid grid-cols-1 gap-5">
                             {yearPubs.map((pub) => {
                               const currentIndex = globalIndex++;
                               return (
@@ -361,34 +349,26 @@ export default function PublicationsPage() {
                                   key={pub.id}
                                   pub={pub}
                                   accentIndex={currentIndex}
-                                  listItemVariants={pubListMotion.item}
                                 />
                               );
                             })}
-                          </motion.div>
+                          </div>
                         </section>
                       ),
                     );
                   })()}
                 </div>
               ) : (
-                <motion.div
-                  key={`pubs-${sortBy}-${searchTerm.trim()}`}
-                  variants={pubListMotion.container}
-                  initial="hidden"
-                  animate="show"
-                  className="grid grid-cols-1 gap-5"
-                >
+                <div className="grid grid-cols-1 gap-5">
                   {sortedAndFiltered.map((pub, i) => (
                     <PublicationCard
                       key={pub.id}
                       pub={pub}
                       accentIndex={i}
                       showYearBadge
-                      listItemVariants={pubListMotion.item}
                     />
                   ))}
-                </motion.div>
+                </div>
               )}
             </>
           )}

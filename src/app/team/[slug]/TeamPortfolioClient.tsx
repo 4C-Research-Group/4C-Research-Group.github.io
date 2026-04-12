@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -34,7 +33,6 @@ import {
 } from "@/lib/team/supabase-portfolio";
 import { markTeamListScrollRestorePending } from "@/lib/team/team-list-scroll";
 import { useAuthProfile } from "@/lib/auth/use-auth-profile";
-import { usePublicationListMotion } from "@/hooks/use-publication-list-motion";
 import MemberTestimonialForm from "@/components/team/MemberTestimonialForm";
 
 const PROFILE_LINK_BTN =
@@ -83,7 +81,6 @@ function MemberHeroPhoto({
 }
 
 export default function TeamPortfolioClient({ slug }: { slug: string }) {
-  const pubListMotion = usePublicationListMotion();
   const { ready: authReady, userId, teamMemberId } = useAuthProfile();
   const [ready, setReady] = useState(false);
   const [member, setMember] = useState<TeamMemberPortfolio | null>(null);
@@ -452,23 +449,16 @@ export default function TeamPortfolioClient({ slug }: { slug: string }) {
               <p className="mb-4 text-sm text-muted-foreground">
                 Showing {pubCountLabel} for this profile
               </p>
-              <motion.div
-                key={`orcid-pubs-${slug}-${orcidPubs.length}`}
-                variants={pubListMotion.container}
-                initial="hidden"
-                animate="show"
-                className="grid grid-cols-1 gap-5"
-              >
+              <div className="grid grid-cols-1 gap-5">
                 {orcidPubs.map((pub, i) => (
                   <PublicationCard
                     key={pub.id}
                     pub={pub}
                     accentIndex={i}
                     showYearBadge
-                    listItemVariants={pubListMotion.item}
                   />
                 ))}
-              </motion.div>
+              </div>
             </>
           ) : null}
         </div>

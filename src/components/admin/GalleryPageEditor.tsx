@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { ChevronDown, ChevronUp, Loader2, Plus, Save, Trash2 } from "lucide-react";
+import GalleryCuratedSlotsPanel from "@/components/admin/GalleryCuratedSlotsPanel";
 import GalleryPhotosPanel from "@/components/admin/GalleryPhotosPanel";
 import {
   defaultGalleryCustomSection,
@@ -15,12 +16,19 @@ import {
   type GalleryPagePayload,
   type GallerySectionLabels,
 } from "@/data/gallery-page";
-import { mergeGalleryPagePayload } from "@/data/gallery-defaults";
+import {
+  mergeGalleryPagePayload,
+  normalizeCuratedSlotPhotoIds,
+} from "@/data/gallery-defaults";
 import {
   fetchGalleryPageRowForAdmin,
   getGalleryPageDefaultsForAdmin,
   saveGalleryPagePayload,
 } from "@/lib/gallery/supabase-gallery-page";
+import {
+  fetchGalleryPhotosForAdmin,
+  type GalleryPhoto,
+} from "@/lib/gallery/supabase-gallery-photos";
 
 function moveSectionOrder(
   order: string[],
@@ -142,6 +150,7 @@ function normalizeDraft(d: GalleryPagePayload): GalleryPagePayload {
     pageTitle: t(d.pageTitle),
     intro: t(d.intro),
     featuredCaption: t(d.featuredCaption),
+    curatedSlotPhotoIds: normalizeCuratedSlotPhotoIds(d.curatedSlotPhotoIds),
     sectionOrder: d.sectionOrder,
     customSections: d.customSections.map((s) => ({
       ...s,
@@ -187,26 +196,39 @@ function VisibilityToggle({
 
 export default function GalleryPageEditor() {
   const [draft, setDraft] = useState<GalleryPagePayload | null>(null);
+  const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhoto[]>([]);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
 
+  const refreshGalleryPhotos = useCallback(async () => {
+    try {
+      setGalleryPhotos(await fetchGalleryPhotosForAdmin());
+    } catch {
+      setGalleryPhotos([]);
+    }
+  }, []);
+
   const load = useCallback(async () => {
     setLoading(true);
     setErr(null);
     try {
-      const { payload, updatedAt: u } = await fetchGalleryPageRowForAdmin();
-      setDraft(payload);
-      setUpdatedAt(u);
+      const [row] = await Promise.all([
+        fetchGalleryPageRowForAdmin(),
+        refreshGalleryPhotos(),
+      ]);
+      setDraft(row.payload);
+      setUpdatedAt(row.updatedAt);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Load failed");
       setDraft(getGalleryPageDefaultsForAdmin());
+      await refreshGalleryPhotos();
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [refreshGalleryPhotos]);
 
   useEffect(() => {
     void load();
@@ -334,6 +356,17 @@ export default function GalleryPageEditor() {
 
       <GalleryPhotosPanel />
 
+      {draft ? (
+        <GalleryCuratedSlotsPanel
+          photos={galleryPhotos}
+          slotPhotoIds={draft.curatedSlotPhotoIds}
+          onChange={(curatedSlotPhotoIds) =>
+            setDraft((d) => (d ? { ...d, curatedSlotPhotoIds } : d))
+          }
+          onReloadPhotos={refreshGalleryPhotos}
+        />
+      ) : null}
+
       <section className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
         <h2 className="text-sm font-semibold text-foreground">Page header</h2>
         <div className="grid gap-4 md:grid-cols-2">
@@ -343,7 +376,7 @@ export default function GalleryPageEditor() {
             onChange={(pageTitle) => setDraft({ ...draft, pageTitle })}
           />
           <Field
-            label="Hero label (first photo in list)"
+            label="Hero label (caption on the large featured image)"
             value={draft.featuredCaption}
             onChange={(featuredCaption) => setDraft({ ...draft, featuredCaption })}
             placeholder="e.g. Featured"

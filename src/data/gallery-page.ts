@@ -90,6 +90,13 @@ export type GalleryPagePayload = {
   /** Label on the hero image (first photo in sort order). */
   featuredCaption: string;
   /**
+   * Optional manual placement for the first 19 layout slots (`GALLERY_CURATED_COUNT`).
+   * Each entry is a `gallery_photos.id`, or "" to fill that slot from the global sort order
+   * (skipping photos already placed in earlier slots).
+   * Indices: 0 hero · 1–2 side strip · 3–8 events · 9–18 lab bento.
+   */
+  curatedSlotPhotoIds: string[];
+  /**
    * Top-to-bottom order. Each item is a built-in id (`spotlight` | `events` | `lab` | `archive`)
    * or `custom:<uuid>` matching `customSections[].id`.
    */
@@ -142,6 +149,7 @@ export const galleryPageDefaults: GalleryPagePayload = {
   intro:
     "Visual stories from our research, knowledge mobilization, and the people who make pediatric critical care science happen.",
   featuredCaption: "Featured",
+  curatedSlotPhotoIds: Array.from({ length: GALLERY_CURATED_COUNT }, () => ""),
   sectionOrder,
   customSections: [],
   sectionVisibility,

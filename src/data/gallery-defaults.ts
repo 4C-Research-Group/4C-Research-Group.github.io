@@ -3,6 +3,7 @@
  */
 
 import {
+  GALLERY_CURATED_COUNT,
   GALLERY_SECTION_IDS,
   galleryPageDefaults,
   defaultGalleryCustomSection,
@@ -159,6 +160,16 @@ function stripOrphanCustomKeys(
   });
 }
 
+export function normalizeCuratedSlotPhotoIds(raw: unknown): string[] {
+  const n = GALLERY_CURATED_COUNT;
+  if (!Array.isArray(raw)) {
+    return Array.from({ length: n }, () => "");
+  }
+  const out = raw.map((x) => (typeof x === "string" ? x.trim() : ""));
+  while (out.length < n) out.push("");
+  return out.slice(0, n);
+}
+
 export function mergeGalleryPagePayload(raw: unknown): GalleryPagePayload {
   const d = clone(GALLERY_DEFAULTS);
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
@@ -181,6 +192,9 @@ export function mergeGalleryPagePayload(raw: unknown): GalleryPagePayload {
     pageTitle:
       typeof r.pageTitle === "string" ? r.pageTitle : d.pageTitle,
     intro: typeof r.intro === "string" ? r.intro : d.intro,
+    curatedSlotPhotoIds: normalizeCuratedSlotPhotoIds(
+      r.curatedSlotPhotoIds ?? d.curatedSlotPhotoIds,
+    ),
     featuredCaption:
       typeof r.featuredCaption === "string"
         ? r.featuredCaption

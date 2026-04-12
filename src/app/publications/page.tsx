@@ -56,9 +56,13 @@ export default function PublicationsPage() {
     setLoading(true);
     setError("");
     try {
-      const data = await fetchOrcidPublications(DEFAULT_ORCID_ID);
+      const data = await fetchOrcidPublications(DEFAULT_ORCID_ID, {
+        onListLoaded: (partial) => {
+          setPublications(partial);
+          setLoading(false);
+        },
+      });
 
-      // Load all publications at once - animations will handle the visual hierarchy
       setPublications(data);
       setLoading(false);
       setLastFetched(new Date());

@@ -148,7 +148,8 @@ async function fetchWorkAuthorsString(
   return names.join(", ");
 }
 
-const AUTHOR_ENRICH_BATCH = 8;
+/** Parallel detail fetches per round-trip (ORCID tolerates moderate concurrency). */
+const AUTHOR_ENRICH_BATCH = 16;
 
 /** Fetches each work's detail so contributor names appear (ORCID list endpoint omits them). */
 async function enrichWithAuthors(
@@ -209,11 +210,27 @@ function sessionSet(key: string, entry: CacheEntry): void {
   }
 }
 
-/** In-flight promise deduplication — parallel callers share one fetch. */
-const inFlight = new Map<string, Promise<OrcidPublication[]>>();
+export type FetchOrcidPublicationsOptions = {
+  /**
+   * Called as soon as the `/works` summary is parsed (before per-work author
+   * requests). Lets the UI render titles/years/DOIs immediately; authors fill in
+   * when the returned promise resolves.
+   */
+  onListLoaded?: (pubs: OrcidPublication[]) => void;
+};
+
+type InFlightEntry = {
+  promise: Promise<OrcidPublication[]>;
+  listListeners: Set<(pubs: OrcidPublication[]) => void>;
+  list: OrcidPublication[] | null;
+};
+
+/** In-flight dedupe: one network run; late joiners still get `onListLoaded`. */
+const inFlight = new Map<string, InFlightEntry>();
 
 export async function fetchOrcidPublications(
   orcidId: string,
+  options?: FetchOrcidPublicationsOptions,
 ): Promise<OrcidPublication[]> {
   const clean = orcidId.replace(/https?:\/\/orcid\.org\//i, "").trim();
   const cacheKey = SESSION_KEY_PREFIX + clean;
@@ -221,6 +238,7 @@ export async function fetchOrcidPublications(
   // 1. Memory cache hit (instant — same tab navigation)
   const mem = memoryCache.get(cacheKey);
   if (mem && Date.now() - mem.fetchedAt < CACHE_TTL_MS) {
+    options?.onListLoaded?.(mem.pubs);
     return mem.pubs;
   }
 
@@ -228,12 +246,28 @@ export async function fetchOrcidPublications(
   const stored = sessionGet(cacheKey);
   if (stored) {
     memoryCache.set(cacheKey, stored);
+    options?.onListLoaded?.(stored.pubs);
     return stored.pubs;
   }
 
   // 3. Deduplicate concurrent callers (e.g. /publications + a team profile open at once)
   const existing = inFlight.get(cacheKey);
-  if (existing) return existing;
+  if (existing) {
+    if (options?.onListLoaded) {
+      if (existing.list) options.onListLoaded(existing.list);
+      else existing.listListeners.add(options.onListLoaded);
+    }
+    return existing.promise;
+  }
+
+  const listListeners = new Set<(pubs: OrcidPublication[]) => void>();
+  if (options?.onListLoaded) listListeners.add(options.onListLoaded);
+
+  const entry: InFlightEntry = {
+    promise: null as unknown as Promise<OrcidPublication[]>,
+    listListeners,
+    list: null,
+  };
 
   const promise = (async () => {
     const url = `https://pub.orcid.org/v3.0/${clean}/works`;
@@ -248,17 +282,20 @@ export async function fetchOrcidPublications(
     }
     const data = await res.json();
     const list = mapOrcidWorksResponse(data);
+    entry.list = list;
+    for (const fn of entry.listListeners) fn(list);
     const pubs = await enrichWithAuthors(clean, list);
 
-    const entry: CacheEntry = { pubs, fetchedAt: Date.now() };
-    memoryCache.set(cacheKey, entry);
-    sessionSet(cacheKey, entry);
+    const cacheEntry: CacheEntry = { pubs, fetchedAt: Date.now() };
+    memoryCache.set(cacheKey, cacheEntry);
+    sessionSet(cacheKey, cacheEntry);
     return pubs;
   })().finally(() => {
     inFlight.delete(cacheKey);
   });
 
-  inFlight.set(cacheKey, promise);
+  entry.promise = promise;
+  inFlight.set(cacheKey, entry);
   return promise;
 }
 

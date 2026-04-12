@@ -36,7 +36,7 @@ import {
 function isNativeVideoEmbedUrl(url: string): boolean {
   const u = url.trim().toLowerCase();
   if (!u || u.startsWith("javascript:") || u.startsWith("data:")) return false;
-  return /\.(mp4|m4v|webm|ogg|ogv)(\?|#|$)/i.test(u);
+  return /\.(mp4|m4v|webm|ogg|ogv|mov)(\?|#|$)/i.test(u);
 }
 
 function TopicBlock({

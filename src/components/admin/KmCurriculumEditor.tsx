@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ChevronDown,
@@ -10,6 +10,7 @@ import {
   Plus,
   Save,
   Trash2,
+  Upload,
 } from "lucide-react";
 import {
   deleteKmModule,
@@ -23,6 +24,7 @@ import {
   type KmAdminQuestionDraft,
   type KmAdminTopicDraft,
 } from "@/lib/km/supabase-km-curriculum-admin";
+import { uploadKmCurriculumVideo } from "@/lib/km/km-video-storage";
 
 function paragraphsToText(p: string[]): string {
   return p.join("\n\n");
@@ -211,6 +213,13 @@ export default function KmCurriculumEditor() {
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
             Admins and superusers can edit modules, topics, and quiz questions
             in Supabase. Public learners see changes immediately in the app.
+            Video topics support{" "}
+            <strong className="text-foreground">file upload</strong> (Supabase
+            bucket <code className="rounded bg-muted px-1">km-videos</code> — run{" "}
+            <code className="rounded bg-muted px-1 text-xs">
+              supabase/storage_km_videos.sql
+            </code>
+            ) or paste embed / .mp4 URLs.
             <span className="mt-2 block font-medium text-amber-800 dark:text-amber-200">
               Static hosting (e.g. GitHub Pages): adding a{" "}
               <em>new</em> module slug requires a new site build and deploy so
@@ -418,6 +427,7 @@ function ModuleForm({
               >
                 <TopicEditor
                   topic={topic}
+                  moduleSlug={draft.slug}
                   disabled={disabled}
                   onChange={(t) =>
                     onChange({
@@ -535,6 +545,7 @@ function ModuleForm({
 
 function TopicEditor({
   topic,
+  moduleSlug,
   disabled,
   onChange,
   onMoveUp,
@@ -542,12 +553,17 @@ function TopicEditor({
   onRemove,
 }: {
   topic: KmAdminTopicDraft;
+  /** Used for storage path; empty slug falls back to `module`. */
+  moduleSlug: string;
   disabled: boolean;
   onChange: (t: KmAdminTopicDraft) => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
   onRemove: () => void;
 }) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [videoUploadBusy, setVideoUploadBusy] = useState(false);
+  const [videoUploadErr, setVideoUploadErr] = useState<string | null>(null);
   const paraText = paragraphsToText(topic.paragraphs);
   return (
     <div className="space-y-3">
@@ -611,11 +627,68 @@ function TopicEditor({
       />
       {topic.topicType === "video" ? (
         <>
-          <Field
-            label="Embed or video URL (YouTube embed, Vimeo, or .mp4 link)"
-            value={topic.embedUrl}
-            onChange={(embedUrl) => onChange({ ...topic, embedUrl })}
-          />
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end">
+            <div className="min-w-0 flex-1">
+              <Field
+                label="Embed or video URL (YouTube embed, Vimeo, Supabase public URL, or .mp4 link)"
+                value={topic.embedUrl}
+                onChange={(embedUrl) => onChange({ ...topic, embedUrl })}
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-muted-foreground">
+                Or upload
+              </span>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov"
+                className="sr-only"
+                disabled={disabled || videoUploadBusy}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  e.target.value = "";
+                  if (!file) return;
+                  setVideoUploadErr(null);
+                  setVideoUploadBusy(true);
+                  try {
+                    const { publicUrl } = await uploadKmCurriculumVideo(
+                      file,
+                      moduleSlug,
+                    );
+                    onChange({ ...topic, embedUrl: publicUrl });
+                  } catch (err) {
+                    setVideoUploadErr(
+                      err instanceof Error ? err.message : "Upload failed",
+                    );
+                  } finally {
+                    setVideoUploadBusy(false);
+                  }
+                }}
+              />
+              <button
+                type="button"
+                disabled={disabled || videoUploadBusy}
+                onClick={() => fileInputRef.current?.click()}
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition hover:bg-muted/60 disabled:opacity-50"
+              >
+                {videoUploadBusy ? (
+                  <Loader2 className="h-4 w-4 animate-spin shrink-0" aria-hidden />
+                ) : (
+                  <Upload className="h-4 w-4 shrink-0" aria-hidden />
+                )}
+                {videoUploadBusy ? "Uploading…" : "Upload MP4 / WebM / MOV"}
+              </button>
+            </div>
+          </div>
+          {videoUploadErr ? (
+            <p className="text-xs text-destructive">{videoUploadErr}</p>
+          ) : null}
+          <p className="text-[11px] text-muted-foreground">
+            Uploads go to the public <code className="rounded bg-muted px-1">km-videos</code>{" "}
+            bucket (max 100MB). Admins need the storage policies from{" "}
+            <code className="rounded bg-muted px-0.5">storage_km_videos.sql</code>.
+          </p>
           <Field
             label="Video caption (optional)"
             value={topic.videoCaption}

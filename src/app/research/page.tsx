@@ -28,11 +28,17 @@ export default function ResearchPage() {
 
   if (!doc) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center text-sm text-muted-foreground">
-        Loading…
-    </div>
-  );
-}
+      <div className="flex min-h-[50vh] items-center justify-center bg-background text-sm text-muted-foreground">
+        <div className="flex flex-col items-center gap-3">
+          <div
+            className="h-9 w-9 animate-spin rounded-full border-2 border-brand/30 border-t-brand"
+            aria-hidden
+          />
+          <span>Loading…</span>
+        </div>
+      </div>
+    );
+  }
 
   return <ResearchPageView document={doc} />;
 }

@@ -102,6 +102,9 @@ export default function AdminBlogListPage() {
                     <span className="text-amber-600 dark:text-amber-400">draft</span>
                   )}
                   {p.featured ? " · featured" : ""}
+                  {!p.published && p.author_user_id ? (
+                    <span> · community submission</span>
+                  ) : null}
                 </p>
               </div>
               <div className="flex shrink-0 flex-wrap gap-2">

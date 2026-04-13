@@ -1,5 +1,5 @@
 -- Blog posts (run in Supabase SQL Editor after cms_schema.sql).
--- Public reads published posts; admins see drafts; writes for admin/superuser.
+-- Public reads published posts; admins see all; signed-in members may submit drafts (see member_insert).
 
 create table if not exists public.blog_posts (
   id uuid primary key default gen_random_uuid(),
@@ -17,7 +17,8 @@ create table if not exists public.blog_posts (
   published boolean not null default true,
   author_name text not null default '',
   author_role text not null default '',
-  author_image_url text not null default ''
+  author_image_url text not null default '',
+  author_user_id uuid references auth.users (id) on delete set null
 );
 
 create index if not exists blog_posts_slug_idx on public.blog_posts (slug);
@@ -25,6 +26,7 @@ create index if not exists blog_posts_category_idx on public.blog_posts (categor
 create index if not exists blog_posts_featured_idx on public.blog_posts (featured);
 create index if not exists blog_posts_created_idx on public.blog_posts (created_at desc);
 create index if not exists blog_posts_published_idx on public.blog_posts (published);
+create index if not exists blog_posts_author_user_idx on public.blog_posts (author_user_id);
 
 create or replace function public.touch_blog_posts_updated_at()
 returns trigger
@@ -68,3 +70,24 @@ drop policy if exists "blog_posts_admin_delete" on public.blog_posts;
 create policy "blog_posts_admin_delete"
   on public.blog_posts for delete
   using (public.current_app_role() in ('admin', 'superuser'));
+
+drop policy if exists "blog_posts_author_read" on public.blog_posts;
+create policy "blog_posts_author_read"
+  on public.blog_posts for select
+  to authenticated
+  using (
+    author_user_id is not null
+    and author_user_id = auth.uid()
+  );
+
+drop policy if exists "blog_posts_member_insert" on public.blog_posts;
+create policy "blog_posts_member_insert"
+  on public.blog_posts for insert
+  to authenticated
+  with check (
+    auth.uid() is not null
+    and not (public.current_app_role() in ('admin', 'superuser'))
+    and featured = false
+    and published = false
+    and author_user_id = auth.uid()
+  );

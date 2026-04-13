@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
+import BlogCommentsSection from "@/components/blog/BlogCommentsSection";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -159,6 +160,10 @@ function BlogViewBody() {
           className="prose prose-lg max-w-none text-muted-foreground prose-headings:text-foreground prose-a:text-brand prose-strong:text-foreground dark:prose-invert"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
+
+        <Suspense fallback={null}>
+          <BlogCommentsSection postId={post.id} />
+        </Suspense>
 
         <div className="mt-12 border-t border-border pt-8">
           <Link

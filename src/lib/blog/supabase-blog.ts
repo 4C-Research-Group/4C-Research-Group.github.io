@@ -19,6 +19,7 @@ export type BlogPost = {
   author_name: string;
   author_role: string;
   author_image_url: string;
+  author_user_id: string | null;
 };
 
 type Row = Database["public"]["Tables"]["blog_posts"]["Row"];
@@ -41,6 +42,7 @@ function rowToPost(row: Row): BlogPost {
     author_name: row.author_name,
     author_role: row.author_role,
     author_image_url: row.author_image_url,
+    author_user_id: row.author_user_id ?? null,
   };
 }
 

@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2, Save } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { useAuthProfile } from "@/lib/auth/use-auth-profile";
 import { tagsToJson } from "@/lib/blog/parse-tags";
 import type { BlogPost } from "@/lib/blog/supabase-blog";
-import type { Json } from "@/lib/supabase/database.types";
+import type { Database, Json } from "@/lib/supabase/database.types";
 import BlogRichTextEditor from "@/components/blog/BlogRichTextEditor";
 
 function slugify(s: string): string {
@@ -31,10 +32,19 @@ function blogBodyIsEmpty(html: string): boolean {
 type Props = {
   mode: "new" | "edit";
   initial?: BlogPost | null;
+  /** Community: signed-in members submit drafts; only admins publish or edit later. */
+  variant?: "admin" | "community";
 };
 
-export default function BlogPostForm({ mode, initial }: Props) {
+export default function BlogPostForm({
+  mode,
+  initial,
+  variant = "admin",
+}: Props) {
   const router = useRouter();
+  const { ready: authReady, userId, name, email } = useAuthProfile();
+  const isCommunity = variant === "community";
+  const [didPrefillAuthor, setDidPrefillAuthor] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [slug, setSlug] = useState(initial?.slug ?? "");
@@ -53,6 +63,25 @@ export default function BlogPostForm({ mode, initial }: Props) {
   const [featured, setFeatured] = useState(initial?.featured ?? false);
   const [published, setPublished] = useState(initial?.published ?? true);
 
+  useEffect(() => {
+    if (!isCommunity || mode !== "new" || didPrefillAuthor || !authReady) return;
+    const n = name?.trim() || email?.split("@")[0]?.trim();
+    if (n) {
+      setAuthorName(n);
+      setDidPrefillAuthor(true);
+    }
+  }, [
+    isCommunity,
+    mode,
+    didPrefillAuthor,
+    authReady,
+    name,
+    email,
+  ]);
+
+  const cancelHref = isCommunity ? "/blog/" : "/admin/blog/";
+  const afterSaveHref = isCommunity ? "/blog/?submitted=draft" : "/admin/blog/";
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErr(null);
@@ -70,10 +99,16 @@ export default function BlogPostForm({ mode, initial }: Props) {
       .map((t) => t.trim())
       .filter(Boolean);
 
+    if (isCommunity && !userId) {
+      setErr("You must be signed in to submit a post.");
+      return;
+    }
+
     setSaving(true);
     try {
       const supabase = getSupabaseBrowserClient();
-      const row = {
+      type Ins = Database["public"]["Tables"]["blog_posts"]["Insert"];
+      const row: Ins = {
         slug: finalSlug,
         title: title.trim(),
         excerpt: excerpt.trim(),
@@ -82,17 +117,24 @@ export default function BlogPostForm({ mode, initial }: Props) {
         read_time: readTime.trim() || "5 min read",
         image_url: imageUrl.trim(),
         tags: tagsToJson(tags) as Json,
-        featured,
-        published,
+        featured: isCommunity ? false : featured,
+        published: isCommunity ? false : published,
         author_name: authorName.trim() || "4C Research Group",
         author_role: authorRole.trim() || "Research",
         author_image_url: authorImageUrl.trim(),
       };
 
+      if (isCommunity && mode === "new" && userId) {
+        row.author_user_id = userId;
+      }
+      if (mode === "edit") {
+        row.author_user_id = initial?.author_user_id ?? null;
+      }
+
       if (mode === "new") {
         const { error } = await supabase.from("blog_posts").insert(row);
         if (error) throw new Error(error.message);
-        router.replace("/admin/blog/");
+        router.replace(afterSaveHref);
         router.refresh();
         return;
       }
@@ -106,7 +148,7 @@ export default function BlogPostForm({ mode, initial }: Props) {
         .update(row)
         .eq("id", initial.id);
       if (error) throw new Error(error.message);
-      router.replace("/admin/blog/");
+      router.replace(afterSaveHref);
       router.refresh();
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Save failed");
@@ -120,6 +162,13 @@ export default function BlogPostForm({ mode, initial }: Props) {
       {err ? (
         <p className="rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {err}
+        </p>
+      ) : null}
+
+      {isCommunity ? (
+        <p className="rounded-lg border border-brand/25 bg-brand/5 px-3 py-2 text-sm text-foreground">
+          Your post is saved as a <strong>draft</strong>. It will not appear on
+          the public blog until an administrator reviews and publishes it.
         </p>
       ) : null}
 
@@ -228,24 +277,26 @@ export default function BlogPostForm({ mode, initial }: Props) {
               className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
             />
           </label>
-          <div className="flex flex-wrap gap-4">
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={featured}
-                onChange={(e) => setFeatured(e.target.checked)}
-              />
-              Featured
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={published}
-                onChange={(e) => setPublished(e.target.checked)}
-              />
-              Published
-            </label>
-          </div>
+          {!isCommunity ? (
+            <div className="flex flex-wrap gap-4">
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={featured}
+                  onChange={(e) => setFeatured(e.target.checked)}
+                />
+                Featured
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={published}
+                  onChange={(e) => setPublished(e.target.checked)}
+                />
+                Published
+              </label>
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -263,7 +314,7 @@ export default function BlogPostForm({ mode, initial }: Props) {
           Save
         </button>
         <Link
-          href="/admin/blog/"
+          href={cancelHref}
           className="inline-flex items-center rounded-lg border border-border px-4 py-2.5 text-sm font-medium hover:bg-muted/60"
         >
           Cancel

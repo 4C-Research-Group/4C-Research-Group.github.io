@@ -249,6 +249,7 @@ export interface Database {
           author_name: string;
           author_role: string;
           author_image_url: string;
+          author_user_id: string | null;
         };
         Insert: {
           id?: string;
@@ -267,9 +268,44 @@ export interface Database {
           author_name?: string;
           author_role?: string;
           author_image_url?: string;
+          author_user_id?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["blog_posts"]["Insert"]>;
         Relationships: [];
+      };
+      blog_post_comments: {
+        Row: {
+          id: string;
+          post_id: string;
+          parent_id: string | null;
+          user_id: string;
+          author_display_name: string;
+          body: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          post_id: string;
+          parent_id?: string | null;
+          user_id: string;
+          author_display_name?: string;
+          body: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["blog_post_comments"]["Insert"]
+        >;
+        Relationships: [
+          {
+            foreignKeyName: "blog_post_comments_post_id_fkey";
+            columns: ["post_id"];
+            isOneToOne: false;
+            referencedRelation: "blog_posts";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       collaborate_page_settings: {
         Row: {

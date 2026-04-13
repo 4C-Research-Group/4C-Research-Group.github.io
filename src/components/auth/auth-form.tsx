@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getAuthCallbackAbsoluteUrl } from "@/lib/site-path";
@@ -34,8 +34,17 @@ function friendlyAuthMessage(message: string): string {
   return message;
 }
 
+function safeInternalNext(next: string | null): string | null {
+  if (!next) return null;
+  const t = next.trim();
+  if (!t.startsWith("/") || t.startsWith("//")) return null;
+  return t;
+}
+
 export default function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextAfterAuth = safeInternalNext(searchParams.get("next"));
   const isLogin = mode === "login";
 
   const [email, setEmail] = useState("");
@@ -56,7 +65,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           data: { user },
         } = await supabase.auth.getUser();
         if (!alive || !user) return;
-        router.replace("/dashboard/");
+        router.replace(nextAfterAuth ?? "/dashboard/");
         router.refresh();
       } catch {
         /* ignore */
@@ -65,7 +74,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
     return () => {
       alive = false;
     };
-  }, [router]);
+  }, [router, nextAfterAuth]);
 
   async function onLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -92,7 +101,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         setError(friendlyAuthMessage(signErr.message));
         return;
       }
-      router.push("/dashboard/");
+      router.push(nextAfterAuth ?? "/dashboard/");
       router.refresh();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Sign-in failed.";
@@ -154,7 +163,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
       if (data.session) {
         setInfo("Account ready. Redirecting…");
-        router.push("/dashboard/");
+        router.push(nextAfterAuth ?? "/dashboard/");
         router.refresh();
         return;
       }

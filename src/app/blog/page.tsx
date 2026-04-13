@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -23,13 +24,16 @@ import {
 } from "@/lib/blog/supabase-blog";
 import { blogPostHref } from "@/lib/blog/blog-post-href";
 
-export default function BlogPage() {
+function BlogIndexContent() {
   const reduceMotion = useReducedMotion();
   const spring = [0.22, 1, 0.36, 1] as const;
   const fadeUp = reduceMotion ? undefined : { opacity: 0, y: 16 };
 
-  const { ready: authReady, role } = useAuthProfile();
+  const searchParams = useSearchParams();
+  const submittedDraft = searchParams.get("submitted") === "draft";
+  const { ready: authReady, role, userId } = useAuthProfile();
   const showAdmin = authReady && canAccessAdmin(role);
+  const showWrite = authReady && !!userId;
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -165,14 +169,33 @@ export default function BlogPage() {
                 Regular Updates
               </span>
             </div>
-            {showAdmin ? (
-              <div className="mt-8 flex justify-center lg:justify-start">
-                <Link
-                  href="/admin/blog/"
-                  className="inline-flex items-center gap-2 rounded-2xl border border-brand/25 bg-brand/10 px-5 py-2.5 text-sm font-semibold text-brand transition hover:border-brand/40 hover:bg-brand/15"
-                >
-                  Manage posts
-                </Link>
+            {submittedDraft ? (
+              <p
+                className="mt-8 rounded-2xl border border-care/25 bg-care/5 px-4 py-3 text-center text-sm text-foreground lg:text-left"
+                role="status"
+              >
+                Thanks — your draft was submitted. An administrator will review
+                it before it appears here.
+              </p>
+            ) : null}
+            {showWrite || showAdmin ? (
+              <div className="mt-8 flex flex-wrap justify-center gap-2 lg:justify-start">
+                {showWrite ? (
+                  <Link
+                    href="/blog/write/"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-brand/30 hover:bg-muted/40"
+                  >
+                    Write a post
+                  </Link>
+                ) : null}
+                {showAdmin ? (
+                  <Link
+                    href="/admin/blog/"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-brand/25 bg-brand/10 px-5 py-2.5 text-sm font-semibold text-brand transition hover:border-brand/40 hover:bg-brand/15"
+                  >
+                    Manage posts
+                  </Link>
+                ) : null}
               </div>
             ) : null}
           </motion.div>
@@ -259,7 +282,11 @@ export default function BlogPage() {
               <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
                 supabase/blog_posts.sql
               </code>
-              , or add posts in the admin dashboard.
+              , add posts in the admin dashboard, or sign in and use{" "}
+              <Link href="/blog/write/" className="font-medium text-brand hover:underline">
+                Write a post
+              </Link>{" "}
+              (drafts are reviewed by an admin).
             </p>
           </div>
         ) : (
@@ -493,5 +520,19 @@ export default function BlogPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function BlogPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-background text-muted-foreground">
+          <Loader2 className="h-9 w-9 animate-spin text-brand" aria-label="Loading" />
+        </div>
+      }
+    >
+      <BlogIndexContent />
+    </Suspense>
   );
 }

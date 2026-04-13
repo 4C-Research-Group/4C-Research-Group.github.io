@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import {
+  ArrowLeft,
   BookOpen,
   Brain,
   Briefcase,
@@ -64,12 +65,22 @@ function SectionShell({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.45 }}
-      className={`overflow-hidden rounded-3xl border border-border/80 bg-card p-6 shadow-lg shadow-brand/5 sm:p-8 md:p-10 ${className}`}
+      className={`relative overflow-hidden rounded-3xl border border-border/70 bg-card/85 p-6 shadow-xl shadow-black/[0.04] ring-1 ring-black/[0.03] backdrop-blur-sm sm:p-8 md:p-10 ${className}`}
     >
-      {children}
+      <div
+        className="pointer-events-none absolute inset-x-8 top-0 h-px bg-linear-to-r from-transparent via-brand/40 to-transparent"
+        aria-hidden
+      />
+      <div className="relative">{children}</div>
     </motion.section>
   );
 }
+
+const HEADER_ICON_STYLES = [
+  "bg-cognition/12 text-cognition ring-cognition/15",
+  "bg-care/12 text-care ring-care/15",
+  "bg-consciousness/12 text-consciousness ring-consciousness/15",
+] as const;
 
 function SectionHeader({
   icon: Icon,
@@ -81,8 +92,10 @@ function SectionHeader({
   variant: 0 | 1 | 2;
 }) {
   return (
-    <div className="mb-6 flex items-center gap-3">
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-muted text-brand">
+    <div className="mb-6 flex items-center gap-3 sm:gap-4">
+      <span
+        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl shadow-sm ring-1 ${HEADER_ICON_STYLES[variant]}`}
+      >
         <Icon className="h-5 w-5" strokeWidth={1.75} />
       </span>
       <h2
@@ -126,7 +139,7 @@ function TitleSubtitleGrid({
       {items.map((item, idx) => (
         <div
           key={`${item.title}-${idx}`}
-          className="flex h-full flex-col justify-between rounded-2xl border border-border/60 bg-muted/25 p-4 transition-colors hover:border-brand/25"
+          className="flex h-full flex-col justify-between rounded-2xl border border-border/70 bg-muted/20 p-4 shadow-sm ring-1 ring-black/[0.02] transition hover:border-brand/30 hover:shadow-md"
         >
           <div className={`font-semibold ${titleColors[accent]}`}>
             {item.title}
@@ -158,7 +171,7 @@ function SocialButton({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="flex h-11 w-11 items-center justify-center rounded-full border border-border/80 bg-card text-brand shadow-sm transition-colors hover:border-brand/40 hover:bg-brand/5"
+      className="flex h-10 w-10 items-center justify-center rounded-xl border border-border/80 bg-card/70 text-brand shadow-sm backdrop-blur-sm transition hover:border-brand/35 hover:bg-brand/[0.06] hover:text-brand-deep"
     >
       {children}
     </a>
@@ -235,31 +248,55 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
   const titlePills = d.title.split("|").map((t) => t.trim()).filter(Boolean);
 
   return (
-    <div className="min-h-screen bg-background">
-      <section className="relative overflow-hidden border-b border-border/60 bg-linear-to-br from-brand-light/70 via-background to-consciousness/10">
+    <div className="relative min-h-screen overflow-hidden bg-background">
+      <div
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-muted/35 via-background to-muted/25"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.28] mask-[linear-gradient(180deg,black,transparent_92%)] bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-size-[48px_48px]"
+        aria-hidden
+      />
+
+      <section className="relative overflow-hidden border-b border-border/60 bg-linear-to-br from-brand-light/50 via-background/95 to-consciousness/[0.08]">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-brand/50 to-transparent"
+          aria-hidden
+        />
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="absolute left-6 top-16 h-48 w-48 rounded-full bg-cognition/15 blur-3xl md:left-16 md:h-72 md:w-72" />
+          <div className="absolute left-6 top-16 h-48 w-48 rounded-full bg-cognition/14 blur-3xl md:left-16 md:h-72 md:w-72" />
           <div className="absolute right-8 top-32 h-56 w-56 rounded-full bg-consciousness/12 blur-3xl md:right-24 md:h-96 md:w-96" />
           <div className="absolute bottom-8 left-1/3 h-52 w-52 rounded-full bg-care/12 blur-3xl" />
         </div>
 
-        <div className="container relative z-10 mx-auto px-4 py-14 sm:px-6 md:py-20">
+        <div className="container relative z-10 mx-auto max-w-6xl px-4 py-14 sm:px-6 md:py-20">
+          <Link
+            href="/about/"
+            className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-brand"
+          >
+            <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden />
+            About the lab
+          </Link>
+
           <div className="mx-auto flex max-w-5xl flex-col items-center gap-8 md:flex-row md:items-start md:gap-10 lg:gap-12">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45 }}
-              className="relative h-36 w-36 shrink-0 overflow-hidden rounded-3xl border-4 border-card shadow-xl shadow-brand/10 sm:h-44 sm:w-44 md:h-48 md:w-48"
+              className="group relative shrink-0"
             >
-              <Image
-                src={d.imageSrc}
-                alt={d.name}
-                fill
-                className="object-cover"
-                style={{ objectPosition: "center 30%" }}
-                priority
-                sizes="(max-width: 768px) 176px, 192px"
-              />
+              <span className="absolute -inset-1 rounded-[1.35rem] bg-linear-to-br from-cognition/30 via-brand/20 to-care/25 opacity-60 blur-lg transition group-hover:opacity-90" />
+              <div className="relative h-36 w-36 overflow-hidden rounded-2xl border border-border/80 shadow-xl shadow-black/[0.08] ring-2 ring-card sm:h-44 sm:w-44 md:h-48 md:w-48">
+                <Image
+                  src={d.imageSrc}
+                  alt={d.name}
+                  fill
+                  className="object-cover"
+                  style={{ objectPosition: "center 30%" }}
+                  priority
+                  sizes="(max-width: 768px) 176px, 192px"
+                />
+              </div>
             </motion.div>
 
             <motion.div
@@ -268,7 +305,10 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
               transition={{ duration: 0.45, delay: 0.05 }}
               className="min-w-0 flex-1 text-center md:text-left"
             >
-              <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                Principal investigator
+              </p>
+              <h1 className="mt-2 text-balance text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl md:text-[2.35rem] md:leading-[1.15]">
                 <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
                   {d.name}
                 </span>
@@ -277,7 +317,7 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
                 {titlePills.map((pill) => (
                   <span
                     key={pill}
-                    className="rounded-full border border-care/25 bg-care/10 px-3 py-1 text-xs font-semibold text-foreground sm:text-sm"
+                    className="rounded-full border border-border/70 bg-card/80 px-3.5 py-1 text-xs font-semibold text-foreground shadow-sm backdrop-blur-sm sm:text-sm"
                   >
                     {pill}
                   </span>
@@ -291,7 +331,7 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
                 </p>
               ) : null}
 
-              <div className="mt-5 flex flex-wrap justify-center gap-3 md:justify-start">
+              <div className="mt-5 flex flex-wrap justify-center gap-2 md:justify-start">
                 {d.linkedinUrl?.trim() ? (
                   <SocialButton href={d.linkedinUrl.trim()} label="LinkedIn">
                     <FaLinkedin className="h-5 w-5" />
@@ -320,14 +360,14 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
                 ) : null}
               </div>
 
-              <ul className="mt-6 list-none space-y-2 border-t border-border/50 pt-6 text-left">
+              <ul className="mt-6 list-none space-y-2 border-t border-border/60 pt-6 text-left">
                 {d.heroLines.map((line, i) => (
                   <li
                     key={`hero-line-${i}`}
                     className={`${
                       i === 0
-                        ? "text-sm leading-tight sm:text-base font-medium text-foreground"
-                        : "text-xs leading-tight sm:text-sm text-muted-foreground"
+                        ? "text-sm font-medium leading-snug text-foreground sm:text-base"
+                        : "text-xs leading-snug text-muted-foreground sm:text-sm"
                     }`}
                   >
                     {line}
@@ -349,9 +389,9 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
           aria-hidden
         />
 
-        <div className="container relative mx-auto space-y-10 px-4 py-12 sm:px-6 sm:py-16">
+        <div className="container relative z-10 mx-auto max-w-6xl space-y-10 px-4 py-12 sm:px-6 sm:py-16">
           <SectionShell>
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand">
+            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand">
               Overview
             </span>
             <h2
@@ -469,7 +509,7 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
               {d.languages.map((lang: PiLanguage) => (
                 <div
                   key={lang.language}
-                  className="rounded-2xl border border-border/60 bg-muted/25 p-4"
+                  className="rounded-2xl border border-border/70 bg-muted/20 p-4 ring-1 ring-black/[0.02] shadow-sm"
                 >
                   <div className="font-semibold text-care">{lang.language}</div>
                   <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-muted-foreground">
@@ -484,8 +524,8 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
 
           <SectionShell>
             <SectionHeader icon={Mic} title="Invited lectures" variant={2} />
-            <details className="group rounded-2xl border border-border/60 bg-muted/15">
-              <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-foreground marker:hidden [&::-webkit-details-marker]:hidden">
+            <details className="group overflow-hidden rounded-2xl border border-border/70 bg-muted/15 shadow-sm ring-1 ring-black/[0.02]">
+              <summary className="cursor-pointer list-none px-4 py-3.5 text-sm font-semibold text-foreground transition hover:bg-muted/40 marker:hidden [&::-webkit-details-marker]:hidden">
                 <span className="group-open:hidden">
                   Show all invited lectures & presentations (
                   {d.invitedLectures.length})
@@ -494,11 +534,11 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
                   Hide invited lectures & presentations
                 </span>
               </summary>
-              <div className="max-h-[28rem] space-y-3 overflow-y-auto border-t border-border/50 px-4 py-3">
+              <div className="max-h-[28rem] space-y-3 overflow-y-auto border-t border-border/60 bg-card/30 px-4 py-3">
                 {d.invitedLectures.map((lec: PiInvitedLecture, idx) => (
                   <div
                     key={`${lec.title}-${lec.year}-${idx}`}
-                    className="rounded-xl border border-border/40 bg-card/50 p-3 text-sm"
+                    className="rounded-xl border border-border/60 bg-card/70 p-3 text-sm shadow-sm"
                   >
                     <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                       <span className="font-medium text-cognition">
@@ -577,7 +617,7 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
               {d.volunteering.map((item: PiVolunteer, idx) => (
                 <div
                   key={`${item.role}-${idx}`}
-                  className="flex h-full flex-col rounded-2xl border border-border/60 bg-muted/25 p-4"
+                  className="flex h-full flex-col rounded-2xl border border-border/70 bg-muted/20 p-4 ring-1 ring-black/[0.02] shadow-sm"
                 >
                   <div className="font-semibold text-cognition">
                     {item.role}
@@ -602,7 +642,7 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
               {d.recommendations.map((item: PiRecommendation, idx) => (
                 <div
                   key={`${item.name}-${idx}`}
-                  className="rounded-2xl border border-border/60 bg-muted/25 p-5 sm:p-6"
+                  className="rounded-2xl border border-border/70 bg-muted/20 p-5 shadow-sm ring-1 ring-black/[0.02] sm:p-6"
                 >
                   <div className="font-semibold text-foreground">
                     {item.name}
@@ -631,7 +671,7 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
               {d.licenses.map((item: PiLicense, idx) => (
                 <div
                   key={`${item.title}-${idx}`}
-                  className="flex h-full flex-col rounded-2xl border border-border/60 bg-muted/25 p-4"
+                  className="flex h-full flex-col rounded-2xl border border-border/70 bg-muted/20 p-4 ring-1 ring-black/[0.02] shadow-sm"
                 >
                   <div className="font-semibold text-care">{item.title}</div>
                   <div className="text-sm text-muted-foreground">
@@ -663,7 +703,7 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
               {d.committeesAndLeadership.map((item: PiOrganization, idx) => (
                 <div
                   key={`${item.name}-${idx}`}
-                  className="flex h-full flex-col rounded-2xl border border-border/60 bg-muted/25 p-4"
+                  className="flex h-full flex-col rounded-2xl border border-border/70 bg-muted/20 p-4 ring-1 ring-black/[0.02] shadow-sm"
                 >
                   <div className="font-semibold text-consciousness">
                     {item.name}
@@ -686,7 +726,7 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
               {d.membershipsAll.map((item: PiOrganization, idx) => (
                 <div
                   key={`${item.name}-m-${idx}`}
-                  className="flex h-full flex-col rounded-2xl border border-border/60 bg-muted/25 p-4"
+                  className="flex h-full flex-col rounded-2xl border border-border/70 bg-muted/20 p-4 ring-1 ring-black/[0.02] shadow-sm"
                 >
                   <div className="font-semibold text-consciousness">
                     {item.name}
@@ -711,14 +751,14 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
               supervision, thesis committees, courses, and leadership
               narrative).
             </p>
-            <details className="group rounded-2xl border border-border/60 bg-muted/15">
-              <summary className="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-foreground marker:hidden [&::-webkit-details-marker]:hidden">
+            <details className="group overflow-hidden rounded-2xl border border-border/70 bg-muted/15 shadow-sm ring-1 ring-black/[0.02]">
+              <summary className="cursor-pointer list-none px-4 py-3.5 text-sm font-semibold text-foreground transition hover:bg-muted/40 marker:hidden [&::-webkit-details-marker]:hidden">
                 <span className="group-open:hidden">
                   Expand full CV text (sections F–J)
                 </span>
                 <span className="hidden group-open:inline">Collapse</span>
               </summary>
-              <pre className="max-h-[32rem] overflow-auto whitespace-pre-wrap border-t border-border/50 px-4 py-3 font-sans text-xs leading-relaxed text-muted-foreground">
+              <pre className="max-h-[32rem] overflow-auto whitespace-pre-wrap border-t border-border/60 bg-card/30 px-4 py-3 font-sans text-xs leading-relaxed text-muted-foreground">
                 {d.cvFullTextSectionsFJ}
               </pre>
             </details>
@@ -735,7 +775,7 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
                 (item: PiPublicationHighlight, idx) => (
                   <div
                     key={`${item.title}-${idx}`}
-                    className="flex h-full flex-col rounded-2xl border border-border/60 bg-muted/25 p-4"
+                    className="flex h-full flex-col rounded-2xl border border-border/70 bg-muted/20 p-4 ring-1 ring-black/[0.02] shadow-sm"
                   >
                     <div className="font-semibold text-cognition">
                       {item.title}
@@ -756,7 +796,7 @@ export default function AboutPiView({ d }: { d: AboutPiPagePayload }) {
             <div className="mt-8 flex justify-center">
               <Link
                 href="/publications"
-                className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-primary-foreground shadow-md shadow-brand/25 transition hover:bg-brand-deep hover:shadow-lg hover:shadow-brand/20"
               >
                 View full publications list
               </Link>

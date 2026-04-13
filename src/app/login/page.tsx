@@ -12,8 +12,12 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-dvh items-center justify-center text-muted-foreground">
-          <Loader2 className="h-8 w-8 animate-spin text-brand" aria-label="Loading" />
+        <div className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-background">
+          <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-muted/35 via-background to-muted/25" />
+          <Loader2
+            className="relative h-10 w-10 animate-spin text-brand"
+            aria-label="Loading"
+          />
         </div>
       }
     >

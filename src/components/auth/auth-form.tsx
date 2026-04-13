@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Loader2, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Loader2, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getAuthCallbackAbsoluteUrl } from "@/lib/site-path";
 
@@ -45,7 +46,17 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextAfterAuth = safeInternalNext(searchParams.get("next"));
+  const authQuery = searchParams.toString();
+  const signupHref = authQuery ? `/signup/?${authQuery}` : "/signup/";
+  const loginHref = authQuery ? `/login/?${authQuery}` : "/login/";
   const isLogin = mode === "login";
+
+  const inputBase =
+    "w-full rounded-xl border border-border/80 bg-background/90 py-3 pl-11 text-sm text-foreground shadow-sm outline-none transition placeholder:text-muted-foreground/70 focus:border-brand/45 focus:ring-2 focus:ring-brand/20 disabled:opacity-60";
+  const inputClassEmail = `${inputBase} pr-4`;
+  const inputClassPassword = `${inputBase} pr-11`;
+  const labelClass =
+    "mb-2 block text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -180,36 +191,66 @@ export default function AuthForm({ mode }: AuthFormProps) {
   }
 
   return (
-    <div className="relative flex min-h-dvh items-center justify-center overflow-hidden px-4 py-12">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 py-12">
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-muted/40 via-background to-muted/30" />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.35] mask-[linear-gradient(180deg,black,transparent_80%)] bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-size-[48px_48px]"
+        aria-hidden
+      />
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-24 left-8 h-56 w-56 rounded-full bg-brand/10 blur-3xl" />
-        <div className="absolute top-40 right-12 h-72 w-72 rounded-full bg-consciousness/10 blur-3xl" />
-        <div className="absolute bottom-16 left-1/4 h-64 w-64 rounded-full bg-care/10 blur-3xl" />
+        <div className="absolute top-20 left-1/4 h-64 w-64 rounded-full bg-cognition/12 blur-3xl" />
+        <div className="absolute top-32 right-0 h-80 w-80 rounded-full bg-consciousness/10 blur-3xl" />
+        <div className="absolute bottom-12 left-1/3 h-72 w-72 rounded-full bg-care/10 blur-3xl" />
       </div>
 
-      <div className="relative z-10 w-full max-w-md">
-        <div className="rounded-2xl border border-border bg-card/90 p-8 shadow-xl backdrop-blur-md">
-          <div className="mb-8 text-center">
-            <h1 className="bg-linear-to-r from-brand via-consciousness to-care bg-clip-text text-3xl font-bold text-transparent">
+      <div className="relative z-10 w-full max-w-[420px]">
+        <div className="relative overflow-hidden rounded-3xl border border-border/70 bg-card/80 p-8 shadow-xl shadow-black/[0.06] ring-1 ring-black/[0.04] backdrop-blur-xl sm:p-9">
+          <div
+            className="pointer-events-none absolute inset-x-10 top-0 h-px bg-linear-to-r from-transparent via-brand/55 to-transparent"
+            aria-hidden
+          />
+
+          <div className="mb-8 flex flex-col items-center text-center">
+            <Link
+              href="/"
+              className="group mb-5 flex items-center gap-2.5 rounded-2xl outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2"
+            >
+              <span className="relative">
+                <span className="absolute -inset-1 rounded-xl bg-linear-to-br from-cognition/30 via-brand/15 to-care/25 opacity-0 blur-md transition group-hover:opacity-100" />
+                <Image
+                  src="/logo.png"
+                  alt="4C Research Group"
+                  width={40}
+                  height={40}
+                  className="relative h-10 w-10 rounded-xl object-cover shadow-sm ring-1 ring-border/80"
+                />
+              </span>
+              <span className="hidden text-left sm:block">
+                <span className="block text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                  4C Research Group
+                </span>
+              </span>
+            </Link>
+            <h1 className="text-balance text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               {isLogin ? "Welcome back" : "Create an account"}
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="mt-2 max-w-sm text-pretty text-sm leading-relaxed text-muted-foreground">
               {isLogin
-                ? "Sign in with your email and password"
-                : "Join the 4C Research Lab site"}
+                ? "Sign in with your email and password to continue."
+                : "Join the site to save progress and take part in the community."}
             </p>
           </div>
 
           {error && (
             <div
-              className="mb-4 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+              className="mb-5 rounded-xl border border-destructive/35 bg-destructive/[0.08] px-4 py-3 text-sm text-destructive"
               role="alert"
             >
               {error}
             </div>
           )}
           {info && (
-            <div className="mb-4 rounded-lg border border-brand/30 bg-brand/10 px-3 py-2 text-sm text-foreground">
+            <div className="mb-5 rounded-xl border border-brand/30 bg-brand/[0.08] px-4 py-3 text-sm text-foreground">
               {info}
             </div>
           )}
@@ -217,14 +258,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
           {isLogin ? (
             <form onSubmit={onLogin} className="space-y-5">
               <div>
-                <label
-                  htmlFor="email"
-                  className="mb-1.5 block text-sm font-medium text-foreground"
-                >
+                <label htmlFor="email" className={labelClass}>
                   Email
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <span className="pointer-events-none absolute left-3.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
+                    <Mail className="h-4 w-4" aria-hidden />
+                  </span>
                   <input
                     id="email"
                     type="email"
@@ -232,20 +272,20 @@ export default function AuthForm({ mode }: AuthFormProps) {
                     disabled={isLoading}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-lg border border-input bg-background py-2.5 pl-10 pr-3 text-sm outline-none ring-brand/30 focus:border-brand focus:ring-2"
+                    placeholder="you@example.com"
+                    className={inputClassEmail}
                   />
                 </div>
               </div>
 
               <div>
-                <label
-                  htmlFor="password"
-                  className="mb-1.5 block text-sm font-medium text-foreground"
-                >
+                <label htmlFor="password" className={labelClass}>
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <span className="pointer-events-none absolute left-3.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
+                    <Lock className="h-4 w-4" aria-hidden />
+                  </span>
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
@@ -253,14 +293,15 @@ export default function AuthForm({ mode }: AuthFormProps) {
                     disabled={isLoading}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-lg border border-input bg-background py-2.5 pl-10 pr-10 text-sm outline-none ring-brand/30 focus:border-brand focus:ring-2"
+                    placeholder="••••••••"
+                    className={inputClassPassword}
                   />
                   <button
                     type="button"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted/80 hover:text-foreground"
                     onClick={() => setShowPassword((s) => !s)}
                   >
                     {showPassword ? (
@@ -275,7 +316,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-brand py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep disabled:opacity-60"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand py-3.5 text-sm font-semibold text-primary-foreground shadow-md shadow-brand/25 transition hover:bg-brand-deep hover:shadow-lg hover:shadow-brand/20 disabled:opacity-60"
               >
                 {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                 Sign in
@@ -284,14 +325,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
           ) : (
             <form onSubmit={onSignup} className="space-y-5">
               <div>
-                <label
-                  htmlFor="su-email"
-                  className="mb-1.5 block text-sm font-medium text-foreground"
-                >
+                <label htmlFor="su-email" className={labelClass}>
                   Email
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <span className="pointer-events-none absolute left-3.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
+                    <Mail className="h-4 w-4" aria-hidden />
+                  </span>
                   <input
                     id="su-email"
                     type="email"
@@ -299,20 +339,20 @@ export default function AuthForm({ mode }: AuthFormProps) {
                     disabled={isLoading}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-lg border border-input bg-background py-2.5 pl-10 pr-3 text-sm outline-none ring-brand/30 focus:border-brand focus:ring-2"
+                    placeholder="you@example.com"
+                    className={inputClassEmail}
                   />
                 </div>
               </div>
 
               <div>
-                <label
-                  htmlFor="su-password"
-                  className="mb-1.5 block text-sm font-medium text-foreground"
-                >
+                <label htmlFor="su-password" className={labelClass}>
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <span className="pointer-events-none absolute left-3.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
+                    <Lock className="h-4 w-4" aria-hidden />
+                  </span>
                   <input
                     id="su-password"
                     type={showPassword ? "text" : "password"}
@@ -320,14 +360,15 @@ export default function AuthForm({ mode }: AuthFormProps) {
                     disabled={isLoading}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-lg border border-input bg-background py-2.5 pl-10 pr-10 text-sm outline-none ring-brand/30 focus:border-brand focus:ring-2"
+                    placeholder="At least 6 characters"
+                    className={inputClassPassword}
                   />
                   <button
                     type="button"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted/80 hover:text-foreground"
                     onClick={() => setShowPassword((s) => !s)}
                   >
                     {showPassword ? (
@@ -340,14 +381,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
               </div>
 
               <div>
-                <label
-                  htmlFor="su-confirm"
-                  className="mb-1.5 block text-sm font-medium text-foreground"
-                >
+                <label htmlFor="su-confirm" className={labelClass}>
                   Confirm password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <span className="pointer-events-none absolute left-3.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
+                    <Lock className="h-4 w-4" aria-hidden />
+                  </span>
                   <input
                     id="su-confirm"
                     type={showConfirm ? "text" : "password"}
@@ -355,14 +395,15 @@ export default function AuthForm({ mode }: AuthFormProps) {
                     disabled={isLoading}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full rounded-lg border border-input bg-background py-2.5 pl-10 pr-10 text-sm outline-none ring-brand/30 focus:border-brand focus:ring-2"
+                    placeholder="Repeat password"
+                    className={inputClassPassword}
                   />
                   <button
                     type="button"
                     aria-label={
                       showConfirm ? "Hide password" : "Show password"
                     }
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted/80 hover:text-foreground"
                     onClick={() => setShowConfirm((s) => !s)}
                   >
                     {showConfirm ? (
@@ -377,7 +418,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex w-full items-center justify-center gap-2 rounded-full bg-linear-to-r from-brand to-consciousness py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-95 disabled:opacity-60"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-brand via-brand to-consciousness py-3.5 text-sm font-semibold text-primary-foreground shadow-md shadow-brand/20 transition hover:opacity-[0.97] hover:shadow-lg hover:shadow-brand/25 disabled:opacity-60"
               >
                 {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                 Create account
@@ -385,13 +426,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
             </form>
           )}
 
-          <p className="mt-6 text-center text-sm text-muted-foreground">
+          <p className="mt-8 text-center text-sm text-muted-foreground">
             {isLogin ? (
               <>
                 Need an account?{" "}
                 <Link
-                  href="/signup/"
-                  className="font-medium text-brand hover:underline"
+                  href={signupHref}
+                  className="font-semibold text-brand underline decoration-brand/25 underline-offset-4 transition hover:decoration-brand/50"
                 >
                   Sign up
                 </Link>
@@ -400,8 +441,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
               <>
                 Already have an account?{" "}
                 <Link
-                  href="/login/"
-                  className="font-medium text-brand hover:underline"
+                  href={loginHref}
+                  className="font-semibold text-brand underline decoration-brand/25 underline-offset-4 transition hover:decoration-brand/50"
                 >
                   Sign in
                 </Link>
@@ -409,12 +450,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
             )}
           </p>
 
-          <p className="mt-4 text-center">
+          <p className="mt-5 text-center">
             <Link
               href="/"
-              className="text-sm text-muted-foreground hover:text-brand"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-4 py-2 text-sm font-medium text-muted-foreground transition hover:border-border hover:bg-muted/50 hover:text-foreground"
             >
-              ← Back to site
+              <ArrowLeft className="h-4 w-4" aria-hidden />
+              Back to site
             </Link>
           </p>
         </div>

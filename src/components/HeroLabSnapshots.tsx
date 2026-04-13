@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import type { HomepagePayload } from "@/data/homepage-defaults";
 import { siteAsset } from "@/lib/site-path";
 
@@ -36,7 +36,6 @@ function resolveSnapshotSrc(src: string): string {
 }
 
 export function HeroLabSnapshots({ items }: HeroLabSnapshotsProps) {
-  const reduceMotion = useReducedMotion();
   const filtered = (items ?? []).filter((x) => x.src.trim());
   const SNAPSHOTS = filtered.length
     ? filtered.map((x) => ({ ...x, src: resolveSnapshotSrc(x.src) }))
@@ -53,9 +52,7 @@ export function HeroLabSnapshots({ items }: HeroLabSnapshotsProps) {
         className="group relative mx-auto block focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 rounded-2xl"
         aria-label="View full lab gallery"
       >
-        <div
-          className={`flex items-end justify-center gap-2 sm:gap-3 ${reduceMotion ? "" : "transform-gpu [transform-style:preserve-3d]"}`}
-        >
+        <div className="flex items-end justify-center gap-2 sm:gap-3">
           {SNAPSHOTS.map((item, i) => (
             <motion.div
               key={`${item.src}-${i}`}
@@ -74,13 +71,7 @@ export function HeroLabSnapshots({ items }: HeroLabSnapshotsProps) {
                 "relative aspect-[4/5] w-[28%] max-w-[7.5rem] overflow-hidden rounded-xl bg-muted shadow-md ring-1 ring-black/8 transition-transform duration-300",
                 "group-hover:-translate-y-1 group-hover:shadow-lg",
                 i === 1 ? "z-[2] w-[32%] max-w-[8.25rem] -mb-1 scale-[1.02] sm:scale-105" : "z-[1]",
-                !reduceMotion && i === 1 ? "[transform:translateZ(22px)]" : "",
               ].join(" ")}
-              style={
-                reduceMotion
-                  ? undefined
-                  : { transformStyle: "preserve-3d" as const }
-              }
             >
               <Image
                 src={item.src}

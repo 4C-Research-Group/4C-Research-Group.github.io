@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Playfair_Display } from "next/font/google";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import {
   Brain,
@@ -37,7 +37,6 @@ import {
   HeroLogoGlow,
 } from "@/components/HeroGradientBackdrop";
 import { HeroLabSnapshots } from "@/components/HeroLabSnapshots";
-import { Hero3DHeroColumn } from "@/components/home/Hero3DHeroColumn";
 import { siteAsset } from "@/lib/site-path";
 
 const heroTitleFont = Playfair_Display({
@@ -220,11 +219,9 @@ export default function HomeMain({
   home: HomepagePayload;
   featuredProjects: Project[];
 }) {
-  const heroReduceMotion = useReducedMotion();
-
   return (
     <div className="min-h-screen bg-background">
-      <section className="relative isolate flex min-h-[calc(100dvh-3.5rem)] flex-col justify-center overflow-x-hidden border-b border-border/50 bg-linear-to-br from-slate-50 via-background to-brand-light/40">
+      <section className="relative isolate flex min-h-[calc(100dvh-3.5rem)] flex-col justify-center overflow-hidden border-b border-border/50 bg-linear-to-br from-slate-50 via-background to-brand-light/40">
         <HeroGradientBackdrop />
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
@@ -321,38 +318,18 @@ export default function HomeMain({
               className="relative z-[1] flex min-w-0 flex-col items-center justify-center gap-6 lg:col-span-5"
             >
               <div className="flex max-w-[min(100%,28rem)] flex-col items-center text-center sm:max-w-[30rem]">
-                <Hero3DHeroColumn>
-                  <HeroLogoGlow>
-                    <motion.div
-                      className="transform-gpu [transform-style:preserve-3d]"
-                      animate={
-                        heroReduceMotion
-                          ? undefined
-                          : {
-                              rotateX: [2.5, -2.5, 2.5],
-                              rotateY: [-3.5, 3.5, -3.5],
-                              translateZ: [0, 6, 0],
-                            }
-                      }
-                      transition={{
-                        duration: 16,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    >
-                      <Image
-                        src={publicImageSrc(home.hero.heroLogoSrc)}
-                        alt="4C Research Group logo"
-                        width={400}
-                        height={400}
-                        loading="eager"
-                        className="h-72 w-72 rounded-2xl object-cover shadow-lg ring-1 ring-black/5 sm:h-80 sm:w-80 lg:h-96 lg:w-96"
-                        priority
-                      />
-                    </motion.div>
-                  </HeroLogoGlow>
-                  <HeroLabSnapshots items={home.heroSnapshots} />
-                </Hero3DHeroColumn>
+                <HeroLogoGlow>
+                  <Image
+                    src={publicImageSrc(home.hero.heroLogoSrc)}
+                    alt="4C Research Group logo"
+                    width={400}
+                    height={400}
+                    loading="eager"
+                    className="h-72 w-72 rounded-2xl object-cover shadow-lg ring-1 ring-black/5 sm:h-80 sm:w-80 lg:h-96 lg:w-96"
+                    priority
+                  />
+                </HeroLogoGlow>
+                <HeroLabSnapshots items={home.heroSnapshots} />
               </div>
             </motion.div>
           </div>

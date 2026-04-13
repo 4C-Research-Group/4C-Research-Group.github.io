@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   Calendar,
@@ -24,6 +24,10 @@ import {
 import { blogPostHref } from "@/lib/blog/blog-post-href";
 
 export default function BlogPage() {
+  const reduceMotion = useReducedMotion();
+  const spring = [0.22, 1, 0.36, 1] as const;
+  const fadeUp = reduceMotion ? undefined : { opacity: 0, y: 16 };
+
   const { ready: authReady, role } = useAuthProfile();
   const showAdmin = authReady && canAccessAdmin(role);
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -90,56 +94,136 @@ export default function BlogPage() {
     return filtered.filter((p) => !ids.has(p.id));
   }, [filtered, featuredVisible]);
 
+  const featuredTotal = useMemo(
+    () => posts.filter((p) => p.featured).length,
+    [posts],
+  );
+  const categoryCount = useMemo(
+    () => Math.max(0, categories.length - 1),
+    [categories],
+  );
+
   const renderHero = () => (
-    <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/30">
-      <div className="absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom_right,white,transparent,white)]" />
-      <div className="container relative mx-auto px-4 py-16 sm:px-6 lg:py-24">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mx-auto max-w-4xl text-center"
-        >
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
-            <Newspaper className="h-4 w-4" />
-            Research Updates
-          </div>
-          <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            Blog
-            <span className="block text-3xl font-semibold text-muted-foreground sm:text-4xl lg:text-5xl">
-              Research updates, lab news, and perspectives from the 4C Research
-              Group
-            </span>
-          </h1>
-          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-            Stay informed about our latest research findings, team achievements,
-            and insights into pediatric critical care and neuroscience.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4 text-sm">
-            <div className="flex items-center gap-2 rounded-lg bg-cognition/10 px-4 py-2 text-cognition">
-              <Sparkles className="h-4 w-4" />
-              Featured Articles
+    <section className="relative overflow-hidden border-b border-border/40 bg-linear-to-b from-slate-50/95 via-background to-background">
+      <div
+        className="pointer-events-none absolute inset-0 bg-grid-black/5 mask-[linear-gradient(180deg,white,transparent_80%)]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute -right-24 top-0 h-[26rem] w-[26rem] rounded-full bg-brand/12 blur-3xl"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute -left-16 bottom-0 h-72 w-72 rounded-full bg-cognition/10 blur-3xl"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute left-1/2 top-1/3 h-56 w-56 -translate-x-1/2 rounded-full bg-care/8 blur-3xl"
+        aria-hidden
+      />
+
+      <div className="container relative mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:py-24">
+        <div className="grid items-center gap-12 lg:grid-cols-[1fr_minmax(280px,400px)] lg:gap-14">
+          <motion.div
+            initial={fadeUp}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: reduceMotion ? 0 : 0.5,
+              ease: spring,
+            }}
+            className="text-center lg:text-left"
+          >
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand sm:text-[13px]">
+              <Newspaper className="h-3.5 w-3.5 shrink-0" aria-hidden />
+              Research Updates
             </div>
-            <div className="flex items-center gap-2 rounded-lg bg-consciousness/10 px-4 py-2 text-consciousness">
-              <Tag className="h-4 w-4" />
-              Categorized Topics
+            <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-[3.25rem] lg:leading-[1.08]">
+              <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+                Blog
+              </span>
+              <span className="mt-3 block text-2xl font-semibold leading-snug tracking-tight text-muted-foreground sm:text-3xl lg:text-[1.65rem]">
+                Research updates, lab news, and perspectives from the 4C
+                Research Group
+              </span>
+            </h1>
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
+              Stay informed about our latest research findings, team
+              achievements, and insights into pediatric critical care and
+              neuroscience.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-2 lg:justify-start">
+              <span className="inline-flex items-center gap-2 rounded-xl border border-cognition/20 bg-cognition/5 px-3 py-2 text-xs font-medium text-cognition sm:text-sm">
+                <Sparkles className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                Featured Articles
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-xl border border-consciousness/20 bg-consciousness/5 px-3 py-2 text-xs font-medium text-consciousness sm:text-sm">
+                <Tag className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                Categorized Topics
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-xl border border-care/20 bg-care/5 px-3 py-2 text-xs font-medium text-care sm:text-sm">
+                <Calendar className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                Regular Updates
+              </span>
             </div>
-            <div className="flex items-center gap-2 rounded-lg bg-care/10 px-4 py-2 text-care">
-              <Calendar className="h-4 w-4" />
-              Regular Updates
+            {showAdmin ? (
+              <div className="mt-8 flex justify-center lg:justify-start">
+                <Link
+                  href="/admin/blog/"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-brand/25 bg-brand/10 px-5 py-2.5 text-sm font-semibold text-brand transition hover:border-brand/40 hover:bg-brand/15"
+                >
+                  Manage posts
+                </Link>
+              </div>
+            ) : null}
+          </motion.div>
+
+          <motion.div
+            initial={fadeUp}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: reduceMotion ? 0 : 0.55,
+              delay: reduceMotion ? 0 : 0.06,
+              ease: spring,
+            }}
+            className="relative mx-auto w-full max-w-md lg:mx-0"
+          >
+            <div
+              className="absolute -inset-1 rounded-[1.35rem] bg-linear-to-br from-cognition/15 via-brand/12 to-care/15 opacity-90 blur-sm"
+              aria-hidden
+            />
+            <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-card/90 p-6 shadow-lg ring-1 ring-black/[0.04] backdrop-blur-md sm:p-7">
+              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-brand/12 text-brand">
+                <Newspaper className="h-5 w-5" aria-hidden />
+              </div>
+              <dl className="grid grid-cols-3 gap-3 sm:gap-4">
+                <div className="rounded-2xl border border-border/50 bg-muted/20 px-3 py-3">
+                  <dt className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[11px]">
+                    Posts
+                  </dt>
+                  <dd className="mt-1 text-xl font-bold tabular-nums text-foreground sm:text-2xl">
+                    {loading ? "—" : posts.length}
+                  </dd>
+                </div>
+                <div className="rounded-2xl border border-border/50 bg-muted/20 px-3 py-3">
+                  <dt className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[11px]">
+                    Featured
+                  </dt>
+                  <dd className="mt-1 text-xl font-bold tabular-nums text-care sm:text-2xl">
+                    {loading ? "—" : featuredTotal}
+                  </dd>
+                </div>
+                <div className="rounded-2xl border border-border/50 bg-muted/20 px-3 py-3">
+                  <dt className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[11px]">
+                    Topics
+                  </dt>
+                  <dd className="mt-1 text-xl font-bold tabular-nums text-cognition sm:text-2xl">
+                    {loading ? "—" : categoryCount}
+                  </dd>
+                </div>
+              </dl>
             </div>
-          </div>
-          {showAdmin ? (
-            <div className="mt-8">
-              <Link
-                href="/admin/blog/"
-                className="inline-flex items-center gap-2 rounded-full border border-brand/30 bg-brand/10 px-4 py-2 text-sm font-medium text-brand hover:bg-brand/15"
-              >
-                Manage posts
-              </Link>
-            </div>
-          ) : null}
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -150,12 +234,19 @@ export default function BlogPage() {
 
       <div className="container mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
         {loading ? (
-          <div className="flex min-h-[min(60dvh,28rem)] items-center justify-center py-16 text-muted-foreground">
-            <Loader2 className="h-10 w-10 animate-spin text-brand" aria-hidden />
+          <div className="flex min-h-[min(60dvh,28rem)] flex-col items-center justify-center gap-3 py-16 text-muted-foreground">
+            <Loader2
+              className="h-9 w-9 animate-spin text-brand"
+              aria-hidden
+            />
+            <p className="text-sm">Loading posts…</p>
           </div>
         ) : posts.length === 0 ? (
-          <div className="mx-auto max-w-lg rounded-2xl border border-border/80 bg-card p-8 text-center shadow-sm">
-            <Newspaper className="mx-auto h-12 w-12 text-muted-foreground/60" />
+          <div className="mx-auto max-w-lg rounded-3xl border border-dashed border-border/80 bg-muted/15 p-10 text-center">
+            <Newspaper
+              className="mx-auto h-12 w-12 text-muted-foreground/60"
+              aria-hidden
+            />
             <h2 className="mt-4 text-lg font-semibold text-foreground">
               No posts yet
             </h2>
@@ -175,27 +266,37 @@ export default function BlogPage() {
           <>
             {featuredVisible.length > 0 ? (
               <section className="mb-14">
-                <div className="mb-6 flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-brand" />
-                  <h2 className="text-lg font-bold tracking-tight text-foreground">
-                    Featured
-                  </h2>
+                <div className="mb-8 flex flex-col items-center gap-2 lg:items-start">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-brand" aria-hidden />
+                    <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                      Featured
+                    </h2>
+                  </div>
+                  <div className="h-1 w-20 rounded-full bg-linear-to-r from-cognition via-consciousness to-care" />
                 </div>
-                <div className="grid gap-6 md:grid-cols-3">
+                <div className="grid gap-6 md:grid-cols-3 md:gap-7">
                   {featuredVisible.map((post, i) => (
                     <motion.article
                       key={post.id}
-                      initial={{ opacity: 0, y: 12 }}
+                      initial={reduceMotion ? false : { opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.08 }}
-                      className="group overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm transition hover:border-brand/25 hover:shadow-md"
+                      transition={{
+                        duration: reduceMotion ? 0 : 0.4,
+                        delay: reduceMotion ? 0 : i * 0.06,
+                        ease: spring,
+                      }}
+                      className="group overflow-hidden rounded-3xl border border-border/70 bg-card/95 shadow-sm ring-1 ring-black/[0.03] transition duration-300 hover:-translate-y-0.5 hover:border-brand/25 hover:shadow-xl"
                     >
-                      <Link href={blogPostHref(post.slug)} className="block">
+                      <Link
+                        href={blogPostHref(post.slug)}
+                        className="block rounded-3xl outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      >
                         <div className="relative aspect-[16/10] bg-muted">
                           {post.image_url ? (
                             <Image
                               src={post.image_url}
-                              alt=""
+                              alt={post.title}
                               fill
                               className="object-cover transition duration-500 group-hover:scale-[1.03]"
                               sizes="(max-width:768px) 100vw, 33vw"
@@ -225,76 +326,98 @@ export default function BlogPage() {
               </section>
             ) : null}
 
-            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
-              <div className="relative max-w-md flex-1">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="search"
-                  placeholder="Search title, excerpt, tags…"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full rounded-xl border border-border bg-background py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
-                />
+            <motion.div
+              initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: reduceMotion ? 0 : 0.4, ease: spring }}
+              className="mb-10 overflow-hidden rounded-3xl border border-border/60 bg-card/80 p-5 shadow-sm ring-1 ring-black/[0.03] backdrop-blur-sm sm:p-6"
+            >
+              <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+                <div className="relative min-w-0 flex-1 sm:max-w-md">
+                  <Search
+                    className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                    aria-hidden
+                  />
+                  <input
+                    type="search"
+                    placeholder="Search title, excerpt, or tags…"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full rounded-2xl border border-border/80 bg-background/90 py-3 pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground/80 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                    aria-label="Search blog posts"
+                  />
+                </div>
+                <div className="shrink-0">
+                  <label htmlFor="blog-sort" className="sr-only">
+                    Sort posts
+                  </label>
+                  <select
+                    id="blog-sort"
+                    value={sort}
+                    onChange={(e) =>
+                      setSort(e.target.value as "newest" | "oldest" | "title")
+                    }
+                    className="w-full rounded-2xl border border-border/80 bg-background/90 px-4 py-3 text-sm font-medium text-foreground sm:w-auto"
+                  >
+                    <option value="newest">Newest first</option>
+                    <option value="oldest">Oldest first</option>
+                    <option value="title">Title A–Z</option>
+                  </select>
+                </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                <select
-                  value={sort}
-                  onChange={(e) =>
-                    setSort(e.target.value as "newest" | "oldest" | "title")
-                  }
-                  className="rounded-xl border border-border bg-background px-3 py-2 text-sm"
-                >
-                  <option value="newest">Newest</option>
-                  <option value="oldest">Oldest</option>
-                  <option value="title">Title A–Z</option>
-                </select>
+                {categories.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setCategory(c)}
+                    className={`rounded-full border px-3.5 py-2 text-xs font-semibold transition sm:text-sm ${
+                      category === c
+                        ? "border-brand/30 bg-brand text-primary-foreground shadow-md shadow-brand/15"
+                        : "border-border/80 bg-background/80 text-muted-foreground hover:border-brand/25 hover:bg-muted/60 hover:text-foreground"
+                    }`}
+                  >
+                    {c === "all" ? "All" : c}
+                  </button>
+                ))}
               </div>
-            </div>
+              <div className="mt-6 border-t border-border/50 pt-5 text-sm text-muted-foreground">
+                Showing{" "}
+                <span className="font-semibold text-foreground">
+                  {gridPosts.length}
+                </span>{" "}
+                {gridPosts.length === 1 ? "post" : "posts"}
+                {featuredVisible.length > 0 ? (
+                  <span className="text-muted-foreground/80">
+                    {" "}
+                    (featured above)
+                  </span>
+                ) : null}
+              </div>
+            </motion.div>
 
-            <div className="mb-8 flex flex-wrap gap-2">
-              {categories.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => setCategory(c)}
-                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
-                    category === c
-                      ? "bg-brand text-primary-foreground"
-                      : "border border-border bg-muted/50 text-muted-foreground hover:border-brand/30"
-                  }`}
-                >
-                  {c === "all" ? "All categories" : c}
-                </button>
-              ))}
-            </div>
-
-            <p className="mb-6 text-sm text-muted-foreground">
-              Showing{" "}
-              <span className="font-medium text-foreground">
-                {gridPosts.length}
-              </span>{" "}
-              {gridPosts.length === 1 ? "post" : "posts"}
-              {featuredVisible.length > 0 ? " (featured above)" : ""}
-            </p>
-
-            <div className="grid gap-6 sm:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2 sm:gap-7">
               {gridPosts.map((post, i) => (
                 <motion.article
                   key={post.id}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={reduceMotion ? false : { opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: Math.min(i * 0.04, 0.4) }}
-                  className="flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm transition hover:border-brand/20 hover:shadow-md"
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.38,
+                    delay: reduceMotion ? 0 : Math.min(i * 0.04, 0.35),
+                    ease: spring,
+                  }}
+                  className="flex flex-col overflow-hidden rounded-3xl border border-border/70 bg-card/95 shadow-sm ring-1 ring-black/[0.03] transition duration-300 hover:-translate-y-0.5 hover:border-brand/25 hover:shadow-xl"
                 >
                   <Link
                     href={blogPostHref(post.slug)}
-                    className="flex flex-1 flex-col"
+                    className="flex flex-1 flex-col outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
                     <div className="relative aspect-[16/9] shrink-0 bg-muted">
                       {post.image_url ? (
                         <Image
                           src={post.image_url}
-                          alt=""
+                          alt={post.title}
                           fill
                           className="object-cover"
                           sizes="(max-width:640px) 100vw, 50vw"
@@ -350,9 +473,21 @@ export default function BlogPage() {
             </div>
 
             {gridPosts.length === 0 ? (
-              <p className="py-12 text-center text-muted-foreground">
-                No posts match your filters.
-              </p>
+              <div className="rounded-3xl border border-dashed border-border/80 bg-muted/15 py-14 text-center">
+                <p className="text-sm text-muted-foreground">
+                  No posts match your filters.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearch("");
+                    setCategory("all");
+                  }}
+                  className="mt-4 text-sm font-semibold text-brand transition hover:text-brand-deep"
+                >
+                  Clear search & categories
+                </button>
+              </div>
             ) : null}
           </>
         )}

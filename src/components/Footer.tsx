@@ -27,10 +27,10 @@ export default function Footer() {
 
   /** Light footer: soft slate base with brand-tinted mesh (always reads as light). */
   const linkClass =
-    "text-[13px] font-medium uppercase tracking-wide text-slate-600 transition-colors hover:text-brand";
+    "text-[13px] font-medium tracking-tight text-slate-600 transition-colors hover:text-brand";
 
   const sectionTitleClass =
-    "mb-4 text-sm font-semibold uppercase tracking-wide text-slate-900";
+    "mb-4 text-sm font-semibold tracking-tight text-slate-900";
 
   const brandMeshStyle: CSSProperties = {
     backgroundImage: [

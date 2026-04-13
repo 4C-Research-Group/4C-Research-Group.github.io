@@ -7,6 +7,7 @@ import {
   useSpring,
 } from "framer-motion";
 import { useRef, type ReactNode } from "react";
+import { HeroGlassGlitterFrame } from "@/components/home/HeroGlassGlitterFrame";
 
 const SPRING = { stiffness: 90, damping: 22, mass: 0.75 };
 
@@ -43,7 +44,7 @@ export function Hero3DHeroColumn({ children }: Props) {
   if (reduceMotion) {
     return (
       <div className="relative flex min-w-0 flex-col items-center justify-center">
-        {children}
+        <HeroGlassGlitterFrame>{children}</HeroGlassGlitterFrame>
       </div>
     );
   }
@@ -116,7 +117,7 @@ export function Hero3DHeroColumn({ children }: Props) {
           rotateY: springY,
         }}
       >
-        {children}
+        <HeroGlassGlitterFrame>{children}</HeroGlassGlitterFrame>
       </motion.div>
     </div>
   );

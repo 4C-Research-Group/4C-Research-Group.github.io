@@ -157,6 +157,107 @@ body {
   text-underline-offset: 2px;
 }
 
+/* Home hero: glass panel edge + slow shimmering border (see HeroGlassGlitterFrame) */
+@property --hero-glass-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes hero-glass-shimmer {
+  to {
+    --hero-glass-angle: 360deg;
+  }
+}
+
+@keyframes hero-glitter-twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: translate(-50%, -50%) scale(0.45);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.hero-glass-frame {
+  border: 2px solid transparent;
+  border-radius: 2.65rem;
+  background:
+    linear-gradient(
+        140deg,
+        rgba(255, 255, 255, 0.26) 0%,
+        rgba(255, 255, 255, 0.05) 42%,
+        rgba(255, 255, 255, 0.14) 100%
+      )
+      padding-box,
+    conic-gradient(
+        from var(--hero-glass-angle),
+        transparent 0deg,
+        rgba(255, 255, 255, 0.42) 52deg,
+        transparent 100deg,
+        rgba(56, 189, 248, 0.38) 148deg,
+        transparent 198deg,
+        rgba(196, 181, 253, 0.4) 252deg,
+        transparent 308deg,
+        transparent 360deg
+      )
+      border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    0 6px 28px rgba(15, 23, 42, 0.07);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.dark .hero-glass-frame {
+  background:
+    linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.02) 50%,
+        rgba(255, 255, 255, 0.08) 100%
+      )
+      padding-box,
+    conic-gradient(
+        from var(--hero-glass-angle),
+        transparent 0deg,
+        rgba(255, 255, 255, 0.28) 55deg,
+        transparent 105deg,
+        rgba(56, 189, 248, 0.32) 155deg,
+        transparent 205deg,
+        rgba(196, 181, 253, 0.3) 265deg,
+        transparent 320deg,
+        transparent 360deg
+      )
+      border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.hero-glass-frame-motion {
+  animation: hero-glass-shimmer 14s linear infinite;
+}
+
+.hero-glitter-speck {
+  animation: hero-glitter-twinkle 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glass-frame-motion {
+    animation: none;
+  }
+
+  .hero-glitter-speck {
+    animation: none;
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(0.85);
+  }
+}
+
 .blog-editor-prose hr {
   margin: 1rem 0;
   border: 0;

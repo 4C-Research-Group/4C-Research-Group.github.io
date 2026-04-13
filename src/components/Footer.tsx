@@ -1,232 +1,255 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, Phone, MapPin, Twitter, Linkedin, Github } from "lucide-react";
+import {
+  ArrowUpRight,
+  Mail,
+  MapPin,
+  Phone,
+  Twitter,
+  Linkedin,
+  Github,
+} from "lucide-react";
 import { FaResearchgate } from "react-icons/fa";
+
+const navItems = [
+  { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "About PI", href: "/about-pi" },
+  { name: "Research", href: "/research" },
+  { name: "Projects", href: "/projects" },
+  { name: "Team", href: "/team" },
+  { name: "Publications", href: "/publications" },
+  { name: "Gallery", href: "/gallery" },
+  { name: "Blog", href: "/blog" },
+  { name: "Join 4C Lab", href: "/join-4c-lab" },
+  { name: "Contact", href: "/contact" },
+  { name: "Collaborate", href: "/collaborate" },
+  { name: "Knowledge Mobilization", href: "/knowledge-mobilization" },
+] as const;
+
+const socials = [
+  {
+    href: "https://x.com/Mission_FourC",
+    label: "Twitter",
+    Icon: Twitter,
+  },
+  {
+    href: "https://linkedin.com",
+    label: "LinkedIn",
+    Icon: Linkedin,
+  },
+  {
+    href: "https://github.com",
+    label: "GitHub",
+    Icon: Github,
+  },
+  {
+    href: "https://www.researchgate.net/lab/4C-Foresee-Research-Group-Cognition-Consciousness-Critical-Care-Saptharishi-Lalgudi-Ganesan",
+    label: "ResearchGate",
+    Icon: FaResearchgate,
+  },
+] as const;
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
-  const navItems = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "About PI", href: "/about-pi" },
-    { name: "Research", href: "/research" },
-    { name: "Projects", href: "/projects" },
-    { name: "Team", href: "/team" },
-    { name: "Publications", href: "/publications" },
-    { name: "Gallery", href: "/gallery" },
-    { name: "Blog", href: "/blog" },
-    { name: "Join 4C Lab", href: "/join-4c-lab" },
-    { name: "Contact", href: "/contact" },
-    { name: "Collaborate", href: "/collaborate" },
-    { name: "Knowledge Mobilization", href: "/knowledge-mobilization" },
-  ];
-
-  /** Light footer: soft slate base with brand-tinted mesh (always reads as light). */
-  const linkClass =
-    "text-[13px] font-medium tracking-tight text-slate-600 transition-colors hover:text-brand";
-
-  const sectionTitleClass =
-    "mb-4 text-sm font-semibold tracking-tight text-slate-900";
-
-  const brandMeshStyle: CSSProperties = {
-    backgroundImage: [
-      "radial-gradient(ellipse 110% 90% at 0% 100%, color-mix(in srgb, var(--cognition) 20%, transparent), transparent 55%)",
-      "radial-gradient(ellipse 100% 80% at 100% 0%, color-mix(in srgb, var(--consciousness) 18%, transparent), transparent 52%)",
-      "radial-gradient(ellipse 85% 65% at 50% 100%, color-mix(in srgb, var(--care) 16%, transparent), transparent 50%)",
-      "radial-gradient(ellipse 60% 50% at 40% 20%, color-mix(in srgb, var(--brand-default) 12%, transparent), transparent 60%)",
-    ].join(", "),
-    opacity: 1,
-  };
-
   return (
-    <footer className="relative overflow-hidden border-t border-slate-200/90 bg-white text-slate-800">
+    <footer className="relative mt-auto overflow-hidden border-t border-border/60 bg-background">
       <div
-        className="pointer-events-none absolute inset-0 bg-linear-to-b from-slate-50 via-white to-slate-50"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-brand/70 to-transparent"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute inset-0"
-        style={brandMeshStyle}
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-muted/50 via-transparent to-muted/30"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-linear-to-b from-white/40 via-transparent to-slate-100/30"
+        className="pointer-events-none absolute inset-0 opacity-[0.4] mask-[linear-gradient(180deg,black,transparent_75%)] bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-size-[48px_48px]"
         aria-hidden
       />
-      <div className="relative z-10 mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-12 lg:grid-cols-4">
-          {/* Branding — matches Navbar lockup */}
-          <div className="space-y-4">
+      <div
+        className="pointer-events-none absolute -top-24 left-1/4 h-72 w-72 rounded-full bg-cognition/10 blur-3xl"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute -bottom-16 right-0 h-80 w-80 rounded-full bg-consciousness/8 blur-3xl"
+        aria-hidden
+      />
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-10 xl:gap-14">
+          {/* Brand */}
+          <div className="space-y-6 lg:col-span-4">
             <Link
               href="/"
-              className="group inline-flex items-center gap-2.5 sm:gap-3"
+              className="group inline-flex items-center gap-3 rounded-2xl outline-none ring-offset-background transition hover:opacity-95 focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2"
             >
-              <Image
-                src="/logo.png"
-                alt="4C Research Group logo"
-                loading="eager"
-                width={40}
-                height={40}
-                className="h-9 w-9 shrink-0 rounded-lg object-cover ring-1 ring-slate-200/90 sm:h-10 sm:w-10"
-              />
-              <div className="min-w-max shrink-0 text-left">
-                <span className="block whitespace-nowrap text-[15px] font-semibold uppercase tracking-tight sm:text-base">
+              <span className="relative">
+                <span className="absolute -inset-1 rounded-2xl bg-linear-to-br from-cognition/20 via-brand/15 to-care/20 opacity-0 blur-md transition group-hover:opacity-100" />
+                <Image
+                  src="/logo.png"
+                  alt="4C Research Group logo"
+                  loading="eager"
+                  width={44}
+                  height={44}
+                  className="relative h-11 w-11 shrink-0 rounded-xl object-cover shadow-sm ring-1 ring-border/80"
+                />
+              </span>
+              <div className="min-w-0 text-left">
+                <span className="block text-base font-semibold uppercase tracking-tight">
                   <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
                     4C Research
                   </span>
                 </span>
-                <span className="mt-0.5 block whitespace-nowrap text-[9px] font-medium uppercase leading-snug tracking-wider sm:text-[10px]">
-                  <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
-                    Cognition · Consciousness · Critical Care
-                  </span>
+                <span className="mt-0.5 block text-[10px] font-semibold uppercase leading-snug tracking-widest text-muted-foreground/90">
+                  Cognition · Consciousness · Critical Care
                 </span>
               </div>
             </Link>
-            <p className="max-w-sm text-sm leading-relaxed text-slate-600">
+            <p className="max-w-sm text-pretty text-sm leading-relaxed text-muted-foreground">
               Advancing research in cognition, consciousness, and critical care
-              through innovative science and collaboration.
+              through rigorous science and open collaboration.
             </p>
-            <div className="flex gap-3 pt-1">
-              <a
-                href="https://x.com/Mission_FourC"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-200/70 hover:text-brand"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-4 w-4" />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-200/70 hover:text-brand"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-4 w-4" />
-              </a>
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-200/70 hover:text-brand"
-                aria-label="GitHub"
-              >
-                <Github className="h-4 w-4" />
-              </a>
-              <a
-                href="https://www.researchgate.net/lab/4C-Foresee-Research-Group-Cognition-Consciousness-Critical-Care-Saptharishi-Lalgudi-Ganesan"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-200/70 hover:text-brand"
-                aria-label="ResearchGate"
-              >
-                <FaResearchgate className="h-4 w-4" aria-hidden />
-              </a>
+            <div className="flex flex-wrap gap-2">
+              {socials.map(({ href, label, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border/80 bg-card/60 text-muted-foreground shadow-sm backdrop-blur-sm transition hover:border-brand/35 hover:bg-brand/[0.06] hover:text-brand"
+                  aria-label={label}
+                >
+                  <Icon
+                    className={
+                      label === "ResearchGate"
+                        ? "h-[18px] w-[18px]"
+                        : "h-4 w-4"
+                    }
+                    aria-hidden
+                  />
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className={sectionTitleClass}>Quick links</h3>
-            <ul className="space-y-2.5">
-              {navItems.slice(0, 7).map((item) => (
-                <li key={item.name}>
-                  <Link href={item.href} className={linkClass}>
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className={sectionTitleClass}>More</h3>
-            <ul className="space-y-2.5">
-              {navItems.slice(7).map((item) => (
-                <li key={item.name}>
-                  <Link href={item.href} className={linkClass}>
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          {/* Site links */}
+          <div className="lg:col-span-5">
+            <div className="mb-5 flex items-center gap-3">
+              <span className="h-px flex-1 max-w-8 bg-linear-to-r from-brand/50 to-transparent" />
+              <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                Explore
+              </h2>
+            </div>
+            <nav aria-label="Footer">
+              <ul className="grid grid-cols-2 gap-x-6 gap-y-1 sm:grid-cols-3 sm:gap-y-0.5">
+                {navItems.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className="group flex items-center gap-0.5 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
+                    >
+                      <span className="relative">
+                        {item.name}
+                        <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-linear-to-r from-brand to-care transition-all duration-300 group-hover:w-full" />
+                      </span>
+                      <ArrowUpRight
+                        className="h-3 w-3 shrink-0 opacity-0 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100"
+                        aria-hidden
+                      />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
 
           {/* Contact */}
-          <div>
-            <h3 className={sectionTitleClass}>Contact</h3>
-            <address className="not-italic space-y-3">
-              <div className="flex gap-3">
-                <MapPin
-                  className="mt-0.5 h-4 w-4 shrink-0 text-cognition"
-                  aria-hidden
-                />
-                <span className="text-sm leading-relaxed text-slate-600">
-                  800 Commissioners Rd E
-                  <br />
-                  London, ON N6A 5W9
-                  <br />
-                  Canada
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Mail
-                  className="h-4 w-4 shrink-0 text-consciousness"
-                  aria-hidden
-                />
-                <a
-                  href="mailto:rishi.ganesan@lhsc.on.ca"
-                  className="text-sm text-slate-600 transition-colors hover:text-brand"
-                >
-                  rishi.ganesan@lhsc.on.ca
-                </a>
-              </div>
-              <div className="flex items-center gap-3">
-                <Phone
-                  className="h-4 w-4 shrink-0 text-care"
-                  aria-hidden
-                />
-                <a
-                  href="tel:+15196858000"
-                  className="text-sm text-slate-600 transition-colors hover:text-brand"
-                >
-                  +1 (519) 685-8500 Ext. 74702
-                </a>
-              </div>
-            </address>
+          <div className="lg:col-span-3">
+            <div className="mb-5 flex items-center gap-3 lg:justify-end">
+              <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground lg:order-2">
+                Contact
+              </h2>
+              <span className="h-px flex-1 bg-linear-to-l from-care/40 to-transparent lg:order-1 lg:max-w-12" />
+            </div>
+            <div className="rounded-2xl border border-border/70 bg-card/70 p-5 shadow-sm ring-1 ring-black/[0.03] backdrop-blur-md">
+              <address className="not-italic space-y-4">
+                <div className="flex gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-cognition/10 text-cognition">
+                    <MapPin className="h-4 w-4" aria-hidden />
+                  </span>
+                  <span className="text-sm leading-relaxed text-muted-foreground">
+                    800 Commissioners Rd E
+                    <br />
+                    London, ON N6A 5W9
+                    <br />
+                    Canada
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-consciousness/10 text-consciousness">
+                    <Mail className="h-4 w-4" aria-hidden />
+                  </span>
+                  <a
+                    href="mailto:rishi.ganesan@lhsc.on.ca"
+                    className="text-sm font-medium text-foreground/90 underline decoration-border underline-offset-4 transition hover:text-brand hover:decoration-brand/40"
+                  >
+                    rishi.ganesan@lhsc.on.ca
+                  </a>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-care/10 text-care">
+                    <Phone className="h-4 w-4" aria-hidden />
+                  </span>
+                  <a
+                    href="tel:+15196858000"
+                    className="text-sm font-medium text-foreground/90 underline decoration-border underline-offset-4 transition hover:text-brand hover:decoration-brand/40"
+                  >
+                    +1 (519) 685-8500 Ext. 74702
+                  </a>
+                </div>
+              </address>
+              <Link
+                href="/contact"
+                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border/80 bg-background/80 py-2.5 text-sm font-semibold text-foreground transition hover:border-brand/30 hover:bg-brand/[0.06] hover:text-brand"
+              >
+                Message the lab
+                <ArrowUpRight className="h-4 w-4" aria-hidden />
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Copyright */}
-        <div className="mt-12 border-t border-slate-200/90 pt-8">
-          <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:items-center">
-            <p className="text-center text-xs text-slate-500 sm:text-left sm:text-[13px]">
-              © {currentYear}{" "}
-              <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text font-medium uppercase tracking-wide text-transparent">
-                4C Research Group
-              </span>
-              . All rights reserved.
-            </p>
-            <nav
-              className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 md:justify-end"
-              aria-label="Legal"
-            >
-              <Link href="/privacy-policy" className={linkClass}>
-                Privacy Policy
+        <div className="mt-14 flex flex-col items-center justify-between gap-6 border-t border-border/50 pt-8 sm:flex-row sm:gap-4">
+          <p className="text-center text-xs text-muted-foreground sm:text-left sm:text-sm">
+            © {currentYear}{" "}
+            <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text font-semibold uppercase tracking-wide text-transparent">
+              4C Research Group
+            </span>
+            <span className="text-muted-foreground">. All rights reserved.</span>
+          </p>
+          <nav
+            className="flex flex-wrap items-center justify-center gap-2 sm:justify-end"
+            aria-label="Legal"
+          >
+            {(
+              [
+                ["Privacy Policy", "/privacy-policy"],
+                ["Terms of Service", "/terms-of-service"],
+                ["Accessibility", "/accessibility"],
+              ] as const
+            ).map(([label, href]) => (
+              <Link
+                key={href}
+                href={href}
+                className="rounded-full border border-transparent px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:border-border hover:bg-muted/50 hover:text-foreground sm:text-sm"
+              >
+                {label}
               </Link>
-              <Link href="/terms-of-service" className={linkClass}>
-                Terms of Service
-              </Link>
-              <Link href="/accessibility" className={linkClass}>
-                Accessibility
-              </Link>
-            </nav>
-          </div>
+            ))}
+          </nav>
         </div>
       </div>
     </footer>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   Calendar,
   Users,
@@ -17,6 +17,8 @@ import {
   Target,
   FileText,
   Share2,
+  Link2,
+  Check,
 } from "lucide-react";
 import { type Project } from "@/data/projectsData";
 import { fetchProjectBySlugFromSupabase } from "@/lib/projects/supabase-projects";
@@ -28,10 +30,11 @@ const categoryIcons = {
   Registry: BookOpen,
 };
 
-const statusColors = {
-  active: "bg-green-100 text-green-800 border-green-200",
-  completed: "bg-blue-100 text-blue-800 border-blue-200",
-  upcoming: "bg-yellow-100 text-yellow-800 border-yellow-200",
+const statusStyles: Record<Project["status"], string> = {
+  active: "border-care/35 bg-care/10 text-care",
+  completed: "border-cognition/35 bg-cognition/15 text-cognition",
+  upcoming:
+    "border-amber-500/40 bg-amber-500/10 text-amber-900 dark:text-amber-100",
 };
 
 interface ProjectClientProps {
@@ -40,6 +43,10 @@ interface ProjectClientProps {
 
 export default function ProjectClient({ initialProject }: ProjectClientProps) {
   const [project, setProject] = useState(initialProject);
+  const [copied, setCopied] = useState(false);
+  const reduceMotion = useReducedMotion();
+  const spring = [0.22, 1, 0.36, 1] as const;
+  const fadeUp = reduceMotion ? undefined : { opacity: 0, y: 16 };
 
   useEffect(() => {
     setProject(initialProject);
@@ -59,66 +66,138 @@ export default function ProjectClient({ initialProject }: ProjectClientProps) {
   const CategoryIcon =
     categoryIcons[project.category as keyof typeof categoryIcons] || Brain;
 
+  const yearRange = `${new Date(project.startDate).getFullYear()} – ${
+    project.endDate
+      ? new Date(project.endDate).getFullYear()
+      : "Present"
+  }`;
+
+  const teamCount = project.teamMembers?.length ?? 0;
+
+  async function copyPageUrl() {
+    if (typeof window === "undefined") return;
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  }
+
+  const heroImage = project.images[0] || "/images/placeholder.jpg";
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="relative h-96 overflow-hidden">
-        <Image
-          src={project.images[0] || "/images/placeholder.jpg"}
-          alt={project.title}
-          fill
-          className="object-cover"
+      <section className="relative overflow-hidden border-b border-border/40 bg-linear-to-b from-slate-50/95 via-background to-background">
+        <div
+          className="pointer-events-none absolute inset-0 bg-grid-black/5 mask-[linear-gradient(180deg,white,transparent_80%)]"
+          aria-hidden
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+        <div
+          className="pointer-events-none absolute -right-24 top-0 h-[26rem] w-[26rem] rounded-full bg-brand/12 blur-3xl"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute -left-16 bottom-0 h-72 w-72 rounded-full bg-cognition/10 blur-3xl"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute left-1/2 top-1/3 h-56 w-56 -translate-x-1/2 rounded-full bg-care/8 blur-3xl"
+          aria-hidden
+        />
 
-        <div className="absolute inset-0 flex items-start pt-24">
-          <div className="container mx-auto px-6">
+        <div className="container relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
+          <div className="grid items-start gap-10 lg:grid-cols-[1fr_minmax(280px,480px)] lg:gap-12">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={fadeUp}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="max-w-4xl"
+              transition={{
+                duration: reduceMotion ? 0 : 0.5,
+                ease: spring,
+              }}
+              className="text-center lg:text-left"
             >
               <Link
                 href="/projects/"
-                className="inline-flex items-center gap-2 text-white hover:text-white/90 mb-6 transition-colors bg-brand/80 backdrop-blur-sm px-4 py-2 rounded-lg border border-brand/60 z-10 relative hover:bg-brand/90"
+                className="mb-6 inline-flex items-center gap-2 rounded-2xl border border-border/70 bg-background/80 px-4 py-2 text-sm font-semibold text-foreground shadow-sm ring-1 ring-black/[0.04] backdrop-blur-sm transition hover:border-brand/30 hover:text-brand"
               >
-                <ArrowLeft className="w-4 h-4" />
-                Back to Projects
+                <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden />
+                Back to projects
               </Link>
 
-              <div className="flex items-center gap-4 mb-4">
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
-                  <CategoryIcon className="w-6 h-6 text-white" />
+              <div className="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
+                <div className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3 py-1.5 text-xs font-semibold text-brand sm:text-[13px]">
+                  <CategoryIcon className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                  {project.category}
                 </div>
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-semibold border ${statusColors[project.status]}`}
+                  className={`rounded-full border px-3 py-1 text-xs font-semibold capitalize sm:text-[13px] ${statusStyles[project.status]}`}
                 >
                   {project.status}
                 </span>
               </div>
 
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                {project.title}
+              <h1 className="mt-5 text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-[3.25rem] lg:leading-[1.08]">
+                <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+                  {project.title}
+                </span>
               </h1>
 
-              <p className="text-xl text-white/90 max-w-3xl">
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
                 {project.description}
               </p>
 
-              <div className="flex flex-wrap gap-6 mt-8 text-white/80">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
-                  <span>
-                    {new Date(project.startDate).getFullYear()} -{" "}
-                    {project.endDate
-                      ? new Date(project.endDate).getFullYear()
-                      : "Present"}
-                  </span>
+              <div className="mt-8 flex flex-wrap justify-center gap-2 lg:justify-start">
+                <span className="inline-flex items-center gap-2 rounded-xl border border-cognition/20 bg-cognition/5 px-3 py-2 text-xs font-medium text-cognition sm:text-sm">
+                  <Calendar className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                  {yearRange}
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-xl border border-consciousness/20 bg-consciousness/5 px-3 py-2 text-xs font-medium text-consciousness sm:text-sm">
+                  <Users className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                  {teamCount} team member{teamCount === 1 ? "" : "s"}
+                </span>
+              </div>
+
+              {project.link ? (
+                <div className="mt-8 flex justify-center lg:justify-start">
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-2xl bg-brand px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-brand-deep"
+                  >
+                    Project site
+                    <ExternalLink className="h-4 w-4 shrink-0" aria-hidden />
+                  </a>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
-                  <span>{project.teamMembers?.length || 0} Team Members</span>
+              ) : null}
+            </motion.div>
+
+            <motion.div
+              initial={fadeUp}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: reduceMotion ? 0 : 0.55,
+                delay: reduceMotion ? 0 : 0.06,
+                ease: spring,
+              }}
+              className="relative mx-auto w-full max-w-lg lg:mx-0 lg:max-w-none"
+            >
+              <div
+                className="absolute -inset-1 rounded-[1.35rem] bg-linear-to-br from-cognition/15 via-brand/12 to-care/15 opacity-90 blur-sm"
+                aria-hidden
+              />
+              <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-card shadow-lg ring-1 ring-black/[0.04]">
+                <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
+                  <Image
+                    src={heroImage}
+                    alt={project.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 480px"
+                    priority
+                  />
                 </div>
               </div>
             </motion.div>
@@ -126,292 +205,386 @@ export default function ProjectClient({ initialProject }: ProjectClientProps) {
         </div>
       </section>
 
-      <div className="container mx-auto px-6 py-16">
-        <div className="grid lg:grid-cols-3 gap-12">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-12">
-            {/* Long Description */}
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              <h2 className="text-2xl font-bold text-foreground mb-4">
-                Overview
-              </h2>
-              <div className="prose prose-lg max-w-none text-muted-foreground">
-                <p>{project.longDescription || project.description}</p>
-              </div>
-            </motion.section>
+      <div className="relative">
+        <div
+          className="pointer-events-none absolute left-[max(0px,calc(50%-40rem))] top-20 h-72 w-72 rounded-full bg-cognition/6 blur-3xl"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute right-[max(0px,calc(50%-38rem))] top-32 h-64 w-64 rounded-full bg-brand/6 blur-3xl"
+          aria-hidden
+        />
 
-            {/* Objectives */}
-            {project.objectives && project.objectives.length > 0 && (
+        <div className="container relative mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+          <div className="grid gap-10 lg:grid-cols-3 lg:gap-12">
+            <div className="space-y-10 lg:col-span-2">
               <motion.section
-                initial={{ opacity: 0, y: 20 }}
+                initial={fadeUp}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.45,
+                  ease: spring,
+                }}
+                className="rounded-3xl border border-border/60 bg-card/80 p-6 shadow-sm ring-1 ring-black/[0.03] backdrop-blur-sm sm:p-8"
               >
-                <h2 className="text-2xl font-bold text-foreground mb-4 flex items-center gap-2">
-                  <Target className="w-6 h-6 text-brand" />
-                  Objectives
+                <div className="mb-4 h-1 w-14 rounded-full bg-linear-to-r from-cognition via-brand to-care" />
+                <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                  Overview
                 </h2>
-                <ul className="space-y-3">
-                  {project.objectives.map((objective, index) => (
-                    <motion.li
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
-                      className="flex items-start gap-3"
-                    >
-                      <div className="w-2 h-2 bg-brand rounded-full mt-2 flex-shrink-0" />
-                      <span className="text-muted-foreground">{objective}</span>
-                    </motion.li>
-                  ))}
-                </ul>
+                <div className="prose prose-lg mt-4 max-w-none text-muted-foreground prose-p:leading-relaxed">
+                  <p>{project.longDescription || project.description}</p>
+                </div>
               </motion.section>
-            )}
 
-            {/* Team Members */}
-            {project.teamMembers && project.teamMembers.length > 0 && (
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                <h2 className="text-2xl font-bold text-foreground mb-4 flex items-center gap-2">
-                  <Users className="w-6 h-6 text-brand" />
-                  Team Members
-                </h2>
-                <div className="grid gap-4">
-                  {project.teamMembers.map((member, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
-                      className="flex items-center justify-between p-4 bg-muted/30 rounded-lg border border-border/50"
-                    >
-                      <div>
-                        <h3 className="font-semibold text-foreground">
-                          {member.name}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          {member.role}
-                        </p>
-                      </div>
-                      {member.image && (
-                        <div className="w-12 h-12 rounded-full bg-muted overflow-hidden">
-                          <Image
-                            src={member.image}
-                            alt={member.name}
-                            width={48}
-                            height={48}
-                            className="object-cover"
-                          />
+              {project.objectives && project.objectives.length > 0 ? (
+                <motion.section
+                  initial={fadeUp}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.45,
+                    delay: reduceMotion ? 0 : 0.04,
+                    ease: spring,
+                  }}
+                  className="rounded-3xl border border-border/60 bg-card/80 p-6 shadow-sm ring-1 ring-black/[0.03] backdrop-blur-sm sm:p-8"
+                >
+                  <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand/12 text-brand">
+                      <Target className="h-4 w-4" aria-hidden />
+                    </span>
+                    Objectives
+                  </h2>
+                  <ul className="mt-6 space-y-3">
+                    {project.objectives.map((objective, index) => (
+                      <motion.li
+                        key={index}
+                        initial={
+                          reduceMotion ? false : { opacity: 0, x: -12 }
+                        }
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          duration: reduceMotion ? 0 : 0.35,
+                          delay: reduceMotion ? 0 : 0.05 + index * 0.05,
+                          ease: spring,
+                        }}
+                        className="flex gap-3 rounded-2xl border border-border/50 bg-muted/15 px-4 py-3 text-sm leading-relaxed text-muted-foreground sm:text-base"
+                      >
+                        <span
+                          className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"
+                          aria-hidden
+                        />
+                        <span>{objective}</span>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </motion.section>
+              ) : null}
+
+              {project.teamMembers && project.teamMembers.length > 0 ? (
+                <motion.section
+                  initial={fadeUp}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.45,
+                    delay: reduceMotion ? 0 : 0.06,
+                    ease: spring,
+                  }}
+                >
+                  <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-consciousness/12 text-consciousness">
+                      <Users className="h-4 w-4" aria-hidden />
+                    </span>
+                    Team members
+                  </h2>
+                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                    {project.teamMembers.map((member, index) => (
+                      <motion.div
+                        key={index}
+                        initial={
+                          reduceMotion ? false : { opacity: 0, y: 10 }
+                        }
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          duration: reduceMotion ? 0 : 0.35,
+                          delay: reduceMotion ? 0 : 0.04 + index * 0.05,
+                          ease: spring,
+                        }}
+                        className="flex items-center justify-between gap-3 rounded-3xl border border-border/60 bg-card/80 p-4 shadow-sm ring-1 ring-black/[0.03] transition hover:border-brand/20 hover:shadow-md"
+                      >
+                        <div className="min-w-0">
+                          <h3 className="font-semibold tracking-tight text-foreground">
+                            {member.name}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            {member.role}
+                          </p>
                         </div>
-                      )}
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.section>
-            )}
+                        {member.image ? (
+                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-2 ring-border/60">
+                            <Image
+                              src={member.image}
+                              alt={member.name}
+                              width={48}
+                              height={48}
+                              className="object-cover"
+                            />
+                          </div>
+                        ) : null}
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.section>
+              ) : null}
 
-            {/* Publications */}
-            {project.publications && project.publications.length > 0 && (
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
+              {project.publications && project.publications.length > 0 ? (
+                <motion.section
+                  initial={fadeUp}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.45,
+                    delay: reduceMotion ? 0 : 0.08,
+                    ease: spring,
+                  }}
+                >
+                  <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-cognition/12 text-cognition">
+                      <FileText className="h-4 w-4" aria-hidden />
+                    </span>
+                    Publications
+                  </h2>
+                  <div className="mt-6 space-y-4">
+                    {project.publications.map((publication, index) => (
+                      <motion.div
+                        key={index}
+                        initial={
+                          reduceMotion ? false : { opacity: 0, y: 10 }
+                        }
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          duration: reduceMotion ? 0 : 0.35,
+                          delay: reduceMotion ? 0 : 0.04 + index * 0.05,
+                          ease: spring,
+                        }}
+                        className="rounded-3xl border border-border/60 bg-card/80 p-5 shadow-sm ring-1 ring-black/[0.03] transition hover:border-brand/15"
+                      >
+                        <h3 className="font-semibold leading-snug text-foreground">
+                          {publication.title}
+                        </h3>
+                        <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                          <p className="text-sm text-muted-foreground">
+                            {publication.date}
+                          </p>
+                          {publication.link ? (
+                            <a
+                              href={publication.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand underline-offset-4 hover:underline"
+                            >
+                              View publication
+                              <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                            </a>
+                          ) : null}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.section>
+              ) : null}
+            </div>
+
+            <div className="space-y-6 lg:sticky lg:top-28 lg:self-start">
+              <motion.div
+                initial={fadeUp}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.45,
+                  delay: reduceMotion ? 0 : 0.05,
+                  ease: spring,
+                }}
+                className="rounded-3xl border border-border/60 bg-card/90 p-6 shadow-sm ring-1 ring-black/[0.04] backdrop-blur-md"
               >
-                <h2 className="text-2xl font-bold text-foreground mb-4 flex items-center gap-2">
-                  <FileText className="w-6 h-6 text-brand" />
-                  Publications
-                </h2>
-                <div className="space-y-4">
-                  {project.publications.map((publication, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.4, delay: 0.5 + index * 0.1 }}
-                      className="p-4 bg-muted/30 rounded-lg border border-border/50"
+                <h3 className="text-base font-bold tracking-tight text-foreground">
+                  Project details
+                </h3>
+                <dl className="mt-5 space-y-4 text-sm">
+                  <div>
+                    <dt className="text-muted-foreground">Category</dt>
+                    <dd className="mt-0.5 font-medium text-foreground">
+                      {project.category}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-muted-foreground">Status</dt>
+                    <dd className="mt-0.5 font-medium capitalize text-foreground">
+                      {project.status}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-muted-foreground">Start date</dt>
+                    <dd className="mt-0.5 font-medium text-foreground">
+                      {new Date(project.startDate).toLocaleDateString()}
+                    </dd>
+                  </div>
+                  {project.endDate ? (
+                    <div>
+                      <dt className="text-muted-foreground">End date</dt>
+                      <dd className="mt-0.5 font-medium text-foreground">
+                        {new Date(project.endDate).toLocaleDateString()}
+                      </dd>
+                    </div>
+                  ) : null}
+                  {project.funding ? (
+                    <div>
+                      <dt className="text-muted-foreground">Funding</dt>
+                      <dd className="mt-0.5 font-medium text-foreground">
+                        {project.funding}
+                      </dd>
+                    </div>
+                  ) : null}
+                  {project.link ? (
+                    <div>
+                      <dt className="text-muted-foreground">Website</dt>
+                      <dd className="mt-0.5">
+                        <a
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 font-medium text-brand underline-offset-4 hover:underline"
+                        >
+                          Visit
+                          <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                        </a>
+                      </dd>
+                    </div>
+                  ) : null}
+                </dl>
+              </motion.div>
+
+              <motion.div
+                initial={fadeUp}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.45,
+                  delay: reduceMotion ? 0 : 0.08,
+                  ease: spring,
+                }}
+                className="rounded-3xl border border-border/60 bg-card/90 p-6 shadow-sm ring-1 ring-black/[0.04] backdrop-blur-md"
+              >
+                <h3 className="flex items-center gap-2 text-base font-bold tracking-tight text-foreground">
+                  <Tag className="h-4 w-4 text-brand" aria-hidden />
+                  Tags
+                </h3>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-brand/15 bg-brand/5 px-3 py-1 text-xs font-medium text-foreground sm:text-sm"
                     >
-                      <h3 className="font-semibold text-foreground mb-2">
-                        {publication.title}
-                      </h3>
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm text-muted-foreground">
-                          {publication.date}
-                        </p>
-                        {publication.link && (
-                          <a
-                            href={publication.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-brand hover:text-brand/80 flex items-center gap-1 text-sm"
-                          >
-                            View Publication
-                            <ExternalLink className="w-3 h-3" />
-                          </a>
-                        )}
-                      </div>
-                    </motion.div>
+                      {tag}
+                    </span>
                   ))}
                 </div>
-              </motion.section>
-            )}
+              </motion.div>
+
+              {project.additionalInfo ? (
+                <motion.div
+                  initial={fadeUp}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.45,
+                    delay: reduceMotion ? 0 : 0.1,
+                    ease: spring,
+                  }}
+                  className="rounded-3xl border border-border/60 bg-card/90 p-6 shadow-sm ring-1 ring-black/[0.04] backdrop-blur-md"
+                >
+                  <h3 className="text-base font-bold tracking-tight text-foreground">
+                    Additional information
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                    {project.additionalInfo}
+                  </p>
+                </motion.div>
+              ) : null}
+
+              <motion.div
+                initial={fadeUp}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.45,
+                  delay: reduceMotion ? 0 : 0.12,
+                  ease: spring,
+                }}
+                className="rounded-3xl border border-border/60 bg-card/90 p-6 shadow-sm ring-1 ring-black/[0.04] backdrop-blur-md"
+              >
+                <h3 className="flex items-center gap-2 text-base font-bold tracking-tight text-foreground">
+                  <Share2 className="h-4 w-4 text-brand" aria-hidden />
+                  Share
+                </h3>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Copy a link to this project page.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => void copyPageUrl()}
+                  className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-brand/25 bg-brand/10 px-4 py-2.5 text-sm font-semibold text-brand transition hover:border-brand/40 hover:bg-brand/15"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="h-4 w-4" aria-hidden />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <Link2 className="h-4 w-4" aria-hidden />
+                      Copy link
+                    </>
+                  )}
+                </button>
+              </motion.div>
+            </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-8">
-            {/* Project Details */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-card rounded-2xl border border-border p-6"
+          {project.images.length > 1 ? (
+            <motion.section
+              initial={fadeUp}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: reduceMotion ? 0 : 0.45,
+                delay: reduceMotion ? 0 : 0.1,
+                ease: spring,
+              }}
+              className="mt-14 border-t border-border/40 pt-12"
             >
-              <h3 className="text-lg font-bold text-foreground mb-4">
-                Project Details
-              </h3>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Category</p>
-                  <p className="font-medium text-foreground">
-                    {project.category}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Status</p>
-                  <p className="font-medium text-foreground capitalize">
-                    {project.status}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Start Date</p>
-                  <p className="font-medium text-foreground">
-                    {new Date(project.startDate).toLocaleDateString()}
-                  </p>
-                </div>
-                {project.endDate && (
-                  <div>
-                    <p className="text-sm text-muted-foreground">End Date</p>
-                    <p className="font-medium text-foreground">
-                      {new Date(project.endDate).toLocaleDateString()}
-                    </p>
-                  </div>
-                )}
-                {project.funding && (
-                  <div>
-                    <p className="text-sm text-muted-foreground">Funding</p>
-                    <p className="font-medium text-foreground">
-                      {project.funding}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-
-            {/* Tags */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-card rounded-2xl border border-border p-6"
-            >
-              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                <Tag className="w-5 h-5 text-brand" />
-                Tags
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-3 py-1 bg-muted rounded-full text-sm text-muted-foreground"
+              <div className="mb-2 h-1 w-14 rounded-full bg-linear-to-r from-cognition via-brand to-care" />
+              <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                Project gallery
+              </h2>
+              <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {project.images.slice(1).map((image, index) => (
+                  <motion.div
+                    key={index}
+                    initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: reduceMotion ? 0 : 0.35,
+                      delay: reduceMotion ? 0 : 0.05 + index * 0.05,
+                      ease: spring,
+                    }}
+                    className="group relative aspect-video overflow-hidden rounded-3xl border border-border/60 bg-muted shadow-sm ring-1 ring-black/[0.04] transition hover:border-brand/20 hover:shadow-md"
                   >
-                    {tag}
-                  </span>
+                    <Image
+                      src={image}
+                      alt={`${project.title} — image ${index + 2}`}
+                      fill
+                      className="object-cover transition duration-300 group-hover:scale-[1.02]"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  </motion.div>
                 ))}
               </div>
-            </motion.div>
-
-            {/* Additional Info */}
-            {project.additionalInfo && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="bg-card rounded-2xl border border-border p-6"
-              >
-                <h3 className="text-lg font-bold text-foreground mb-4">
-                  Additional Information
-                </h3>
-                <p className="text-muted-foreground">
-                  {project.additionalInfo}
-                </p>
-              </motion.div>
-            )}
-
-            {/* Share */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="bg-card rounded-2xl border border-border p-6"
-            >
-              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                <Share2 className="w-5 h-5 text-brand" />
-                Share This Project
-              </h3>
-              <div className="flex gap-3">
-                <button
-                  onClick={() =>
-                    navigator.clipboard.writeText(window.location.href)
-                  }
-                  className="flex-1 px-4 py-2 bg-muted rounded-lg text-sm font-medium hover:bg-muted/80 transition-colors"
-                >
-                  Copy Link
-                </button>
-                <button className="flex-1 px-4 py-2 bg-muted rounded-lg text-sm font-medium hover:bg-muted/80 transition-colors">
-                  Share
-                </button>
-              </div>
-            </motion.div>
-          </div>
+            </motion.section>
+          ) : null}
         </div>
-
-        {/* Image Gallery */}
-        {project.images.length > 1 && (
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="mt-16"
-          >
-            <h2 className="text-2xl font-bold text-foreground mb-8">
-              Project Gallery
-            </h2>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {project.images.slice(1).map((image, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
-                  className="relative aspect-video rounded-xl overflow-hidden"
-                >
-                  <Image
-                    src={image}
-                    alt={`${project.title} - Image ${index + 2}`}
-                    fill
-                    className="object-cover hover:scale-105 transition-transform duration-300"
-                  />
-                </motion.div>
-              ))}
-            </div>
-          </motion.section>
-        )}
       </div>
     </div>
   );

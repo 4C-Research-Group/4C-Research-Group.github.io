@@ -97,7 +97,7 @@ export default function AdminShell({
   function linkClass(href: string, end?: boolean, exact?: boolean) {
     const active = navActive(pathname, href, end, exact);
     return [
-      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium uppercase tracking-wide transition-colors",
+      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
       active
         ? "bg-brand/12 text-brand"
         : "text-muted-foreground hover:bg-muted/80 hover:text-foreground",
@@ -110,7 +110,7 @@ export default function AdminShell({
       <div className="sticky top-14 z-30 flex items-center justify-between gap-3 border-b border-border/60 bg-background/90 px-4 py-2.5 backdrop-blur-md lg:hidden">
         <button
           type="button"
-          className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium uppercase tracking-wide text-foreground"
+          className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground"
           aria-expanded={mobileOpen}
           onClick={() => setMobileOpen((o) => !o)}
         >
@@ -123,13 +123,13 @@ export default function AdminShell({
         </button>
         <Link
           href="/"
-          className="text-xs font-medium uppercase tracking-wide text-muted-foreground hover:text-foreground"
+          className="text-xs font-medium text-muted-foreground hover:text-foreground"
         >
           View site →
         </Link>
       </div>
       {mobileOpen ? (
-        <nav className="space-y-0.5 border-b border-border/60 bg-background px-3 py-3 lg:hidden">
+        <nav className="max-h-[min(70dvh,calc(100dvh-9rem))] space-y-0.5 overflow-y-auto overscroll-contain border-b border-border/60 bg-background px-3 py-3 lg:hidden">
           {NAV_BASE.map(({ href, label, icon: Icon, end, exact }) => (
             <Link
               key={href}
@@ -154,7 +154,7 @@ export default function AdminShell({
           <button
             type="button"
             onClick={() => void signOut()}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium uppercase tracking-wide text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
           >
             <LogOut className="h-4 w-4 shrink-0" aria-hidden />
             Sign out
@@ -164,15 +164,15 @@ export default function AdminShell({
 
       <div className="flex">
         <aside className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-60 shrink-0 flex-col border-r border-border/60 bg-card/50 lg:flex">
-          <div className="border-b border-border/50 px-4 py-4">
+          <div className="shrink-0 border-b border-border/50 px-4 py-4">
             <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
               Admin
             </p>
-            <p className="mt-0.5 text-sm font-semibold uppercase tracking-wide text-foreground">
+            <p className="mt-0.5 text-sm font-semibold tracking-tight text-foreground">
               Dashboard
             </p>
           </div>
-          <nav className="flex flex-1 flex-col gap-0.5 p-2">
+          <nav className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain p-2">
             {NAV_BASE.map(({ href, label, icon: Icon, end, exact }) => (
               <Link
                 key={href}
@@ -190,10 +190,10 @@ export default function AdminShell({
               </Link>
             ) : null}
           </nav>
-          <div className="mt-auto space-y-1 border-t border-border/60 p-3">
+          <div className="shrink-0 space-y-1 border-t border-border/60 bg-card/50 p-3">
             <Link
               href="/"
-              className="flex items-center gap-2 rounded-lg px-2 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
+              className="flex items-center gap-2 rounded-lg px-2 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
             >
               <ExternalLink className="h-3.5 w-3.5 shrink-0" aria-hidden />
               View public site
@@ -201,7 +201,7 @@ export default function AdminShell({
             <button
               type="button"
               onClick={() => void signOut()}
-              className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+              className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
             >
               <LogOut className="h-3.5 w-3.5 shrink-0" aria-hidden />
               Sign out

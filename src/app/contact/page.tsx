@@ -181,21 +181,6 @@ export default function ContactPage() {
             >
               <div className="rounded-3xl border border-border/60 bg-card/80 p-6 shadow-sm ring-1 ring-black/[0.03] backdrop-blur-sm sm:p-7">
                 <h2 className="text-base font-semibold tracking-tight text-foreground">
-                  Email
-                </h2>
-                <a
-                  href={`mailto:${contact.email}`}
-                  className="mt-3 block text-lg font-semibold text-brand underline-offset-4 transition hover:underline"
-                >
-                  {contact.email}
-                </a>
-                <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                  For questions about our research, partnerships, or the lab.
-                </p>
-              </div>
-
-              <div className="rounded-3xl border border-border/60 bg-card/80 p-6 shadow-sm ring-1 ring-black/[0.03] backdrop-blur-sm sm:p-7">
-                <h2 className="text-base font-semibold tracking-tight text-foreground">
                   Lab details
                 </h2>
                 <ul className="mt-5 space-y-5 text-sm">

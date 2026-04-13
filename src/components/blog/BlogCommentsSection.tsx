@@ -32,6 +32,150 @@ type Props = {
   postId: string;
 };
 
+type CommentTreeProps = {
+  parentId: string | null;
+  depth: number;
+  byParent: Map<string | null, BlogComment[]>;
+  userId: string | null;
+  isAdmin: boolean;
+  replyParentId: string | null;
+  replyText: string;
+  submitting: boolean;
+  setReplyParentId: (id: string | null) => void;
+  setReplyText: (text: string) => void;
+  onSubmitReply: (parentCommentId: string) => void;
+  onRemoveComment: (id: string) => void;
+};
+
+/** Module-level component so React does not remount the tree on every parent render (fixes nested reply textarea losing focus). */
+function CommentTree({
+  parentId,
+  depth,
+  byParent,
+  userId,
+  isAdmin,
+  replyParentId,
+  replyText,
+  submitting,
+  setReplyParentId,
+  setReplyText,
+  onSubmitReply,
+  onRemoveComment,
+}: CommentTreeProps) {
+  const items = byParent.get(parentId) ?? [];
+  if (items.length === 0) return null;
+  return (
+    <ul
+      className={
+        parentId
+          ? "mt-3 space-y-3 border-l border-border/80 pl-4"
+          : "space-y-4"
+      }
+    >
+      {items.map((c) => {
+        const canDelete = userId && (c.user_id === userId || isAdmin);
+        const showReplyBox = replyParentId === c.id;
+        const canReply = Boolean(userId && depth < MAX_DEPTH - 1);
+        return (
+          <li key={c.id}>
+            <div className="rounded-xl border border-border/70 bg-card/60 px-3 py-3">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <p className="text-sm font-semibold text-foreground">
+                  {displayNameForComment(c)}
+                </p>
+                <time
+                  className="text-xs text-muted-foreground"
+                  dateTime={c.created_at}
+                >
+                  {new Date(c.created_at).toLocaleString()}
+                </time>
+              </div>
+              <p
+                className="mt-2 whitespace-pre-wrap text-sm text-muted-foreground"
+                dangerouslySetInnerHTML={{
+                  __html: escapeHtml(c.body).replace(/\n/g, "<br />"),
+                }}
+              />
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                {canReply ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setReplyParentId(showReplyBox ? null : c.id);
+                      setReplyText("");
+                    }}
+                    className="inline-flex items-center gap-1 text-xs font-medium text-brand hover:underline"
+                  >
+                    <Reply className="h-3 w-3" aria-hidden />
+                    Reply
+                  </button>
+                ) : null}
+                {canDelete ? (
+                  <button
+                    type="button"
+                    onClick={() => void onRemoveComment(c.id)}
+                    className="inline-flex items-center gap-1 text-xs font-medium text-destructive hover:underline"
+                  >
+                    <Trash2 className="h-3 w-3" aria-hidden />
+                    Delete
+                  </button>
+                ) : null}
+              </div>
+              {showReplyBox ? (
+                <div className="mt-3 space-y-2">
+                  <textarea
+                    value={replyText}
+                    onChange={(e) => setReplyText(e.target.value)}
+                    rows={3}
+                    maxLength={MAX_BODY}
+                    placeholder="Write a reply…"
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                    aria-label="Reply text"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      disabled={submitting}
+                      onClick={() => void onSubmitReply(c.id)}
+                      className="rounded-lg bg-brand px-3 py-1.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+                    >
+                      {submitting ? "Posting…" : "Post reply"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setReplyParentId(null);
+                        setReplyText("");
+                      }}
+                      className="rounded-lg border border-border px-3 py-1.5 text-sm hover:bg-muted/50"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            <CommentTree
+              parentId={c.id}
+              depth={depth + 1}
+              byParent={byParent}
+              userId={userId}
+              isAdmin={isAdmin}
+              replyParentId={replyParentId}
+              replyText={replyText}
+              submitting={submitting}
+              setReplyParentId={setReplyParentId}
+              setReplyText={setReplyText}
+              onSubmitReply={onSubmitReply}
+              onRemoveComment={onRemoveComment}
+            />
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 export default function BlogCommentsSection({ postId }: Props) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -127,114 +271,6 @@ export default function BlogCommentsSection({ postId }: Props) {
     }
   }
 
-  function CommentTree({
-    parentId,
-    depth,
-  }: {
-    parentId: string | null;
-    depth: number;
-  }) {
-    const items = byParent.get(parentId) ?? [];
-    if (items.length === 0) return null;
-    return (
-      <ul
-        className={
-          parentId
-            ? "mt-3 space-y-3 border-l border-border/80 pl-4"
-            : "space-y-4"
-        }
-      >
-        {items.map((c) => {
-          const canDelete = userId && (c.user_id === userId || isAdmin);
-          const showReplyBox = replyParentId === c.id;
-          const canReply = Boolean(userId && depth < MAX_DEPTH - 1);
-          return (
-            <li key={c.id}>
-              <div className="rounded-xl border border-border/70 bg-card/60 px-3 py-3">
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <p className="text-sm font-semibold text-foreground">
-                    {displayNameForComment(c)}
-                  </p>
-                  <time
-                    className="text-xs text-muted-foreground"
-                    dateTime={c.created_at}
-                  >
-                    {new Date(c.created_at).toLocaleString()}
-                  </time>
-                </div>
-                <p
-                  className="mt-2 whitespace-pre-wrap text-sm text-muted-foreground"
-                  dangerouslySetInnerHTML={{
-                    __html: escapeHtml(c.body).replace(/\n/g, "<br />"),
-                  }}
-                />
-                <div className="mt-2 flex flex-wrap items-center gap-2">
-                  {canReply ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setReplyParentId(showReplyBox ? null : c.id);
-                        setReplyText("");
-                      }}
-                      className="inline-flex items-center gap-1 text-xs font-medium text-brand hover:underline"
-                    >
-                      <Reply className="h-3 w-3" aria-hidden />
-                      Reply
-                    </button>
-                  ) : null}
-                  {canDelete ? (
-                    <button
-                      type="button"
-                      onClick={() => void removeComment(c.id)}
-                      className="inline-flex items-center gap-1 text-xs font-medium text-destructive hover:underline"
-                    >
-                      <Trash2 className="h-3 w-3" aria-hidden />
-                      Delete
-                    </button>
-                  ) : null}
-                </div>
-                {showReplyBox ? (
-                  <div className="mt-3 space-y-2">
-                    <textarea
-                      value={replyText}
-                      onChange={(e) => setReplyText(e.target.value)}
-                      rows={3}
-                      maxLength={MAX_BODY}
-                      placeholder="Write a reply…"
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
-                      aria-label="Reply text"
-                    />
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        disabled={submitting}
-                        onClick={() => void submitComment(c.id)}
-                        className="rounded-lg bg-brand px-3 py-1.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
-                      >
-                        {submitting ? "Posting…" : "Post reply"}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setReplyParentId(null);
-                          setReplyText("");
-                        }}
-                        className="rounded-lg border border-border px-3 py-1.5 text-sm hover:bg-muted/50"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-              <CommentTree parentId={c.id} depth={depth + 1} />
-            </li>
-          );
-        })}
-      </ul>
-    );
-  }
-
   return (
     <section
       className="mt-14 border-t border-border pt-10"
@@ -267,7 +303,20 @@ export default function BlogCommentsSection({ postId }: Props) {
         </div>
       ) : (
         <div className="mt-6">
-          <CommentTree parentId={null} depth={0} />
+          <CommentTree
+            parentId={null}
+            depth={0}
+            byParent={byParent}
+            userId={userId}
+            isAdmin={isAdmin}
+            replyParentId={replyParentId}
+            replyText={replyText}
+            submitting={submitting}
+            setReplyParentId={setReplyParentId}
+            setReplyText={setReplyText}
+            onSubmitReply={(parentCommentId) => void submitComment(parentCommentId)}
+            onRemoveComment={(id) => void removeComment(id)}
+          />
         </div>
       )}
 

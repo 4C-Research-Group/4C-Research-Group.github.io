@@ -67,6 +67,29 @@ create trigger blog_post_comments_set_updated_at
   for each row
   execute function public.touch_blog_post_comments_updated_at();
 
+-- Validates reply parent without querying blog_post_comments through RLS (avoids infinite recursion).
+create or replace function public.blog_comment_parent_valid(
+  p_post_id uuid,
+  p_parent_id uuid
+)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select p_parent_id is null
+    or exists (
+      select 1
+      from public.blog_post_comments c
+      where c.id = p_parent_id
+        and c.post_id = p_post_id
+    );
+$$;
+
+revoke all on function public.blog_comment_parent_valid(uuid, uuid) from public;
+grant execute on function public.blog_comment_parent_valid(uuid, uuid) to authenticated;
+
 alter table public.blog_post_comments enable row level security;
 
 drop policy if exists "blog_post_comments_public_read" on public.blog_post_comments;
@@ -90,14 +113,7 @@ create policy "blog_post_comments_insert_own"
       select 1 from public.blog_posts p
       where p.id = post_id and p.published = true
     )
-    and (
-      parent_id is null
-      or exists (
-        select 1 from public.blog_post_comments c
-        where c.id = parent_id
-          and c.post_id = post_id
-      )
-    )
+    and public.blog_comment_parent_valid(post_id, parent_id)
   );
 
 drop policy if exists "blog_post_comments_update_own" on public.blog_post_comments;

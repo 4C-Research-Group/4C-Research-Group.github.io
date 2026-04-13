@@ -24,6 +24,14 @@ import { GALLERY_ARCHIVE_PAGE_SIZE } from "@/data/gallery-page";
 import { resolveGalleryCuratedPhotos } from "@/lib/gallery/gallery-curated-layout";
 import type { GalleryPhoto } from "@/lib/gallery/supabase-gallery-photos";
 
+/**
+ * Mixkit free license (commercial use): researchers with 3D brain models in a lab —
+ * aligned with pediatric neuro / critical care research themes.
+ * @see https://mixkit.co/free-stock-video/doctor-and-scientist-look-at-3d-brain-models-in-modern-5644/
+ */
+const GALLERY_HERO_VIDEO_SRC =
+  "https://assets.mixkit.co/videos/5644/5644-720.mp4";
+
 const galleryTitleFont = Fraunces({
   subsets: ["latin"],
   display: "swap",
@@ -159,6 +167,7 @@ export default function GalleryPageView({
 }) {
   const [lightbox, setLightbox] = useState<LightboxItem | null>(null);
   const [archivePage, setArchivePage] = useState(0);
+  const [heroVideoFailed, setHeroVideoFailed] = useState(false);
   const reduceMotion = useReducedMotion();
 
   const closeLightbox = useCallback(() => setLightbox(null), []);
@@ -605,18 +614,36 @@ export default function GalleryPageView({
         },
       };
 
+  const heroVideoPoster = hero?.src;
+
   return (
     <div className="min-h-screen bg-background">
-      <header className="relative overflow-hidden border-b border-border/60">
+      <header className="relative min-h-[min(46vh,22rem)] overflow-hidden border-b border-border/60 sm:min-h-[min(50vh,26rem)]">
+        {!reduceMotion && !heroVideoFailed ? (
+          <video
+            key={GALLERY_HERO_VIDEO_SRC}
+            className="absolute inset-0 z-0 h-full w-full object-cover opacity-[0.42] saturate-[0.92]"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster={heroVideoPoster}
+            aria-hidden
+            onError={() => setHeroVideoFailed(true)}
+          >
+            <source src={GALLERY_HERO_VIDEO_SRC} type="video/mp4" />
+          </video>
+        ) : null}
         <div
-          className="absolute inset-0 bg-linear-to-br from-slate-50/95 via-background to-brand-light/40"
+          className="absolute inset-0 z-[1] bg-linear-to-br from-slate-50/92 via-background/88 to-brand-light/45"
           aria-hidden
         />
         {!reduceMotion ? (
           <>
             <motion.div
               aria-hidden
-              className="pointer-events-none absolute -left-[22%] -top-[45%] h-[90%] w-[68%] rounded-full bg-cognition/28 blur-[88px]"
+              className="pointer-events-none absolute -left-[22%] -top-[45%] z-[1] h-[90%] w-[68%] rounded-full bg-cognition/28 blur-[88px]"
               animate={{
                 x: [0, 32, -14, 0],
                 y: [0, 22, -26, 0],
@@ -626,7 +653,7 @@ export default function GalleryPageView({
             />
             <motion.div
               aria-hidden
-              className="pointer-events-none absolute -right-[12%] top-[5%] h-[75%] w-[58%] rounded-full bg-consciousness/22 blur-[76px]"
+              className="pointer-events-none absolute -right-[12%] top-[5%] z-[1] h-[75%] w-[58%] rounded-full bg-consciousness/22 blur-[76px]"
               animate={{
                 x: [0, -28, 16, 0],
                 y: [0, -24, 18, 0],
@@ -636,7 +663,7 @@ export default function GalleryPageView({
             />
             <motion.div
               aria-hidden
-              className="pointer-events-none absolute bottom-[-25%] left-[20%] h-[55%] w-[55%] rounded-full bg-care/20 blur-[70px]"
+              className="pointer-events-none absolute bottom-[-25%] left-[20%] z-[1] h-[55%] w-[55%] rounded-full bg-care/20 blur-[70px]"
               animate={{
                 x: [0, -20, 12, 0],
                 y: [0, 16, -12, 0],
@@ -648,14 +675,14 @@ export default function GalleryPageView({
         ) : (
           <div
             aria-hidden
-            className="absolute inset-0 bg-linear-to-br from-brand-light/50 via-background to-consciousness/12"
+            className="absolute inset-0 z-[1] bg-linear-to-br from-brand-light/50 via-background to-consciousness/12"
           />
         )}
         <div
-          className="pointer-events-none absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom,white,transparent_88%)]"
+          className="pointer-events-none absolute inset-0 z-[1] bg-grid-black/5 mask-[linear-gradient(to_bottom,white,transparent_88%)]"
           aria-hidden
         />
-        <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}

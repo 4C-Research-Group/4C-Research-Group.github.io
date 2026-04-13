@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   ExternalLink,
   Loader2,
@@ -10,6 +10,7 @@ import {
   BookOpen,
   Users,
   FileText,
+  Sparkles,
 } from "lucide-react";
 import { FaGoogle, FaOrcid, FaResearchgate } from "react-icons/fa";
 import {
@@ -51,6 +52,9 @@ export default function PublicationsPage() {
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [lastFetched, setLastFetched] = useState<Date | null>(null);
+  const reduceMotion = useReducedMotion();
+  const spring = [0.22, 1, 0.36, 1] as const;
+  const fadeUp = reduceMotion ? undefined : { opacity: 0, y: 16 };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -99,73 +103,134 @@ export default function PublicationsPage() {
   }, [publications, sortBy, searchTerm]);
 
   const renderHero = () => (
-    <section className="relative overflow-hidden bg-linear-to-br from-slate-50 via-background to-brand-light/30">
-      <div className="absolute inset-0 bg-grid-black/5 mask-[linear-gradient(to_bottom_right,white,transparent,white)]" />
-      <div className="container relative mx-auto px-4 py-16 sm:px-6 lg:py-24">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mx-auto max-w-4xl text-center"
-        >
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-medium text-brand">
-            <FileText className="h-4 w-4" />
-            Research Output
-          </div>
-          <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            Publications
-            <span className="block text-3xl font-semibold text-muted-foreground sm:text-4xl lg:text-5xl">
-              Our latest research contributions and scholarly work
-            </span>
-          </h1>
-          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-            Explore our peer-reviewed publications, articles, and academic
-            contributions to pediatric critical care and neuroscience research.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4 text-sm">
-            <div className="flex items-center gap-2 rounded-lg bg-cognition/10 px-4 py-2 text-cognition">
-              <BookOpen className="h-4 w-4" />
-              Peer-Reviewed Articles
+    <section className="relative overflow-hidden border-b border-border/40 bg-linear-to-b from-slate-50/95 via-background to-background">
+      <div
+        className="pointer-events-none absolute inset-0 bg-grid-black/5 mask-[linear-gradient(180deg,white,transparent_80%)]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute -right-24 top-0 h-[26rem] w-[26rem] rounded-full bg-brand/12 blur-3xl"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute -left-16 bottom-0 h-72 w-72 rounded-full bg-cognition/10 blur-3xl"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute left-1/2 top-1/3 h-56 w-56 -translate-x-1/2 rounded-full bg-care/8 blur-3xl"
+        aria-hidden
+      />
+
+      <div className="container relative mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:py-24">
+        <div className="grid items-center gap-12 lg:grid-cols-[1fr_minmax(280px,400px)] lg:gap-14">
+          <motion.div
+            initial={fadeUp}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: reduceMotion ? 0 : 0.5,
+              ease: spring,
+            }}
+            className="text-center lg:text-left"
+          >
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand sm:text-[13px]">
+              <Sparkles className="h-3.5 w-3.5" aria-hidden />
+              Research Output
             </div>
-            <div className="flex items-center gap-2 rounded-lg bg-consciousness/10 px-4 py-2 text-consciousness">
-              <Users className="h-4 w-4" />
-              Collaborative Research
+            <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-[3.25rem] lg:leading-[1.08]">
+              <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+                Publications
+              </span>
+              <span className="mt-3 block text-2xl font-semibold leading-snug tracking-tight text-muted-foreground sm:text-3xl lg:text-[1.65rem]">
+                Our latest research contributions and scholarly work
+              </span>
+            </h1>
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
+              Explore our peer-reviewed publications, articles, and academic
+              contributions to pediatric critical care and neuroscience research.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-2 lg:justify-start">
+              <span className="inline-flex items-center gap-2 rounded-xl border border-cognition/20 bg-cognition/5 px-3 py-2 text-xs font-medium text-cognition sm:text-sm">
+                <BookOpen className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                Peer-Reviewed Articles
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-xl border border-consciousness/20 bg-consciousness/5 px-3 py-2 text-xs font-medium text-consciousness sm:text-sm">
+                <Users className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                Collaborative Research
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-xl border border-care/20 bg-care/5 px-3 py-2 text-xs font-medium text-care sm:text-sm">
+                <ExternalLink className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                Open Access
+              </span>
             </div>
-            <div className="flex items-center gap-2 rounded-lg bg-care/10 px-4 py-2 text-care">
-              <ExternalLink className="h-4 w-4" />
-              Open Access
+          </motion.div>
+
+          <motion.div
+            initial={fadeUp}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: reduceMotion ? 0 : 0.55,
+              delay: reduceMotion ? 0 : 0.06,
+              ease: spring,
+            }}
+            className="relative mx-auto w-full max-w-md lg:mx-0"
+          >
+            <div
+              className="absolute -inset-1 rounded-[1.35rem] bg-linear-to-br from-cognition/15 via-brand/12 to-care/15 opacity-90 blur-sm"
+              aria-hidden
+            />
+            <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-card/90 p-6 shadow-lg ring-1 ring-black/[0.04] backdrop-blur-md sm:p-7">
+              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-brand/12 text-brand">
+                <FileText className="h-5 w-5" aria-hidden />
+              </div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand/90">
+                Live bibliography
+              </p>
+              <p className="mt-2 text-3xl font-bold tabular-nums text-foreground sm:text-4xl">
+                {loading ? "—" : publications.length}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Works synced from ORCID
+                {loading ? " (loading…)" : ""}
+              </p>
+
+              <div className="mt-6 space-y-2 border-t border-border/50 pt-6">
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Profiles
+                </p>
+                <a
+                  href={RESEARCHGATE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex w-full items-center gap-3 rounded-xl border border-border/70 bg-background/80 px-4 py-3 text-sm font-medium text-foreground transition hover:border-brand/30 hover:bg-muted/40"
+                >
+                  <FaResearchgate className="shrink-0 text-lg text-green-600" />
+                  <span className="truncate">ResearchGate</span>
+                  <ExternalLink className="ml-auto h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
+                </a>
+                <a
+                  href={GOOGLE_SCHOLAR_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex w-full items-center gap-3 rounded-xl border border-border/70 bg-background/80 px-4 py-3 text-sm font-medium text-foreground transition hover:border-brand/30 hover:bg-muted/40"
+                >
+                  <FaGoogle className="shrink-0 text-lg text-blue-500" />
+                  <span className="truncate">Google Scholar</span>
+                  <ExternalLink className="ml-auto h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
+                </a>
+                <a
+                  href={ORCID_PROFILE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex w-full items-center gap-3 rounded-xl border border-border/70 bg-background/80 px-4 py-3 text-sm font-medium text-foreground transition hover:border-brand/30 hover:bg-muted/40"
+                >
+                  <FaOrcid className="shrink-0 text-lg text-green-700" />
+                  <span className="truncate">ORCID</span>
+                  <ExternalLink className="ml-auto h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
+                </a>
+              </div>
             </div>
-          </div>
-          <div className="mt-8 flex flex-col sm:flex-row flex-wrap justify-center gap-3">
-            <a
-              href={RESEARCHGATE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-4 py-2.5 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm text-foreground"
-            >
-              <FaResearchgate className="text-green-600 mr-2 shrink-0 text-lg" />
-              <span className="truncate">ResearchGate</span>
-            </a>
-            <a
-              href={GOOGLE_SCHOLAR_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-4 py-2.5 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm text-foreground"
-            >
-              <FaGoogle className="text-blue-500 mr-2 shrink-0 text-lg" />
-              <span className="truncate">Google Scholar</span>
-            </a>
-            <a
-              href={ORCID_PROFILE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-4 py-2.5 bg-card border border-border rounded-lg shadow-sm hover:shadow-md hover:border-brand/30 transition-all text-sm text-foreground"
-            >
-              <FaOrcid className="text-green-700 mr-2 shrink-0 text-lg" />
-              <span className="truncate">ORCID</span>
-            </a>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

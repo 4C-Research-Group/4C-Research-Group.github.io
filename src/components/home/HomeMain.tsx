@@ -45,6 +45,31 @@ const heroTitleFont = Playfair_Display({
   display: "swap",
 });
 
+const raisedInitialClass =
+  "inline-block align-baseline text-[1.38em] font-bold leading-[0.85] tracking-tight";
+
+/** One tagline segment: default raises first letter; "Critical Care" raises both C’s. */
+function heroTaglineSegment(seg: string): ReactNode {
+  const s = seg.trim();
+  if (!s) return null;
+  if (/^critical\s+care$/i.test(s)) {
+    return (
+      <span className="inline whitespace-nowrap">
+        <span className={raisedInitialClass}>C</span>
+        <span className="align-baseline">ritical </span>
+        <span className={raisedInitialClass}>C</span>
+        <span className="align-baseline">are</span>
+      </span>
+    );
+  }
+  return (
+    <span className="inline whitespace-nowrap">
+      <span className={raisedInitialClass}>{s.charAt(0)}</span>
+      <span className="align-baseline">{s.slice(1)}</span>
+    </span>
+  );
+}
+
 /** Enlarges the first letter of each phrase separated by "·" (hero tagline). */
 function heroTaglineWithRaisedInitials(text: string): ReactNode {
   const trimmed = text.trim();
@@ -65,12 +90,7 @@ function heroTaglineWithRaisedInitials(text: string): ReactNode {
           ·
         </span>
       ) : null}
-      <span className="inline whitespace-nowrap">
-        <span className="inline-block align-baseline text-[1.38em] font-bold leading-[0.85] tracking-tight">
-          {seg.charAt(0)}
-        </span>
-        <span className="align-baseline">{seg.slice(1)}</span>
-      </span>
+      {heroTaglineSegment(seg)}
     </span>
   ));
 }

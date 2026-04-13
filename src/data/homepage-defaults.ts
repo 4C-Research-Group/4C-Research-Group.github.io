@@ -106,7 +106,7 @@ export const HOMEPAGE_DEFAULTS: HomepagePayload = {
     badge: "Pediatric neurocritical care research",
     titleHighlight: "4C",
     titleRest: " Research Group",
-    tagline: "Cognition · Consciousness · Critical Care",
+    tagline: "Cognition·Consciousness·Critical Care",
     lead: "We study brain health in critically ill children—combining neuroimaging, bedside monitoring, and multicenter collaboration to improve outcomes.",
     knowledgeMobilization: {
       message:
@@ -132,7 +132,7 @@ export const HOMEPAGE_DEFAULTS: HomepagePayload = {
         tone: "consciousness",
       },
       {
-        label: "Critical care",
+        label: "Critical Care",
         href: "/research/",
         icon: "zap",
         tone: "care",

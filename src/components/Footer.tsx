@@ -27,10 +27,10 @@ export default function Footer() {
 
   /** Light footer: soft slate base with brand-tinted mesh (always reads as light). */
   const linkClass =
-    "text-[13px] font-medium tracking-tight text-slate-600 transition-colors hover:text-brand";
+    "text-[13px] font-medium uppercase tracking-wide text-slate-600 transition-colors hover:text-brand";
 
   const sectionTitleClass =
-    "mb-4 text-sm font-semibold tracking-tight text-slate-900";
+    "mb-4 text-sm font-semibold uppercase tracking-wide text-slate-900";
 
   const brandMeshStyle: CSSProperties = {
     backgroundImage: [
@@ -76,7 +76,7 @@ export default function Footer() {
               <div className="min-w-max shrink-0 text-left">
                 <span className="block whitespace-nowrap text-[15px] font-semibold uppercase tracking-tight sm:text-base">
                   <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
-                    4C Research Group
+                    4C Research
                   </span>
                 </span>
                 <span className="mt-0.5 block whitespace-nowrap text-[9px] font-medium uppercase leading-snug tracking-wider sm:text-[10px]">

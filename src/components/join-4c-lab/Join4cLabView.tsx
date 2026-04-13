@@ -472,30 +472,30 @@ export default function Join4cLabView({
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.4 }}
             viewport={{ once: true, amount: 0.25 }}
-            className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-foreground px-6 py-12 text-center text-background shadow-2xl sm:px-10 sm:py-14"
+            className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-linear-to-br from-cognition via-brand to-care px-6 py-12 text-center text-primary-foreground shadow-2xl shadow-brand/25 sm:px-10 sm:py-14"
           >
             <div
-              className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand/25 blur-3xl"
+              className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/20 blur-3xl"
               aria-hidden
             />
             <div
-              className="pointer-events-none absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-care/20 blur-3xl"
+              className="pointer-events-none absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-care/35 blur-3xl"
               aria-hidden
             />
             <div
-              className="pointer-events-none absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-consciousness/15 blur-3xl"
+              className="pointer-events-none absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-consciousness/30 blur-3xl"
               aria-hidden
             />
             <div className="relative mx-auto max-w-2xl">
               <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
                 {content.ctaTitle}
               </h2>
-              <p className="mx-auto mt-4 text-base leading-relaxed text-background/85 sm:text-lg">
+              <p className="mx-auto mt-4 text-base leading-relaxed text-primary-foreground/90 sm:text-lg">
                 {content.ctaDescription}
               </p>
               <a
                 href={ctaHref}
-                className="mt-8 inline-flex items-center gap-2 rounded-2xl bg-background px-7 py-3.5 text-sm font-semibold text-foreground shadow-lg transition hover:bg-background/90"
+                className="mt-8 inline-flex items-center gap-2 rounded-2xl bg-card px-7 py-3.5 text-sm font-semibold text-foreground shadow-lg transition hover:bg-card/90"
               >
                 <Mail className="h-4 w-4" aria-hidden />
                 {content.ctaButtonText}

@@ -506,42 +506,42 @@ export default function ResearchPageView({ document: doc }: Props) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: reduceMotion ? 0 : 0.45, ease: spring }}
-            className="relative overflow-hidden rounded-[2rem] border border-border/50 bg-foreground px-6 py-12 text-center text-background shadow-2xl sm:px-10 sm:py-14"
+            className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-linear-to-br from-cognition via-brand to-care px-6 py-12 text-center text-primary-foreground shadow-2xl shadow-brand/25 sm:px-10 sm:py-14"
           >
             <div
-              className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand/25 blur-3xl"
+              className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-white/20 blur-3xl"
               aria-hidden
             />
             <div
-              className="pointer-events-none absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-care/20 blur-3xl"
+              className="pointer-events-none absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-care/35 blur-3xl"
               aria-hidden
             />
             <div
-              className="pointer-events-none absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-consciousness/15 blur-3xl"
+              className="pointer-events-none absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-consciousness/30 blur-3xl"
               aria-hidden
             />
             <div className="relative mx-auto max-w-2xl">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-background/90">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 bg-primary-foreground/15 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground">
                 <Beaker className="h-3.5 w-3.5" aria-hidden />
                 {doc.cta.badge}
               </div>
               <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
                 {doc.cta.title}
               </h2>
-              <p className="mx-auto mt-4 text-base leading-relaxed text-background/85 sm:text-lg">
+              <p className="mx-auto mt-4 text-base leading-relaxed text-primary-foreground/90 sm:text-lg">
                 {doc.cta.intro}
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
                 <Link
                   href={doc.cta.primary.href}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-background px-7 py-3.5 text-sm font-semibold text-foreground shadow-lg transition hover:bg-background/90 sm:w-auto"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-card px-7 py-3.5 text-sm font-semibold text-foreground shadow-lg transition hover:bg-card/90 sm:w-auto"
                 >
                   {doc.cta.primary.label}
                   <ExternalLink className="h-4 w-4 opacity-80" aria-hidden />
                 </Link>
                 <Link
                   href={doc.cta.secondary.href}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-white/25 bg-transparent px-7 py-3.5 text-sm font-semibold text-background transition hover:bg-white/10 sm:w-auto"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-primary-foreground/40 bg-primary-foreground/10 px-7 py-3.5 text-sm font-semibold text-primary-foreground backdrop-blur-sm transition hover:bg-primary-foreground/20 sm:w-auto"
                 >
                   {doc.cta.secondary.label}
                 </Link>

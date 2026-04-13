@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   Award,
@@ -16,6 +16,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useAuthProfile } from "@/lib/auth/use-auth-profile";
+import { canAccessAdmin } from "@/lib/auth/roles";
 import { useKmProgress } from "@/contexts/KmProgressContext";
 import type { KmProgramGroup } from "@/data/km-page";
 import { mergeKmPagePayload } from "@/data/km-page-defaults";
@@ -36,7 +37,10 @@ import { fetchKmPageContent } from "@/lib/km/supabase-km-page";
 import KmCertificateHubPreview from "@/components/km/KmCertificateHubPreview";
 
 export default function KnowledgeMobilizationHubPage() {
-  const { email: authEmail } = useAuthProfile();
+  const { email: authEmail, ready: authReady, role } = useAuthProfile();
+  const reduceMotion = useReducedMotion();
+  const spring = [0.22, 1, 0.36, 1] as const;
+  const fadeUp = reduceMotion ? undefined : { opacity: 0, y: 16 };
   const {
     ready: kmReady,
     progress,
@@ -94,54 +98,154 @@ export default function KnowledgeMobilizationHubPage() {
     };
   }, [ordered, progress]);
 
+  const programTrackCount = useMemo(() => {
+    if (!curriculumReady) return null;
+    return page.programs.filter(
+      (p) => modulesForProgramSlugs(p.moduleSlugs, ordered).length > 0,
+    ).length;
+  }, [curriculumReady, page.programs, ordered]);
+
+  const showAdmin = authReady && canAccessAdmin(role);
+
   const renderHero = () => (
-    <header className="relative overflow-hidden border-b border-border/40 bg-linear-to-b from-slate-50/95 via-background to-background">
+    <section className="relative overflow-hidden border-b border-border/40 bg-linear-to-b from-slate-50/95 via-background to-background">
       <div
-        className="pointer-events-none absolute inset-0 bg-grid-black/5 mask-[linear-gradient(180deg,white,transparent_75%)]"
+        className="pointer-events-none absolute inset-0 bg-grid-black/5 mask-[linear-gradient(180deg,white,transparent_80%)]"
         aria-hidden
       />
-      <div className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-brand/10 blur-3xl" aria-hidden />
-      <div className="pointer-events-none absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-consciousness/8 blur-3xl" aria-hidden />
+      <div
+        className="pointer-events-none absolute -right-24 top-0 h-[26rem] w-[26rem] rounded-full bg-brand/12 blur-3xl"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute -left-16 bottom-0 h-72 w-72 rounded-full bg-cognition/10 blur-3xl"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute left-1/2 top-1/3 h-56 w-56 -translate-x-1/2 rounded-full bg-care/8 blur-3xl"
+        aria-hidden
+      />
 
-      <div className="container relative mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto max-w-3xl text-center lg:mx-0 lg:max-w-2xl lg:text-left"
-        >
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-brand sm:text-[13px]">
-            <GraduationCap className="h-3.5 w-3.5" aria-hidden />
-            {page.heroBadge}
-          </div>
-          <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-[3.25rem] lg:leading-[1.08]">
-            <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
-              {page.heroTitle}
-            </span>
-            <span className="mt-3 block text-2xl font-semibold leading-snug tracking-tight text-muted-foreground sm:text-3xl lg:text-[1.65rem]">
-              {page.heroSubtitle}
-            </span>
-          </h1>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-[17px] lg:mx-0">
-            {page.heroIntro}
-          </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-2 lg:justify-start">
-            <div className="inline-flex items-center gap-2 rounded-lg border border-cognition/20 bg-cognition/5 px-3 py-2 text-xs font-medium text-cognition sm:text-sm">
-              <BookOpen className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
-              {page.heroPill1}
+      <div className="container relative mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:py-24">
+        <div className="grid items-center gap-12 lg:grid-cols-[1fr_minmax(280px,400px)] lg:gap-14">
+          <motion.div
+            initial={fadeUp}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: reduceMotion ? 0 : 0.5,
+              ease: spring,
+            }}
+            className="text-center lg:text-left"
+          >
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand sm:text-[13px]">
+              <GraduationCap className="h-3.5 w-3.5 shrink-0" aria-hidden />
+              {page.heroBadge}
             </div>
-            <div className="inline-flex items-center gap-2 rounded-lg border border-consciousness/20 bg-consciousness/5 px-3 py-2 text-xs font-medium text-consciousness sm:text-sm">
-              <Award className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
-              {page.heroPill2}
+            <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-[3.25rem] lg:leading-[1.08]">
+              <span className="bg-linear-to-r from-cognition via-consciousness to-care bg-clip-text text-transparent">
+                {page.heroTitle}
+              </span>
+              <span className="mt-3 block text-2xl font-semibold leading-snug tracking-tight text-muted-foreground sm:text-3xl lg:text-[1.65rem]">
+                {page.heroSubtitle}
+              </span>
+            </h1>
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
+              {page.heroIntro}
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-2 lg:justify-start">
+              <span className="inline-flex items-center gap-2 rounded-xl border border-cognition/20 bg-cognition/5 px-3 py-2 text-xs font-medium text-cognition sm:text-sm">
+                <BookOpen className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                {page.heroPill1}
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-xl border border-consciousness/20 bg-consciousness/5 px-3 py-2 text-xs font-medium text-consciousness sm:text-sm">
+                <Award className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                {page.heroPill2}
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-xl border border-care/20 bg-care/5 px-3 py-2 text-xs font-medium text-care sm:text-sm">
+                <CheckCircle2 className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
+                {page.heroPill3}
+              </span>
             </div>
-            <div className="inline-flex items-center gap-2 rounded-lg border border-care/20 bg-care/5 px-3 py-2 text-xs font-medium text-care sm:text-sm">
-              <CheckCircle2 className="h-4 w-4 shrink-0 opacity-90" aria-hidden />
-              {page.heroPill3}
+            <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
+              <Link
+                href="#km-learning-hub"
+                className="inline-flex items-center gap-2 rounded-2xl bg-brand px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-brand-deep"
+              >
+                View learning path
+                <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
+              </Link>
+              <Link
+                href="/knowledge-mobilization/start/"
+                className="inline-flex items-center gap-2 rounded-2xl border border-border/80 bg-background px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-brand/30 hover:bg-muted/40"
+              >
+                New learner setup
+              </Link>
             </div>
-          </div>
-        </motion.div>
+            {showAdmin ? (
+              <div className="mt-4 flex justify-center lg:justify-start">
+                <Link
+                  href="/admin/knowledge-mobilization/"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-brand/25 bg-brand/10 px-5 py-2.5 text-sm font-semibold text-brand transition hover:border-brand/40 hover:bg-brand/15"
+                >
+                  Manage curriculum
+                </Link>
+              </div>
+            ) : null}
+          </motion.div>
+
+          <motion.div
+            initial={fadeUp}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: reduceMotion ? 0 : 0.55,
+              delay: reduceMotion ? 0 : 0.06,
+              ease: spring,
+            }}
+            className="relative mx-auto w-full max-w-md lg:mx-0"
+          >
+            <div
+              className="absolute -inset-1 rounded-[1.35rem] bg-linear-to-br from-cognition/15 via-brand/12 to-care/15 opacity-90 blur-sm"
+              aria-hidden
+            />
+            <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-card/90 p-6 shadow-lg ring-1 ring-black/[0.04] backdrop-blur-md sm:p-7">
+              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-brand/12 text-brand">
+                <GraduationCap className="h-5 w-5" aria-hidden />
+              </div>
+              <dl className="grid grid-cols-3 gap-3 sm:gap-4">
+                <div className="rounded-2xl border border-border/50 bg-muted/20 px-3 py-3">
+                  <dt className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[11px]">
+                    Modules
+                  </dt>
+                  <dd className="mt-1 text-xl font-bold tabular-nums text-foreground sm:text-2xl">
+                    {!curriculumReady ? "—" : ordered.length}
+                  </dd>
+                </div>
+                <div className="rounded-2xl border border-border/50 bg-muted/20 px-3 py-3">
+                  <dt className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[11px]">
+                    Tracks
+                  </dt>
+                  <dd className="mt-1 text-xl font-bold tabular-nums text-consciousness sm:text-2xl">
+                    {!curriculumReady || programTrackCount === null
+                      ? "—"
+                      : programTrackCount}
+                  </dd>
+                </div>
+                <div className="rounded-2xl border border-border/50 bg-muted/20 px-3 py-3">
+                  <dt className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[11px]">
+                    Progress
+                  </dt>
+                  <dd className="mt-1 text-xl font-bold tabular-nums text-care sm:text-2xl">
+                    {!curriculumReady || !kmReady
+                      ? "—"
+                      : `${progressStats.passed}/${progressStats.total}`}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </header>
+    </section>
   );
 
   if (!curriculumReady || !kmReady) {

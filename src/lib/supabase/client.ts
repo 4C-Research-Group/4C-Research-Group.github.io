@@ -1,9 +1,19 @@
-import { createBrowserClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "./database.types";
 
 let browserClient: SupabaseClient<Database> | null = null;
 
+/**
+ * Browser-only Supabase client.
+ *
+ * Uses implicit auth flow (not PKCE) so email links (signup confirm, password
+ * reset) work when opened from mail on another device or browser. PKCE
+ * requires the code verifier stored where `resetPasswordForEmail` ran;
+ * `@supabase/ssr`’s createBrowserClient also forces PKCE, which breaks that.
+ *
+ * Session is stored in `localStorage` (default when `storage` is set).
+ */
 export function getSupabaseBrowserClient(): SupabaseClient<Database> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_KEY;
@@ -13,10 +23,14 @@ export function getSupabaseBrowserClient(): SupabaseClient<Database> {
     );
   }
   if (!browserClient) {
-    browserClient = createBrowserClient<Database>(url, key, {
+    const isBrowser = typeof window !== "undefined";
+    browserClient = createClient<Database>(url, key, {
       auth: {
-        flowType: "pkce",
-        detectSessionInUrl: true,
+        flowType: "implicit",
+        detectSessionInUrl: isBrowser,
+        persistSession: isBrowser,
+        autoRefreshToken: isBrowser,
+        ...(isBrowser ? { storage: window.localStorage } : {}),
       },
     });
   }

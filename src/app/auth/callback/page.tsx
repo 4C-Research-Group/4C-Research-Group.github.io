@@ -25,8 +25,18 @@ export default function AuthCallbackPage() {
           return;
         }
 
-        const code = url.searchParams.get("code");
+        // Implicit flow: tokens in hash are applied when the client reads the session.
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (cancelled) return;
+        if (session) {
+          router.replace("/dashboard/");
+          router.refresh();
+          return;
+        }
 
+        const code = url.searchParams.get("code");
         if (code) {
           const { error } = await supabase.auth.exchangeCodeForSession(code);
           if (cancelled) return;
@@ -34,16 +44,6 @@ export default function AuthCallbackPage() {
             setMessage(error.message);
             return;
           }
-          router.replace("/dashboard/");
-          router.refresh();
-          return;
-        }
-
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        if (cancelled) return;
-        if (session) {
           router.replace("/dashboard/");
           router.refresh();
           return;

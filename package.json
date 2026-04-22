@@ -15,7 +15,6 @@
     "seed-research-page": "tsx scripts/seed-research-page.ts"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.10.0",
     "@supabase/supabase-js": "^2.102.1",
     "@tiptap/extension-image": "^3.22.3",
     "@tiptap/extension-link": "^3.22.3",

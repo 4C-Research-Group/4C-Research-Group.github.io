@@ -11,6 +11,8 @@ function isAuthPath(pathname: string | null): boolean {
     pathname.startsWith("/login/") ||
     pathname === "/signup" ||
     pathname.startsWith("/signup/") ||
+    pathname === "/forgot-password" ||
+    pathname.startsWith("/forgot-password/") ||
     pathname === "/auth" ||
     pathname.startsWith("/auth/")
   );

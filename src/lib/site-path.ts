@@ -24,3 +24,14 @@ export function getAuthCallbackAbsoluteUrl(): string {
   const { origin } = window.location;
   return `${origin}${prefix}/auth/callback/`;
 }
+
+/** Redirect target for Supabase password recovery emails (PKCE). Allowlist in Supabase Auth. */
+export function getPasswordResetRedirectAbsoluteUrl(): string {
+  const prefix = SITE_BASE_PATH ? `${SITE_BASE_PATH}` : "";
+  if (typeof window === "undefined") {
+    const site = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ?? "";
+    return `${site}${prefix}/auth/reset-password/`;
+  }
+  const { origin } = window.location;
+  return `${origin}${prefix}/auth/reset-password/`;
+}

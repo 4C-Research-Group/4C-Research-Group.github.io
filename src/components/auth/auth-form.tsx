@@ -14,34 +14,19 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { friendlyAuthMessage } from "@/lib/auth/friendly-auth-message";
+import {
+  getSignupPasswordPolicyError,
+  signupPasswordPolicyStatus,
+} from "@/lib/auth/password-policy";
 import { getAuthCallbackAbsoluteUrl } from "@/lib/site-path";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { AuthCardFrame } from "./auth-card-frame";
 
 export type AuthFormMode = "login" | "signup";
 
 export interface AuthFormProps {
   mode: AuthFormMode;
-}
-
-function friendlyAuthMessage(message: string): string {
-  const m = message.toLowerCase();
-  if (
-    m.includes("rate limit") ||
-    m.includes("email rate") ||
-    m.includes("too many requests")
-  ) {
-    return (
-      "This project has sent too many auth emails for the moment (Supabase’s default mail cap). " +
-      "Wait a bit and retry; for local testing turn off \"Confirm email\" under Authentication → Email; " +
-      "for production add Custom SMTP under Project Settings → Auth."
-    );
-  }
-  if (m.includes("email not confirmed")) {
-    return (
-      "Confirm your email first (check inbox/spam), or ask an admin to disable \"Confirm email\" for testing."
-    );
-  }
-  return message;
 }
 
 function safeInternalNext(next: string | null): string | null {
@@ -51,42 +36,6 @@ function safeInternalNext(next: string | null): string | null {
   return t;
 }
 
-type SignupPasswordPolicyStatus = {
-  minLength: boolean;
-  hasLetter: boolean;
-  hasNumber: boolean;
-  hasSpecial: boolean;
-};
-
-/** Sign-up only: min 8 chars, at least one letter, one number, one symbol (non–letter/digit/space). */
-function signupPasswordPolicyStatus(
-  password: string
-): SignupPasswordPolicyStatus {
-  return {
-    minLength: password.length >= 8,
-    hasLetter: /\p{L}/u.test(password),
-    hasNumber: /\p{N}/u.test(password),
-    hasSpecial: /[^\p{L}\p{N}\s]/u.test(password),
-  };
-}
-
-function getSignupPasswordPolicyError(password: string): string | null {
-  const s = signupPasswordPolicyStatus(password);
-  if (!s.minLength) {
-    return "Password must be at least 8 characters.";
-  }
-  if (!s.hasLetter) {
-    return "Password must include at least one letter.";
-  }
-  if (!s.hasNumber) {
-    return "Password must include at least one number.";
-  }
-  if (!s.hasSpecial) {
-    return "Password must include at least one special character (e.g. !@#$%).";
-  }
-  return null;
-}
-
 export default function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -94,6 +43,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const authQuery = searchParams.toString();
   const signupHref = authQuery ? `/signup/?${authQuery}` : "/signup/";
   const loginHref = authQuery ? `/login/?${authQuery}` : "/login/";
+  const forgotHref = authQuery
+    ? `/forgot-password/?${authQuery}`
+    : "/forgot-password/";
   const isLogin = mode === "login";
 
   const inputBase =
@@ -242,26 +194,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
   }
 
   return (
-    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 py-12">
-      <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-muted/40 via-background to-muted/30" />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.35] mask-[linear-gradient(180deg,black,transparent_80%)] bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-size-[48px_48px]"
-        aria-hidden
-      />
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-20 left-1/4 h-64 w-64 rounded-full bg-cognition/12 blur-3xl" />
-        <div className="absolute top-32 right-0 h-80 w-80 rounded-full bg-consciousness/10 blur-3xl" />
-        <div className="absolute bottom-12 left-1/3 h-72 w-72 rounded-full bg-care/10 blur-3xl" />
-      </div>
-
-      <div className="relative z-10 w-full max-w-[420px]">
-        <div className="relative overflow-hidden rounded-3xl border border-border/70 bg-card/80 p-8 shadow-xl shadow-black/[0.06] ring-1 ring-black/[0.04] backdrop-blur-xl sm:p-9">
-          <div
-            className="pointer-events-none absolute inset-x-10 top-0 h-px bg-linear-to-r from-transparent via-brand/55 to-transparent"
-            aria-hidden
-          />
-
-          <div className="mb-8 flex flex-col items-center text-center">
+    <AuthCardFrame>
+      <div className="mb-8 flex flex-col items-center text-center">
             <Link
               href="/"
               className="group mb-5 flex items-center gap-2.5 rounded-2xl outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2"
@@ -361,6 +295,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
                       <Eye className="h-4 w-4" />
                     )}
                   </button>
+                </div>
+                <div className="mt-2 text-right">
+                  <Link
+                    href={forgotHref}
+                    className="text-xs font-semibold text-brand underline decoration-brand/25 underline-offset-4 transition hover:decoration-brand/50"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
               </div>
 
@@ -566,17 +508,15 @@ export default function AuthForm({ mode }: AuthFormProps) {
             )}
           </p>
 
-          <p className="mt-5 text-center">
-            <Link
-              href="/"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-4 py-2 text-sm font-medium text-muted-foreground transition hover:border-border hover:bg-muted/50 hover:text-foreground"
-            >
-              <ArrowLeft className="h-4 w-4" aria-hidden />
-              Back to site
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+      <p className="mt-5 text-center">
+        <Link
+          href="/"
+          className="inline-flex items-center justify-center gap-2 rounded-full border border-transparent px-4 py-2 text-sm font-medium text-muted-foreground transition hover:border-border hover:bg-muted/50 hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden />
+          Back to site
+        </Link>
+      </p>
+    </AuthCardFrame>
   );
 }

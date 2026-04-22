@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   Check,
   Circle,
+  KeyRound,
   Loader2,
   Mail,
   Lock,
@@ -63,6 +64,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showOtpSignIn, setShowOtpSignIn] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
 
   const signupPasswordChecks = useMemo(
     () => signupPasswordPolicyStatus(password),
@@ -88,6 +92,99 @@ export default function AuthForm({ mode }: AuthFormProps) {
       alive = false;
     };
   }, [router, nextAfterAuth]);
+
+  function openOtpSignIn() {
+    setShowOtpSignIn(true);
+    setError(null);
+    setInfo(null);
+    setOtpCode("");
+    setOtpSent(false);
+  }
+
+  function closeOtpSignIn() {
+    setShowOtpSignIn(false);
+    setError(null);
+    setInfo(null);
+    setOtpCode("");
+    setOtpSent(false);
+  }
+
+  async function sendEmailOtpRequest(): Promise<void> {
+    setError(null);
+    setInfo(null);
+
+    if (!email.trim()) {
+      setError("Enter your email.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error: otpErr } = await supabase.auth.signInWithOtp({
+        email: email.trim(),
+        options: {
+          shouldCreateUser: false,
+        },
+      });
+      if (otpErr) {
+        setError(friendlyAuthMessage(otpErr.message));
+        return;
+      }
+      setOtpSent(true);
+      setOtpCode("");
+      setInfo(
+        "Check your email for a one-time code, then enter it below. The message may take a minute and can land in spam."
+      );
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Could not send code.";
+      setError(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function onSendEmailOtp(e: React.FormEvent) {
+    e.preventDefault();
+    await sendEmailOtpRequest();
+  }
+
+  async function onVerifyEmailOtp(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setInfo(null);
+
+    if (!email.trim()) {
+      setError("Enter your email.");
+      return;
+    }
+    const token = otpCode.replace(/\s/g, "");
+    if (token.length < 6) {
+      setError("Enter the full code from your email (usually 6 digits).");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error: verErr } = await supabase.auth.verifyOtp({
+        email: email.trim(),
+        token,
+        type: "email",
+      });
+      if (verErr) {
+        setError(friendlyAuthMessage(verErr.message));
+        return;
+      }
+      router.push(nextAfterAuth ?? "/dashboard/");
+      router.refresh();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Sign-in failed.";
+      setError(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   async function onLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -221,7 +318,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
             </h1>
             <p className="mt-2 max-w-sm text-pretty text-sm leading-relaxed text-muted-foreground">
               {isLogin
-                ? "Sign in with your email and password to continue."
+                ? showOtpSignIn
+                  ? "We will email you a one-time code. Use an account that already exists on this site."
+                  : "Sign in with your email and password to continue."
                 : "Join the site to save progress and take part in the community."}
             </p>
           </div>
@@ -241,80 +340,202 @@ export default function AuthForm({ mode }: AuthFormProps) {
           )}
 
           {isLogin ? (
-            <form onSubmit={onLogin} className="space-y-5">
-              <div>
-                <label htmlFor="email" className={labelClass}>
-                  Email
-                </label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-3.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
-                    <Mail className="h-4 w-4" aria-hidden />
-                  </span>
-                  <input
-                    id="email"
-                    type="email"
-                    autoComplete="email"
-                    disabled={isLoading}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className={inputClassEmail}
-                  />
-                </div>
-              </div>
+            <div className="space-y-5">
+              {showOtpSignIn ? (
+                <form
+                  onSubmit={otpSent ? onVerifyEmailOtp : onSendEmailOtp}
+                  className="space-y-5"
+                >
+                  <div className="text-center">
+                    <button
+                      type="button"
+                      onClick={closeOtpSignIn}
+                      className="cursor-pointer text-xs font-semibold text-brand underline decoration-brand/25 underline-offset-4 transition hover:decoration-brand/50"
+                    >
+                      Back to password sign-in
+                    </button>
+                  </div>
+                  <div>
+                    <label htmlFor="otp-email" className={labelClass}>
+                      Email
+                    </label>
+                    <div className="relative">
+                      <span className="pointer-events-none absolute left-3.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
+                        <Mail className="h-4 w-4" aria-hidden />
+                      </span>
+                      <input
+                        id="otp-email"
+                        type="email"
+                        autoComplete="email"
+                        disabled={isLoading || otpSent}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        className={inputClassEmail}
+                      />
+                    </div>
+                  </div>
 
-              <div>
-                <label htmlFor="password" className={labelClass}>
-                  Password
-                </label>
-                <div className="relative">
-                  <span className="pointer-events-none absolute left-3.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
-                    <Lock className="h-4 w-4" aria-hidden />
-                  </span>
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    autoComplete="current-password"
-                    disabled={isLoading}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className={inputClassPassword}
-                  />
+                  {otpSent ? (
+                    <>
+                      <div>
+                        <label htmlFor="otp-code" className={labelClass}>
+                          One-time code
+                        </label>
+                        <div className="relative">
+                          <span className="pointer-events-none absolute left-3.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
+                            <KeyRound className="h-4 w-4" aria-hidden />
+                          </span>
+                          <input
+                            id="otp-code"
+                            type="text"
+                            inputMode="numeric"
+                            autoComplete="one-time-code"
+                            disabled={isLoading}
+                            value={otpCode}
+                            onChange={(e) =>
+                              setOtpCode(e.target.value.replace(/\s/g, ""))
+                            }
+                            placeholder="123456"
+                            maxLength={12}
+                            className={inputClassEmail}
+                          />
+                        </div>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={isLoading}
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand py-3.5 text-sm font-semibold text-primary-foreground shadow-md shadow-brand/25 transition hover:bg-brand-deep hover:shadow-lg hover:shadow-brand/20 disabled:opacity-60"
+                      >
+                        {isLoading && (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        )}
+                        Verify and sign in
+                      </button>
+                      <p className="text-center text-xs text-muted-foreground">
+                        Wrong email?{" "}
+                        <button
+                          type="button"
+                          className="font-semibold text-brand underline decoration-brand/25 underline-offset-4 hover:decoration-brand/50"
+                          onClick={() => {
+                            setOtpSent(false);
+                            setOtpCode("");
+                            setInfo(null);
+                            setError(null);
+                          }}
+                        >
+                          Start over
+                        </button>
+                        {" · "}
+                        <button
+                          type="button"
+                          className="font-semibold text-brand underline decoration-brand/25 underline-offset-4 hover:decoration-brand/50"
+                          disabled={isLoading}
+                          onClick={() => {
+                            void sendEmailOtpRequest();
+                          }}
+                        >
+                          Resend code
+                        </button>
+                      </p>
+                    </>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-brand via-brand to-consciousness py-3.5 text-sm font-semibold text-primary-foreground shadow-md shadow-brand/20 transition hover:opacity-[0.97] hover:shadow-lg hover:shadow-brand/25 disabled:opacity-60"
+                    >
+                      {isLoading && (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      )}
+                      Send code
+                    </button>
+                  )}
+                </form>
+              ) : (
+                <form onSubmit={onLogin} className="space-y-5">
+                  <div>
+                    <label htmlFor="email" className={labelClass}>
+                      Email
+                    </label>
+                    <div className="relative">
+                      <span className="pointer-events-none absolute left-3.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
+                        <Mail className="h-4 w-4" aria-hidden />
+                      </span>
+                      <input
+                        id="email"
+                        type="email"
+                        autoComplete="email"
+                        disabled={isLoading}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        className={inputClassEmail}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="password" className={labelClass}>
+                      Password
+                    </label>
+                    <div className="relative">
+                      <span className="pointer-events-none absolute left-3.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
+                        <Lock className="h-4 w-4" aria-hidden />
+                      </span>
+                      <input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        autoComplete="current-password"
+                        disabled={isLoading}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className={inputClassPassword}
+                      />
+                      <button
+                        type="button"
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                        className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted/80 hover:text-foreground"
+                        onClick={() => setShowPassword((s) => !s)}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1.5">
+                      <Link
+                        href={forgotHref}
+                        className="text-xs font-semibold text-brand underline decoration-brand/25 underline-offset-4 transition hover:decoration-brand/50"
+                      >
+                        Forgot password?
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={openOtpSignIn}
+                        className="cursor-pointer text-xs font-semibold text-brand underline decoration-brand/25 underline-offset-4 transition hover:decoration-brand/50"
+                      >
+                        Get a one-time code to sign in
+                      </button>
+                    </div>
+                  </div>
+
                   <button
-                    type="button"
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
-                    className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted/80 hover:text-foreground"
-                    onClick={() => setShowPassword((s) => !s)}
+                    type="submit"
+                    disabled={isLoading}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand py-3.5 text-sm font-semibold text-primary-foreground shadow-md shadow-brand/25 transition hover:bg-brand-deep hover:shadow-lg hover:shadow-brand/20 disabled:opacity-60"
                   >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
+                    {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+                    Sign in
                   </button>
-                </div>
-                <div className="mt-2 text-right">
-                  <Link
-                    href={forgotHref}
-                    className="text-xs font-semibold text-brand underline decoration-brand/25 underline-offset-4 transition hover:decoration-brand/50"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand py-3.5 text-sm font-semibold text-primary-foreground shadow-md shadow-brand/25 transition hover:bg-brand-deep hover:shadow-lg hover:shadow-brand/20 disabled:opacity-60"
-              >
-                {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-                Sign in
-              </button>
-            </form>
+                </form>
+              )}
+            </div>
           ) : (
             <form onSubmit={onSignup} className="space-y-5">
               <div>

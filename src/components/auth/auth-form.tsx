@@ -1,10 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Loader2, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  Circle,
+  Loader2,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getAuthCallbackAbsoluteUrl } from "@/lib/site-path";
 
@@ -42,6 +51,42 @@ function safeInternalNext(next: string | null): string | null {
   return t;
 }
 
+type SignupPasswordPolicyStatus = {
+  minLength: boolean;
+  hasLetter: boolean;
+  hasNumber: boolean;
+  hasSpecial: boolean;
+};
+
+/** Sign-up only: min 8 chars, at least one letter, one number, one symbol (non–letter/digit/space). */
+function signupPasswordPolicyStatus(
+  password: string
+): SignupPasswordPolicyStatus {
+  return {
+    minLength: password.length >= 8,
+    hasLetter: /\p{L}/u.test(password),
+    hasNumber: /\p{N}/u.test(password),
+    hasSpecial: /[^\p{L}\p{N}\s]/u.test(password),
+  };
+}
+
+function getSignupPasswordPolicyError(password: string): string | null {
+  const s = signupPasswordPolicyStatus(password);
+  if (!s.minLength) {
+    return "Password must be at least 8 characters.";
+  }
+  if (!s.hasLetter) {
+    return "Password must include at least one letter.";
+  }
+  if (!s.hasNumber) {
+    return "Password must include at least one number.";
+  }
+  if (!s.hasSpecial) {
+    return "Password must include at least one special character (e.g. !@#$%).";
+  }
+  return null;
+}
+
 export default function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -66,6 +111,11 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [info, setInfo] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const signupPasswordChecks = useMemo(
+    () => signupPasswordPolicyStatus(password),
+    [password]
+  );
 
   useEffect(() => {
     let alive = true;
@@ -131,8 +181,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
       setError("Enter your email.");
       return;
     }
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+    const policyErr = getSignupPasswordPolicyError(password);
+    if (policyErr) {
+      setError(policyErr);
       return;
     }
     if (password !== confirmPassword) {
@@ -360,7 +411,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                     disabled={isLoading}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="At least 6 characters"
+                    placeholder="8+ chars: letter, number, symbol"
                     className={inputClassPassword}
                   />
                   <button
@@ -378,6 +429,71 @@ export default function AuthForm({ mode }: AuthFormProps) {
                     )}
                   </button>
                 </div>
+                {password.length > 0 && (
+                  <div role="status" aria-live="polite" aria-atomic="false">
+                    <ul
+                      className="mt-3 list-none space-y-1.5 p-0 text-xs leading-snug"
+                      aria-label="Password requirements"
+                    >
+                      {(
+                        [
+                          {
+                            ok: signupPasswordChecks.minLength,
+                            label: "At least 8 characters",
+                          },
+                          {
+                            ok: signupPasswordChecks.hasLetter,
+                            label: "Includes a letter",
+                          },
+                          {
+                            ok: signupPasswordChecks.hasNumber,
+                            label: "Includes a number",
+                          },
+                          {
+                            ok: signupPasswordChecks.hasSpecial,
+                            label: "Includes a special character (!@#$%…)",
+                          },
+                        ] as const
+                      ).map(({ ok, label }) => (
+                        <li
+                          key={label}
+                          className="flex items-start gap-2"
+                          aria-label={`${label}: ${ok ? "met" : "not met yet"}`}
+                        >
+                          <span
+                            className={
+                              ok
+                                ? "mt-0.5 shrink-0 text-brand"
+                                : "mt-0.5 shrink-0 text-muted-foreground/45"
+                            }
+                            aria-hidden
+                          >
+                            {ok ? (
+                              <Check
+                                className="h-3.5 w-3.5"
+                                strokeWidth={2.5}
+                              />
+                            ) : (
+                              <Circle
+                                className="h-3.5 w-3.5"
+                                strokeWidth={1.75}
+                              />
+                            )}
+                          </span>
+                          <span
+                            className={
+                              ok
+                                ? "text-foreground"
+                                : "text-muted-foreground"
+                            }
+                          >
+                            {label}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
 
               <div>

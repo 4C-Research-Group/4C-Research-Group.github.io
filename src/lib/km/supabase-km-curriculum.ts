@@ -14,6 +14,7 @@ type TopicRow = {
   paragraphs: unknown;
   embed_url: string | null;
   video_caption: string | null;
+  media_items: unknown;
 };
 
 type QuestionRow = {
@@ -40,30 +41,45 @@ function parseStringArray(raw: unknown): string[] {
 
 function mapTopic(r: TopicRow): KMTopic | null {
   const paragraphs = parseStringArray(r.paragraphs);
-  if (r.topic_type === "video") {
+  const mediaItems = Array.isArray(r.media_items)
+    ? r.media_items
+        .map((it) => {
+          if (!it || typeof it !== "object") return null;
+          const obj = it as { url?: unknown; caption?: unknown };
+          const url = typeof obj.url === "string" ? obj.url.trim() : "";
+          const caption =
+            typeof obj.caption === "string" ? obj.caption.trim() : "";
+          return url ? { url, caption } : null;
+        })
+        .filter((it): it is { url: string; caption: string } => it != null)
+    : [];
+  if (mediaItems.length === 0) {
     const embed = (r.embed_url ?? "").trim();
+    const caption = (r.video_caption ?? "").trim();
+    if (embed) mediaItems.push({ url: embed, caption });
+  }
+  if (r.topic_type === "video") {
+    const first = mediaItems[0];
     return {
       id: r.topic_key,
       title: r.title,
       type: "video",
       paragraphs,
-      ...(embed ? { embedUrl: embed } : {}),
-      ...(r.video_caption?.trim()
-        ? { videoCaption: r.video_caption.trim() }
-        : {}),
+      ...(first?.url ? { embedUrl: first.url } : {}),
+      ...(first?.caption ? { videoCaption: first.caption } : {}),
+      ...(mediaItems.length ? { mediaItems } : {}),
     };
   }
   if (r.topic_type === "audio") {
-    const embed = (r.embed_url ?? "").trim();
+    const first = mediaItems[0];
     return {
       id: r.topic_key,
       title: r.title,
       type: "audio",
       paragraphs,
-      ...(embed ? { embedUrl: embed } : {}),
-      ...(r.video_caption?.trim()
-        ? { audioCaption: r.video_caption.trim() }
-        : {}),
+      ...(first?.url ? { embedUrl: first.url } : {}),
+      ...(first?.caption ? { audioCaption: first.caption } : {}),
+      ...(mediaItems.length ? { mediaItems } : {}),
     };
   }
   if (r.topic_type === "text") {
@@ -143,7 +159,8 @@ export async function fetchKmCurriculumFromSupabase(): Promise<FetchKmCurriculum
           title,
           paragraphs,
           embed_url,
-          video_caption
+          video_caption,
+          media_items
         ),
         km_questions (
           question_key,

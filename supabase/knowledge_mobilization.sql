@@ -24,6 +24,7 @@ create table if not exists public.km_topics (
   paragraphs jsonb not null default '[]'::jsonb,
   embed_url text,
   video_caption text,
+  media_items jsonb not null default '[]'::jsonb,
   unique (module_id, topic_key)
 );
 

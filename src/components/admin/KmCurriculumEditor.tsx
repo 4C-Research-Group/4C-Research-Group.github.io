@@ -279,13 +279,13 @@ export default function KmCurriculumEditor() {
             adding or removing topics and questions). After a successful save,
             public learners see updates on the next load.
             Topics can be <strong className="text-foreground">text</strong>,{" "}
-            <strong className="text-foreground">video</strong> (URL or upload to{" "}
+            <strong className="text-foreground">video</strong> (one or more URLs/uploads to{" "}
             <code className="rounded bg-muted px-1">km-videos</code> —{" "}
             <code className="rounded bg-muted px-0.5 text-xs">
               storage_km_videos.sql
             </code>
             ), or <strong className="text-foreground">audio</strong> / podcast-style
-            (URL or upload to{" "}
+            (one or more URLs/uploads to{" "}
             <code className="rounded bg-muted px-1">km-audio</code> —{" "}
             <code className="rounded bg-muted px-0.5 text-xs">
               storage_km_audio.sql
@@ -879,6 +879,26 @@ function TopicEditor({
   const [audioUploadBusy, setAudioUploadBusy] = useState(false);
   const [audioUploadErr, setAudioUploadErr] = useState<string | null>(null);
   const paraText = paragraphsToText(topic.paragraphs);
+  const mediaItems = topic.mediaItems ?? [];
+  function updateMediaItem(
+    index: number,
+    patch: Partial<{ url: string; caption: string }>,
+  ) {
+    const next = mediaItems.map((it, i) => (i === index ? { ...it, ...patch } : it));
+    onChange({ ...topic, mediaItems: next });
+  }
+  function removeMediaItem(index: number) {
+    onChange({
+      ...topic,
+      mediaItems: mediaItems.filter((_, i) => i !== index),
+    });
+  }
+  function addMediaItem(url = "", caption = "") {
+    onChange({
+      ...topic,
+      mediaItems: [...mediaItems, { url, caption }],
+    });
+  }
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
@@ -943,18 +963,54 @@ function TopicEditor({
       />
       {topic.topicType === "video" ? (
         <>
+          <div className="space-y-3">
+            {mediaItems.map((media, mi) => (
+              <div
+                key={`video-${mi}`}
+                className="rounded-xl border border-border/70 bg-muted/20 p-3"
+              >
+                <div className="mb-2 flex items-center justify-between">
+                  <p className="text-xs font-semibold text-foreground">
+                    Video {mi + 1}
+                  </p>
+                  <button
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => removeMediaItem(mi)}
+                    className="text-xs font-medium text-destructive"
+                  >
+                    Remove
+                  </button>
+                </div>
+                <Field
+                  label="Video URL (YouTube/Vimeo/embed/Supabase URL/.mp4)"
+                  value={media.url}
+                  onChange={(url) => updateMediaItem(mi, { url })}
+                />
+                <Field
+                  className="mt-2"
+                  label="Video caption (optional)"
+                  value={media.caption}
+                  onChange={(caption) => updateMediaItem(mi, { caption })}
+                />
+              </div>
+            ))}
+          </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end">
-            <div className="min-w-0 flex-1">
-              <Field
-                label="Video URL (YouTube watch or embed, youtu.be, Vimeo, Supabase public URL, or .mp4 — watch links are converted to embeds automatically)"
-                value={topic.embedUrl}
-                onChange={(embedUrl) => onChange({ ...topic, embedUrl })}
-              />
+            <div className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-muted-foreground">Add media</span>
+              <button
+                type="button"
+                disabled={disabled}
+                onClick={() => addMediaItem()}
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition hover:bg-muted/60 disabled:opacity-50"
+              >
+                <Plus className="h-4 w-4 shrink-0" aria-hidden />
+                Add video URL
+              </button>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-medium text-muted-foreground">
-                Or upload
-              </span>
+              <span className="text-xs font-medium text-muted-foreground">Or upload</span>
               <input
                 ref={videoFileInputRef}
                 type="file"
@@ -972,7 +1028,7 @@ function TopicEditor({
                       file,
                       moduleSlug,
                     );
-                    onChange({ ...topic, embedUrl: publicUrl });
+                    addMediaItem(publicUrl, "");
                   } catch (err) {
                     setVideoUploadErr(
                       err instanceof Error ? err.message : "Upload failed",
@@ -1005,27 +1061,58 @@ function TopicEditor({
             bucket (max 100MB). Admins need the storage policies from{" "}
             <code className="rounded bg-muted px-0.5">storage_km_videos.sql</code>.
           </p>
-          <Field
-            label="Video caption (optional)"
-            value={topic.videoCaption}
-            onChange={(videoCaption) => onChange({ ...topic, videoCaption })}
-          />
         </>
       ) : null}
       {topic.topicType === "audio" ? (
         <>
+          <div className="space-y-3">
+            {mediaItems.map((media, mi) => (
+              <div
+                key={`audio-${mi}`}
+                className="rounded-xl border border-border/70 bg-muted/20 p-3"
+              >
+                <div className="mb-2 flex items-center justify-between">
+                  <p className="text-xs font-semibold text-foreground">
+                    Audio {mi + 1}
+                  </p>
+                  <button
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => removeMediaItem(mi)}
+                    className="text-xs font-medium text-destructive"
+                  >
+                    Remove
+                  </button>
+                </div>
+                <Field
+                  label="Audio URL (MP3/M4A/embed/Supabase URL)"
+                  value={media.url}
+                  onChange={(url) => updateMediaItem(mi, { url })}
+                />
+                <Field
+                  className="mt-2"
+                  label="Episode intro or source line (optional)"
+                  value={media.caption}
+                  onChange={(caption) => updateMediaItem(mi, { caption })}
+                />
+              </div>
+            ))}
+          </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end">
-            <div className="min-w-0 flex-1">
-              <Field
-                label="Audio URL (MP3/M4A public link, Supabase URL, or embed iframe src)"
-                value={topic.embedUrl}
-                onChange={(embedUrl) => onChange({ ...topic, embedUrl })}
-              />
+            <div className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-muted-foreground">Add media</span>
+              <button
+                type="button"
+                disabled={disabled}
+                onClick={() => addMediaItem()}
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition hover:bg-muted/60 disabled:opacity-50"
+              >
+                <Plus className="h-4 w-4 shrink-0" aria-hidden />
+                Add audio URL
+              </button>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-medium text-muted-foreground">
-                Or upload
-              </span>
+              <span className="text-xs font-medium text-muted-foreground">Or upload</span>
               <input
                 ref={audioFileInputRef}
                 type="file"
@@ -1043,7 +1130,7 @@ function TopicEditor({
                       file,
                       moduleSlug,
                     );
-                    onChange({ ...topic, embedUrl: publicUrl });
+                    addMediaItem(publicUrl, "");
                   } catch (err) {
                     setAudioUploadErr(
                       err instanceof Error ? err.message : "Upload failed",
@@ -1076,11 +1163,6 @@ function TopicEditor({
             (max 100MB). Run <code className="rounded bg-muted px-0.5">storage_km_audio.sql</code>{" "}
             in Supabase.
           </p>
-          <Field
-            label="Episode intro or source line (optional, shown under player)"
-            value={topic.videoCaption}
-            onChange={(videoCaption) => onChange({ ...topic, videoCaption })}
-          />
         </>
       ) : null}
       <Field

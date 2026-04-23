@@ -438,6 +438,7 @@ export interface Database {
           paragraphs: Json;
           embed_url: string | null;
           video_caption: string | null;
+          media_items: Json;
         };
         Insert: {
           id?: string;
@@ -449,6 +450,7 @@ export interface Database {
           paragraphs?: Json;
           embed_url?: string | null;
           video_caption?: string | null;
+          media_items?: Json;
         };
         Update: Partial<Database["public"]["Tables"]["km_topics"]["Insert"]>;
         Relationships: [

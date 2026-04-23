@@ -139,6 +139,14 @@ async function main() {
             : t.type === "audio"
               ? ("audioCaption" in t ? t.audioCaption : null) ?? null
               : null,
+        media_items:
+          t.type === "video" || t.type === "audio"
+            ? (t.mediaItems?.map((mi) => ({
+                url: mi.url.trim(),
+                caption: (mi.caption ?? "").trim(),
+              })) ??
+              [])
+            : [],
       });
       if (it) {
         console.error("Insert topic", t.id, it.message);

@@ -8,9 +8,7 @@ export type KmAdminTopicDraft = {
   topicType: "text" | "video" | "audio";
   title: string;
   paragraphs: string[];
-  embedUrl: string;
-  /** Used for video caption and podcast / audio episode caption (same DB column). */
-  videoCaption: string;
+  mediaItems: { url: string; caption: string }[];
 };
 
 export type KmAdminQuestionDraft = {
@@ -115,6 +113,7 @@ type TopicRow = {
   paragraphs: unknown;
   embed_url: string | null;
   video_caption: string | null;
+  media_items: unknown;
 };
 
 type QuestionRow = {
@@ -142,14 +141,30 @@ function mapTopicRow(r: TopicRow): KmAdminTopicDraft {
       : r.topic_type === "audio"
         ? "audio"
         : "text";
+  const mediaItems = Array.isArray(r.media_items)
+    ? r.media_items
+        .map((it) => {
+          if (!it || typeof it !== "object") return null;
+          const obj = it as { url?: unknown; caption?: unknown };
+          const url = typeof obj.url === "string" ? obj.url.trim() : "";
+          const caption =
+            typeof obj.caption === "string" ? obj.caption.trim() : "";
+          return url ? { url, caption } : null;
+        })
+        .filter((it): it is { url: string; caption: string } => it != null)
+    : [];
+  if (mediaItems.length === 0) {
+    const legacyUrl = (r.embed_url ?? "").trim();
+    const legacyCaption = (r.video_caption ?? "").trim();
+    if (legacyUrl) mediaItems.push({ url: legacyUrl, caption: legacyCaption });
+  }
   return {
     topicKey: r.topic_key,
     sortOrder: r.sort_order,
     topicType: tt,
     title: r.title,
     paragraphs: parseStringArray(r.paragraphs),
-    embedUrl: (r.embed_url ?? "").trim(),
-    videoCaption: (r.video_caption ?? "").trim(),
+    mediaItems,
   };
 }
 
@@ -203,7 +218,8 @@ export async function fetchKmCurriculumForAdmin(): Promise<KmAdminModuleDraft[]>
         title,
         paragraphs,
         embed_url,
-        video_caption
+        video_caption,
+        media_items
       ),
       km_questions (
         question_key,
@@ -299,14 +315,29 @@ export async function saveKmAdminModule(
     paragraphs: t.paragraphs.map((p) => p.trim()).filter(Boolean) as Json,
     embed_url: (() => {
       if (t.topicType !== "video" && t.topicType !== "audio") return null;
-      const e = t.embedUrl.trim();
-      if (!e) return null;
-      return t.topicType === "video" ? normalizeVideoIframeSrc(e) : e;
+      const first = t.mediaItems[0];
+      if (!first?.url) return null;
+      return t.topicType === "video"
+        ? normalizeVideoIframeSrc(first.url.trim())
+        : first.url.trim();
     })(),
-    video_caption:
+    video_caption: (() => {
+      if (t.topicType !== "video" && t.topicType !== "audio") return null;
+      const first = t.mediaItems[0];
+      return first?.caption?.trim() || null;
+    })(),
+    media_items:
       t.topicType === "video" || t.topicType === "audio"
-        ? t.videoCaption.trim() || null
-        : null,
+        ? t.mediaItems
+            .map((mi) => ({
+              url:
+                t.topicType === "video"
+                  ? normalizeVideoIframeSrc(mi.url.trim())
+                  : mi.url.trim(),
+              caption: mi.caption.trim(),
+            }))
+            .filter((mi) => mi.url) as Json
+        : ([] as Json),
   }));
 
   if (topicInserts.length) {
@@ -370,8 +401,7 @@ export function newTopicDraft(sortOrder: number): KmAdminTopicDraft {
     topicType: "text",
     title: "",
     paragraphs: [],
-    embedUrl: "",
-    videoCaption: "",
+    mediaItems: [],
   };
 }
 

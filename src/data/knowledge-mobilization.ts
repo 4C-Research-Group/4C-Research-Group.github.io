@@ -20,6 +20,7 @@ export type KMTopic =
       /** Optional — if omitted, UI shows a placeholder for staff to add a link */
       embedUrl?: string;
       videoCaption?: string;
+      mediaItems?: { url: string; caption?: string }[];
     }
   | {
       id: string;
@@ -30,6 +31,7 @@ export type KMTopic =
       /** MP3/M4A public URL, embed URL, or Supabase Storage link */
       embedUrl?: string;
       audioCaption?: string;
+      mediaItems?: { url: string; caption?: string }[];
     };
 
 export interface KMQuestion {

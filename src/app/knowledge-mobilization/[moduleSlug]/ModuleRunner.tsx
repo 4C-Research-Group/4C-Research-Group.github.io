@@ -60,6 +60,17 @@ function TopicBlock({
   onSetReviewed: (reviewed: boolean) => void;
 }) {
   const [open, setOpen] = useState(defaultOpen);
+  const mediaItems =
+    topic.type === "video" || topic.type === "audio"
+      ? (topic.mediaItems ?? []).filter((mi) => mi.url.trim())
+      : [];
+  const fallbackMediaItem =
+    topic.type === "video" || topic.type === "audio"
+      ? topic.embedUrl
+        ? [{ url: topic.embedUrl, caption: topic.type === "video" ? topic.videoCaption : topic.audioCaption }]
+        : []
+      : [];
+  const mediaToRender = mediaItems.length ? mediaItems : fallbackMediaItem;
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm">
@@ -114,28 +125,37 @@ function TopicBlock({
             className="overflow-hidden border-t border-border/60"
           >
             <div className="space-y-4 px-5 py-5">
-              {topic.type === "video" && topic.embedUrl ? (
-                <div className="aspect-video w-full overflow-hidden rounded-xl border border-border bg-black">
-                  {isNativeVideoEmbedUrl(topic.embedUrl) ? (
-                    <video
-                      className="h-full w-full object-contain"
-                      controls
-                      playsInline
-                      preload="metadata"
-                      title={topic.videoCaption ?? topic.title}
-                    >
-                      <source src={topic.embedUrl} />
-                    </video>
-                  ) : (
-                    <iframe
-                      src={normalizeVideoIframeSrc(topic.embedUrl)}
-                      title={topic.videoCaption ?? topic.title}
-                      className="h-full w-full bg-muted"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                      loading="lazy"
-                    />
-                  )}
+              {topic.type === "video" && mediaToRender.length > 0 ? (
+                <div className="space-y-4">
+                  {mediaToRender.map((media, idx) => (
+                    <div key={`${media.url}-${idx}`} className="space-y-2">
+                      <div className="aspect-video w-full overflow-hidden rounded-xl border border-border bg-black">
+                        {isNativeVideoEmbedUrl(media.url) ? (
+                          <video
+                            className="h-full w-full object-contain"
+                            controls
+                            playsInline
+                            preload="metadata"
+                            title={media.caption ?? topic.title}
+                          >
+                            <source src={media.url} />
+                          </video>
+                        ) : (
+                          <iframe
+                            src={normalizeVideoIframeSrc(media.url)}
+                            title={media.caption ?? topic.title}
+                            className="h-full w-full bg-muted"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                            loading="lazy"
+                          />
+                        )}
+                      </div>
+                      {media.caption ? (
+                        <p className="text-xs text-muted-foreground">{media.caption}</p>
+                      ) : null}
+                    </div>
+                  ))}
                 </div>
               ) : topic.type === "video" ? (
                 <div className="flex aspect-video w-full items-center justify-center rounded-xl border border-dashed border-border bg-muted/50 p-6 text-center text-sm text-muted-foreground">
@@ -144,31 +164,38 @@ function TopicBlock({
                 </div>
               ) : null}
 
-              {topic.type === "audio" && topic.embedUrl ? (
-                <div className="w-full overflow-hidden rounded-xl border border-border bg-muted/30 p-4">
-                  {isNativeAudioEmbedUrl(topic.embedUrl) ? (
-                    <audio
-                      className="w-full"
-                      controls
-                      preload="metadata"
-                      title={topic.audioCaption ?? topic.title}
+              {topic.type === "audio" && mediaToRender.length > 0 ? (
+                <div className="space-y-3">
+                  {mediaToRender.map((media, idx) => (
+                    <div
+                      key={`${media.url}-${idx}`}
+                      className="w-full overflow-hidden rounded-xl border border-border bg-muted/30 p-4"
                     >
-                      <source src={topic.embedUrl} />
-                    </audio>
-                  ) : (
-                    <iframe
-                      src={topic.embedUrl}
-                      title={topic.audioCaption ?? topic.title}
-                      className="h-32 w-full rounded-lg bg-muted sm:h-40"
-                      allow="autoplay; clipboard-write; encrypted-media"
-                      loading="lazy"
-                    />
-                  )}
-                  {topic.audioCaption ? (
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      {topic.audioCaption}
-                    </p>
-                  ) : null}
+                      {isNativeAudioEmbedUrl(media.url) ? (
+                        <audio
+                          className="w-full"
+                          controls
+                          preload="metadata"
+                          title={media.caption ?? topic.title}
+                        >
+                          <source src={media.url} />
+                        </audio>
+                      ) : (
+                        <iframe
+                          src={media.url}
+                          title={media.caption ?? topic.title}
+                          className="h-32 w-full rounded-lg bg-muted sm:h-40"
+                          allow="autoplay; clipboard-write; encrypted-media"
+                          loading="lazy"
+                        />
+                      )}
+                      {media.caption ? (
+                        <p className="mt-2 text-xs text-muted-foreground">
+                          {media.caption}
+                        </p>
+                      ) : null}
+                    </div>
+                  ))}
                 </div>
               ) : topic.type === "audio" ? (
                 <div className="flex w-full flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/50 p-6 text-center text-sm text-muted-foreground">
